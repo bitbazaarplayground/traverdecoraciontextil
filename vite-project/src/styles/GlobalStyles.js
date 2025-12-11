@@ -10,15 +10,12 @@ const GlobalStyles = createGlobalStyle`
 
   body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: #ffffff;
-    color: #111;
-    overflow-x: hidden;
   }
-
+  
   h1, h2, h3, h4 {
-    font-weight: 700;
-    letter-spacing: -0.5px;
+    font-family: 'Playfair Display', serif;
   }
+  
 
   p {
     line-height: 1.6;
