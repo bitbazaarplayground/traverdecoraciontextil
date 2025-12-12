@@ -1,38 +1,16 @@
-import { Route, Routes } from "react-router-dom";
-import "./App.css";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
+import App from "./App.jsx";
+import GlobalStyles from "./styles/GlobalStyles";
+import { theme } from "./styles/theme";
 
-import ContactCTA from "./components/ContactCTA";
-import Hero from "./components/Hero";
-import Navbar from "./components/Navbar";
-import ServicesSection from "./components/ServicesSection";
-import WhyChooseUs from "./components/WhyChooseUs";
-
-import ContactPage from "./pages/ContactPage";
-
-function App() {
-  return (
-    <>
-      <Navbar />
-
-      <Routes>
-        {/* HOME PAGE */}
-        <Route
-          path="/"
-          element={
-            <>
-              <Hero />
-              <ServicesSection />
-              <WhyChooseUs />
-              <ContactCTA />
-            </>
-          }
-        />
-
-        {/* CONTACT PAGE */}
-        <Route path="/contact" element={<ContactPage />} />
-      </Routes>
-    </>
-  );
-}
-
-export default App;
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      <App />
+    </ThemeProvider>
+  </BrowserRouter>
+);

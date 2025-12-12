@@ -41,6 +41,13 @@ const ContactBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+
+  /* On mobile = second item, on desktop = second column */
+  order: 2;
+
+  @media (min-width: 900px) {
+    order: 2;
+  }
 `;
 
 const ContactItem = styled.a`
@@ -71,6 +78,7 @@ const ContactItem = styled.a`
 
   small {
     color: #555;
+    margin-top: 4px;
   }
 `;
 
@@ -92,13 +100,19 @@ const IconCircle = styled.div`
 const MapWrapper = styled.div`
   width: 100%;
   height: 350px;
-
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 
+  /* On mobile = first element */
+  order: 1;
+
   @media (max-width: 768px) {
     height: 280px;
+  }
+
+  @media (min-width: 900px) {
+    order: 1;
   }
 `;
 
@@ -113,13 +127,24 @@ export default function ContactPage() {
       </Subtitle>
 
       <Grid>
-        {/* LEFT SIDE — CONTACT OPTIONS */}
+        {/* MAP FIRST */}
+        <MapWrapper>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3111.073908292976!2d-0.07220452365018995!3d39.94384209087051!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1290fd3cf9e940c7%3A0x43a24bed1dfc3786!2sCarrer%20de%20Sant%20Felip%2C%2067%2C%2012550%20Almassora%2C%20Castell%C3%B3n%2C%20Spain!5e0!3m2!1sen!2ses!4v1700000000000!5m2!1sen!2ses"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen=""
+            loading="lazy"
+          ></iframe>
+        </MapWrapper>
+
+        {/* CONTACT DETAILS SECOND */}
         <ContactBox>
-          {/* WhatsApp */}
           <ContactItem
             href="https://wa.me/34647856817"
             target="_blank"
-            rel="noopener"
+            rel="noopener noreferrer"
           >
             <IconCircle>
               <MessageCircle />
@@ -130,7 +155,6 @@ export default function ContactPage() {
             </div>
           </ContactItem>
 
-          {/* Phone */}
           <ContactItem href="tel:+34964562357">
             <IconCircle>
               <Phone />
@@ -141,7 +165,6 @@ export default function ContactPage() {
             </div>
           </ContactItem>
 
-          {/* Email */}
           <ContactItem href="mailto:info@traverdecoracion.com">
             <IconCircle>
               <Mail />
@@ -152,7 +175,6 @@ export default function ContactPage() {
             </div>
           </ContactItem>
 
-          {/* Working Hours */}
           <ContactItem as="div">
             <IconCircle>
               <Clock />
@@ -163,33 +185,20 @@ export default function ContactPage() {
             </div>
           </ContactItem>
 
-          {/* Showroom Location */}
           <ContactItem
-            href="https://maps.google.com/?q=Carrer+de+Sant+Felip,+67,+12550+Almassora,+Castellón,+Spain"
+            href="https://maps.app.goo.gl/nqxT2QX2NCbgYTDF9"
             target="_blank"
-            rel="noopener"
+            rel="noopener noreferrer"
           >
             <IconCircle>
               <MapPin />
             </IconCircle>
             <div>
-              <span>Showroom</span>
+              <span>Tienda</span>
               <small>Carrer de Sant Felip, 67, 12550 Almassora</small>
             </div>
           </ContactItem>
         </ContactBox>
-
-        {/* RIGHT SIDE — MAP */}
-        <MapWrapper>
-          <iframe
-            src="https://maps.app.goo.gl/nqxT2QX2NCbgYTDF9"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen=""
-            loading="lazy"
-          ></iframe>
-        </MapWrapper>
       </Grid>
     </PageWrapper>
   );
