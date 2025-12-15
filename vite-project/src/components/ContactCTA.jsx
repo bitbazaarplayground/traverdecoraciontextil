@@ -52,12 +52,12 @@ const HeadingSmall = styled.h4`
 `;
 
 const HeadingLarge = styled.h2`
-  font-size: 2.6rem;
+  font-size: 2.4rem;
   font-weight: 600;
   line-height: 1.25;
 
   @media (max-width: 768px) {
-    font-size: 1.9rem;
+    font-size: 1.8rem;
   }
 `;
 

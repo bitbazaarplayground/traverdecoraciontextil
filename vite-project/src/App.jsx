@@ -3,12 +3,15 @@ import "./App.css";
 
 import BrandLogos from "./components/BrandLogos";
 import ContactCTA from "./components/ContactCTA";
+import Footer from "./components/Footer";
 import GalleryCarousel from "./components/GalleryCarousel";
 import Hero from "./components/Hero";
 import Navbar from "./components/Navbar";
+import Process from "./components/Process";
 import ServicesSection from "./components/ServicesSection";
-import WhyChooseUs from "./components/WhyChooseUs";
+import Automatizacion from "./pages/Automatizacion";
 import ContactPage from "./pages/ContactPage";
+import CortinasEstores from "./pages/CortinasEstores";
 
 function App() {
   return (
@@ -23,10 +26,11 @@ function App() {
             <>
               <Hero />
               <ServicesSection />
-              <WhyChooseUs />
+              <Process />
               <ContactCTA />
               <GalleryCarousel />
               <BrandLogos />
+              <Footer />
             </>
           }
         />
@@ -34,9 +38,15 @@ function App() {
         {/* CONTACT PAGE */}
 
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/automatizacion" element={<Automatizacion />} />
+        <Route path="/cortinas-estores" element={<CortinasEstores />} />
       </Routes>
     </>
   );
 }
 
 export default App;
+
+{
+  /* <Route path="/automatizacion" element={<AutomatizacionHotspots />} /> */
+}
