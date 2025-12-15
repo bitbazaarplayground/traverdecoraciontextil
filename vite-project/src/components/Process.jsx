@@ -1,0 +1,179 @@
+import styled from "styled-components";
+
+/* =========================
+   SECTION
+========================= */
+
+const Section = styled.section`
+  width: 100%;
+  padding: 4rem 1.5rem;
+  background: #fafafa;
+
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+  }
+`;
+
+const Header = styled.div`
+  max-width: 900px;
+  margin: 0 auto 3rem;
+  text-align: center;
+`;
+
+const Title = styled.h2`
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 1rem;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.7rem;
+  }
+`;
+
+const Intro = styled.p`
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+`;
+
+/* =========================
+   GRID
+========================= */
+
+const StepsGrid = styled.div`
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+`;
+
+/* =========================
+   STEP CARD
+========================= */
+
+const StepCard = styled.div`
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+`;
+
+const StepImage = styled.div`
+  width: 100%;
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+
+  @media (max-width: 768px) {
+    height: 190px;
+  }
+`;
+
+const StepContent = styled.div`
+  padding: 1.5rem 1.75rem;
+`;
+
+const StepNumber = styled.span`
+  display: block;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 0.5rem;
+`;
+
+const StepTitle = styled.h3`
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 0.5rem;
+`;
+
+const StepText = styled.p`
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.55;
+`;
+
+/* =========================
+   DATA
+========================= */
+
+const steps = [
+  {
+    number: "Paso 01",
+    title: "Asesoramiento personalizado",
+    text: "Escuchamos tus ideas, necesidades y estilo para ofrecerte soluciones a medida.",
+    image: "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg",
+  },
+  {
+    number: "Paso 02",
+    title: "Selección de materiales",
+    text: "Te ayudamos a elegir tejidos, papeles y sistemas que encajen con tu espacio y tu forma de vivir.",
+    image:
+      "https://images.pexels.com/photos/584399/living-room-couch-interior-room-584399.jpeg",
+  },
+  {
+    number: "Paso 03",
+    title: "Instalación profesional",
+    text: "Nuestro equipo se encarga de la instalación con precisión y cuidado, respetando tu hogar.",
+    image: "https://images.pexels.com/photos/5691538/pexels-photo-5691538.jpeg",
+  },
+  {
+    number: "Paso 04",
+    title: "Resultado final",
+    text: "Un espacio equilibrado, funcional y elegante, pensado para disfrutarlo cada día.",
+    image: "https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg",
+  },
+];
+
+/* =========================
+   COMPONENT
+========================= */
+
+export default function Process() {
+  return (
+    <Section>
+      <Header>
+        <Title>
+          Te ayudamos a decorar la <span>casa de tus sueños</span>
+        </Title>
+        <Intro>
+          Acompañamos cada proyecto desde la idea inicial hasta el resultado
+          final, cuidando cada detalle para que el proceso sea sencillo y sin
+          preocupaciones.
+        </Intro>
+      </Header>
+
+      <StepsGrid>
+        {steps.map((step) => (
+          <StepCard key={step.number}>
+            <StepImage style={{ backgroundImage: `url(${step.image})` }} />
+            <StepContent>
+              <StepNumber>{step.number}</StepNumber>
+              <StepTitle>{step.title}</StepTitle>
+              <StepText>{step.text}</StepText>
+            </StepContent>
+          </StepCard>
+        ))}
+      </StepsGrid>
+    </Section>
+  );
+}

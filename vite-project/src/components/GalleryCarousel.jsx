@@ -7,14 +7,14 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import images
-import Img1 from "../assets/interior/cellular-shades-bedroom-pala-old-lace-three-quarter-inch-cell-vertical-cells.webp";
-import Img2 from "../assets/interior/roller-shades-dining-room-luminescence-sterling-large-statement-lamp.webp";
-import Img3 from "../assets/interior/roller-shades-living-room-artesian-antiquity-026-feather-vase.webp";
-import Img4 from "../assets/interior/roller-shades-living-room-hombre-flax-340-concrete-accent-furniture.webp";
-import Img5 from "../assets/interior/roller-shades-living-room-watson-dove-grey-380-textured-floral-walls.webp";
-import Img6 from "../assets/interior/solar-shades-dallas-coppell-commercial-church-sundance-1-percent-ebony-318-view-3.webp";
-import Img7 from "../assets/interior/solar-shades-kitchen-newscast-5-percent-white-white-202-sliding-glass-doors.webp";
-import Img8 from "../assets/interior/solar-shades-seattle-commercial-real-estate-office-shoreview-3-percent-charcoal-185-view-1.webp";
+import Img1 from "../assets/Home/interior/cellular-shades-bedroom-pala-old-lace-three-quarter-inch-cell-vertical-cells.webp";
+import Img2 from "../assets/Home/interior/roller-shades-dining-room-luminescence-sterling-large-statement-lamp.webp";
+import Img3 from "../assets/Home/interior/roller-shades-living-room-artesian-antiquity-026-feather-vase.webp";
+import Img4 from "../assets/Home/interior/roller-shades-living-room-hombre-flax-340-concrete-accent-furniture.webp";
+import Img5 from "../assets/Home/interior/roller-shades-living-room-watson-dove-grey-380-textured-floral-walls.webp";
+import Img6 from "../assets/Home/interior/solar-shades-dallas-coppell-commercial-church-sundance-1-percent-ebony-318-view-3.webp";
+import Img7 from "../assets/Home/interior/solar-shades-kitchen-newscast-5-percent-white-white-202-sliding-glass-doors.webp";
+import Img8 from "../assets/Home/interior/solar-shades-seattle-commercial-real-estate-office-shoreview-3-percent-charcoal-185-view-1.webp";
 
 const SectionWrapper = styled.section`
   padding: 4rem 1.5rem;
@@ -29,7 +29,8 @@ const Title = styled.h2`
   text-align: center;
   font-size: 2.4rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.primary};
+  color: #222;
+
   margin-bottom: 1rem;
 `;
 

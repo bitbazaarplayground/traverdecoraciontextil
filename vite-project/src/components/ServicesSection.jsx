@@ -1,36 +1,11 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Img2 from "../assets/HeroImg/img2.webp";
-import Img3 from "../assets/HeroImg/img3.webp";
-import restaurante1 from "../assets/HeroImg/restaurante1.AVIF";
+import Img2 from "../assets/Home/HeroImg/img2.webp";
+import Img3 from "../assets/Home/HeroImg/img3.webp";
+import restaurante1 from "../assets/Home/HeroImg/restaurante1.AVIF";
 import zebraBg from "../assets/zebra_pattern.png";
-// const SectionWrapper = styled.section`
-//   width: 100%;
-//   padding: 3rem 1.5rem;
-//   background: #fff;
 
-//   @media (min-width: 768px) {
-//     padding: 4rem 3rem;
-//   }
-// `;
-// const SectionWrapper = styled.section`
-//   width: 100%;
-//   padding: 4rem 2rem;
-
-//   /* 🔥 Zebra background added here */
-//   background: linear-gradient(
-//       rgba(255, 255, 255, 0.85),
-//       rgba(255, 255, 255, 0.85)
-//     ),
-//     /* subtle overlay */ url(${zebraBg});
-//   background-size: cover;
-//   background-position: center;
-//   background-repeat: no-repeat;
-
-//   @media (max-width: 768px) {
-//     padding: 3rem 1.5rem;
-//   }
-// `;
 const SectionWrapper = styled.section`
   width: 100%;
   padding: 4rem 2rem;
@@ -103,7 +78,7 @@ const CardContent = styled.div`
   }
 `;
 
-const Button = styled.a`
+const Button = styled(Link)`
   display: inline-block;
   padding: 0.7rem 1.4rem;
   border-radius: 50px;
@@ -146,7 +121,7 @@ export default function ServiceSection() {
               Soluciones elegantes y funcionales para controlar la luz y crear
               ambientes acogedores.
             </p>
-            <Button href="#services">Ver más</Button>
+            <Button to="/cortinas-estores">Ver más</Button>
           </CardContent>
         </Card>
 
@@ -169,7 +144,7 @@ export default function ServiceSection() {
               Control solar para interior y exterior, ideal para optimizar
               confort y eficiencia energética.
             </p>
-            <Button href="#services">Ver más</Button>
+            <Button to="/automatizacion">Ver más</Button>
           </CardContent>
         </Card>
 
@@ -192,7 +167,7 @@ export default function ServiceSection() {
               Motoriza cortinas, persianas y toldos para un hogar inteligente,
               cómodo y moderno.
             </p>
-            <Button href="#services">Ver más</Button>
+            <Button to="/automatizacion">Ver más</Button>
           </CardContent>
         </Card>
       </CardGrid>
