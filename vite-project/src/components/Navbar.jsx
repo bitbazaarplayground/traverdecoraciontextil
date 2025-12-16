@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link, Link as RouterLink, useLocation } from "react-router-dom";
 import styled from "styled-components";
+import logo from "../assets/logo.png";
 
 // NAV CONTAINER
 const Nav = styled.nav`
@@ -41,16 +42,28 @@ const RightWrapper = styled.div`
 `;
 
 // LOGO TEXT
-const Logo = styled.h1`
-  font-size: 1.4rem;
-  font-weight: 700;
+// const Logo = styled.h1`
+//   font-size: 1.4rem;
+//   font-weight: 700;
+//   cursor: pointer;
+
+//   /* ⭐ NEW: Dark text on non-home pages */
+//   color: ${({ $scrolled, $isHome }) =>
+//     !$isHome || $scrolled ? "#111" : "#fff"};
+
+//   transition: color 0.3s ease;
+// `;
+
+const Logo = styled.div`
+  display: flex;
+  align-items: center;
   cursor: pointer;
 
-  /* ⭐ NEW: Dark text on non-home pages */
-  color: ${({ $scrolled, $isHome }) =>
-    !$isHome || $scrolled ? "#111" : "#fff"};
-
-  transition: color 0.3s ease;
+  img {
+    height: ${({ $scrolled }) => ($scrolled ? "34px" : "42px")};
+    width: auto;
+    transition: height 0.25s ease;
+  }
 `;
 
 // DESKTOP LINKS
@@ -147,15 +160,21 @@ export default function Navbar() {
       <Nav $scrolled={scrolled} $isHome={isHome}>
         <LeftWrapper>
           {!isHome && (
-            <Logo $scrolled={scrolled} $isHome={isHome}>
-              TRAVER
+            <Logo
+              as={Link}
+              to="/"
+              $scrolled={scrolled}
+              $isHome={isHome}
+              aria-label="Volver a inicio"
+            >
+              <img src={logo} alt="Traver logo" />
             </Logo>
           )}
         </LeftWrapper>
 
         <RightWrapper>
           <DesktopLinks>
-            <StyledLink to="/#services" $scrolled={scrolled} $isHome={isHome}>
+            <StyledLink to="/services" $scrolled={scrolled} $isHome={isHome}>
               Servicios
             </StyledLink>
             <StyledLink to="/#showroom" $scrolled={scrolled} $isHome={isHome}>
@@ -195,9 +214,9 @@ export default function Navbar() {
               exit={{ x: "100%" }}
               transition={{ duration: 0.35 }}
             >
-              <MobileLink to="/#services">Servicios</MobileLink>
-              <MobileLink to="/#showroom">Showroom</MobileLink>
-              <MobileLink to="/#about">Nosotros</MobileLink>
+              <MobileLink to="/services">Servicios</MobileLink>
+              <MobileLink to="/showroom">Showroom</MobileLink>
+              <MobileLink to="/about">Nosotros</MobileLink>
               <MobileLink to="/contact">Contacto</MobileLink>
             </MobileMenu>
           </>

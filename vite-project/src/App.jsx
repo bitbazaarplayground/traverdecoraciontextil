@@ -12,6 +12,8 @@ import ServicesSection from "./components/ServicesSection";
 import Automatizacion from "./pages/Automatizacion";
 import ContactPage from "./pages/ContactPage";
 import CortinasEstores from "./pages/CortinasEstores";
+import Servicios from "./pages/Servicios";
+import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
 
 function App() {
   return (
@@ -38,15 +40,18 @@ function App() {
         {/* CONTACT PAGE */}
 
         <Route path="/contact" element={<ContactPage />} />
+
         <Route path="/automatizacion" element={<Automatizacion />} />
         <Route path="/cortinas-estores" element={<CortinasEstores />} />
+        <Route
+          path="/toldos-proteccionsolar"
+          element={<ToldosProteccionSolar />}
+        />
+        <Route path="/services" element={<Servicios />} />
       </Routes>
+      <Footer />
     </>
   );
 }
 
 export default App;
-
-{
-  /* <Route path="/automatizacion" element={<AutomatizacionHotspots />} /> */
-}

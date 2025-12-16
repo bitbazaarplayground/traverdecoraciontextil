@@ -144,7 +144,7 @@ export default function ServiceSection() {
               Control solar para interior y exterior, ideal para optimizar
               confort y eficiencia energética.
             </p>
-            <Button to="/automatizacion">Ver más</Button>
+            <Button to="/toldos-proteccionsolar">Ver más</Button>
           </CardContent>
         </Card>
 
