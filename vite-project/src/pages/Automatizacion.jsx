@@ -3,6 +3,7 @@ import styled from "styled-components";
 /* =========================
    ASSETS
 ========================= */
+import benefit1 from "../assets/Automatizacion/benefit1.png";
 import heroVideo from "../assets/video1.mp4";
 
 /* =========================
@@ -155,275 +156,64 @@ const MicroLine = styled.p`
 `;
 
 /* =========================
-   SECTION WRAPPER
+   BENEFITS SECTION (INSPIRED BY SISMART)
 ========================= */
 
-const Section = styled.section`
-  padding: 6.2rem 2rem;
+const BenefitsSection = styled.section`
+  background: #ffffff;
+  color: #111;
+  padding: 6rem 2rem;
 
   @media (max-width: 768px) {
-    padding: 4.2rem 1.5rem;
+    padding: 4rem 1.5rem;
   }
 `;
 
-const Inner = styled.div`
-  max-width: 1100px;
+const BenefitsInner = styled.div`
+  max-width: 1200px;
   margin: 0 auto;
-`;
-
-/* =========================
-   STATEMENT BLOCK
-========================= */
-
-const Statement = styled.div`
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 3.2rem 0;
-`;
-
-const StatementTitle = styled.h2`
-  font-size: 2.35rem;
-  font-weight: 600;
-  line-height: 1.15;
-  margin: 0 0 1rem 0;
-
-  @media (max-width: 768px) {
-    font-size: 1.95rem;
-  }
-`;
-
-const StatementText = styled.p`
-  max-width: 74ch;
-  font-size: 1.1rem;
-  line-height: 1.9;
-  color: rgba(244, 244, 245, 0.78);
-  margin: 0;
-`;
-
-/* =========================
-   EDITORIAL SCENES
-========================= */
-
-const Scenes = styled.div`
-  margin-top: 4.2rem;
   display: grid;
-  gap: 2.6rem;
-
-  @media (min-width: 900px) {
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-  }
+  gap: 6rem;
 `;
 
-const SceneCard = styled.article`
-  padding: 2.4rem 2.2rem;
-  border-radius: 26px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.025)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: 0 14px 60px rgba(0, 0, 0, 0.45);
-`;
-
-const SceneMeta = styled.p`
-  margin: 0 0 0.9rem 0;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-  color: rgba(244, 244, 245, 0.55);
-`;
-
-const SceneTitle = styled.h3`
-  margin: 0 0 0.75rem 0;
-  font-size: 1.45rem;
-  font-weight: 600;
-`;
-
-const SceneText = styled.p`
-  margin: 0;
-  font-size: 1.05rem;
-  line-height: 1.85;
-  color: rgba(244, 244, 245, 0.78);
-`;
-
-/* =========================
-   SOMFY AUTHORITY
-========================= */
-
-const Authority = styled.div`
-  margin-top: 4.2rem;
-  padding: 2.8rem 2.4rem;
-  border-radius: 26px;
-  background: radial-gradient(
-      800px 380px at 10% 0%,
-      rgba(255, 255, 255, 0.08),
-      rgba(255, 255, 255, 0.02)
-    ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
-  border: 1px solid rgba(255, 255, 255, 0.09);
-`;
-
-const AuthorityTitle = styled.h3`
-  margin: 0 0 0.75rem 0;
-  font-size: 1.55rem;
-  font-weight: 600;
-`;
-
-const AuthorityText = styled.p`
-  margin: 0;
-  max-width: 78ch;
-  font-size: 1.05rem;
-  line-height: 1.9;
-  color: rgba(244, 244, 245, 0.78);
-`;
-
-/* =========================
-   CONTROL BLOCK
-========================= */
-
-const ControlGrid = styled.div`
-  margin-top: 4.2rem;
+const BenefitRow = styled.div`
   display: grid;
-  gap: 2.4rem;
-
-  @media (min-width: 900px) {
-    grid-template-columns: 1.1fr 0.9fr;
-    align-items: center;
-  }
-`;
-
-const ControlCard = styled.div`
-  padding: 2.6rem 2.3rem;
-  border-radius: 26px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.02)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.09);
-`;
-
-const ControlTitle = styled.h3`
-  margin: 0 0 0.9rem 0;
-  font-size: 1.6rem;
-  font-weight: 600;
-`;
-
-const ControlText = styled.p`
-  margin: 0;
-  font-size: 1.05rem;
-  line-height: 1.9;
-  color: rgba(244, 244, 245, 0.78);
-`;
-
-const ControlAside = styled.div`
-  padding: 2.6rem 2.3rem;
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px dashed rgba(255, 255, 255, 0.12);
-  color: rgba(244, 244, 245, 0.7);
-`;
-
-const AsideTitle = styled.p`
-  margin: 0 0 0.75rem 0;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-  color: rgba(244, 244, 245, 0.55);
-`;
-
-const AsideText = styled.p`
-  margin: 0;
-  font-size: 1.02rem;
-  line-height: 1.85;
-`;
-
-/* =========================
-   EXCLUSIVITY
-========================= */
-
-const Exclusive = styled.div`
-  margin-top: 4.2rem;
-  padding: 3rem 2.4rem;
-  border-radius: 26px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 105, 180, 0.12),
-    rgba(255, 255, 255, 0.02)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.09);
-`;
-
-const ExclusiveTitle = styled.h3`
-  margin: 0 0 0.8rem 0;
-  font-size: 1.55rem;
-  font-weight: 600;
-`;
-
-const ExclusiveText = styled.p`
-  margin: 0;
-  max-width: 78ch;
-  font-size: 1.05rem;
-  line-height: 1.9;
-  color: rgba(244, 244, 245, 0.82);
-`;
-
-/* =========================
-   CTA
-========================= */
-
-const CTASection = styled.section`
-  padding: 6.2rem 2rem 7rem;
-  text-align: center;
-
-  @media (max-width: 768px) {
-    padding: 4.6rem 1.5rem 5.5rem;
-  }
-`;
-
-const CTATitle = styled.h2`
-  font-size: 2.6rem;
-  font-weight: 600;
-  margin: 0 0 1rem 0;
-
-  @media (max-width: 768px) {
-    font-size: 2.05rem;
-  }
-`;
-
-const CTAText = styled.p`
-  max-width: 70ch;
-  margin: 0 auto;
-  font-size: 1.1rem;
-  line-height: 1.9;
-  color: rgba(244, 244, 245, 0.78);
-`;
-
-const CTAButton = styled.a`
-  display: inline-flex;
+  gap: 3rem;
   align-items: center;
-  justify-content: center;
-  margin-top: 2.2rem;
-  padding: 1rem 2.5rem;
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: #0b0c0f;
-  font-weight: 800;
-  text-decoration: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
 
-  &:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
+  @media (min-width: 900px) {
+    grid-template-columns: ${({ reverse }) =>
+      reverse ? "1fr 1fr" : "1fr 1fr"};
+    direction: ${({ reverse }) => (reverse ? "rtl" : "ltr")};
   }
 `;
 
-const CTAHint = styled.p`
-  margin-top: 1.1rem;
-  font-size: 0.95rem;
-  color: rgba(244, 244, 245, 0.6);
+const BenefitText = styled.div`
+  direction: ltr;
+`;
+
+const BenefitTitle = styled.h3`
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    font-size: 1.7rem;
+  }
+`;
+
+const BenefitParagraph = styled.p`
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #444;
+  max-width: 48ch;
+`;
+
+const BenefitImage = styled.img`
+  width: 100%;
+  border-radius: 22px;
+  object-fit: cover;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
 `;
 
 /* =========================
@@ -465,127 +255,86 @@ export default function Automatizacion() {
         </HeroContent>
       </Hero>
 
-      {/* PHILOSOPHY + SCENES */}
-      <Section id="experiencia">
-        <Inner>
-          <Statement>
-            <StatementTitle>
-              No es domótica. <br />
-              Es criterio arquitectónico.
-            </StatementTitle>
-            <StatementText>
-              La automatización verdaderamente premium no se nota. No presume.
-              No pide atención. Simplemente hace que el hogar esté siempre en su
-              mejor versión: luz perfecta, temperatura equilibrada, privacidad
-              absoluta y protección inteligente. Todo, sin que tengas que
-              pensar.
-            </StatementText>
-          </Statement>
+      {/* BENEFITS / USE CASES */}
+      <BenefitsSection id="experiencia">
+        <BenefitsInner>
+          {/* BENEFIT 1 */}
+          <BenefitRow>
+            <BenefitText>
+              <BenefitTitle>
+                Ajusta tus persianas con la luz del día
+              </BenefitTitle>
+              <BenefitParagraph>
+                A medida que el sol avanza, tus persianas y cortinas se regulan
+                automáticamente para dejar pasar la cantidad justa de luz.
+                Confort visual, sin deslumbramientos, desde el primer momento
+                del día.
+              </BenefitParagraph>
+            </BenefitText>
 
-          <Scenes>
-            <SceneCard>
-              <SceneMeta>01 · Mañana</SceneMeta>
-              <SceneTitle>La luz entra como una decisión de diseño</SceneTitle>
-              <SceneText>
-                Las persianas se abren de forma gradual, sin deslumbrar. La casa
-                despierta con calma, como si entendiera el ritmo del hogar. No
-                hay botones. No hay prisas. Solo una transición perfecta.
-              </SceneText>
-            </SceneCard>
+            <BenefitImage
+              src={benefit1}
+              alt="Luz natural entrando por cortinas"
+            />
+          </BenefitRow>
 
-            <SceneCard>
-              <SceneMeta>02 · Día</SceneMeta>
-              <SceneTitle>Confort térmico sin compromisos</SceneTitle>
-              <SceneText>
-                El sol cambia, el ambiente también. Toldos y estores ajustan la
-                luz para mantener frescura, sombra y equilibrio visual. El
-                resultado se siente, pero la tecnología permanece invisible.
-              </SceneText>
-            </SceneCard>
+          {/* BENEFIT 2 */}
+          <BenefitRow reverse>
+            <BenefitText>
+              <BenefitTitle>
+                Haz creer que estás en casa cuando estés fuera
+              </BenefitTitle>
+              <BenefitParagraph>
+                Simula presencia real subiendo y bajando persianas de forma
+                automática. Una capa extra de seguridad que actúa incluso cuando
+                estás de vacaciones.
+              </BenefitParagraph>
+            </BenefitText>
 
-            <SceneCard>
-              <SceneMeta>03 · Clima</SceneMeta>
-              <SceneTitle>Protección que actúa antes del problema</SceneTitle>
-              <SceneText>
-                Viento. Lluvia. Cambios súbitos. Los sistemas reaccionan de
-                forma inmediata para proteger toldos y cerramientos. Tu casa no
-                “responde”. Se anticipa.
-              </SceneText>
-            </SceneCard>
+            <BenefitImage
+              src="https://images.unsplash.com/photo-1520975916090-3105956dac38"
+              alt="Persona relajada de vacaciones"
+            />
+          </BenefitRow>
 
-            <SceneCard>
-              <SceneMeta>04 · Noche</SceneMeta>
-              <SceneTitle>Privacidad como una sensación</SceneTitle>
-              <SceneText>
-                Al caer la noche, cortinas y estores se cierran con precisión
-                silenciosa. El hogar se vuelve íntimo, aislado, sereno. Un
-                ambiente que no se explica: se percibe.
-              </SceneText>
-            </SceneCard>
-          </Scenes>
+          {/* BENEFIT 3 */}
+          <BenefitRow>
+            <BenefitText>
+              <BenefitTitle>
+                Controla tu hogar desde cualquier lugar
+              </BenefitTitle>
+              <BenefitParagraph>
+                Desde el móvil puedes subir, bajar o ajustar todas tus
+                persianas, estés donde estés. Incluso antes de llegar a casa,
+                todo puede estar preparado para ti.
+              </BenefitParagraph>
+            </BenefitText>
 
-          <Authority>
-            <AuthorityTitle>
-              Somfy: el estándar cuando el nivel importa
-            </AuthorityTitle>
-            <AuthorityText>
-              Elegimos Somfy por una razón: fiabilidad, precisión y silencio.
-              Sistemas diseñados para durar, integrarse con discreción y
-              funcionar cada día como el primer día. En automatización
-              residencial premium, no hay atajos.
-            </AuthorityText>
-          </Authority>
+            <BenefitImage
+              src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc"
+              alt="Control desde el móvil"
+            />
+          </BenefitRow>
 
-          <ControlGrid>
-            <ControlCard>
-              <ControlTitle>
-                Control absoluto. Solo cuando lo necesitas.
-              </ControlTitle>
-              <ControlText>
-                Desde una única aplicación puedes crear escenas, horarios y
-                ajustes finos. O dejar que el hogar decida por ti. La tecnología
-                está ahí, pero nunca es protagonista. Lo importante es la
-                experiencia: impecable, constante y sin esfuerzo.
-              </ControlText>
-            </ControlCard>
+          {/* BENEFIT 4 */}
+          <BenefitRow reverse>
+            <BenefitText>
+              <BenefitTitle>
+                Programa horarios que se adaptan a tu rutina
+              </BenefitTitle>
+              <BenefitParagraph>
+                Define horarios de apertura y cierre según tu día a día o la
+                estación del año. La casa se adapta a ti, no al revés.
+              </BenefitParagraph>
+            </BenefitText>
 
-            <ControlAside>
-              <AsideTitle>Detalle</AsideTitle>
-              <AsideText>
-                Diseñamos la automatización como parte del interiorismo: el
-                movimiento debe ser fluido, el sonido casi inexistente y el
-                acabado impecable. No se instala “un sistema”. Se eleva el
-                hogar.
-              </AsideText>
-            </ControlAside>
-          </ControlGrid>
-
-          <Exclusive>
-            <ExclusiveTitle>No es para todo el mundo</ExclusiveTitle>
-            <ExclusiveText>
-              Es para quienes entienden que el verdadero lujo no se exhibe. Se
-              vive. Para hogares donde cada decisión tiene intención. Si buscas
-              algo común, esta no es la solución. Si buscas lo mejor, lo sabrás
-              al instante.
-            </ExclusiveText>
-          </Exclusive>
-        </Inner>
-      </Section>
-
-      {/* CTA */}
-      <CTASection>
-        <CTATitle>Automatización diseñada a medida</CTATitle>
-        <CTAText>
-          Cada vivienda es única. Por eso diseñamos soluciones personalizadas
-          según tu arquitectura, orientación, rutinas y estilo de vida. Solicita
-          un asesoramiento privado y descubre cómo se siente vivir en un hogar
-          que piensa por ti.
-        </CTAText>
-        <CTAButton href="/contacto">Solicitar asesoramiento privado</CTAButton>
-        <CTAHint>
-          Respuesta rápida · Propuesta clara · Instalación profesional
-        </CTAHint>
-      </CTASection>
+            <BenefitImage
+              src="https://images.unsplash.com/photo-1505691938895-1758d7feb511"
+              alt="Dormitorio tranquilo con luz suave"
+            />
+          </BenefitRow>
+        </BenefitsInner>
+      </BenefitsSection>
     </Page>
   );
 }
