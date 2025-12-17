@@ -1,22 +1,18 @@
 import styled from "styled-components";
 
 /* =========================
-   ASSETS (replace with your real images)
+   ASSETS
 ========================= */
-import cortina2 from "../assets/CortinasEstores/carousel/cortinas2.jpeg";
-// import somfyAppImg from "../assets/automatizacion/app.webp";
-// import automationHero from "../assets/automatizacion/hero.webp";
-// import sensorRainImg from "../assets/automatizacion/sensor-rain.webp";
-// import sensorSunImg from "../assets/automatizacion/sensor-sun.webp";
-// import sensorWindImg from "../assets/automatizacion/sensor-wind.webp";
+import heroVideo from "../assets/video1.mp4";
 
 /* =========================
-   PAGE WRAPPER
+   PAGE
 ========================= */
 
 const Page = styled.main`
   width: 100%;
-  background: #fff;
+  background: #0b0c0f;
+  color: #f4f4f5;
 `;
 
 /* =========================
@@ -25,138 +21,353 @@ const Page = styled.main`
 
 const Hero = styled.section`
   position: relative;
-  min-height: 60vh;
-  text-align: center;
+  min-height: 78vh;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  padding: 5rem 2rem;
-  background-image: url(${cortina2});
-  background-size: cover;
-  background-position: center;
-  color: #fff;
+  padding: 6.5rem 2rem 5.5rem;
+  overflow: hidden;
 
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+  @media (max-width: 768px) {
+    min-height: 72vh;
+    padding: 5.5rem 1.5rem 4.2rem;
   }
+`;
+
+const HeroVideo = styled.video`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  filter: saturate(0.95) contrast(1.05);
+  transform: scale(1.02);
+  z-index: 0;
+`;
+
+const HeroOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      1200px 700px at 50% 35%,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.68)
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.35) 0%,
+      rgba(0, 0, 0, 0.88) 70%,
+      rgba(11, 12, 15, 1) 100%
+    );
+  z-index: 1;
 `;
 
 const HeroContent = styled.div`
   position: relative;
   z-index: 2;
-  max-width: 900px;
+  width: 100%;
+  max-width: 1100px;
+`;
+
+const Eyebrow = styled.p`
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: rgba(244, 244, 245, 0.72);
+  margin: 0 0 0.9rem 0;
 `;
 
 const HeroTitle = styled.h1`
-  font-size: 3rem;
+  font-size: 3.45rem;
   font-weight: 600;
-  margin-bottom: 1rem;
-  color: white;
+  line-height: 1.04;
+  margin: 0 0 1.2rem 0;
 
   span {
     color: ${({ theme }) => theme.colors.primary};
   }
 
   @media (max-width: 768px) {
-    font-size: 2.4rem;
+    font-size: 2.55rem;
+    line-height: 1.08;
   }
 `;
 
 const HeroSubtitle = styled.p`
+  max-width: 58ch;
   font-size: 1.15rem;
-  line-height: 1.7;
-  color: #eee;
+  line-height: 1.75;
+  color: rgba(244, 244, 245, 0.78);
+  margin: 0;
+`;
+
+const HeroActions = styled.div`
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+`;
+
+const PrimaryButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 2.25rem;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.primary};
+  color: #0b0c0f;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+
+  &:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+`;
+
+const SecondaryButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 2.15rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(244, 244, 245, 0.9);
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.25s ease, background 0.25s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.09);
+    transform: translateY(-1px);
+  }
+`;
+
+const MicroLine = styled.p`
+  margin-top: 1.4rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(244, 244, 245, 0.6);
 `;
 
 /* =========================
-   FEATURES SECTION
+   SECTION WRAPPER
 ========================= */
 
-const FeaturesSection = styled.section`
-  padding: 5rem 2rem;
+const Section = styled.section`
+  padding: 6.2rem 2rem;
 
   @media (max-width: 768px) {
-    padding: 3.5rem 1.5rem;
+    padding: 4.2rem 1.5rem;
   }
 `;
 
-const FeaturesInner = styled.div`
+const Inner = styled.div`
   max-width: 1100px;
   margin: 0 auto;
-  text-align: center;
-`;
-
-const FeaturesTitle = styled.h2`
-  font-size: 2.4rem;
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 1rem;
-`;
-
-const FeaturesGrid = styled.div`
-  display: grid;
-  gap: 2.5rem;
-  margin-top: 2.5rem;
-
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-`;
-
-const FeatureCard = styled.div`
-  text-align: center;
-`;
-
-const FeatureImg = styled.img`
-  width: 100px;
-  height: 100px;
-  object-fit: contain;
-  margin-bottom: 1rem;
-`;
-
-const FeatureTitle = styled.h3`
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 0.6rem;
-`;
-
-const FeatureText = styled.p`
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #555;
 `;
 
 /* =========================
-   EXPLANATION
+   STATEMENT BLOCK
 ========================= */
 
-const ExplanationSection = styled.section`
-  padding: 4rem 2rem;
-  background: #fafafa;
-  text-align: center;
+const Statement = styled.div`
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3.2rem 0;
 `;
 
-const ExplanationInner = styled.div`
-  max-width: 900px;
-  margin: 0 auto;
-`;
-
-const ExplanationTitle = styled.h2`
-  font-size: 2.2rem;
+const StatementTitle = styled.h2`
+  font-size: 2.35rem;
   font-weight: 600;
-  color: #222;
-  margin-bottom: 1rem;
+  line-height: 1.15;
+  margin: 0 0 1rem 0;
+
+  @media (max-width: 768px) {
+    font-size: 1.95rem;
+  }
 `;
 
-const ExplanationText = styled.p`
+const StatementText = styled.p`
+  max-width: 74ch;
+  font-size: 1.1rem;
+  line-height: 1.9;
+  color: rgba(244, 244, 245, 0.78);
+  margin: 0;
+`;
+
+/* =========================
+   EDITORIAL SCENES
+========================= */
+
+const Scenes = styled.div`
+  margin-top: 4.2rem;
+  display: grid;
+  gap: 2.6rem;
+
+  @media (min-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+`;
+
+const SceneCard = styled.article`
+  padding: 2.4rem 2.2rem;
+  border-radius: 26px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.025)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 14px 60px rgba(0, 0, 0, 0.45);
+`;
+
+const SceneMeta = styled.p`
+  margin: 0 0 0.9rem 0;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: rgba(244, 244, 245, 0.55);
+`;
+
+const SceneTitle = styled.h3`
+  margin: 0 0 0.75rem 0;
+  font-size: 1.45rem;
+  font-weight: 600;
+`;
+
+const SceneText = styled.p`
+  margin: 0;
   font-size: 1.05rem;
-  line-height: 1.7;
-  color: #555;
-  margin-bottom: 1rem;
+  line-height: 1.85;
+  color: rgba(244, 244, 245, 0.78);
+`;
+
+/* =========================
+   SOMFY AUTHORITY
+========================= */
+
+const Authority = styled.div`
+  margin-top: 4.2rem;
+  padding: 2.8rem 2.4rem;
+  border-radius: 26px;
+  background: radial-gradient(
+      800px 380px at 10% 0%,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.02)
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+`;
+
+const AuthorityTitle = styled.h3`
+  margin: 0 0 0.75rem 0;
+  font-size: 1.55rem;
+  font-weight: 600;
+`;
+
+const AuthorityText = styled.p`
+  margin: 0;
+  max-width: 78ch;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: rgba(244, 244, 245, 0.78);
+`;
+
+/* =========================
+   CONTROL BLOCK
+========================= */
+
+const ControlGrid = styled.div`
+  margin-top: 4.2rem;
+  display: grid;
+  gap: 2.4rem;
+
+  @media (min-width: 900px) {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+  }
+`;
+
+const ControlCard = styled.div`
+  padding: 2.6rem 2.3rem;
+  border-radius: 26px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.09);
+`;
+
+const ControlTitle = styled.h3`
+  margin: 0 0 0.9rem 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+`;
+
+const ControlText = styled.p`
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: rgba(244, 244, 245, 0.78);
+`;
+
+const ControlAside = styled.div`
+  padding: 2.6rem 2.3rem;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  color: rgba(244, 244, 245, 0.7);
+`;
+
+const AsideTitle = styled.p`
+  margin: 0 0 0.75rem 0;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: rgba(244, 244, 245, 0.55);
+`;
+
+const AsideText = styled.p`
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.85;
+`;
+
+/* =========================
+   EXCLUSIVITY
+========================= */
+
+const Exclusive = styled.div`
+  margin-top: 4.2rem;
+  padding: 3rem 2.4rem;
+  border-radius: 26px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 105, 180, 0.12),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.09);
+`;
+
+const ExclusiveTitle = styled.h3`
+  margin: 0 0 0.8rem 0;
+  font-size: 1.55rem;
+  font-weight: 600;
+`;
+
+const ExclusiveText = styled.p`
+  margin: 0;
+  max-width: 78ch;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: rgba(244, 244, 245, 0.82);
 `;
 
 /* =========================
@@ -164,37 +375,55 @@ const ExplanationText = styled.p`
 ========================= */
 
 const CTASection = styled.section`
-  padding: 5rem 2rem;
+  padding: 6.2rem 2rem 7rem;
   text-align: center;
+
+  @media (max-width: 768px) {
+    padding: 4.6rem 1.5rem 5.5rem;
+  }
 `;
 
 const CTATitle = styled.h2`
   font-size: 2.6rem;
   font-weight: 600;
-  color: #222;
-  margin-bottom: 1rem;
+  margin: 0 0 1rem 0;
+
+  @media (max-width: 768px) {
+    font-size: 2.05rem;
+  }
 `;
 
 const CTAText = styled.p`
+  max-width: 70ch;
+  margin: 0 auto;
   font-size: 1.1rem;
-  line-height: 1.7;
-  color: #555;
+  line-height: 1.9;
+  color: rgba(244, 244, 245, 0.78);
 `;
 
 const CTAButton = styled.a`
-  display: inline-block;
-  margin-top: 1.8rem;
-  padding: 0.9rem 2.4rem;
-  border-radius: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2.2rem;
+  padding: 1rem 2.5rem;
+  border-radius: 999px;
   background: ${({ theme }) => theme.colors.primary};
-  color: #fff;
-  font-weight: 600;
+  color: #0b0c0f;
+  font-weight: 800;
   text-decoration: none;
-  transition: opacity 0.25s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease;
 
   &:hover {
-    opacity: 0.85;
+    opacity: 0.92;
+    transform: translateY(-1px);
   }
+`;
+
+const CTAHint = styled.p`
+  margin-top: 1.1rem;
+  font-size: 0.95rem;
+  color: rgba(244, 244, 245, 0.6);
 `;
 
 /* =========================
@@ -206,103 +435,156 @@ export default function Automatizacion() {
     <Page>
       {/* HERO */}
       <Hero>
+        <HeroVideo src={heroVideo} autoPlay muted loop playsInline />
+        <HeroOverlay />
         <HeroContent>
+          <Eyebrow>Automatización residencial · Somfy</Eyebrow>
           <HeroTitle>
-            Automatización del <span>hogar</span> con Somfy
+            El lujo no se <span>controla</span>. <br />
+            Se anticipa.
           </HeroTitle>
           <HeroSubtitle>
-            Control inteligente de cortinas, estores y toldos para tu hogar,
-            adaptándose automáticamente al clima, la luz y tu rutina diaria.
+            Cortinas, estores y toldos que responden con precisión silenciosa a
+            la luz, al clima y a tu rutina. Sin esfuerzo. Sin interrupciones.
+            Como debe ser.
           </HeroSubtitle>
+
+          <HeroActions>
+            <PrimaryButton href="/contacto">
+              Asesoramiento privado
+            </PrimaryButton>
+            <SecondaryButton href="#experiencia">
+              Descubrir la experiencia
+            </SecondaryButton>
+          </HeroActions>
+
+          <MicroLine>
+            Proyectos a medida para hogares exigentes. Integración discreta,
+            acabado impecable y una sensación que solo se entiende al vivirla.
+          </MicroLine>
         </HeroContent>
       </Hero>
 
-      {/* FEATURES */}
-      <FeaturesSection>
-        <FeaturesInner>
-          <FeaturesTitle>¿Qué puedes automatizar en tu hogar?</FeaturesTitle>
+      {/* PHILOSOPHY + SCENES */}
+      <Section id="experiencia">
+        <Inner>
+          <Statement>
+            <StatementTitle>
+              No es domótica. <br />
+              Es criterio arquitectónico.
+            </StatementTitle>
+            <StatementText>
+              La automatización verdaderamente premium no se nota. No presume.
+              No pide atención. Simplemente hace que el hogar esté siempre en su
+              mejor versión: luz perfecta, temperatura equilibrada, privacidad
+              absoluta y protección inteligente. Todo, sin que tengas que
+              pensar.
+            </StatementText>
+          </Statement>
 
-          <FeaturesGrid>
-            <FeatureCard>
-              <FeatureImg src={cortina2} alt="Control desde app" />
-              <FeatureTitle>Control desde app</FeatureTitle>
-              <FeatureText>
-                Gestiona todas tus cortinas y toldos desde tu teléfono
-                inteligente o tablet, incluso fuera de casa.
-              </FeatureText>
-            </FeatureCard>
+          <Scenes>
+            <SceneCard>
+              <SceneMeta>01 · Mañana</SceneMeta>
+              <SceneTitle>La luz entra como una decisión de diseño</SceneTitle>
+              <SceneText>
+                Las persianas se abren de forma gradual, sin deslumbrar. La casa
+                despierta con calma, como si entendiera el ritmo del hogar. No
+                hay botones. No hay prisas. Solo una transición perfecta.
+              </SceneText>
+            </SceneCard>
 
-            <FeatureCard>
-              <FeatureImg src={cortina2} alt="Sensor de sol" />
-              <FeatureTitle>Sensor de sol</FeatureTitle>
-              <FeatureText>
-                Detecta la intensidad de la luz y ajusta toldos y persianas para
-                mantener confort térmico y visual.
-              </FeatureText>
-            </FeatureCard>
+            <SceneCard>
+              <SceneMeta>02 · Día</SceneMeta>
+              <SceneTitle>Confort térmico sin compromisos</SceneTitle>
+              <SceneText>
+                El sol cambia, el ambiente también. Toldos y estores ajustan la
+                luz para mantener frescura, sombra y equilibrio visual. El
+                resultado se siente, pero la tecnología permanece invisible.
+              </SceneText>
+            </SceneCard>
 
-            <FeatureCard>
-              <FeatureImg src={cortina2} alt="Sensor de viento" />
-              <FeatureTitle>Sensor de viento</FeatureTitle>
-              <FeatureText>
-                Protege toldos y pergolas cerrando automáticamente ante ráfagas
-                fuertes.
-              </FeatureText>
-            </FeatureCard>
+            <SceneCard>
+              <SceneMeta>03 · Clima</SceneMeta>
+              <SceneTitle>Protección que actúa antes del problema</SceneTitle>
+              <SceneText>
+                Viento. Lluvia. Cambios súbitos. Los sistemas reaccionan de
+                forma inmediata para proteger toldos y cerramientos. Tu casa no
+                “responde”. Se anticipa.
+              </SceneText>
+            </SceneCard>
 
-            <FeatureCard>
-              <FeatureImg src={cortina2} alt="Sensor de lluvia" />
-              <FeatureTitle>Sensor de lluvia</FeatureTitle>
-              <FeatureText>
-                Detecta la lluvia y ajusta automáticamente tus toldos o estores.
-              </FeatureText>
-            </FeatureCard>
+            <SceneCard>
+              <SceneMeta>04 · Noche</SceneMeta>
+              <SceneTitle>Privacidad como una sensación</SceneTitle>
+              <SceneText>
+                Al caer la noche, cortinas y estores se cierran con precisión
+                silenciosa. El hogar se vuelve íntimo, aislado, sereno. Un
+                ambiente que no se explica: se percibe.
+              </SceneText>
+            </SceneCard>
+          </Scenes>
 
-            <FeatureCard>
-              <FeatureImg src={cortina2} alt="Control por voz" />
-              <FeatureTitle>Control por voz</FeatureTitle>
-              <FeatureText>
-                Compatible con asistentes como Alexa, Google Assistant o Siri.
-              </FeatureText>
-            </FeatureCard>
+          <Authority>
+            <AuthorityTitle>
+              Somfy: el estándar cuando el nivel importa
+            </AuthorityTitle>
+            <AuthorityText>
+              Elegimos Somfy por una razón: fiabilidad, precisión y silencio.
+              Sistemas diseñados para durar, integrarse con discreción y
+              funcionar cada día como el primer día. En automatización
+              residencial premium, no hay atajos.
+            </AuthorityText>
+          </Authority>
 
-            <FeatureCard>
-              <FeatureImg src={cortina2} alt="Escenarios programables" />
-              <FeatureTitle>Escenarios programables</FeatureTitle>
-              <FeatureText>
-                Programa acciones según hora, clima o tu rutina diaria.
-              </FeatureText>
-            </FeatureCard>
-          </FeaturesGrid>
-        </FeaturesInner>
-      </FeaturesSection>
+          <ControlGrid>
+            <ControlCard>
+              <ControlTitle>
+                Control absoluto. Solo cuando lo necesitas.
+              </ControlTitle>
+              <ControlText>
+                Desde una única aplicación puedes crear escenas, horarios y
+                ajustes finos. O dejar que el hogar decida por ti. La tecnología
+                está ahí, pero nunca es protagonista. Lo importante es la
+                experiencia: impecable, constante y sin esfuerzo.
+              </ControlText>
+            </ControlCard>
 
-      {/* EXPLANATION */}
-      <ExplanationSection>
-        <ExplanationInner>
-          <ExplanationTitle>¿Por qué automatizar?</ExplanationTitle>
-          <ExplanationText>
-            Con una solución domótica Somfy, tu hogar se anticipa a tus
-            necesidades: las persianas se abren con la luz de la mañana, los
-            toldos se retraen cuando sopla viento y puedes crear escenas
-            personalizadas desde tu móvil.
-          </ExplanationText>
-          <ExplanationText>
-            Todo esto se logra gracias a sensores que responden a sol, viento,
-            lluvia y temperatura, y a un sistema central inteligente que
-            coordina todos tus equipos.
-          </ExplanationText>
-        </ExplanationInner>
-      </ExplanationSection>
+            <ControlAside>
+              <AsideTitle>Detalle</AsideTitle>
+              <AsideText>
+                Diseñamos la automatización como parte del interiorismo: el
+                movimiento debe ser fluido, el sonido casi inexistente y el
+                acabado impecable. No se instala “un sistema”. Se eleva el
+                hogar.
+              </AsideText>
+            </ControlAside>
+          </ControlGrid>
+
+          <Exclusive>
+            <ExclusiveTitle>No es para todo el mundo</ExclusiveTitle>
+            <ExclusiveText>
+              Es para quienes entienden que el verdadero lujo no se exhibe. Se
+              vive. Para hogares donde cada decisión tiene intención. Si buscas
+              algo común, esta no es la solución. Si buscas lo mejor, lo sabrás
+              al instante.
+            </ExclusiveText>
+          </Exclusive>
+        </Inner>
+      </Section>
 
       {/* CTA */}
       <CTASection>
-        <CTATitle>Convierte tu casa en un hogar inteligente</CTATitle>
+        <CTATitle>Automatización diseñada a medida</CTATitle>
         <CTAText>
-          Ponte en contacto con nosotros para evaluar tu proyecto de
-          automatización y descubrir cómo podemos transformar tu confort diario.
+          Cada vivienda es única. Por eso diseñamos soluciones personalizadas
+          según tu arquitectura, orientación, rutinas y estilo de vida. Solicita
+          un asesoramiento privado y descubre cómo se siente vivir en un hogar
+          que piensa por ti.
         </CTAText>
-        <CTAButton href="/contacto">Solicitar asesoramiento</CTAButton>
+        <CTAButton href="/contacto">Solicitar asesoramiento privado</CTAButton>
+        <CTAHint>
+          Respuesta rápida · Propuesta clara · Instalación profesional
+        </CTAHint>
       </CTASection>
     </Page>
   );
