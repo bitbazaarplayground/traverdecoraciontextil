@@ -7,7 +7,8 @@ import heroImg from "../assets/toldos/toldo2.jpg";
    Replace later with real assets
 ========================= */
 import toldoCofreImg from "../assets/toldos/cofre.jpg";
-import hosteleriaImg from "../assets/toldos/hosteleria.jpg";
+import hosteleriaImg from "/src/assets/toldos/hosteleria.jpg";
+
 import pergolaImg from "../assets/toldos/pergola.jpg";
 import toldoExtensibleImg from "../assets/toldos/toldo1.jpeg";
 import toldoVerticalImg from "../assets/toldos/toldos-verticales.jpg";
