@@ -13,6 +13,7 @@ import toldosProteccionSolar from "../assets/servicios/toldoServicios.png";
 const Page = styled.main`
   width: 100%;
   background: #fff;
+  color: #111;
 `;
 
 /* =========================
@@ -20,107 +21,104 @@ const Page = styled.main`
 ========================= */
 
 const Hero = styled.section`
-  padding: 6rem 2rem 5rem;
+  padding: 6.5rem 2rem 3.5rem;
   text-align: center;
 
   @media (max-width: 768px) {
-    padding: 4rem 1.5rem;
+    padding: 5rem 1.5rem 3rem;
   }
 `;
 
+const HeroInner = styled.div`
+  max-width: 980px;
+  margin: 0 auto;
+`;
+
+const Eyebrow = styled.p`
+  margin: 0 0 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: rgba(17, 17, 17, 0.55);
+`;
+
 const HeroTitle = styled.h1`
-  font-size: 3rem;
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 1.2rem;
+  font-size: 3.05rem;
+  font-weight: 650;
+  color: #111;
+  line-height: 1.08;
+  margin: 0 0 1.1rem;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 
   @media (max-width: 768px) {
-    font-size: 2.2rem;
+    font-size: 2.25rem;
   }
 `;
 
 const HeroText = styled.p`
-  max-width: 760px;
+  max-width: 78ch;
   margin: 0 auto;
-  font-size: 1.15rem;
-  line-height: 1.7;
-  color: #555;
+  font-size: 1.12rem;
+  line-height: 1.75;
+  color: rgba(17, 17, 17, 0.68);
 `;
 
 /* =========================
-   SERVICES GRID
+   SECTION
 ========================= */
 
 const Section = styled.section`
-  padding: 5.5rem 2rem;
+  padding: 4.5rem 2rem 6rem;
 
   @media (max-width: 768px) {
-    padding: 3.5rem 1.5rem;
+    padding: 3.2rem 1.5rem 4.5rem;
   }
 `;
 
 const SectionInner = styled.div`
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
 `;
 
+/* =========================
+   SERVICES GRID (PREMIUM)
+========================= */
+
 const ServicesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 3rem;
+  gap: 1.25rem;
 
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
+  @media (min-width: 980px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
   }
 `;
 
-const ServiceCard = styled.div`
+const ServiceCard = styled.article`
   border-radius: 22px;
-  background: #fafafa;
   overflow: hidden;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  background: #fff;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.08);
+  transform: translateY(0);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 34px 95px rgba(0, 0, 0, 0.12);
   }
 `;
 
-const ServiceContent = styled.div`
-  padding: 2.2rem 2.4rem 2.6rem;
-`;
-
-const ServiceTitle = styled.h3`
-  font-size: 1.6rem;
-  font-weight: 600;
-  margin-bottom: 0.8rem;
-  color: #222;
-`;
-
-const ServiceText = styled.p`
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: #555;
-  margin-bottom: 1.6rem;
-`;
-
-const ServiceLink = styled(Link)`
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.primary};
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const ServiceImgWrapper = styled.div`
-  width: 100%;
-  height: 240px;
+const ServiceMedia = styled.div`
+  position: relative;
+  height: 250px;
   overflow: hidden;
 
   @media (max-width: 768px) {
-    height: 200px;
+    height: 210px;
   }
 `;
 
@@ -128,33 +126,203 @@ const ServiceImg = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scale(1.01);
   transition: transform 0.6s ease;
 
   ${ServiceCard}:hover & {
-    transform: scale(1.05);
+    transform: scale(1.06);
+  }
+`;
+
+const MediaOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.02),
+    rgba(0, 0, 0, 0.45)
+  );
+`;
+
+const Badge = styled.div`
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  padding: 0.48rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.9);
+  color: rgba(17, 17, 17, 0.75);
+`;
+
+const ServiceContent = styled.div`
+  padding: 1.8rem 1.8rem 1.7rem;
+
+  @media (max-width: 768px) {
+    padding: 1.55rem 1.45rem 1.45rem;
+  }
+`;
+
+const ServiceTitle = styled.h3`
+  font-size: 1.55rem;
+  font-weight: 700;
+  margin: 0 0 0.6rem;
+  color: #111;
+`;
+
+const ValueLine = styled.p`
+  margin: 0 0 0.95rem;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: rgba(17, 17, 17, 0.8);
+`;
+
+const ServiceText = styled.p`
+  margin: 0 0 1.25rem;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.68);
+`;
+
+const Actions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+`;
+
+const PrimaryCTA = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.15rem;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.06);
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  color: rgba(17, 17, 17, 0.88);
+  font-weight: 750;
+  text-decoration: none;
+  transition: transform 0.25s ease, background 0.25s ease;
+
+  &:hover {
+    background: rgba(17, 17, 17, 0.09);
+    transform: translateY(-1px);
+  }
+`;
+
+const SecondaryCTA = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.15rem;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.primary};
+  color: #0b0c0f;
+  font-weight: 850;
+  text-decoration: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+
+  &:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
   }
 `;
 
 /* =========================
-   HOW WE WORK
+   TRUST STRIP (replaces old Process)
 ========================= */
 
-const Process = styled.section`
-  padding: 5.5rem 2rem;
-  background: #f7f7f7;
+const TrustSection = styled.section`
+  padding: 0 2rem 6.2rem;
+
+  @media (max-width: 768px) {
+    padding: 0 1.5rem 4.8rem;
+  }
 `;
 
-const ProcessGrid = styled.div`
-  max-width: 900px;
+const TrustInner = styled.div`
+  max-width: 1120px;
   margin: 0 auto;
-  display: grid;
-  gap: 2.2rem;
 `;
 
-const ProcessItem = styled.div`
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: #444;
+const TrustCard = styled.div`
+  border-radius: 24px;
+  padding: 2.2rem 2rem;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: #fafafa;
+  display: grid;
+  gap: 1.3rem;
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1.25fr 0.75fr;
+    align-items: center;
+    gap: 1.8rem;
+    padding: 2.4rem 2.3rem;
+  }
+`;
+
+const TrustTitle = styled.h2`
+  font-size: 1.6rem;
+  font-weight: 750;
+  margin: 0 0 0.45rem;
+  color: #111;
+`;
+
+const TrustText = styled.p`
+  margin: 0;
+  color: rgba(17, 17, 17, 0.7);
+  line-height: 1.75;
+`;
+
+const TrustBullets = styled.div`
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.55rem;
+`;
+
+const TrustBullet = styled.p`
+  margin: 0;
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 0.65rem;
+  align-items: start;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: rgba(17, 17, 17, 0.7);
+
+  &::before {
+    content: "✓";
+    font-weight: 900;
+    color: ${({ theme }) => theme.colors.primary};
+    line-height: 1.2;
+  }
+`;
+
+const TrustCTA = styled(Link)`
+  justify-self: start;
+
+  @media (min-width: 980px) {
+    justify-self: end;
+  }
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 1.6rem;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.primary};
+  color: #0b0c0f;
+  font-weight: 900;
+  text-decoration: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+
+  &:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
 `;
 
 /* =========================
@@ -164,35 +332,46 @@ const ProcessItem = styled.div`
 const CTA = styled.section`
   padding: 5.5rem 2rem;
   text-align: center;
+  background: #fff;
+
+  @media (max-width: 768px) {
+    padding: 4.2rem 1.5rem;
+  }
 `;
 
 const CTATitle = styled.h2`
-  font-size: 2.4rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: #222;
+  font-size: 2.35rem;
+  font-weight: 650;
+  margin: 0 0 1rem;
+  color: #111;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const CTAText = styled.p`
-  max-width: 620px;
+  max-width: 70ch;
   margin: 0 auto;
   font-size: 1.05rem;
-  line-height: 1.7;
-  color: #555;
+  line-height: 1.75;
+  color: rgba(17, 17, 17, 0.68);
 `;
 
 const CTAButton = styled(Link)`
-  display: inline-block;
-  margin-top: 2.2rem;
-  padding: 0.9rem 2.4rem;
-  border-radius: 40px;
-  background: ${({ theme }) => theme.colors.primary};
+  display: inline-flex;
+  margin-top: 2.1rem;
+  padding: 0.95rem 2.2rem;
+  border-radius: 999px;
+  background: #111;
   color: #fff;
-  font-weight: 600;
+  font-weight: 850;
   text-decoration: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
 
   &:hover {
-    opacity: 0.85;
+    opacity: 0.92;
+    transform: translateY(-1px);
   }
 `;
 
@@ -205,11 +384,18 @@ export default function Servicios() {
     <Page>
       {/* HERO */}
       <Hero>
-        <HeroText>
-          Diseñamos soluciones de decoración textil y protección solar que
-          combinan estética, confort y tecnología, adaptadas a cada espacio y
-          estilo de vida.
-        </HeroText>
+        <HeroInner>
+          <Eyebrow>Servicios · Decoración textil & protección solar</Eyebrow>
+          <HeroTitle>
+            Diseño, confort y <span>ejecución impecable</span>.
+          </HeroTitle>
+          <HeroText>
+            Diseñamos e instalamos soluciones de decoración textil, protección
+            solar y automatización que se sienten bien desde el primer día.
+            Materiales seleccionados, integración discreta y un resultado
+            coherente con tu espacio.
+          </HeroText>
+        </HeroInner>
       </Hero>
 
       {/* SERVICES */}
@@ -218,116 +404,488 @@ export default function Servicios() {
           <ServicesGrid>
             {/* CORTINAS & ESTORES */}
             <ServiceCard>
-              <ServiceImgWrapper>
-                <ServiceImg
-                  src={cortinasServicios}
-                  alt="Cortinas y estores a medida"
-                />
-              </ServiceImgWrapper>
+              <ServiceMedia>
+                <ServiceImg src={cortinasServicios} alt="Cortinas y estores" />
+                <MediaOverlay />
+                <Badge>Interior</Badge>
+              </ServiceMedia>
 
               <ServiceContent>
                 <ServiceTitle>Cortinas & Estores</ServiceTitle>
+                <ValueLine>
+                  La forma más elegante de controlar luz y privacidad.
+                </ValueLine>
                 <ServiceText>
-                  Proyectos a medida para regular la luz, aportar privacidad y
-                  definir la atmósfera de cada estancia, cuidando tejidos,
-                  sistemas y acabados.
+                  Proyectos a medida para definir la atmósfera de cada estancia:
+                  tejidos, caída, confección y sistemas seleccionados con
+                  criterio.
                 </ServiceText>
-                <ServiceLink to="/cortinas-estores">
-                  Ver cortinas y estores →
-                </ServiceLink>
+
+                <Actions>
+                  <PrimaryCTA to="/cortinas-estores">Ver detalles</PrimaryCTA>
+                  <SecondaryCTA to="/contact">Pedir propuesta</SecondaryCTA>
+                </Actions>
               </ServiceContent>
             </ServiceCard>
 
             {/* TOLDOS */}
             <ServiceCard>
-              <ServiceImgWrapper>
+              <ServiceMedia>
                 <ServiceImg
                   src={toldosProteccionSolar}
                   alt="Toldos y protección solar"
                 />
-              </ServiceImgWrapper>
+                <MediaOverlay />
+                <Badge>Exterior</Badge>
+              </ServiceMedia>
 
               <ServiceContent>
                 <ServiceTitle>Toldos & Protección Solar</ServiceTitle>
+                <ValueLine>
+                  Sombra real, temperatura controlada, exterior utilizable.
+                </ValueLine>
                 <ServiceText>
-                  Soluciones para terrazas, jardines y fachadas que regulan el
-                  calor y la luz en espacios exteriores, combinando
-                  funcionalidad y diseño.
+                  Soluciones sólidas y discretas para terrazas, jardines y
+                  fachadas: confort térmico, durabilidad y estética.
                 </ServiceText>
-                <ServiceLink to="/toldos-proteccionsolar">
-                  Ver protección solar →
-                </ServiceLink>
+
+                <Actions>
+                  <PrimaryCTA to="/toldos-proteccionsolar">
+                    Ver detalles
+                  </PrimaryCTA>
+                  <SecondaryCTA to="/contact">Pedir propuesta</SecondaryCTA>
+                </Actions>
               </ServiceContent>
             </ServiceCard>
 
             {/* AUTOMATIZACIÓN */}
             <ServiceCard>
-              <ServiceImgWrapper>
-                <ServiceImg src={somfyApp} alt="Automatización del hogar" />
-              </ServiceImgWrapper>
+              <ServiceMedia>
+                <ServiceImg src={somfyApp} alt="Automatización Somfy" />
+                <MediaOverlay />
+                <Badge>Smart Home</Badge>
+              </ServiceMedia>
 
               <ServiceContent>
-                <ServiceTitle>Automatización del hogar</ServiceTitle>
+                <ServiceTitle>Automatización Somfy</ServiceTitle>
+                <ValueLine>
+                  El confort se anticipa. Tú mantienes el control.
+                </ValueLine>
                 <ServiceText>
-                  Integración de sistemas inteligentes para cortinas, estores,
-                  toldos e iluminación, que reaccionan automáticamente al
-                  entorno y a tu rutina diaria.
+                  Motores, sensores y control inteligente para cortinas, estores
+                  y toldos. Integración cuidadosa y escenas que encajan con tu
+                  rutina.
                 </ServiceText>
-                <ServiceLink to="/automatizacion">
-                  Ver automatización →
-                </ServiceLink>
+
+                <Actions>
+                  <PrimaryCTA to="/automatizacion">Ver detalles</PrimaryCTA>
+                  <SecondaryCTA to="/contact">Pedir propuesta</SecondaryCTA>
+                </Actions>
               </ServiceContent>
             </ServiceCard>
 
             {/* PROYECTOS A MEDIDA */}
             <ServiceCard>
-              <ServiceImgWrapper>
+              <ServiceMedia>
                 <ServiceImg src={proyecto} alt="Proyectos a medida" />
-              </ServiceImgWrapper>
+                <MediaOverlay />
+                <Badge>Estudio</Badge>
+              </ServiceMedia>
 
               <ServiceContent>
-                <ServiceTitle>Proyectos a medida</ServiceTitle>
+                <ServiceTitle>Proyectos a Medida</ServiceTitle>
+                <ValueLine>Una visión coherente de principio a fin.</ValueLine>
                 <ServiceText>
-                  Asesoramiento personalizado, medición, confección e
-                  instalación. Cada proyecto se adapta a la arquitectura, uso y
-                  necesidades reales del espacio.
+                  Asesoramiento, medición, confección e instalación. Creamos una
+                  línea estética consistente para que todo encaje en tu espacio.
                 </ServiceText>
-                <ServiceLink to="/nosotros">
-                  Solicitar asesoramiento →
-                </ServiceLink>
+
+                <Actions>
+                  <PrimaryCTA to="/propuestas">Ver propuestas</PrimaryCTA>
+                  <SecondaryCTA to="/contact">Hablar con nosotros</SecondaryCTA>
+                </Actions>
               </ServiceContent>
             </ServiceCard>
           </ServicesGrid>
         </SectionInner>
       </Section>
 
-      {/* PROCESS */}
-      <Process>
-        <ProcessGrid>
-          <ProcessItem>
-            <strong>Escuchamos.</strong> Analizamos el espacio, la orientación y
-            la forma de vivirlo.
-          </ProcessItem>
-          <ProcessItem>
-            <strong>Diseñamos.</strong> Proponemos soluciones coherentes con el
-            estilo y las necesidades reales.
-          </ProcessItem>
-          <ProcessItem>
-            <strong>Confeccionamos e instalamos.</strong> Cuidamos cada detalle
-            para que el resultado final funcione y se vea bien.
-          </ProcessItem>
-        </ProcessGrid>
-      </Process>
+      {/* TRUST STRIP */}
+      <TrustSection>
+        <TrustInner>
+          <TrustCard>
+            <div>
+              <TrustTitle>
+                Más de 30 años de oficio. Cero improvisación.
+              </TrustTitle>
+              <TrustText>
+                Un buen resultado no depende solo del producto. Depende del
+                criterio, de la medición y de una instalación limpia. Te
+                orientamos con honestidad y ejecutamos con precisión.
+              </TrustText>
+
+              <TrustBullets>
+                <TrustBullet>
+                  Visita técnica y asesoramiento decorativo
+                </TrustBullet>
+                <TrustBullet>
+                  Instalación profesional, sin sorpresas
+                </TrustBullet>
+                <TrustBullet>
+                  Soluciones para Castellón y alrededores (Valencia según
+                  proyecto)
+                </TrustBullet>
+              </TrustBullets>
+            </div>
+
+            <TrustCTA to="/contact">Solicitar asesoramiento</TrustCTA>
+          </TrustCard>
+        </TrustInner>
+      </TrustSection>
 
       {/* CTA */}
       <CTA>
-        <CTATitle>Te asesoramos en cada detalle</CTATitle>
+        <CTATitle>¿No sabes por dónde empezar?</CTATitle>
         <CTAText>
-          Si no tienes claro qué solución encaja mejor con tu espacio, te
-          acompañamos en todo el proceso para tomar la mejor decisión.
+          Cuéntanos tu espacio y lo que quieres mejorar. Te diremos el mejor
+          punto de partida y te prepararemos una propuesta con criterio.
         </CTAText>
-        <CTAButton to="/contacto">Contactar</CTAButton>
+        <CTAButton to="/contact">Contactar</CTAButton>
       </CTA>
     </Page>
   );
 }
+
+// import { Link } from "react-router-dom";
+// import styled from "styled-components";
+
+// import cortinasServicios from "../assets/servicios/CortinasServicios.png";
+// import proyecto from "../assets/servicios/ProyectoAMedida.png";
+// import somfyApp from "../assets/servicios/app2.png";
+// import toldosProteccionSolar from "../assets/servicios/toldoServicios.png";
+
+// /* =========================
+//    PAGE
+// ========================= */
+
+// const Page = styled.main`
+//   width: 100%;
+//   background: #fff;
+// `;
+
+// /* =========================
+//    HERO
+// ========================= */
+
+// const Hero = styled.section`
+//   padding: 6rem 2rem 5rem;
+//   text-align: center;
+
+//   @media (max-width: 768px) {
+//     padding: 4rem 1.5rem;
+//   }
+// `;
+
+// const HeroTitle = styled.h1`
+//   font-size: 3rem;
+//   font-weight: 600;
+//   color: #222;
+//   margin-bottom: 1.2rem;
+
+//   @media (max-width: 768px) {
+//     font-size: 2.2rem;
+//   }
+// `;
+
+// const HeroText = styled.p`
+//   max-width: 760px;
+//   margin: 0 auto;
+//   font-size: 1.15rem;
+//   line-height: 1.7;
+//   color: #555;
+// `;
+
+// /* =========================
+//    SERVICES GRID
+// ========================= */
+
+// const Section = styled.section`
+//   padding: 5.5rem 2rem;
+
+//   @media (max-width: 768px) {
+//     padding: 3.5rem 1.5rem;
+//   }
+// `;
+
+// const SectionInner = styled.div`
+//   max-width: 1100px;
+//   margin: 0 auto;
+// `;
+
+// const ServicesGrid = styled.div`
+//   display: grid;
+//   grid-template-columns: repeat(2, 1fr);
+//   gap: 3rem;
+
+//   @media (max-width: 900px) {
+//     grid-template-columns: 1fr;
+//   }
+// `;
+
+// const ServiceCard = styled.div`
+//   border-radius: 22px;
+//   background: #fafafa;
+//   overflow: hidden;
+//   transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+//   &:hover {
+//     transform: translateY(-4px);
+//     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+//   }
+// `;
+
+// const ServiceContent = styled.div`
+//   padding: 2.2rem 2.4rem 2.6rem;
+// `;
+
+// const ServiceTitle = styled.h3`
+//   font-size: 1.6rem;
+//   font-weight: 600;
+//   margin-bottom: 0.8rem;
+//   color: #222;
+// `;
+
+// const ServiceText = styled.p`
+//   font-size: 1.05rem;
+//   line-height: 1.7;
+//   color: #555;
+//   margin-bottom: 1.6rem;
+// `;
+
+// const ServiceLink = styled(Link)`
+//   font-weight: 600;
+//   color: ${({ theme }) => theme.colors.primary};
+//   text-decoration: none;
+
+//   &:hover {
+//     text-decoration: underline;
+//   }
+// `;
+
+// const ServiceImgWrapper = styled.div`
+//   width: 100%;
+//   height: 240px;
+//   overflow: hidden;
+
+//   @media (max-width: 768px) {
+//     height: 200px;
+//   }
+// `;
+
+// const ServiceImg = styled.img`
+//   width: 100%;
+//   height: 100%;
+//   object-fit: cover;
+//   transition: transform 0.6s ease;
+
+//   ${ServiceCard}:hover & {
+//     transform: scale(1.05);
+//   }
+// `;
+
+// /* =========================
+//    HOW WE WORK
+// ========================= */
+
+// const Process = styled.section`
+//   padding: 5.5rem 2rem;
+//   background: #f7f7f7;
+// `;
+
+// const ProcessGrid = styled.div`
+//   max-width: 900px;
+//   margin: 0 auto;
+//   display: grid;
+//   gap: 2.2rem;
+// `;
+
+// const ProcessItem = styled.div`
+//   font-size: 1.05rem;
+//   line-height: 1.7;
+//   color: #444;
+// `;
+
+// /* =========================
+//    CTA
+// ========================= */
+
+// const CTA = styled.section`
+//   padding: 5.5rem 2rem;
+//   text-align: center;
+// `;
+
+// const CTATitle = styled.h2`
+//   font-size: 2.4rem;
+//   font-weight: 600;
+//   margin-bottom: 1rem;
+//   color: #222;
+// `;
+
+// const CTAText = styled.p`
+//   max-width: 620px;
+//   margin: 0 auto;
+//   font-size: 1.05rem;
+//   line-height: 1.7;
+//   color: #555;
+// `;
+
+// const CTAButton = styled(Link)`
+//   display: inline-block;
+//   margin-top: 2.2rem;
+//   padding: 0.9rem 2.4rem;
+//   border-radius: 40px;
+//   background: ${({ theme }) => theme.colors.primary};
+//   color: #fff;
+//   font-weight: 600;
+//   text-decoration: none;
+
+//   &:hover {
+//     opacity: 0.85;
+//   }
+// `;
+
+// /* =========================
+//    COMPONENT
+// ========================= */
+
+// export default function Servicios() {
+//   return (
+//     <Page>
+//       {/* HERO */}
+//       <Hero>
+//         <HeroText>
+//           Diseñamos soluciones de decoración textil y protección solar que
+//           combinan estética, confort y tecnología, adaptadas a cada espacio y
+//           estilo de vida.
+//         </HeroText>
+//       </Hero>
+
+//       {/* SERVICES */}
+//       <Section>
+//         <SectionInner>
+//           <ServicesGrid>
+//             {/* CORTINAS & ESTORES */}
+//             <ServiceCard>
+//               <ServiceImgWrapper>
+//                 <ServiceImg
+//                   src={cortinasServicios}
+//                   alt="Cortinas y estores a medida"
+//                 />
+//               </ServiceImgWrapper>
+
+//               <ServiceContent>
+//                 <ServiceTitle>Cortinas & Estores</ServiceTitle>
+//                 <ServiceText>
+//                   Proyectos a medida para regular la luz, aportar privacidad y
+//                   definir la atmósfera de cada estancia, cuidando tejidos,
+//                   sistemas y acabados.
+//                 </ServiceText>
+//                 <ServiceLink to="/cortinas-estores">
+//                   Ver cortinas y estores →
+//                 </ServiceLink>
+//               </ServiceContent>
+//             </ServiceCard>
+
+//             {/* TOLDOS */}
+//             <ServiceCard>
+//               <ServiceImgWrapper>
+//                 <ServiceImg
+//                   src={toldosProteccionSolar}
+//                   alt="Toldos y protección solar"
+//                 />
+//               </ServiceImgWrapper>
+
+//               <ServiceContent>
+//                 <ServiceTitle>Toldos & Protección Solar</ServiceTitle>
+//                 <ServiceText>
+//                   Soluciones para terrazas, jardines y fachadas que regulan el
+//                   calor y la luz en espacios exteriores, combinando
+//                   funcionalidad y diseño.
+//                 </ServiceText>
+//                 <ServiceLink to="/toldos-proteccionsolar">
+//                   Ver protección solar →
+//                 </ServiceLink>
+//               </ServiceContent>
+//             </ServiceCard>
+
+//             {/* AUTOMATIZACIÓN */}
+//             <ServiceCard>
+//               <ServiceImgWrapper>
+//                 <ServiceImg src={somfyApp} alt="Automatización del hogar" />
+//               </ServiceImgWrapper>
+
+//               <ServiceContent>
+//                 <ServiceTitle>Automatización del hogar</ServiceTitle>
+//                 <ServiceText>
+//                   Integración de sistemas inteligentes para cortinas, estores,
+//                   toldos e iluminación, que reaccionan automáticamente al
+//                   entorno y a tu rutina diaria.
+//                 </ServiceText>
+//                 <ServiceLink to="/automatizacion">
+//                   Ver automatización →
+//                 </ServiceLink>
+//               </ServiceContent>
+//             </ServiceCard>
+
+//             {/* PROYECTOS A MEDIDA */}
+//             <ServiceCard>
+//               <ServiceImgWrapper>
+//                 <ServiceImg src={proyecto} alt="Proyectos a medida" />
+//               </ServiceImgWrapper>
+
+//               <ServiceContent>
+//                 <ServiceTitle>Proyectos a medida</ServiceTitle>
+//                 <ServiceText>
+//                   Asesoramiento personalizado, medición, confección e
+//                   instalación. Cada proyecto se adapta a la arquitectura, uso y
+//                   necesidades reales del espacio.
+//                 </ServiceText>
+//                 <ServiceLink to="/nosotros">
+//                   Solicitar asesoramiento →
+//                 </ServiceLink>
+//               </ServiceContent>
+//             </ServiceCard>
+//           </ServicesGrid>
+//         </SectionInner>
+//       </Section>
+
+//       {/* PROCESS */}
+//       <Process>
+//         <ProcessGrid>
+//           <ProcessItem>
+//             <strong>Escuchamos.</strong> Analizamos el espacio, la orientación y
+//             la forma de vivirlo.
+//           </ProcessItem>
+//           <ProcessItem>
+//             <strong>Diseñamos.</strong> Proponemos soluciones coherentes con el
+//             estilo y las necesidades reales.
+//           </ProcessItem>
+//           <ProcessItem>
+//             <strong>Confeccionamos e instalamos.</strong> Cuidamos cada detalle
+//             para que el resultado final funcione y se vea bien.
+//           </ProcessItem>
+//         </ProcessGrid>
+//       </Process>
+
+//       {/* CTA */}
+//       <CTA>
+//         <CTATitle>Te asesoramos en cada detalle</CTATitle>
+//         <CTAText>
+//           Si no tienes claro qué solución encaja mejor con tu espacio, te
+//           acompañamos en todo el proceso para tomar la mejor decisión.
+//         </CTAText>
+//         <CTAButton to="/contacto">Contactar</CTAButton>
+//       </CTA>
+//     </Page>
+//   );
+// }
