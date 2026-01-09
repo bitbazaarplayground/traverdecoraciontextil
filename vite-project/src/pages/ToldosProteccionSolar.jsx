@@ -6,10 +6,8 @@ import heroImg from "../assets/toldos/toldo2.jpg";
    TEMP IMAGES (PLACEHOLDERS)
    Replace later with real assets
 ========================= */
-import {
-  default as hosteleriaImg,
-  default as toldoCofreImg,
-} from "../assets/toldos/cofre.jpg";
+import toldoCofreImg from "../assets/toldos/cofre.jpg";
+import hosteleriaImg from "../assets/toldos/hosteleria.jpg";
 
 import pergolaImg from "../assets/toldos/pergola.jpg";
 import toldoExtensibleImg from "../assets/toldos/toldo1.jpeg";

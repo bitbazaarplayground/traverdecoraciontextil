@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import assesoramiento from "../assets/process/InteriorPlanning.jpeg";
+import catalogo from "../assets/process/catalogoP.png";
+import jose from "../assets/process/instalacionProfessional.png";
 
 /* =========================
    SECTION
@@ -118,26 +121,25 @@ const StepText = styled.p`
 
 const steps = [
   {
-    number: "Paso 01",
+    number: "Paso 1",
     title: "Asesoramiento personalizado",
     text: "Escuchamos tus ideas, necesidades y estilo para ofrecerte soluciones a medida.",
-    image: "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg",
+    image: assesoramiento,
   },
   {
-    number: "Paso 02",
+    number: "Paso 2",
     title: "Selección de materiales",
     text: "Te ayudamos a elegir tejidos, papeles y sistemas que encajen con tu espacio y tu forma de vivir.",
-    image:
-      "https://images.pexels.com/photos/584399/living-room-couch-interior-room-584399.jpeg",
+    image: catalogo,
   },
   {
-    number: "Paso 03",
+    number: "Paso 3",
     title: "Instalación profesional",
     text: "Nuestro equipo se encarga de la instalación con precisión y cuidado, respetando tu hogar.",
-    image: "https://images.pexels.com/photos/5691538/pexels-photo-5691538.jpeg",
+    image: jose,
   },
   {
-    number: "Paso 04",
+    number: "Paso 4",
     title: "Resultado final",
     text: "Un espacio equilibrado, funcional y elegante, pensado para disfrutarlo cada día.",
     image: "https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg",
@@ -166,6 +168,7 @@ export default function Process() {
         {steps.map((step) => (
           <StepCard key={step.number}>
             <StepImage style={{ backgroundImage: `url(${step.image})` }} />
+
             <StepContent>
               <StepNumber>{step.number}</StepNumber>
               <StepTitle>{step.title}</StepTitle>
