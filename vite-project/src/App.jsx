@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import ScrollToTop from "./components/ScrollToTop";
 
 import BrandLogos from "./components/BrandLogos";
 import ContactCTA from "./components/ContactCTA";
@@ -12,12 +13,14 @@ import ServicesSection from "./components/ServicesSection";
 import Automatizacion from "./pages/Automatizacion";
 import ContactPage from "./pages/ContactPage";
 import CortinasEstores from "./pages/CortinasEstores";
+import Propuestas from "./pages/Propuestas";
 import Servicios from "./pages/Servicios";
 import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
 
 function App() {
   return (
     <>
+      <ScrollToTop />
       <Navbar />
 
       <Routes>
@@ -32,7 +35,6 @@ function App() {
               <ContactCTA />
               <GalleryCarousel />
               <BrandLogos />
-              <Footer />
             </>
           }
         />
@@ -40,6 +42,7 @@ function App() {
         {/* CONTACT PAGE */}
 
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/propuestas" element={<Propuestas />} />
 
         <Route path="/automatizacion" element={<Automatizacion />} />
         <Route path="/cortinas-estores" element={<CortinasEstores />} />

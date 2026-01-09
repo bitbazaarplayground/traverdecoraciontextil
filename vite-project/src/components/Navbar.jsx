@@ -41,19 +41,6 @@ const RightWrapper = styled.div`
   align-items: center;
 `;
 
-// LOGO TEXT
-// const Logo = styled.h1`
-//   font-size: 1.4rem;
-//   font-weight: 700;
-//   cursor: pointer;
-
-//   /* ⭐ NEW: Dark text on non-home pages */
-//   color: ${({ $scrolled, $isHome }) =>
-//     !$isHome || $scrolled ? "#111" : "#fff"};
-
-//   transition: color 0.3s ease;
-// `;
-
 const Logo = styled.div`
   display: flex;
   align-items: center;
@@ -177,8 +164,8 @@ export default function Navbar() {
             <StyledLink to="/services" $scrolled={scrolled} $isHome={isHome}>
               Servicios
             </StyledLink>
-            <StyledLink to="/#showroom" $scrolled={scrolled} $isHome={isHome}>
-              Showroom
+            <StyledLink to="/propuestas" $scrolled={scrolled} $isHome={isHome}>
+              Propuestas
             </StyledLink>
             <StyledLink to="/#about" $scrolled={scrolled} $isHome={isHome}>
               Nosotros
@@ -215,7 +202,7 @@ export default function Navbar() {
               transition={{ duration: 0.35 }}
             >
               <MobileLink to="/services">Servicios</MobileLink>
-              <MobileLink to="/showroom">Showroom</MobileLink>
+              <MobileLink to="/propuestas">Propuestas</MobileLink>
               <MobileLink to="/about">Nosotros</MobileLink>
               <MobileLink to="/contact">Contacto</MobileLink>
             </MobileMenu>
