@@ -172,12 +172,8 @@ const ScriptLine = styled(motion.div)`
 
   em {
     font-style: inherit;
-    font-weight: 400;
+    font-weight: 400; /* tiny emphasis */
     color: ${({ theme }) => theme.colors.primary};
-
-    /* makes it feel “written”, not typed */
-    transition: letter-spacing 0.6s ease, opacity 0.6s ease;
-    letter-spacing: -0.02em;
   }
 
   @media (max-width: 768px) {
@@ -294,28 +290,6 @@ export default function Hero() {
     return () => clearInterval(id);
   }, [slides.length]);
 
-  const fullWord = "sienten";
-  const [typed, setTyped] = useState("");
-
-  useEffect(() => {
-    setTyped("");
-
-    let i = 0;
-    const startDelay = 900; // calm, intentional
-    const speed = 180; // slower = more organic
-
-    const start = setTimeout(() => {
-      const interval = setInterval(() => {
-        i += 1;
-        setTyped(fullWord.slice(0, i));
-
-        if (i >= fullWord.length) clearInterval(interval);
-      }, speed);
-    }, startDelay);
-
-    return () => clearTimeout(start);
-  }, []);
-
   return (
     <HeroWrapper>
       {/* Crossfade (no grey flash) */}
@@ -354,7 +328,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.12, ease: "easeOut" }}
         >
-          que se <em>{typed}</em>
+          que se <em>sienten</em>
         </ScriptLine>
 
         <Actions
