@@ -130,28 +130,34 @@ const MicroLine = styled(motion.p)`
 
 const Title = styled(motion.h1)`
   margin: 0;
-
   font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
   font-weight: 300;
   font-style: normal;
-
   text-transform: uppercase;
 
-  font-size: clamp(2.6rem, 6vw, 6.6rem);
-  line-height: 1em;
+  /* Keep it centered and single-line */
+  text-align: center;
+  white-space: nowrap;
 
-  /* premium = air */
+  line-height: 1em;
   letter-spacing: 0.02em;
 
   color: rgba(255, 255, 255, 0.98);
   text-shadow: 0 16px 50px rgba(0, 0, 0, 0.45);
 
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Desktop unchanged */
+  font-size: clamp(2.6rem, 6vw, 6.6rem);
 
+  /* Mobile: scale down enough so it NEVER wraps or clips */
   @media (max-width: 768px) {
-    font-size: clamp(2.2rem, 9vw, 3.45rem);
-    letter-spacing: 0.015em;
+    font-size: clamp(1.55rem, 7.2vw, 3.2rem);
+    letter-spacing: 0.012em;
+  }
+
+  /* Very small phones: one more safety step */
+  @media (max-width: 360px) {
+    font-size: 1.45rem;
+    letter-spacing: 0.01em;
   }
 `;
 
@@ -172,12 +178,8 @@ const ScriptLine = styled(motion.div)`
 
   em {
     font-style: inherit;
-    font-weight: 400;
+    font-weight: 400; /* tiny emphasis */
     color: ${({ theme }) => theme.colors.primary};
-
-    /* makes it feel “written”, not typed */
-    transition: letter-spacing 0.6s ease, opacity 0.6s ease;
-    letter-spacing: -0.02em;
   }
 
   @media (max-width: 768px) {
@@ -235,23 +237,23 @@ const PrimaryButton = styled(Link)`
 `;
 
 /* Optional subtle hint (replaces paragraph) */
-const SubtleNote = styled(motion.p)`
-  margin: 1.15rem 0 0;
-  max-width: 70ch;
+// const SubtleNote = styled(motion.p)`
+//   margin: 1.15rem 0 0;
+//   max-width: 70ch;
 
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
-    "Helvetica Neue", sans-serif;
-  font-size: 0.92rem;
-  line-height: 1.6;
+//   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+//     "Helvetica Neue", sans-serif;
+//   font-size: 0.92rem;
+//   line-height: 1.6;
 
-  color: rgba(255, 255, 255, 0.72);
-  text-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+//   color: rgba(255, 255, 255, 0.72);
+//   text-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 
-  @media (max-width: 768px) {
-    font-size: 0.9rem;
-    max-width: 40ch;
-  }
-`;
+//   @media (max-width: 768px) {
+//     font-size: 0.9rem;
+//     max-width: 40ch;
+//   }
+// `;
 
 /* =========================
    SIMPLE SCROLL INDICATOR
@@ -294,28 +296,6 @@ export default function Hero() {
     return () => clearInterval(id);
   }, [slides.length]);
 
-  const fullWord = "sienten";
-  const [typed, setTyped] = useState("");
-
-  useEffect(() => {
-    setTyped("");
-
-    let i = 0;
-    const startDelay = 900; // calm, intentional
-    const speed = 180; // slower = more organic
-
-    const start = setTimeout(() => {
-      const interval = setInterval(() => {
-        i += 1;
-        setTyped(fullWord.slice(0, i));
-
-        if (i >= fullWord.length) clearInterval(interval);
-      }, speed);
-    }, startDelay);
-
-    return () => clearTimeout(start);
-  }, []);
-
   return (
     <HeroWrapper>
       {/* Crossfade (no grey flash) */}
@@ -348,13 +328,13 @@ export default function Hero() {
         >
           Diseñamos&nbsp;espacios
         </Title>
-
+        {/* Diseñamos&nbsp;espacios */}
         <ScriptLine
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.12, ease: "easeOut" }}
         >
-          que se <em>{typed}</em>
+          que se <em>sienten</em>
         </ScriptLine>
 
         <Actions
@@ -364,14 +344,6 @@ export default function Hero() {
         >
           <PrimaryButton to="/contact">Solicitar asesoramiento</PrimaryButton>
         </Actions>
-
-        <SubtleNote
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.1, delay: 0.32 }}
-        >
-          Proyectos a medida en Castellón y Valencia.
-        </SubtleNote>
       </Content>
 
       <ScrollHint aria-hidden="true" />
