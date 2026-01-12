@@ -1,12 +1,4 @@
-import {
-  ChevronDown,
-  Clock,
-  Mail,
-  MapPin,
-  MessageCircle,
-  Phone,
-  X,
-} from "lucide-react";
+import { Clock, Mail, MapPin, MessageCircle, Phone, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -149,6 +141,27 @@ const PanelText = styled.p`
   color: rgba(17, 17, 17, 0.68);
 `;
 
+const PrimaryCTA = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin: 0.85rem 1.05rem 0;
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+
+  background: ${({ theme }) => theme.colors.primary};
+  color: #0b0c0f;
+  font-weight: 900;
+  text-decoration: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+
+  &:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+`;
+
 const List = styled.div`
   padding: 0.35rem;
   display: grid;
@@ -161,9 +174,9 @@ const ItemBase = `
   justify-content: space-between;
   gap: 1rem;
 
-  width: 100%;
   padding: 1rem 1rem;
   border-radius: 18px;
+  text-decoration: none;
 
   background: rgba(17, 17, 17, 0.03);
   border: 1px solid rgba(17, 17, 17, 0.06);
@@ -178,15 +191,13 @@ const ItemBase = `
 
 const Item = styled.a`
   ${ItemBase}
-  text-decoration: none;
-  cursor: pointer;
 `;
 
 const ItemButton = styled.button`
   ${ItemBase}
+  width: 100%;
   cursor: pointer;
   border: 1px solid rgba(17, 17, 17, 0.06);
-  text-align: left;
 `;
 
 const ItemLeft = styled.div`
@@ -217,21 +228,10 @@ const ItemText = styled.div`
   }
 `;
 
-const RightArrow = styled.div`
+const Arrow = styled.div`
   font-weight: 900;
   color: rgba(17, 17, 17, 0.35);
-`;
-
-const Chevron = styled.div`
-  display: grid;
-  place-items: center;
-  color: rgba(17, 17, 17, 0.38);
   transition: transform 0.2s ease;
-
-  svg {
-    width: 18px;
-    height: 18px;
-  }
 
   transform: ${({ $open }) => ($open ? "rotate(180deg)" : "rotate(0deg)")};
 `;
@@ -247,23 +247,85 @@ const StaticItem = styled.div`
 
   background: rgba(17, 17, 17, 0.03);
   border: 1px solid rgba(17, 17, 17, 0.06);
+
+  ${ItemLeft} svg {
+    color: rgba(17, 17, 17, 0.55);
+  }
+`;
+
+/* =========================
+   INLINE TOGGLE (DESKTOP)
+========================= */
+
+const InlineFormWrap = styled.div`
+  padding: 0.85rem 1.05rem 0;
+`;
+
+const InlineToggle = styled.button`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+
+  background: rgba(17, 17, 17, 0.03);
+  border: 1px solid rgba(17, 17, 17, 0.06);
+
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    background: rgba(17, 17, 17, 0.05);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    display: none; /* mobile uses modal */
+  }
+`;
+
+const InlineToggleLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: rgba(17, 17, 17, 0.55);
+  }
+`;
+
+const InlineToggleText = styled.div`
+  display: grid;
+  gap: 0.2rem;
+  text-align: left;
+
+  span {
+    font-size: 1rem;
+    font-weight: 800;
+    color: rgba(17, 17, 17, 0.9);
+  }
+
+  small {
+    font-size: 0.95rem;
+    color: rgba(17, 17, 17, 0.65);
+  }
 `;
 
 const InlineCollapse = styled.div`
   overflow: hidden;
-  max-height: ${({ $open }) => ($open ? "560px" : "0px")};
+  max-height: ${({ $open }) => ($open ? "520px" : "0px")};
   opacity: ${({ $open }) => ($open ? 1 : 0)};
   transform: ${({ $open }) => ($open ? "translateY(0)" : "translateY(-4px)")};
   transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease;
 
-  /* IMPORTANT: inline collapse only on desktop */
   @media (max-width: 768px) {
     display: none;
   }
-`;
-
-const InlineInner = styled.div`
-  padding: 0.75rem 0.2rem 0.2rem;
 `;
 
 /* =========================
@@ -281,6 +343,7 @@ const ModalOverlay = styled.div`
 
   display: grid;
   place-items: center;
+
   padding: 1.1rem;
 `;
 
@@ -438,14 +501,9 @@ const Submit = styled.button`
     opacity: 0.92;
     transform: translateY(-1px);
   }
-
-  &:disabled {
-    opacity: 0.65;
-    cursor: not-allowed;
-    transform: none;
-  }
 `;
 
+/* Reusable form UI */
 function encode(data) {
   return new URLSearchParams(data).toString();
 }
@@ -460,6 +518,7 @@ function AsesoramientoForm({ onSuccess }) {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
+    // Build a plain object to URL-encode
     const data = { "form-name": "asesoramiento" };
     for (const [key, value] of formData.entries()) data[key] = value;
 
@@ -480,9 +539,16 @@ function AsesoramientoForm({ onSuccess }) {
     }
   }
 
+  // ✅ Success UI
   if (status === "success") {
     return (
-      <div style={{ padding: "0.75rem 0", display: "grid", gap: "0.4rem" }}>
+      <div
+        style={{
+          padding: "0.75rem 0",
+          display: "grid",
+          gap: "0.4rem",
+        }}
+      >
         <strong style={{ fontSize: "1rem", color: "rgba(17,17,17,0.92)" }}>
           Gracias por contactarnos.
         </strong>
@@ -496,7 +562,8 @@ function AsesoramientoForm({ onSuccess }) {
   return (
     <>
       <FormHint>
-        <em>Déjanos tus datos y te respondemos lo antes posible.</em>
+        Déjanos tus datos y te respondemos lo antes posible (normalmente en el
+        mismo día laborable).
       </FormHint>
 
       <Form
@@ -569,7 +636,9 @@ export default function ContactPage() {
   const [isMobile, setIsMobile] = useState(false);
   const [inlineOpen, setInlineOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [status, setStatus] = useState("idle");
 
+  // Detect mobile (<= 768px)
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 768px)");
     const apply = () => setIsMobile(mq.matches);
@@ -585,6 +654,7 @@ export default function ContactPage() {
     };
   }, []);
 
+  // Close modal on ESC + lock scroll
   useEffect(() => {
     if (!modalOpen) return;
 
@@ -622,6 +692,7 @@ export default function ContactPage() {
         </Header>
 
         <Grid>
+          {/* MAP */}
           <MapCard>
             <MapTop>
               <MapTitle>Visítanos</MapTitle>
@@ -644,6 +715,7 @@ export default function ContactPage() {
             </MapFrame>
           </MapCard>
 
+          {/* CONTACT PANEL */}
           <Panel>
             <PanelTop>
               <PanelTitle>Asesoramiento privado</PanelTitle>
@@ -653,13 +725,19 @@ export default function ContactPage() {
               </PanelText>
             </PanelTop>
 
-            <List>
-              {/* ONE crisp “Formulario” row (desktop inline / mobile modal) */}
-              <ItemButton
+            {/* Desktop inline toggle */}
+            <div>
+              <Item
+                as="button"
                 type="button"
-                onClick={openForm}
-                aria-expanded={!isMobile ? inlineOpen : undefined}
-                aria-controls={!isMobile ? "asesoramiento-inline" : undefined}
+                onClick={() => setInlineOpen((v) => !v)}
+                aria-expanded={inlineOpen}
+                aria-controls="asesoramiento-inline"
+                style={{
+                  width: "100%",
+                  cursor: "pointer",
+                  textAlign: "left",
+                }}
               >
                 <ItemLeft>
                   <Mail />
@@ -669,26 +747,23 @@ export default function ContactPage() {
                   </ItemText>
                 </ItemLeft>
 
-                {/* Desktop: chevron rotates, Mobile: show right arrow */}
-                {isMobile ? (
-                  <RightArrow>→</RightArrow>
-                ) : (
-                  <Chevron $open={inlineOpen}>
-                    <ChevronDown />
-                  </Chevron>
-                )}
-              </ItemButton>
+                <Arrow $open={inlineOpen}>⌄</Arrow>
+              </Item>
 
               <InlineCollapse id="asesoramiento-inline" $open={inlineOpen}>
-                <InlineInner>
+                <div style={{ paddingTop: "0.85rem" }}>
                   <AsesoramientoForm
                     onSuccess={() =>
                       setTimeout(() => setInlineOpen(false), 1200)
                     }
                   />
-                </InlineInner>
+                </div>
               </InlineCollapse>
+            </div>
 
+            {/* </InlineFormWrap> */}
+
+            <List>
               <Item href="tel:+34964562357">
                 <ItemLeft>
                   <Phone />
@@ -697,9 +772,25 @@ export default function ContactPage() {
                     <small>+34 964 56 23 57</small>
                   </ItemText>
                 </ItemLeft>
-                <RightArrow>→</RightArrow>
+                <Arrow>→</Arrow>
               </Item>
 
+              {/* Mobile: open modal form from the list item */}
+              <ItemButton
+                type="button"
+                onClick={openForm}
+                aria-label="Abrir formulario de asesoramiento"
+                style={{ display: isMobile ? "flex" : "none" }}
+              >
+                <ItemLeft>
+                  <Mail />
+                  <ItemText>
+                    <span>Formulario</span>
+                    <small>Envíanos tu consulta</small>
+                  </ItemText>
+                </ItemLeft>
+                <Arrow>→</Arrow>
+              </ItemButton>
               <Item
                 href="https://wa.me/34647856817"
                 target="_blank"
@@ -712,7 +803,7 @@ export default function ContactPage() {
                     <small>Respuesta rápida</small>
                   </ItemText>
                 </ItemLeft>
-                <RightArrow>→</RightArrow>
+                <Arrow>→</Arrow>
               </Item>
 
               <StaticItem>
@@ -723,7 +814,7 @@ export default function ContactPage() {
                     <small>L–V: 9:30–14:00, 17:00–19:00</small>
                   </ItemText>
                 </ItemLeft>
-                <RightArrow />
+                <Arrow />
               </StaticItem>
 
               <Item
@@ -738,7 +829,7 @@ export default function ContactPage() {
                     <small>Carrer de Sant Felip, 67 · Almassora</small>
                   </ItemText>
                 </ItemLeft>
-                <RightArrow>→</RightArrow>
+                <Arrow>→</Arrow>
               </Item>
             </List>
 
@@ -749,6 +840,7 @@ export default function ContactPage() {
                 aria-modal="true"
                 aria-label="Formulario de asesoramiento"
                 onMouseDown={(e) => {
+                  // click outside closes
                   if (e.target === e.currentTarget) setModalOpen(false);
                 }}
               >
@@ -765,11 +857,7 @@ export default function ContactPage() {
                   </ModalTop>
 
                   <ModalBody>
-                    <AsesoramientoForm
-                      onSuccess={() =>
-                        setTimeout(() => setModalOpen(false), 1200)
-                      }
-                    />
+                    <AsesoramientoForm />
                   </ModalBody>
                 </ModalCard>
               </ModalOverlay>
