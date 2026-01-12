@@ -757,7 +757,7 @@ export default function ContactPage() {
                   <Phone />
                   <ItemText>
                     <span>Teléfono</span>
-                    <small>(+34) 964 56 23 57</small>
+                    <small>+34 964 56 23 57</small>
                   </ItemText>
                 </ItemLeft>
                 <Arrow>→</Arrow>
