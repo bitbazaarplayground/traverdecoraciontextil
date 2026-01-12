@@ -1,4 +1,5 @@
-import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Clock, Mail, MapPin, MessageCircle, Phone, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Page = styled.main`
@@ -140,13 +141,34 @@ const PanelText = styled.p`
   color: rgba(17, 17, 17, 0.68);
 `;
 
+const PrimaryCTA = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin: 0.85rem 1.05rem 0;
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+
+  background: ${({ theme }) => theme.colors.primary};
+  color: #0b0c0f;
+  font-weight: 900;
+  text-decoration: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+
+  &:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+`;
+
 const List = styled.div`
   padding: 0.35rem;
   display: grid;
   gap: 0.35rem;
 `;
 
-const Item = styled.a`
+const ItemBase = `
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -165,6 +187,17 @@ const Item = styled.a`
     background: rgba(17, 17, 17, 0.05);
     transform: translateY(-1px);
   }
+`;
+
+const Item = styled.a`
+  ${ItemBase}
+`;
+
+const ItemButton = styled.button`
+  ${ItemBase}
+  width: 100%;
+  cursor: pointer;
+  border: 1px solid rgba(17, 17, 17, 0.06);
 `;
 
 const ItemLeft = styled.div`
@@ -217,19 +250,248 @@ const StaticItem = styled.div`
   }
 `;
 
-const PrimaryCTA = styled.a`
+/* =========================
+   INLINE TOGGLE (DESKTOP)
+========================= */
+
+const InlineFormWrap = styled.div`
+  padding: 0.85rem 1.05rem 0;
+`;
+
+const InlineToggle = styled.button`
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+
+  background: rgba(17, 17, 17, 0.03);
+  border: 1px solid rgba(17, 17, 17, 0.06);
+
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    background: rgba(17, 17, 17, 0.05);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    display: none; /* mobile uses modal */
+  }
+`;
+
+const InlineToggleLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: rgba(17, 17, 17, 0.55);
+  }
+`;
+
+const InlineToggleText = styled.div`
+  display: grid;
+  gap: 0.2rem;
+  text-align: left;
+
+  span {
+    font-size: 1rem;
+    font-weight: 800;
+    color: rgba(17, 17, 17, 0.9);
+  }
+
+  small {
+    font-size: 0.95rem;
+    color: rgba(17, 17, 17, 0.65);
+  }
+`;
+
+const InlineCollapse = styled.div`
+  overflow: hidden;
+  max-height: ${({ $open }) => ($open ? "520px" : "0px")};
+  opacity: ${({ $open }) => ($open ? 1 : 0)};
+  transform: ${({ $open }) => ($open ? "translateY(0)" : "translateY(-4px)")};
+  transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+/* =========================
+   MODAL (MOBILE)
+========================= */
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  display: grid;
+  place-items: center;
+
+  padding: 1.1rem;
+`;
+
+const ModalCard = styled.div`
+  width: min(560px, 100%);
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+`;
+
+const ModalTop = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding: 1.05rem 1.05rem 0.9rem;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+`;
+
+const ModalTitle = styled.h3`
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #111;
+`;
+
+const CloseButton = styled.button`
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  background: rgba(17, 17, 17, 0.03);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    color: rgba(17, 17, 17, 0.7);
+  }
+`;
+
+const ModalBody = styled.div`
+  padding: 1rem 1.05rem 1.1rem;
+`;
+
+/* =========================
+   FORM (NETLIFY)
+========================= */
+
+const FormHint = styled.p`
+  margin: 0 0 0.85rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(17, 17, 17, 0.62);
+`;
+
+const Form = styled.form`
+  display: grid;
+  gap: 0.75rem;
+`;
+
+const Row = styled.div`
+  display: grid;
+  gap: 0.7rem;
+
+  @media (min-width: 520px) {
+    grid-template-columns: 1fr 1fr;
+  }
+`;
+
+const Field = styled.label`
+  display: grid;
+  gap: 0.35rem;
+
+  span {
+    font-size: 0.86rem;
+    font-weight: 750;
+    color: rgba(17, 17, 17, 0.78);
+  }
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.9rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: rgba(17, 17, 17, 0.02);
+  outline: none;
+  font-size: 0.95rem;
+
+  &:focus {
+    border-color: rgba(17, 17, 17, 0.22);
+    background: rgba(17, 17, 17, 0.03);
+  }
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: 0.9rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: rgba(17, 17, 17, 0.02);
+  outline: none;
+  font-size: 0.95rem;
+
+  &:focus {
+    border-color: rgba(17, 17, 17, 0.22);
+    background: rgba(17, 17, 17, 0.03);
+  }
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 0.9rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: rgba(17, 17, 17, 0.02);
+  outline: none;
+  font-size: 0.95rem;
+  min-height: 120px;
+  resize: vertical;
+
+  &:focus {
+    border-color: rgba(17, 17, 17, 0.22);
+    background: rgba(17, 17, 17, 0.03);
+  }
+`;
+
+const Submit = styled.button`
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  gap: 0.65rem;
-  margin: 0.85rem;
-  padding: 1rem 1.1rem;
-  border-radius: 999px;
+
+  padding: 1rem 1.05rem;
+  border-radius: 14px;
+  border: 0;
 
   background: ${({ theme }) => theme.colors.primary};
   color: #0b0c0f;
+
   font-weight: 900;
-  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+
+  cursor: pointer;
   transition: transform 0.25s ease, opacity 0.25s ease;
 
   &:hover {
@@ -238,7 +500,180 @@ const PrimaryCTA = styled.a`
   }
 `;
 
+/* Reusable form UI */
+function encode(data) {
+  return new URLSearchParams(data).toString();
+}
+
+function AsesoramientoForm({ onSuccess }) {
+  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setStatus("loading");
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    // Build a plain object to URL-encode
+    const data = {};
+    for (const [key, value] of formData.entries()) data[key] = value;
+
+    try {
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encode(data),
+      });
+
+      if (!res.ok) throw new Error("Network response was not ok");
+
+      setStatus("success");
+      form.reset();
+      if (onSuccess) onSuccess();
+    } catch (err) {
+      setStatus("error");
+    }
+  }
+
+  // ✅ Success UI
+  if (status === "success") {
+    return (
+      <div
+        style={{
+          padding: "0.75rem 0",
+          display: "grid",
+          gap: "0.4rem",
+        }}
+      >
+        <strong style={{ fontSize: "1rem", color: "rgba(17,17,17,0.92)" }}>
+          Gracias por contactarnos.
+        </strong>
+        <p style={{ margin: 0, color: "rgba(17,17,17,0.65)", lineHeight: 1.6 }}>
+          Hemos recibido tu mensaje y te responderemos lo antes posible.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <FormHint>
+        Déjanos tus datos y te respondemos lo antes posible (normalmente en el
+        mismo día laborable).
+      </FormHint>
+
+      <Form
+        name="asesoramiento"
+        method="POST"
+        data-netlify="true"
+        data-netlify-honeypot="bot-field"
+        onSubmit={handleSubmit}
+      >
+        <input type="hidden" name="form-name" value="asesoramiento" />
+        <input type="hidden" name="bot-field" />
+
+        <Row>
+          <Field>
+            <span>Nombre</span>
+            <Input name="nombre" required autoComplete="name" />
+          </Field>
+
+          <Field>
+            <span>Teléfono / WhatsApp</span>
+            <Input
+              name="telefono"
+              required
+              autoComplete="tel"
+              inputMode="tel"
+            />
+          </Field>
+        </Row>
+
+        <Row>
+          <Field>
+            <span>Email (opcional)</span>
+            <Input name="email" type="email" autoComplete="email" />
+          </Field>
+
+          <Field>
+            <span>Preferencia de contacto</span>
+            <Select name="preferencia" defaultValue="WhatsApp">
+              <option value="WhatsApp">WhatsApp</option>
+              <option value="Llamada">Llamada</option>
+              <option value="Email">Email</option>
+            </Select>
+          </Field>
+        </Row>
+
+        <Field>
+          <span>Mensaje</span>
+          <TextArea
+            name="mensaje"
+            required
+            placeholder="Cuéntanos qué necesitas (tipo de estancia, medidas aproximadas, estilo, domótica, etc.)"
+          />
+        </Field>
+
+        <Submit type="submit" disabled={status === "loading"}>
+          {status === "loading" ? "Enviando..." : "Enviar solicitud"}
+        </Submit>
+
+        {status === "error" && (
+          <p style={{ margin: 0, color: "rgba(180, 30, 30, 0.85)" }}>
+            No se pudo enviar. Por favor, inténtalo de nuevo o usa WhatsApp.
+          </p>
+        )}
+      </Form>
+    </>
+  );
+}
+
 export default function ContactPage() {
+  const [isMobile, setIsMobile] = useState(false);
+  const [inlineOpen, setInlineOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [status, setStatus] = useState("idle");
+
+  // Detect mobile (<= 768px)
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const apply = () => setIsMobile(mq.matches);
+    apply();
+
+    const handler = () => apply();
+    if (mq.addEventListener) mq.addEventListener("change", handler);
+    else mq.addListener(handler);
+
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", handler);
+      else mq.removeListener(handler);
+    };
+  }, []);
+
+  // Close modal on ESC + lock scroll
+  useEffect(() => {
+    if (!modalOpen) return;
+
+    const onKey = (e) => {
+      if (e.key === "Escape") setModalOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [modalOpen]);
+
+  const openForm = () => {
+    if (isMobile) setModalOpen(true);
+    else setInlineOpen((v) => !v);
+  };
+
   return (
     <Page>
       <Wrap>
@@ -283,18 +718,38 @@ export default function ContactPage() {
               <PanelTitle>Asesoramiento privado</PanelTitle>
               <PanelText>
                 Si quieres una respuesta rápida, WhatsApp es lo más cómodo.
-                También puedes llamarnos o escribirnos por email.
+                También puedes llamarnos o, si lo prefieres, usar el formulario.
               </PanelText>
             </PanelTop>
 
-            <PrimaryCTA
-              href="https://wa.me/34647856817"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Contactar por WhatsApp"
-            >
-              <MessageCircle /> Escribir por WhatsApp
-            </PrimaryCTA>
+            {/* Desktop inline toggle */}
+            <InlineFormWrap>
+              <InlineToggle
+                type="button"
+                onClick={openForm}
+                aria-expanded={inlineOpen}
+                aria-controls="asesoramiento-inline"
+              >
+                <InlineToggleLeft>
+                  <Mail />
+                  <InlineToggleText>
+                    <span>Formulario</span>
+                    <small>Envíanos tu consulta</small>
+                  </InlineToggleText>
+                </InlineToggleLeft>
+                <Arrow>→</Arrow>
+              </InlineToggle>
+
+              <InlineCollapse id="asesoramiento-inline" $open={inlineOpen}>
+                <div style={{ paddingTop: "0.85rem" }}>
+                  <AsesoramientoForm
+                    onSuccess={() =>
+                      setTimeout(() => setModalOpen(false), 1200)
+                    }
+                  />
+                </div>
+              </InlineCollapse>
+            </InlineFormWrap>
 
             <List>
               <Item href="tel:+34964562357">
@@ -308,12 +763,32 @@ export default function ContactPage() {
                 <Arrow>→</Arrow>
               </Item>
 
-              <Item href="mailto:info@traverdecoracion.com">
+              {/* Mobile: open modal form from the list item */}
+              <ItemButton
+                type="button"
+                onClick={openForm}
+                aria-label="Abrir formulario de asesoramiento"
+                style={{ display: isMobile ? "flex" : "none" }}
+              >
                 <ItemLeft>
                   <Mail />
                   <ItemText>
-                    <span>Email</span>
-                    <small>info@traverdecoracion.com</small>
+                    <span>Formulario</span>
+                    <small>Envíanos tu consulta</small>
+                  </ItemText>
+                </ItemLeft>
+                <Arrow>→</Arrow>
+              </ItemButton>
+              <Item
+                href="https://wa.me/34647856817"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ItemLeft>
+                  <MessageCircle />
+                  <ItemText>
+                    <span>WhatsApp</span>
+                    <small>Respuesta rápida</small>
                   </ItemText>
                 </ItemLeft>
                 <Arrow>→</Arrow>
@@ -345,6 +820,36 @@ export default function ContactPage() {
                 <Arrow>→</Arrow>
               </Item>
             </List>
+
+            {/* Mobile modal */}
+            {modalOpen && (
+              <ModalOverlay
+                role="dialog"
+                aria-modal="true"
+                aria-label="Formulario de asesoramiento"
+                onMouseDown={(e) => {
+                  // click outside closes
+                  if (e.target === e.currentTarget) setModalOpen(false);
+                }}
+              >
+                <ModalCard>
+                  <ModalTop>
+                    <ModalTitle>Solicitar asesoramiento</ModalTitle>
+                    <CloseButton
+                      type="button"
+                      onClick={() => setModalOpen(false)}
+                      aria-label="Cerrar"
+                    >
+                      <X />
+                    </CloseButton>
+                  </ModalTop>
+
+                  <ModalBody>
+                    <AsesoramientoForm />
+                  </ModalBody>
+                </ModalCard>
+              </ModalOverlay>
+            )}
           </Panel>
         </Grid>
       </Wrap>
