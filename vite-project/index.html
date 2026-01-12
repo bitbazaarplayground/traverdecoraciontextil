@@ -9,9 +9,27 @@
       rel="stylesheet"
     />
 
-    <title>vite-project</title>
+    <title>Traver Decoración Textil</title>
   </head>
   <body>
+    <!-- Netlify Forms: build-time form detection -->
+    <form name="asesoramiento" netlify netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="asesoramiento" />
+      <p hidden>
+        <label> Don’t fill this out: <input name="bot-field" /> </label>
+      </p>
+
+      <input type="text" name="nombre" />
+      <input type="text" name="telefono" />
+      <input type="email" name="email" />
+      <select name="preferencia">
+        <option value="WhatsApp">WhatsApp</option>
+        <option value="Llamada">Llamada</option>
+        <option value="Email">Email</option>
+      </select>
+      <textarea name="mensaje"></textarea>
+    </form>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

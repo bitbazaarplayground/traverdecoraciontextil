@@ -516,7 +516,7 @@ function AsesoramientoForm({ onSuccess }) {
     const formData = new FormData(form);
 
     // Build a plain object to URL-encode
-    const data = {};
+    const data = { "form-name": "asesoramiento" };
     for (const [key, value] of formData.entries()) data[key] = value;
 
     try {
