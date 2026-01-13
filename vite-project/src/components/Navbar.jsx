@@ -27,7 +27,6 @@ const Nav = styled.nav`
     !$isHome || $scrolled ? "0 2px 10px rgba(0,0,0,0.1)" : "none"};
 
   transition: background 0.3s ease, box-shadow 0.3s ease;
-  z-index: 1000;
 `;
 
 const LeftWrapper = styled.div`
@@ -51,6 +50,17 @@ const Logo = styled.div`
     width: auto;
     transition: height 0.25s ease;
   }
+`;
+const NavWrap = styled.header`
+  position: sticky; /* or fixed */
+  top: 0;
+  z-index: 1000;
+
+  transition: transform 240ms ease, opacity 240ms ease;
+  transform: ${({ $hidden }) =>
+    $hidden ? "translateY(-110%)" : "translateY(0)"};
+  opacity: ${({ $hidden }) => ($hidden ? 0 : 1)};
+  pointer-events: ${({ $hidden }) => ($hidden ? "none" : "auto")};
 `;
 
 // DESKTOP LINKS
@@ -127,7 +137,7 @@ const MobileLink = styled(RouterLink)`
   }
 `;
 
-export default function Navbar() {
+export default function Navbar({ hidden }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -144,46 +154,52 @@ export default function Navbar() {
 
   return (
     <>
-      <Nav $scrolled={scrolled} $isHome={isHome}>
-        <LeftWrapper>
-          {!isHome && (
-            <Logo
-              as={Link}
-              to="/"
+      <NavWrap $hidden={hidden}>
+        <Nav $scrolled={scrolled} $isHome={isHome}>
+          <LeftWrapper>
+            {!isHome && (
+              <Logo
+                as={Link}
+                to="/"
+                $scrolled={scrolled}
+                $isHome={isHome}
+                aria-label="Volver a inicio"
+              >
+                <img src={logo} alt="Traver logo" />
+              </Logo>
+            )}
+          </LeftWrapper>
+
+          <RightWrapper>
+            <DesktopLinks>
+              <StyledLink to="/services" $scrolled={scrolled} $isHome={isHome}>
+                Servicios
+              </StyledLink>
+              <StyledLink
+                to="/propuestas"
+                $scrolled={scrolled}
+                $isHome={isHome}
+              >
+                Propuestas
+              </StyledLink>
+              <StyledLink to="/#about" $scrolled={scrolled} $isHome={isHome}>
+                Nosotros
+              </StyledLink>
+              <StyledLink to="/contact" $scrolled={scrolled} $isHome={isHome}>
+                Contacto
+              </StyledLink>
+            </DesktopLinks>
+
+            <MenuButton
               $scrolled={scrolled}
               $isHome={isHome}
-              aria-label="Volver a inicio"
+              onClick={() => setMenuOpen(true)}
             >
-              <img src={logo} alt="Traver logo" />
-            </Logo>
-          )}
-        </LeftWrapper>
-
-        <RightWrapper>
-          <DesktopLinks>
-            <StyledLink to="/services" $scrolled={scrolled} $isHome={isHome}>
-              Servicios
-            </StyledLink>
-            <StyledLink to="/propuestas" $scrolled={scrolled} $isHome={isHome}>
-              Propuestas
-            </StyledLink>
-            <StyledLink to="/#about" $scrolled={scrolled} $isHome={isHome}>
-              Nosotros
-            </StyledLink>
-            <StyledLink to="/contact" $scrolled={scrolled} $isHome={isHome}>
-              Contacto
-            </StyledLink>
-          </DesktopLinks>
-
-          <MenuButton
-            $scrolled={scrolled}
-            $isHome={isHome}
-            onClick={() => setMenuOpen(true)}
-          >
-            ☰
-          </MenuButton>
-        </RightWrapper>
-      </Nav>
+              ☰
+            </MenuButton>
+          </RightWrapper>
+        </Nav>
+      </NavWrap>
 
       <AnimatePresence>
         {menuOpen && (

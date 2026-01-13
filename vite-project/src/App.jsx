@@ -1,7 +1,6 @@
+import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import ScrollToTop from "./components/ScrollToTop";
-
 import BrandLogos from "./components/BrandLogos";
 import ContactCTA from "./components/ContactCTA";
 import Footer from "./components/Footer";
@@ -9,6 +8,7 @@ import GalleryCarousel from "./components/GalleryCarousel";
 import Hero from "./components/Hero";
 import Navbar from "./components/Navbar";
 import Process from "./components/Process";
+import ScrollToTop from "./components/ScrollToTop";
 import ServicesSection from "./components/ServicesSection";
 import Automatizacion from "./pages/Automatizacion";
 import ContactPage from "./pages/ContactPage";
@@ -18,6 +18,7 @@ import Servicios from "./pages/Servicios";
 import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
 
 function App() {
+  const [overlayOpen, setOverlayOpen] = useState(false);
   return (
     <>
       <ScrollToTop />
@@ -38,7 +39,10 @@ function App() {
             </>
           }
         />
-
+        <Route
+          path="/propuestas"
+          element={<Propuestas setOverlayOpen={setOverlayOpen} />}
+        />
         {/* CONTACT PAGE */}
 
         <Route path="/contact" element={<ContactPage />} />
