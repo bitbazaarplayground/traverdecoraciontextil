@@ -1,6 +1,9 @@
 // src/pages/Propuestas.jsx
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import AsesoramientoForm from "../components/AsesoramientoForm";
+import AsesoramientoModal from "../components/AsesoramientoModal";
 
 /* =========================
    QUICK ASSETS (placeholders)
@@ -594,11 +597,52 @@ const FAQBody = styled.p`
   font-size: 0.98rem;
 `;
 
+const InlineFormWrap = styled.div`
+  margin-top: 0.9rem;
+  padding: 1rem 1rem 1.15rem;
+  border-radius: 18px;
+  background: rgba(17, 17, 17, 0.02);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+`;
+
+const ContextPill = styled.div`
+  margin-bottom: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+
+  background: rgba(17, 17, 17, 0.05);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+
+  font-size: 0.85rem;
+  color: rgba(17, 17, 17, 0.7);
+
+  strong {
+    color: rgba(17, 17, 17, 0.9);
+    font-weight: 800;
+  }
+`;
+
 /* =========================
    COMPONENT
 ========================= */
 
 export default function Propuestas() {
+  const [openPack, setOpenPack] = useState(null); // "dormitorio" | "salon" | "automatizacion" | null
+  const [modalPack, setModalPack] = useState(null); // string | null
+
+  const packLabel =
+    openPack === "dormitorio"
+      ? "Dormitorio"
+      : openPack === "salon"
+      ? "Salón / Comedor"
+      : openPack === "automatizacion"
+      ? "Confort + Automatización"
+      : null;
+
   return (
     <Page>
       {/* HERO */}
@@ -668,10 +712,26 @@ export default function Propuestas() {
               </PackBody>
               <PackFooter>
                 <Note>Perfecto para: dormitorio principal o juvenil</Note>
-                <PackCTA to="/contact?pack=dormitorio">
+                <PackCTA
+                  as="button"
+                  type="button"
+                  onClick={() => setModalPack("Dormitorio")}
+                >
                   Solicitar propuesta
                 </PackCTA>
               </PackFooter>
+              {openPack === "dormitorio" && (
+                <InlineFormWrap>
+                  <ContextPill>
+                    Solicitud: <strong>Dormitorio</strong>
+                  </ContextPill>
+
+                  <AsesoramientoForm
+                    packLabel="Dormitorio"
+                    onSuccess={() => setTimeout(() => setOpenPack(null), 1200)}
+                  />
+                </InlineFormWrap>
+              )}
             </PackCard>
 
             {/* SALÓN / COMEDOR */}
@@ -700,8 +760,26 @@ export default function Propuestas() {
               </PackBody>
               <PackFooter>
                 <Note>Perfecto para: salón y comedor integrados</Note>
-                <PackCTA to="/contact?pack=salon">Ver propuesta</PackCTA>
+                <PackCTA
+                  as="button"
+                  type="button"
+                  onClick={() => setModalPack("Salón / Comedor")}
+                >
+                  Ver propuesta
+                </PackCTA>
               </PackFooter>
+              {openPack === "salon" && (
+                <InlineFormWrap>
+                  <ContextPill>
+                    Solicitud: <strong>Salón / Comedor</strong>
+                  </ContextPill>
+
+                  <AsesoramientoForm
+                    packLabel="Salón / Comedor"
+                    onSuccess={() => setTimeout(() => setOpenPack(null), 1200)}
+                  />
+                </InlineFormWrap>
+              )}
             </PackCard>
 
             {/* CONFORT + AUTOMATIZACIÓN */}
@@ -730,10 +808,26 @@ export default function Propuestas() {
               </PackBody>
               <PackFooter>
                 <Note>Perfecto para: vivienda completa o reforma integral</Note>
-                <PackCTA to="/contact?pack=automatizacion">
+                <PackCTA
+                  as="button"
+                  type="button"
+                  onClick={() => setModalPack("Confort + Automatización")}
+                >
                   Asesoramiento
                 </PackCTA>
               </PackFooter>
+              {openPack === "automatizacion" && (
+                <InlineFormWrap>
+                  <ContextPill>
+                    Solicitud: <strong>Confort + Automatización</strong>
+                  </ContextPill>
+
+                  <AsesoramientoForm
+                    packLabel="Confort + Automatización"
+                    onSuccess={() => setTimeout(() => setOpenPack(null), 1200)}
+                  />
+                </InlineFormWrap>
+              )}
             </PackCard>
           </PacksGrid>
           <AdjustNote>
@@ -886,6 +980,11 @@ export default function Propuestas() {
           </FAQGrid>
         </LightInner>
       </LightSection>
+      <AsesoramientoModal
+        open={!!modalPack}
+        packLabel={modalPack}
+        onClose={() => setModalPack(null)}
+      />
     </Page>
   );
 }
