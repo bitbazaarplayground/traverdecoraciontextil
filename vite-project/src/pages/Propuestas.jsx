@@ -22,6 +22,14 @@ const imgToldos =
 const imgAuto =
   "https://images.unsplash.com/photo-1505691723518-36a5ac3b2f33?auto=format&fit=crop&w=2000&q=80";
 
+// Tiles
+const imgDormitorio =
+  "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=2000&q=80";
+const imgCocina =
+  "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=2000&q=80";
+const imgBano =
+  "https://images.unsplash.com/photo-1600566753190-17f0baa2a6d5?auto=format&fit=crop&w=2000&q=80";
+
 /* =========================
    PAGE
 ========================= */
@@ -287,6 +295,29 @@ const PackDesc = styled.p`
   color: rgba(17, 17, 17, 0.68);
   margin: 0 0 1.15rem 0;
 `;
+const PackPrice = styled.p`
+  margin: 0 0 0.85rem 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: rgba(17, 17, 17, 0.92);
+
+  span {
+    font-weight: 650;
+    font-size: 0.92rem;
+    color: rgba(17, 17, 17, 0.55);
+    margin-right: 0.35rem;
+  }
+`;
+
+const AdjustNote = styled.p`
+  margin: 1.35rem auto 0;
+  max-width: 80ch;
+  text-align: center;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: rgba(17, 17, 17, 0.62);
+`;
 
 const TickList = styled.ul`
   margin: 0;
@@ -387,7 +418,7 @@ const LeadDark = styled.p`
 
 const Tiles = styled.div`
   display: grid;
-  gap: 1.2rem;
+  gap: 1.1rem;
 
   @media (min-width: 980px) {
     grid-template-columns: repeat(3, 1fr);
@@ -611,78 +642,101 @@ export default function Propuestas() {
           </CenterHeader>
 
           <PacksGrid>
-            {/* ESSENTIAL */}
+            {/* DORMITORIO */}
             <PackCard>
               <PackMedia style={{ backgroundImage: `url(${imgEssential})` }}>
-                <PackBadge>Esencial</PackBadge>
+                <PackBadge>Dormitorio</PackBadge>
               </PackMedia>
               <PackBody>
-                <PackTitle>Mejora visible, sin complicaciones</PackTitle>
+                <PackTitle>Descanso bien resuelto</PackTitle>
+                <PackPrice>
+                  <span>Desde</span>499€
+                </PackPrice>
                 <PackDesc>
-                  Un salto inmediato en estética y confort. Ideal para empezar
-                  con una estancia y sentir el cambio.
+                  Un dormitorio donde todo encaja: luz, textura y descanso.
+                  Diseñamos un ambiente sereno y funcional, pensado para dormir
+                  mejor y disfrutarlo cada día.
                 </PackDesc>
                 <TickList>
                   <Tick>Visita técnica y toma de medidas</Tick>
-                  <Tick>Recomendación de tejidos/sistemas</Tick>
-                  <Tick>Instalación limpia y precisa</Tick>
-                  <Tick>Acabado profesional y ajuste final</Tick>
+                  <Tick>Cortinas o estor a medida</Tick>
+                  <Tick>Papel pintado para pared principal</Tick>
+                  <Tick>Cabecero o solución textil coordinada</Tick>
+                  <Tick>Opción de colchón según necesidades</Tick>
+                  <Tick>Instalación profesional y ajuste final</Tick>
                 </TickList>
               </PackBody>
               <PackFooter>
-                <Note>Perfecto para: 1 estancia</Note>
-                <PackCTA to="/contact">Quiero empezar</PackCTA>
+                <Note>Perfecto para: dormitorio principal o juvenil</Note>
+                <PackCTA to="/contact">Solicitar propuesta</PackCTA>
               </PackFooter>
             </PackCard>
 
-            {/* BALANCE */}
+            {/* SALÓN / COMEDOR */}
             <PackCard>
               <PackMedia style={{ backgroundImage: `url(${imgBalance})` }}>
-                <PackBadge>Equilibrio perfecto</PackBadge>
+                <PackBadge>Salón / Comedor</PackBadge>
               </PackMedia>
               <PackBody>
-                <PackTitle>Diseño + funcionalidad, bien medidos</PackTitle>
+                <PackTitle>Espacio que se vive</PackTitle>
+                <PackPrice>
+                  <span>Desde</span>799€
+                </PackPrice>
                 <PackDesc>
-                  Para quienes quieren calidad y coherencia en todo el espacio,
-                  con una elección guiada y sin ruido.
+                  El corazón de la casa merece equilibrio entre estética y uso
+                  real. Creamos un conjunto coherente que mejora la luz, el
+                  confort térmico y la sensación de hogar.
                 </PackDesc>
                 <TickList>
-                  <Tick>Asesoramiento decorativo (armonía y caída)</Tick>
-                  <Tick>Selección de materiales y sistemas</Tick>
-                  <Tick>Opción de motorización (según producto)</Tick>
-                  <Tick>Revisión final y puesta a punto</Tick>
+                  <Tick>Asesoramiento decorativo global</Tick>
+                  <Tick>Cortinas y/o estores a medida</Tick>
+                  <Tick>Papel pintado para pared focal</Tick>
+                  <Tick>Alfombra decorativa coordinada</Tick>
+                  <Tick>Sistemas de control solar según orientación</Tick>
+                  <Tick>Instalación limpia y precisa</Tick>
                 </TickList>
               </PackBody>
               <PackFooter>
-                <Note>Perfecto para: salón + dormitorio</Note>
+                <Note>Perfecto para: salón y comedor integrados</Note>
                 <PackCTA to="/contact">Ver propuesta</PackCTA>
               </PackFooter>
             </PackCard>
 
-            {/* COMFORT */}
+            {/* CONFORT + AUTOMATIZACIÓN */}
             <PackCard>
               <PackMedia style={{ backgroundImage: `url(${imgComfort})` }}>
-                <PackBadge>Comfort total</PackBadge>
+                <PackBadge>Confort + Automatización</PackBadge>
               </PackMedia>
               <PackBody>
-                <PackTitle>La experiencia completa, sin concesiones</PackTitle>
+                <PackTitle>La casa funciona sola</PackTitle>
+                <PackPrice>
+                  <span>Desde</span>1.490€
+                </PackPrice>
                 <PackDesc>
-                  Para hogares exigentes: integración discreta, automatización y
-                  un acabado que parece de obra… pero es precisión.
+                  Confort sin esfuerzo. Integración discreta y tecnología que se
+                  adapta a tu ritmo, no al revés. Una experiencia completa de
+                  control, luz y privacidad.
                 </PackDesc>
                 <TickList>
-                  <Tick>Visita técnica + asesoramiento decorativo</Tick>
-                  <Tick>Sistemas motorizados de alta gama</Tick>
-                  <Tick>Control por app / escenas (según solución)</Tick>
-                  <Tick>Mantenimiento y soporte prioritario</Tick>
+                  <Tick>Estudio técnico y asesoramiento completo</Tick>
+                  <Tick>Cortinas y estores motorizados</Tick>
+                  <Tick>Toldos motorizados (si aplica)</Tick>
+                  <Tick>Automatización Somfy y escenas personalizadas</Tick>
+                  <Tick>Control por app, mando o programaciones</Tick>
+                  <Tick>Puesta en marcha y soporte post-instalación</Tick>
                 </TickList>
               </PackBody>
               <PackFooter>
-                <Note>Perfecto para: vivienda completa</Note>
+                <Note>Perfecto para: vivienda completa o reforma integral</Note>
                 <PackCTA to="/contact">Asesoramiento</PackCTA>
               </PackFooter>
             </PackCard>
           </PacksGrid>
+          <AdjustNote>
+            Se puede ajustar: estas propuestas son un punto de partida.
+            Adaptamos medidas, tejidos, sistemas y acabados según tu espacio,
+            disponibilidad y presupuesto.
+          </AdjustNote>
         </LightInner>
       </LightSection>
 
@@ -698,41 +752,70 @@ export default function Propuestas() {
           </DarkHeader>
 
           <Tiles>
-            <Tile to="/cortinas-estores" aria-label="Ir a Cortinas y Estores">
+            <Tile to="/cortinas-estores" aria-label="Dormitorio">
+              <TileBg style={{ backgroundImage: `url(${imgDormitorio})` }} />
+              <TileOverlay />
+              <TileBody>
+                <TileTitle>Dormitorio</TileTitle>
+                <TileText>
+                  Privacidad, descanso y caída perfecta. La mejora más
+                  inmediata.
+                </TileText>
+              </TileBody>
+            </Tile>
+
+            <Tile to="/cortinas-estores" aria-label="Salón">
               <TileBg style={{ backgroundImage: `url(${imgCortinas})` }} />
               <TileOverlay />
               <TileBody>
-                <TileTitle>Cortinas & Estores</TileTitle>
+                <TileTitle>Salón</TileTitle>
                 <TileText>
-                  Texturas, caída y luz. El cambio más inmediato en cómo se
-                  siente una casa.
+                  Luz, textura y coherencia estética. Donde más se vive la casa.
                 </TileText>
               </TileBody>
             </Tile>
 
-            <Tile
-              to="/toldos-proteccionsolar"
-              aria-label="Ir a Toldos y Protección Solar"
-            >
+            <Tile to="/cortinas-estores" aria-label="Cocina">
+              <TileBg style={{ backgroundImage: `url(${imgCocina})` }} />
+              <TileOverlay />
+              <TileBody>
+                <TileTitle>Cocina</TileTitle>
+                <TileText>
+                  Screen, estores y soluciones fáciles de mantener para el día a
+                  día.
+                </TileText>
+              </TileBody>
+            </Tile>
+
+            <Tile to="/cortinas-estores" aria-label="Baño">
+              <TileBg style={{ backgroundImage: `url(${imgBano})` }} />
+              <TileOverlay />
+              <TileBody>
+                <TileTitle>Baño</TileTitle>
+                <TileText>
+                  Privacidad sin perder luz. Materiales pensados para humedad.
+                </TileText>
+              </TileBody>
+            </Tile>
+
+            <Tile to="/cortinas-estores" aria-label="Habitación infantil">
+              <TileBg style={{ backgroundImage: `url(${imgBalance})` }} />
+              <TileOverlay />
+              <TileBody>
+                <TileTitle>Infantil / Juvenil</TileTitle>
+                <TileText>
+                  Oscuridad, seguridad y tejidos resistentes. Fácil de vivir.
+                </TileText>
+              </TileBody>
+            </Tile>
+
+            <Tile to="/toldos-proteccionsolar" aria-label="Exterior">
               <TileBg style={{ backgroundImage: `url(${imgToldos})` }} />
               <TileOverlay />
               <TileBody>
-                <TileTitle>Toldos & Protección solar</TileTitle>
+                <TileTitle>Exterior</TileTitle>
                 <TileText>
-                  Sombra, temperatura y uso real del exterior. Con instalación
-                  sólida y discreta.
-                </TileText>
-              </TileBody>
-            </Tile>
-
-            <Tile to="/automatizacion" aria-label="Ir a Automatización">
-              <TileBg style={{ backgroundImage: `url(${imgAuto})` }} />
-              <TileOverlay />
-              <TileBody>
-                <TileTitle>Automatización Somfy</TileTitle>
-                <TileText>
-                  Cuando el confort se anticipa. Control fino sin perder el
-                  mando.
+                  Sombra, temperatura y uso real de terraza o balcón.
                 </TileText>
               </TileBody>
             </Tile>
