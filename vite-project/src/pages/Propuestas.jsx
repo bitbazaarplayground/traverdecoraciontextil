@@ -668,7 +668,9 @@ export default function Propuestas() {
               </PackBody>
               <PackFooter>
                 <Note>Perfecto para: dormitorio principal o juvenil</Note>
-                <PackCTA to="/contact">Solicitar propuesta</PackCTA>
+                <PackCTA to="/contact?pack=dormitorio">
+                  Solicitar propuesta
+                </PackCTA>
               </PackFooter>
             </PackCard>
 
@@ -698,7 +700,7 @@ export default function Propuestas() {
               </PackBody>
               <PackFooter>
                 <Note>Perfecto para: salón y comedor integrados</Note>
-                <PackCTA to="/contact">Ver propuesta</PackCTA>
+                <PackCTA to="/contact?pack=salon">Ver propuesta</PackCTA>
               </PackFooter>
             </PackCard>
 
@@ -728,7 +730,9 @@ export default function Propuestas() {
               </PackBody>
               <PackFooter>
                 <Note>Perfecto para: vivienda completa o reforma integral</Note>
-                <PackCTA to="/contact">Asesoramiento</PackCTA>
+                <PackCTA to="/contact?pack=automatizacion">
+                  Asesoramiento
+                </PackCTA>
               </PackFooter>
             </PackCard>
           </PacksGrid>

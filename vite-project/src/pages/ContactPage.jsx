@@ -8,6 +8,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 const Page = styled.main`
@@ -133,6 +134,26 @@ const Panel = styled.aside`
 const PanelTop = styled.div`
   padding: 1.35rem 1.3rem 1.1rem;
   border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+`;
+const ContextPill = styled.div`
+  margin-top: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+
+  background: rgba(17, 17, 17, 0.05);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+
+  font-size: 0.85rem;
+  color: rgba(17, 17, 17, 0.7);
+
+  strong {
+    color: rgba(17, 17, 17, 0.9);
+    font-weight: 800;
+  }
 `;
 
 const PanelTitle = styled.h2`
@@ -450,7 +471,7 @@ function encode(data) {
   return new URLSearchParams(data).toString();
 }
 
-function AsesoramientoForm({ onSuccess }) {
+function AsesoramientoForm({ onSuccess, packLabel }) {
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
 
   async function handleSubmit(e) {
@@ -508,6 +529,11 @@ function AsesoramientoForm({ onSuccess }) {
       >
         <input type="hidden" name="form-name" value="asesoramiento" />
         <input type="hidden" name="bot-field" />
+        <input
+          type="hidden"
+          name="pack"
+          value={packLabel || "Sin especificar"}
+        />
 
         <Row>
           <Field>
@@ -569,6 +595,18 @@ export default function ContactPage() {
   const [isMobile, setIsMobile] = useState(false);
   const [inlineOpen, setInlineOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const location = useLocation();
+
+  const packLabel = (() => {
+    const params = new URLSearchParams(location.search);
+    const pack = params.get("pack");
+
+    if (pack === "dormitorio") return "Dormitorio";
+    if (pack === "salon") return "Salón / Comedor";
+    if (pack === "automatizacion") return "Confort + Automatización";
+    return null;
+  })();
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 768px)");
@@ -651,6 +689,11 @@ export default function ContactPage() {
                 Si quieres una respuesta rápida, WhatsApp es lo más cómodo.
                 También puedes llamarnos o, si lo prefieres, usar el formulario.
               </PanelText>
+              {packLabel && (
+                <ContextPill>
+                  Solicitud: <strong>{packLabel}</strong>
+                </ContextPill>
+              )}
             </PanelTop>
 
             <List>
@@ -682,6 +725,7 @@ export default function ContactPage() {
               <InlineCollapse id="asesoramiento-inline" $open={inlineOpen}>
                 <InlineInner>
                   <AsesoramientoForm
+                    packLabel={packLabel}
                     onSuccess={() =>
                       setTimeout(() => setInlineOpen(false), 1200)
                     }
@@ -766,8 +810,9 @@ export default function ContactPage() {
 
                   <ModalBody>
                     <AsesoramientoForm
+                      packLabel={packLabel}
                       onSuccess={() =>
-                        setTimeout(() => setModalOpen(false), 1200)
+                        setTimeout(() => setInlineOpen(false), 1200)
                       }
                     />
                   </ModalBody>
