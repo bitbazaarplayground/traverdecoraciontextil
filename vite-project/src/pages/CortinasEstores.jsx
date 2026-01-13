@@ -41,7 +41,7 @@ const Hero = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 5rem;
+  margin-top: 3.5rem;
   padding: 5rem 2rem;
   text-align: center;
   color: white;

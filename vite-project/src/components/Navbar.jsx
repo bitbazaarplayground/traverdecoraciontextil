@@ -9,7 +9,8 @@ const Nav = styled.nav`
   position: fixed;
   top: 0;
   width: 100%;
-  padding: 1.2rem 2rem;
+
+  padding: ${({ $isHome }) => ($isHome ? "1.2rem 2rem" : "0.70rem 2rem")};
 
   display: flex;
   justify-content: space-between;
@@ -46,15 +47,22 @@ const Logo = styled.div`
   cursor: pointer;
 
   img {
-    height: ${({ $scrolled }) => ($scrolled ? "34px" : "42px")};
+    height: ${({ $scrolled, $isHome }) =>
+      $isHome ? ($scrolled ? "34px" : "42px") : "34px"};
     width: auto;
     transition: height 0.25s ease;
   }
 `;
+
 const NavWrap = styled.header`
-  position: sticky; /* or fixed */
+  position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
   z-index: 1000;
+
+  /* One source of truth */
+  --header-h: ${({ $isHome }) => ($isHome ? "84px" : "72px")};
 
   transition: transform 240ms ease, opacity 240ms ease;
   transform: ${({ $hidden }) =>
@@ -154,7 +162,7 @@ export default function Navbar({ hidden }) {
 
   return (
     <>
-      <NavWrap $hidden={hidden}>
+      <NavWrap $hidden={hidden} $isHome={isHome}>
         <Nav $scrolled={scrolled} $isHome={isHome}>
           <LeftWrapper>
             {!isHome && (
