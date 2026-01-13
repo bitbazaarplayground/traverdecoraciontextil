@@ -31,7 +31,7 @@ const Hero = styled.section`
   position: relative;
   min-height: 45vh; /* matches your other pages */
   display: flex;
-  margin-top: 5rem;
+  margin-top: 3.5rem;
   align-items: center; /* center like your original */
   justify-content: center;
   text-align: center;

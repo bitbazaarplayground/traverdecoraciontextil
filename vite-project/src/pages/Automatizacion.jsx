@@ -32,10 +32,10 @@ const Hero = styled.section`
   justify-content: center;
   padding: 6rem 2rem 4.5rem;
   overflow: hidden;
-  margin-top: 0.5rem;
+  margin-top: 0rem;
 
   @media (max-width: 768px) {
-    margin-top: 1.5rem;
+    margin-top: 0rem;
     min-height: 42vh;
     min-height: 42svh;
     padding: 4rem 1.5rem 3rem;
@@ -48,10 +48,29 @@ const HeroVideo = styled.video`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
-  transform: scale(1.04);
+
+  /* Shift crop slightly upward so bottom watermark stays out */
+  object-position: center 22%;
+
+  /* Base zoom */
+  transform: scale(1.06);
   filter: saturate(0.95) contrast(1.05);
   z-index: 0;
+
+  /* Larger screens: zoom in more so watermark never appears */
+  @media (min-width: 1320px) {
+    transform: scale(1.12);
+  }
+  @media (min-width: 1400px) {
+    transform: scale(1.15);
+  }
+
+  @media (min-width: 1600px) {
+    transform: scale(1.18);
+  }
+  @media (min-width: 1800px) {
+    transform: scale(1.22);
+  }
 `;
 
 const HeroOverlay = styled.div`
@@ -171,7 +190,7 @@ const Sheet = styled.section`
   color: #111;
   border-top-left-radius: 34px;
   border-top-right-radius: 34px;
-  margin-top: -2.2rem; /* sits over hero */
+  margin-top: -1rem; /* sits over hero */
   position: relative;
   z-index: 5;
   box-shadow: 0 -18px 60px rgba(0, 0, 0, 0.35);
