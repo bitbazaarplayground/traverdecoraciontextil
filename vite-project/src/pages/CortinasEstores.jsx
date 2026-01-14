@@ -186,10 +186,10 @@ const CTA = styled.section`
 `;
 
 const CTATitle = styled.h2`
-  font-size: 2.4rem;
+  font-size: 2.2rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #222;
+  color: #121212;
 `;
 
 const CTAText = styled.p`
@@ -260,7 +260,7 @@ const EnfoqueInner = styled.div`
 const EnfoqueTitle = styled.h2`
   font-size: 2.2rem;
   font-weight: 600;
-  color: #222;
+  color: #121212;
   margin-bottom: 1rem;
 
   @media (max-width: 768px) {
@@ -330,9 +330,9 @@ const FabricsHeader = styled.div`
 `;
 
 const FabricsTitle = styled.h2`
-  font-size: 2.3rem;
+  font-size: 2.2rem;
   font-weight: 600;
-  color: #222;
+  color: #121212;
   margin-bottom: 1.2rem;
 
   span {
