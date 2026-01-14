@@ -74,10 +74,13 @@ const Eyebrow = styled.p`
 
 const Title = styled.h2`
   margin: 0 0 0.9rem;
-  font-size: 2.35rem;
-  font-weight: 650;
-  letter-spacing: -0.2px;
+  font-size: 2.2rem;
+  font-weight: 600;
+  text-align: center;
   color: #111;
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 
   @media (max-width: 768px) {
     font-size: 1.95rem;
@@ -254,7 +257,9 @@ export default function ServiceSection() {
       <Inner>
         <Header>
           <Eyebrow>Servicios</Eyebrow>
-          <Title>Soluciones a medida, con resultado impecable</Title>
+          <Title>
+            <span>Soluciones</span> a medida, con resultado impecable
+          </Title>
           <Intro>
             Interior y exterior. Tejidos, sistemas y automatización elegidos con
             criterio, medidos con precisión e instalados con un acabado limpio.
