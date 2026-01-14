@@ -193,8 +193,8 @@ const CenterHeader = styled.div`
 `;
 
 const H2 = styled.h2`
-  font-size: 2.35rem;
-  font-weight: 650;
+  font-size: 2.2rem;
+  font-weight: 600;
   color: #121212;
   margin: 0 0 0.8rem 0;
 
@@ -245,17 +245,6 @@ const PackMedia = styled.div`
   background-size: cover;
   background-position: center;
   position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.05),
-      rgba(0, 0, 0, 0.55)
-    );
-  }
 `;
 
 const PackBadge = styled.div`
@@ -398,8 +387,8 @@ const DarkHeader = styled.div`
 `;
 
 const H2Dark = styled.h2`
-  font-size: 2.35rem;
-  font-weight: 650;
+  font-size: 2.2rem;
+  font-weight: 600;
   margin: 0 0 0.8rem 0;
 `;
 
@@ -444,18 +433,18 @@ const TileBg = styled.div`
   inset: 0;
   background-size: cover;
   background-position: center;
-  filter: saturate(0.95) contrast(1.05);
+
   transform: scale(1.02);
 `;
 
 const TileOverlay = styled.div`
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(11, 12, 15, 0.15),
-    rgba(11, 12, 15, 0.9)
-  );
+  // background: linear-gradient(
+  //   to bottom,
+  //   rgba(11, 12, 15, 0.1),
+  //   rgba(11, 12, 15, 0.1)
+  // );
 `;
 
 const TileBody = styled.div`

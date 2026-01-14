@@ -12,6 +12,15 @@ import pergolaImg from "../assets/toldos/pergola.jpg";
 import toldoExtensibleImg from "../assets/toldos/toldo1.jpeg";
 import toldoVerticalImg from "../assets/toldos/toldos-verticales.jpg";
 import sailImg from "../assets/toldos/vela.webp";
+import AwningAccessories from "../components/toldos/AwningAccessories";
+/* =========================
+   IMAGES EXTRAS TOLDOS
+========================= */
+import lightSensor from "../assets/toldos/extrasToldo/LightSensor.webp";
+import calentador from "../assets/toldos/extrasToldo/calentador.webp";
+import tahoma from "../assets/toldos/extrasToldo/tahoma.webp";
+import toldoLED from "../assets/toldos/extrasToldo/toldoLED.webp";
+import windSensor from "../assets/toldos/extrasToldo/windSensor.webp";
 
 /* =========================
    PAGE
@@ -579,6 +588,43 @@ export default function ToldosProteccionSolar() {
           </Grid>
         </SectionInner>
       </Section>
+      <AwningAccessories
+        title="Accesorios premium para tu toldo"
+        subtitle="Sensores, iluminación y confort para una terraza perfecta."
+        items={[
+          {
+            key: "smart",
+            title: "Tecnología inteligente",
+            description: "Automatiza tu toldo con control avanzado.",
+            image: tahoma,
+            size: "big",
+          },
+          {
+            key: "led",
+            title: "LED ambiente",
+            description: "Luz cálida integrada para noches exteriores.",
+            image: toldoLED,
+          },
+          {
+            key: "wind",
+            title: "Sensor de viento",
+            description: "Se recoge automáticamente ante rachas.",
+            image: windSensor,
+          },
+          {
+            key: "heat",
+            title: "Calefacción",
+            description: "Confort exterior incluso en invierno.",
+            image: calentador,
+          },
+          {
+            key: "sun",
+            title: "Sensor solar",
+            description: "Se adapta a la intensidad de la luz.",
+            image: lightSensor,
+          },
+        ]}
+      />
 
       {/* CTA BAND */}
       <CTABand>
