@@ -9,29 +9,20 @@ import AsesoramientoModal from "../components/AsesoramientoModal";
    QUICK ASSETS (placeholders)
    Replace later with your real photography
 ========================= */
+import imgEssential from "../assets/propuestas/dormitorioMain.png";
+import imgBalance from "../assets/propuestas/salonComedor.png";
+
 const imgHero =
   "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=2400&q=80";
-const imgComfort =
-  "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=2000&q=80";
-const imgBalance =
-  "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=2000&q=80";
-const imgEssential =
-  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=2000&q=80";
-
-const imgCortinas =
-  "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=2000&q=80";
-const imgToldos =
-  "https://images.unsplash.com/photo-1523413651479-597eb2da0ad6?auto=format&fit=crop&w=2000&q=80";
-const imgAuto =
-  "https://images.unsplash.com/photo-1505691723518-36a5ac3b2f33?auto=format&fit=crop&w=2000&q=80";
 
 // Tiles
-const imgDormitorio =
-  "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=2000&q=80";
-const imgCocina =
-  "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=2000&q=80";
-const imgBano =
-  "https://images.unsplash.com/photo-1600566753190-17f0baa2a6d5?auto=format&fit=crop&w=2000&q=80";
+import imgBano from "../assets/propuestas/bathroomMain.png";
+import imgDormitorio from "../assets/propuestas/bedroomMain.png";
+import imgCocina from "../assets/propuestas/cocinaMain.png";
+import imgInfantil from "../assets/propuestas/infantilMain.png";
+import imgSalon from "../assets/propuestas/livingroomMain.png";
+import imgFuncionaSola from "../assets/propuestas/smartLivingRoom.png";
+import imgToldos from "../assets/propuestas/terrazaMain.png";
 
 /* =========================
    PAGE
@@ -784,7 +775,7 @@ export default function Propuestas() {
 
             {/* CONFORT + AUTOMATIZACIÓN */}
             <PackCard>
-              <PackMedia style={{ backgroundImage: `url(${imgComfort})` }}>
+              <PackMedia style={{ backgroundImage: `url(${imgFuncionaSola})` }}>
                 <PackBadge>Confort + Automatización</PackBadge>
               </PackMedia>
               <PackBody>
@@ -863,7 +854,7 @@ export default function Propuestas() {
             </Tile>
 
             <Tile to="/cortinas-estores" aria-label="Salón">
-              <TileBg style={{ backgroundImage: `url(${imgCortinas})` }} />
+              <TileBg style={{ backgroundImage: `url(${imgSalon})` }} />
               <TileOverlay />
               <TileBody>
                 <TileTitle>Salón</TileTitle>
@@ -897,7 +888,7 @@ export default function Propuestas() {
             </Tile>
 
             <Tile to="/cortinas-estores" aria-label="Habitación infantil">
-              <TileBg style={{ backgroundImage: `url(${imgBalance})` }} />
+              <TileBg style={{ backgroundImage: `url(${imgInfantil})` }} />
               <TileOverlay />
               <TileBody>
                 <TileTitle>Infantil / Juvenil</TileTitle>
