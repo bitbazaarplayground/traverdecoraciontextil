@@ -576,25 +576,39 @@ export default function Automatizacion() {
               imageAlt="Ejemplo de automatización: luz, toldo, persianas, cortinas y control desde el móvil"
               items={[
                 {
+                  icon: "toldo",
                   strong: "1× Toldo motorizado",
-                  text: "con mando / app (según medidas)",
-                },
-                { strong: "1× Cortina motorizada", text: "+ barra / riel" },
-                {
-                  strong: "1× Estor enrollable tipo screen",
-                  text: "(privacidad + control solar)",
+                  text: "Mando / app (según medidas)",
                 },
                 {
-                  strong: "3× puntos de luz inteligentes",
-                  text: "(escenas y horarios)",
+                  icon: "cortina",
+                  strong: "1× Cortina motorizada",
+                  text: "Barra / riel incluido",
                 },
                 {
-                  strong: "App / control remoto",
-                  text: "+ configuración de escenas básicas",
+                  icon: "persiana",
+                  strong: "1× Estor tipo screen",
+                  text: "Control solar + privacidad",
                 },
                 {
-                  strong: "Instalación profesional certificada",
-                  text: "+ puesta en marcha",
+                  icon: "luz",
+                  strong: "3× Luz inteligente",
+                  text: "Escenas y horarios",
+                },
+                {
+                  icon: "app",
+                  strong: "App + control",
+                  text: "Configuración inicial incluida",
+                },
+                {
+                  icon: "instalacion",
+                  strong: "Instalación certificada",
+                  text: "Puesta en marcha y entrega",
+                },
+                {
+                  icon: "sensores",
+                  strong: "Sensores (opcional)",
+                  text: "Sol / viento / temperatura",
                 },
               ]}
               finePrint="*El precio final depende de medidas, tejidos elegidos, número de motores y si se añaden sensores de sol/viento/temperatura."
