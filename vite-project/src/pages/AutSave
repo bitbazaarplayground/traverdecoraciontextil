@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import AutomatizacionEstimate from "../components/automatizacion/AutomatizacionEstimate";
 
 /* =========================
    ASSETS
@@ -7,8 +8,9 @@ import benefit1 from "../assets/Automatizacion/benefit1.png";
 import domoticaControl from "../assets/Automatizacion/domotica1.png";
 import programaHorarios from "../assets/Automatizacion/programa.png";
 import vacaciones from "../assets/Automatizacion/vacaciones.png";
-// import automatizacionPackImg from "../assets/propuestas/smartHome.png";
 import heroVideo from "../assets/video1.mp4";
+
+import automatizacionPackImg from "../assets/Automatizacion/smartHom1.png";
 /* =========================
    PAGE
 ========================= */
@@ -258,6 +260,14 @@ const Pill = styled.div`
   font-size: 0.95rem;
   color: rgba(17, 17, 17, 0.78);
 `;
+const FullBleed = styled.div`
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+`;
 
 /* =========================
    CONTROL (NOW PREMIUM: 2 COLS)
@@ -322,40 +332,6 @@ const MiniText = styled.p`
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.6;
-  color: rgba(17, 17, 17, 0.65);
-`;
-
-/* =========================
-   PRICE ANCHOR (PREMIUM)
-========================= */
-
-const PriceCard = styled.div`
-  margin-top: 1.8rem;
-  border-radius: 22px;
-  padding: 1.8rem;
-  background: radial-gradient(
-      900px 300px at 20% 0%,
-      rgba(0, 0, 0, 0.03),
-      transparent 60%
-    ),
-    rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-`;
-
-const PriceBig = styled.div`
-  font-size: 2rem;
-  font-weight: 750;
-  margin: 0.35rem 0 0.6rem 0;
-
-  span {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-const PriceSmall = styled.p`
-  margin: 0;
-  font-size: 0.98rem;
-  line-height: 1.65;
   color: rgba(17, 17, 17, 0.65);
 `;
 
@@ -598,19 +574,55 @@ export default function Automatizacion() {
                 </MiniText>
               </MiniCard>
             </MiniGrid>
-
-            <PriceCard>
-              <Kicker>Orientativo</Kicker>
-              <PriceBig>
-                Desde <span>~3.500€</span>
-              </PriceBig>
-              <PriceSmall>
-                Un sistema completo para automatizar varios elementos (por
-                ejemplo, cortinas + persianas + toldo) puede comenzar desde
-                aproximadamente esa cifra, según medidas, tejidos y número de
-                motores. Te aconsejamos la opción más equilibrada para tu hogar.
-              </PriceSmall>
-            </PriceCard>
+            <FullBleed>
+              <AutomatizacionEstimate
+                KickerComponent={Kicker}
+                kicker="Orientativo"
+                priceText="Desde"
+                priceValue="~3.500€"
+                description="Un sistema completo para automatizar varios elementos (por ejemplo, cortinas + persianas + toldo) puede comenzar desde aproximadamente esa cifra, según medidas, tejidos y número de motores. Te aconsejamos la opción más equilibrada para tu hogar."
+                imageSrc={automatizacionPackImg}
+                imageAlt="Ejemplo de automatización: luz, toldo, persianas, cortinas y control desde el móvil"
+                items={[
+                  {
+                    icon: "toldo",
+                    strong: "1× Toldo motorizado",
+                    text: "Mando / app (según medidas)",
+                  },
+                  {
+                    icon: "cortina",
+                    strong: "1× Cortina motorizada",
+                    text: "Barra / riel incluido",
+                  },
+                  {
+                    icon: "persiana",
+                    strong: "1× Estor tipo screen",
+                    text: "Control solar + privacidad",
+                  },
+                  {
+                    icon: "luz",
+                    strong: "3× Luz inteligente",
+                    text: "Escenas y horarios",
+                  },
+                  {
+                    icon: "app",
+                    strong: "App + control",
+                    text: "Configuración inicial incluida",
+                  },
+                  {
+                    icon: "instalacion",
+                    strong: "Instalación certificada",
+                    text: "Puesta en marcha y entrega",
+                  },
+                  {
+                    icon: "sensores",
+                    strong: "Sensores (opcional)",
+                    text: "Sol / viento / temperatura",
+                  },
+                ]}
+                finePrint="*El precio final depende de medidas, tejidos elegidos, número de motores y si se añaden sensores de sol/viento/temperatura."
+              />
+            </FullBleed>
           </Section>
 
           {/* BENEFITS */}
