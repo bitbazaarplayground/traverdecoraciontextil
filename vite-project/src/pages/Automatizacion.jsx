@@ -1,16 +1,15 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import AutomatizacionEstimate from "../components/automatizacion/AutomatizacionEstimate";
 
 /* =========================
    ASSETS
 ========================= */
 import benefit1 from "../assets/Automatizacion/benefit1.png";
-import domoticaControl from "../assets/Automatizacion/domotica1.png";
+import automatizacionPackImg from "../assets/Automatizacion/domoticaInd.png";
 import programaHorarios from "../assets/Automatizacion/programa.png";
 import vacaciones from "../assets/Automatizacion/vacaciones.png";
 import heroVideo from "../assets/video1.mp4";
 
-import automatizacionPackImg from "../assets/Automatizacion/smartHom1.png";
 /* =========================
    PAGE
 ========================= */
@@ -22,7 +21,7 @@ const Page = styled.main`
 `;
 
 /* =========================
-   HERO
+   HERO (KEEP AS IS)
 ========================= */
 
 const Hero = styled.section`
@@ -50,23 +49,17 @@ const HeroVideo = styled.video`
   width: 100%;
   height: 100%;
   object-fit: cover;
-
-  /* Shift crop slightly upward so bottom watermark stays out */
   object-position: center 22%;
-
-  /* Base zoom */
   transform: scale(1.06);
   filter: saturate(0.95) contrast(1.05);
   z-index: 0;
 
-  /* Larger screens: zoom in more so watermark never appears */
   @media (min-width: 1320px) {
     transform: scale(1.12);
   }
   @media (min-width: 1400px) {
     transform: scale(1.15);
   }
-
   @media (min-width: 1600px) {
     transform: scale(1.18);
   }
@@ -184,7 +177,7 @@ const MicroLine = styled.p`
 `;
 
 /* =========================
-   PREMIUM SHEET (THE UPGRADE)
+   PREMIUM SHEET (REWORKED)
 ========================= */
 
 const Sheet = styled.section`
@@ -192,7 +185,7 @@ const Sheet = styled.section`
   color: #111;
   border-top-left-radius: 34px;
   border-top-right-radius: 34px;
-  margin-top: -1rem; /* sits over hero */
+  margin-top: -1rem;
   position: relative;
   z-index: 5;
   box-shadow: 0 -18px 60px rgba(0, 0, 0, 0.35);
@@ -243,31 +236,13 @@ const Lead = styled.p`
   margin: 0;
 `;
 
-const Pills = styled.div`
-  margin-top: 1.25rem;
-  display: flex;
-  gap: 0.7rem;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-`;
-
-const Pill = styled.div`
-  padding: 0.55rem 0.9rem;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: rgba(17, 17, 17, 0.78);
-`;
-
 /* =========================
-   CONTROL (NOW PREMIUM: 2 COLS)
+   SECTION 2: CORE IDEA (FEELING)
 ========================= */
 
-const ControlGrid = styled.div`
+const FeelingGrid = styled.div`
   display: grid;
-  gap: 2.4rem;
+  gap: 2.2rem;
   align-items: center;
 
   @media (min-width: 980px) {
@@ -275,68 +250,212 @@ const ControlGrid = styled.div`
   }
 `;
 
-const ControlMedia = styled.div`
-  border-radius: 22px;
-  overflow: hidden;
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.14);
+const FeelingTitle = styled.h2`
+  margin: 0.35rem 0 0.9rem 0;
+  font-size: 2.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+
+  @media (max-width: 768px) {
+    font-size: 1.95rem;
+  }
 `;
 
-const ControlImage = styled.img`
+const FeelingText = styled.p`
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.78;
+  color: rgba(17, 17, 17, 0.7);
+  max-width: 62ch;
+`;
+
+const FeelingPanel = styled.div`
+  border-radius: 22px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.12);
+`;
+
+const FeelingImage = styled.img`
   width: 100%;
-  height: 420px;
+  height: 360px;
   object-fit: cover;
   display: block;
 
   @media (max-width: 768px) {
-    height: 320px;
+    height: 280px;
   }
 `;
 
 /* =========================
-   WHAT CAN BE AUTOMATED (REASSURANCE)
+   SECTION 3: FULL HOME AUTOMATION (PREVIEW)
 ========================= */
 
-const MiniGrid = styled.div`
+const PreviewRow = styled.div`
+  display: grid;
+  gap: 1.4rem;
+  align-items: center;
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1.05fr 0.95fr;
+  }
+`;
+
+const PreviewCard = styled.div`
+  border-radius: 22px;
+  padding: 1.4rem 1.4rem;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+`;
+
+const PreviewTitle = styled.h3`
+  margin: 0 0 0.55rem 0;
+  font-size: 1.35rem;
+  font-weight: 750;
+  color: rgba(17, 17, 17, 0.92);
+`;
+
+const PreviewText = styled.p`
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.7);
+`;
+
+const PriceHint = styled.div`
+  margin-top: 1.05rem;
+  font-size: 1rem;
+  color: rgba(17, 17, 17, 0.7);
+
+  strong {
+    color: rgba(17, 17, 17, 0.92);
+    font-weight: 800;
+  }
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+    font-weight: 850;
+  }
+`;
+
+const SoftLinkRow = styled.div`
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+`;
+
+const SoftLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.9rem 1.5rem;
+  border-radius: 999px;
+
+  background: ${({ theme }) => theme.colors.primary};
+  color: #0b0c0f;
+
+  font-weight: 800;
+  text-decoration: none;
+
+  &:hover {
+    opacity: 0.92;
+  }
+`;
+
+const GhostLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.9rem 1.45rem;
+  border-radius: 999px;
+
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: rgba(17, 17, 17, 0.85);
+
+  font-weight: 750;
+  text-decoration: none;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.03);
+  }
+`;
+
+/* =========================
+   SECTION 4: INDIVIDUAL AUTOMATION (3 CARDS)
+========================= */
+
+const Cards = styled.div`
+  margin-top: 1.6rem;
   display: grid;
   gap: 1rem;
-  margin-top: 1.6rem;
 
   @media (min-width: 900px) {
     grid-template-columns: repeat(3, 1fr);
   }
 `;
 
-const MiniCard = styled.div`
-  border-radius: 18px;
-  padding: 1.2rem 1.2rem;
-  background: rgba(0, 0, 0, 0.03);
+const AutoCard = styled(Link)`
+  border-radius: 20px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+
   border: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.02);
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.12);
+  }
 `;
 
-const MiniTitle = styled.h4`
+const AutoCardTop = styled.div`
+  padding: 1.1rem 1.1rem 0.9rem;
+`;
+
+const AutoCardTitle = styled.h3`
   margin: 0 0 0.35rem 0;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: rgba(17, 17, 17, 0.9);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.92);
 `;
 
-const MiniText = styled.p`
+const AutoCardText = styled.p`
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   line-height: 1.6;
-  color: rgba(17, 17, 17, 0.65);
+  color: rgba(17, 17, 17, 0.68);
+`;
+
+const AutoCardCta = styled.div`
+  margin-top: 0.9rem;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: ${({ theme }) => theme.colors.primary};
+`;
+
+const AutoCardMedia = styled.div`
+  height: 150px;
+  background: rgba(0, 0, 0, 0.04);
 `;
 
 /* =========================
-   BENEFITS (KEEP YOURS, SLIGHTLY REFINED)
+   BENEFITS
 ========================= */
 
 const BenefitsInner = styled.div`
   display: grid;
-  gap: 3.6rem;
+  gap: 3.2rem;
 
   @media (max-width: 768px) {
-    gap: 2.8rem;
+    gap: 2.6rem;
   }
 `;
 
@@ -363,21 +482,21 @@ const BenefitText = styled.div`
 `;
 
 const BenefitTitle = styled.h3`
-  font-size: 1.7rem;
-  font-weight: 650;
+  font-size: 1.65rem;
+  font-weight: 700;
   margin: 0 0 0.65rem 0;
 
   @media (max-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 1.48rem;
   }
 `;
 
 const BenefitParagraph = styled.p`
   margin: 0;
   font-size: 1rem;
-  line-height: 1.65;
+  line-height: 1.7;
   color: rgba(17, 17, 17, 0.68);
-  max-width: 48ch;
+  max-width: 55ch;
 `;
 
 const BenefitImage = styled.img`
@@ -393,7 +512,42 @@ const BenefitImage = styled.img`
 `;
 
 /* =========================
-   CTA (CONVERSION)
+   PROCESS
+========================= */
+
+const Steps = styled.div`
+  margin-top: 1.6rem;
+  display: grid;
+  gap: 1rem;
+
+  @media (min-width: 980px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+`;
+
+const Step = styled.div`
+  border-radius: 18px;
+  padding: 1.2rem 1.2rem;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+`;
+
+const StepTitle = styled.h4`
+  margin: 0 0 0.35rem 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.9);
+`;
+
+const StepText = styled.p`
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(17, 17, 17, 0.65);
+`;
+
+/* =========================
+   CTA
 ========================= */
 
 const CTA = styled.div`
@@ -469,6 +623,20 @@ const CTAButtonSecondary = styled.a`
 `;
 
 /* =========================
+   FULL BLEED WRAPPER (OPTIONAL)
+========================= */
+
+const FullBleed = styled.div`
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 1.6rem;
+`;
+
+/* =========================
    COMPONENT
 ========================= */
 
@@ -508,114 +676,150 @@ export default function Automatizacion() {
       {/* PREMIUM SHEET */}
       <Sheet>
         <SheetInner>
-          {/* CONTROL */}
+          {/* SECTION 2: CORE IDEA */}
           <Section>
-            <ControlGrid>
+            <Kicker>Esencia</Kicker>
+            <FeelingGrid>
               <div>
-                <Kicker>Control</Kicker>
-                <H2>Siempre bajo tu control</H2>
-                <Lead>
-                  App, voz o mando tradicional. La automatización se adapta a
-                  ti: tú decides cuándo intervenir, y cuándo dejar que el hogar
-                  se anticipe.
-                </Lead>
-
-                <Pills>
-                  <Pill>App móvil</Pill>
-                  <Pill>Alexa / Google / Siri</Pill>
-                  <Pill>Mando / Pulsador</Pill>
-                </Pills>
+                <FeelingTitle>La casa funciona sola</FeelingTitle>
+                <FeelingText>
+                  Confort sin esfuerzo. Integración discreta y tecnología que se
+                  adapta a tu ritmo, no al revés. Una experiencia completa de
+                  control, luz y privacidad.
+                </FeelingText>
               </div>
 
-              <ControlMedia>
-                <ControlImage
-                  src={domoticaControl}
-                  alt="Control inteligente del hogar con cortinas automatizadas"
+              <FeelingPanel>
+                <FeelingImage
+                  src={automatizacionPackImg}
+                  alt="Automatización residencial discreta y elegante"
                 />
-              </ControlMedia>
-            </ControlGrid>
+              </FeelingPanel>
+            </FeelingGrid>
           </Section>
 
-          {/* WHAT CAN BE AUTOMATED */}
+          {/* SECTION 3: FULL HOME PREVIEW (NO DETAILS) */}
           <Section>
-            <Kicker>Posibilidades</Kicker>
-            <H2>¿Qué se puede automatizar?</H2>
+            <Kicker>Automatización integral</Kicker>
+            <H2>Una solución completa, hecha a medida</H2>
+            <PreviewRow>
+              <PreviewCard>
+                <PreviewTitle>Automatización integral</PreviewTitle>
+                <PreviewText>
+                  Un sistema que coordina cortinas, persianas, toldos y luz para
+                  que todo funcione en armonía. Instalación profesional, ajustes
+                  finos y un resultado que se siente desde el primer día.
+                </PreviewText>
+
+                <PriceHint>
+                  Inversión orientativa desde <span>~3.500€</span>
+                </PriceHint>
+
+                <SoftLinkRow>
+                  <SoftLink to="/automatizacion/completa">
+                    Ver cómo funciona
+                  </SoftLink>
+                  <GhostLink to="/contact">Asesoramiento privado</GhostLink>
+                </SoftLinkRow>
+              </PreviewCard>
+
+              {/* Keep estimate but make it optional/full-bleed for now */}
+              {/* <div>
+                <FullBleed>
+                  <AutomatizacionEstimate
+                    kicker="Orientativo"
+                    priceText="Desde"
+                    priceValue="~3.500€"
+                    description="Un sistema completo para automatizar varios elementos (por ejemplo, cortinas + persianas + toldo) puede comenzar desde aproximadamente esa cifra, según medidas, tejidos y número de motores."
+                    imageSrc={automatizacionPackImg}
+                    imageAlt="Ejemplo de automatización: luz, toldo, persianas, cortinas y control desde el móvil"
+                    items={[
+                      {
+                        icon: "toldo",
+                        strong: "Toldo motorizado",
+                        text: "Control por mando/app (según medidas)",
+                      },
+                      {
+                        icon: "cortina",
+                        strong: "Cortina motorizada",
+                        text: "Riel incluido y ajuste fino",
+                      },
+                      {
+                        icon: "persiana",
+                        strong: "Estor tipo screen",
+                        text: "Control solar + privacidad",
+                      },
+                      {
+                        icon: "luz",
+                        strong: "Luz inteligente",
+                        text: "Escenas y horarios",
+                      },
+                      {
+                        icon: "app",
+                        strong: "App + control",
+                        text: "Configuración incluida",
+                      },
+                      {
+                        icon: "instalacion",
+                        strong: "Instalación certificada",
+                        text: "Puesta en marcha",
+                      },
+                    ]}
+                    finePrint="*El precio final depende de medidas, tejidos elegidos, número de motores y si se añaden sensores."
+                  />
+                </FullBleed>
+              </div> */}
+            </PreviewRow>
+          </Section>
+
+          {/* SECTION 4: INDIVIDUAL AUTOMATION */}
+          <Section>
+            <Kicker>Automatización individual</Kicker>
+            <H2>Automatiza lo que tiene sentido en tu hogar</H2>
             <Lead>
-              Lo importante no es la tecnología: es que funcione con tu rutina.
-              Automatizamos lo que tiene sentido en tu espacio, con integración
-              discreta y resultado impecable.
+              No todos los hogares necesitan lo mismo. Puedes empezar por una
+              zona concreta y ampliar cuando quieras.
             </Lead>
 
-            <MiniGrid>
-              <MiniCard>
-                <MiniTitle>Cortinas & estores</MiniTitle>
-                <MiniText>
-                  Interior: caída perfecta, silencio y precisión.
-                </MiniText>
-              </MiniCard>
-              <MiniCard>
-                <MiniTitle>Persianas & screens</MiniTitle>
-                <MiniText>
-                  Control solar, privacidad y confort térmico.
-                </MiniText>
-              </MiniCard>
-              <MiniCard>
-                <MiniTitle>Toldos & exterior</MiniTitle>
-                <MiniText>
-                  Protección inteligente con sensores de clima.
-                </MiniText>
-              </MiniCard>
-            </MiniGrid>
-            <AutomatizacionEstimate
-              KickerComponent={Kicker}
-              kicker="Orientativo"
-              priceText="Desde"
-              priceValue="~3.500€"
-              description="Un sistema completo para automatizar varios elementos (por ejemplo, cortinas + persianas + toldo) puede comenzar desde aproximadamente esa cifra, según medidas, tejidos y número de motores. Te aconsejamos la opción más equilibrada para tu hogar."
-              imageSrc={automatizacionPackImg}
-              imageAlt="Ejemplo de automatización: luz, toldo, persianas, cortinas y control desde el móvil"
-              items={[
-                {
-                  icon: "toldo",
-                  strong: "1× Toldo motorizado",
-                  text: "Mando / app (según medidas)",
-                },
-                {
-                  icon: "cortina",
-                  strong: "1× Cortina motorizada",
-                  text: "Barra / riel incluido",
-                },
-                {
-                  icon: "persiana",
-                  strong: "1× Estor tipo screen",
-                  text: "Control solar + privacidad",
-                },
-                {
-                  icon: "luz",
-                  strong: "3× Luz inteligente",
-                  text: "Escenas y horarios",
-                },
-                {
-                  icon: "app",
-                  strong: "App + control",
-                  text: "Configuración inicial incluida",
-                },
-                {
-                  icon: "instalacion",
-                  strong: "Instalación certificada",
-                  text: "Puesta en marcha y entrega",
-                },
-                {
-                  icon: "sensores",
-                  strong: "Sensores (opcional)",
-                  text: "Sol / viento / temperatura",
-                },
-              ]}
-              finePrint="*El precio final depende de medidas, tejidos elegidos, número de motores y si se añaden sensores de sol/viento/temperatura."
-            />
+            <Cards>
+              <AutoCard to="/automatizacion/individual#cortinas">
+                <AutoCardTop>
+                  <AutoCardTitle>Cortinas & estores</AutoCardTitle>
+                  <AutoCardText>
+                    Caída perfecta, silencio absoluto y control preciso de la
+                    luz interior.
+                  </AutoCardText>
+                  <AutoCardCta>Descubrir</AutoCardCta>
+                </AutoCardTop>
+                <AutoCardMedia />
+              </AutoCard>
+
+              <AutoCard to="/automatizacion/individual#persianas">
+                <AutoCardTop>
+                  <AutoCardTitle>Persianas & screens</AutoCardTitle>
+                  <AutoCardText>
+                    Control solar, privacidad y confort térmico sin renunciar al
+                    diseño.
+                  </AutoCardText>
+                  <AutoCardCta>Descubrir</AutoCardCta>
+                </AutoCardTop>
+                <AutoCardMedia />
+              </AutoCard>
+
+              <AutoCard to="/automatizacion/individual#toldos">
+                <AutoCardTop>
+                  <AutoCardTitle>Toldos & exterior</AutoCardTitle>
+                  <AutoCardText>
+                    Protección inteligente con sensores de sol, viento y clima.
+                  </AutoCardText>
+                  <AutoCardCta>Descubrir</AutoCardCta>
+                </AutoCardTop>
+                <AutoCardMedia />
+              </AutoCard>
+            </Cards>
           </Section>
 
-          {/* BENEFITS */}
+          {/* SECTION 5: BENEFITS */}
           <Section id="experiencia">
             <Kicker>Experiencia</Kicker>
             <H2>Automatización que se nota</H2>
@@ -628,33 +832,24 @@ export default function Automatizacion() {
               <BenefitsInner>
                 <BenefitRow>
                   <BenefitText>
-                    <BenefitTitle>
-                      Ajusta tus persianas con la luz del día
-                    </BenefitTitle>
+                    <BenefitTitle>Luz que acompaña el día</BenefitTitle>
                     <BenefitParagraph>
-                      A medida que el sol avanza, tus persianas, toldos y
-                      cortinas se regulan automáticamente para dejar pasar la
-                      cantidad justa de luz. Confort visual, sin
-                      deslumbramientos, desde el primer momento.
+                      A medida que el sol avanza, persianas, toldos y cortinas
+                      se regulan automáticamente para dejar pasar la cantidad
+                      justa de luz. Confort visual, sin deslumbramientos.
                     </BenefitParagraph>
                   </BenefitText>
 
-                  <BenefitImage
-                    src={benefit1}
-                    alt="Luz natural entrando por cortinas"
-                  />
+                  <BenefitImage src={benefit1} alt="Luz natural regulada" />
                 </BenefitRow>
 
                 <BenefitRow $reverse>
                   <BenefitText>
-                    <BenefitTitle>
-                      Controla tu hogar desde cualquier lugar
-                    </BenefitTitle>
+                    <BenefitTitle>Tranquilidad estés donde estés</BenefitTitle>
                     <BenefitParagraph>
-                      Controla persianas, toldos y cortinas desde el móvil,
-                      estés donde estés. Simula presencia real cuando no estás
-                      en casa y gana tranquilidad incluso durante tus
-                      vacaciones.
+                      Controla tu hogar desde el móvil y simula presencia real
+                      cuando no estás en casa. Una sensación de calma, incluso
+                      durante tus vacaciones.
                     </BenefitParagraph>
                   </BenefitText>
 
@@ -666,12 +861,10 @@ export default function Automatizacion() {
 
                 <BenefitRow>
                   <BenefitText>
-                    <BenefitTitle>
-                      Programa horarios que se adaptan a tu rutina
-                    </BenefitTitle>
+                    <BenefitTitle>Rutinas que se adaptan a ti</BenefitTitle>
                     <BenefitParagraph>
-                      Define horarios de apertura y cierre según tu día a día o
-                      la estación del año. La casa se adapta a ti, no al revés.
+                      Define horarios según tu día a día o la estación del año.
+                      La casa se ajusta sola. Tú solo lo disfrutas.
                     </BenefitParagraph>
                   </BenefitText>
 
@@ -684,7 +877,43 @@ export default function Automatizacion() {
             </div>
           </Section>
 
-          {/* CTA */}
+          {/* SECTION 6: PROCESS */}
+          <Section>
+            <Kicker>Proceso</Kicker>
+            <H2>Cómo trabajamos</H2>
+            <Lead>
+              Una experiencia sencilla, cuidada y sin sorpresas: desde la
+              medición hasta la puesta en marcha.
+            </Lead>
+
+            <Steps>
+              <Step>
+                <StepTitle>Escuchamos tu espacio</StepTitle>
+                <StepText>
+                  Medimos, analizamos y entendemos cómo vives tu hogar para
+                  proponer lo que tiene sentido.
+                </StepText>
+              </Step>
+
+              <Step>
+                <StepTitle>Diseñamos la solución</StepTitle>
+                <StepText>
+                  Propuesta clara y realista, con opciones equilibradas según
+                  tejidos, medidas y uso.
+                </StepText>
+              </Step>
+
+              <Step>
+                <StepTitle>Instalamos y ajustamos</StepTitle>
+                <StepText>
+                  Instalación certificada, ajuste fino y entrega final para que
+                  todo funcione con precisión.
+                </StepText>
+              </Step>
+            </Steps>
+          </Section>
+
+          {/* FINAL CTA */}
           <Section>
             <CTA>
               <div>

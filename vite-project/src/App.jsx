@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import AutomatizacionCompleta from "./components/AutomatizacionCompleta";
 import BrandLogos from "./components/BrandLogos";
 import ContactCTA from "./components/ContactCTA";
 import Footer from "./components/Footer";
@@ -43,6 +44,12 @@ function App() {
           path="/propuestas"
           element={<Propuestas setOverlayOpen={setOverlayOpen} />}
         />
+        {/* AUTOMATIZACION */}
+        <Route
+          path="/automatizacion/completa"
+          element={<AutomatizacionCompleta />}
+        />
+
         {/* CONTACT PAGE */}
 
         <Route path="/contact" element={<ContactPage />} />
