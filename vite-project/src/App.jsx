@@ -11,6 +11,9 @@ import Navbar from "./components/Navbar";
 import Process from "./components/Process";
 import ScrollToTop from "./components/ScrollToTop";
 import ServicesSection from "./components/ServicesSection";
+import AutomatizacionIndividual from "./components/automatizacion/AutomatizacionIndividual";
+import PanelJapones from "./components/ventanas/PanelJapones";
+import Venecianas from "./components/ventanas/Venecianas";
 import Automatizacion from "./pages/Automatizacion";
 import ContactPage from "./pages/ContactPage";
 import CortinasEstores from "./pages/CortinasEstores";
@@ -45,17 +48,25 @@ function App() {
           element={<Propuestas setOverlayOpen={setOverlayOpen} />}
         />
         {/* AUTOMATIZACION */}
+        <Route path="/automatizacion" element={<Automatizacion />} />
         <Route
           path="/automatizacion/completa"
           element={<AutomatizacionCompleta />}
+        />
+
+        <Route
+          path="/automatizacion/individual"
+          element={<AutomatizacionIndividual />}
         />
 
         {/* CONTACT PAGE */}
 
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/propuestas" element={<Propuestas />} />
+        {/* VENTANAS */}
+        <Route path="/panel-japones" element={<PanelJapones />} />
+        <Route path="/venecianas" element={<Venecianas />} />
 
-        <Route path="/automatizacion" element={<Automatizacion />} />
         <Route path="/cortinas-estores" element={<CortinasEstores />} />
         <Route
           path="/toldos-proteccionsolar"

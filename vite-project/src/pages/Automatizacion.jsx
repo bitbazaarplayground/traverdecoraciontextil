@@ -722,53 +722,6 @@ export default function Automatizacion() {
                   <GhostLink to="/contact">Asesoramiento privado</GhostLink>
                 </SoftLinkRow>
               </PreviewCard>
-
-              {/* Keep estimate but make it optional/full-bleed for now */}
-              {/* <div>
-                <FullBleed>
-                  <AutomatizacionEstimate
-                    kicker="Orientativo"
-                    priceText="Desde"
-                    priceValue="~3.500€"
-                    description="Un sistema completo para automatizar varios elementos (por ejemplo, cortinas + persianas + toldo) puede comenzar desde aproximadamente esa cifra, según medidas, tejidos y número de motores."
-                    imageSrc={automatizacionPackImg}
-                    imageAlt="Ejemplo de automatización: luz, toldo, persianas, cortinas y control desde el móvil"
-                    items={[
-                      {
-                        icon: "toldo",
-                        strong: "Toldo motorizado",
-                        text: "Control por mando/app (según medidas)",
-                      },
-                      {
-                        icon: "cortina",
-                        strong: "Cortina motorizada",
-                        text: "Riel incluido y ajuste fino",
-                      },
-                      {
-                        icon: "persiana",
-                        strong: "Estor tipo screen",
-                        text: "Control solar + privacidad",
-                      },
-                      {
-                        icon: "luz",
-                        strong: "Luz inteligente",
-                        text: "Escenas y horarios",
-                      },
-                      {
-                        icon: "app",
-                        strong: "App + control",
-                        text: "Configuración incluida",
-                      },
-                      {
-                        icon: "instalacion",
-                        strong: "Instalación certificada",
-                        text: "Puesta en marcha",
-                      },
-                    ]}
-                    finePrint="*El precio final depende de medidas, tejidos elegidos, número de motores y si se añaden sensores."
-                  />
-                </FullBleed>
-              </div> */}
             </PreviewRow>
           </Section>
 

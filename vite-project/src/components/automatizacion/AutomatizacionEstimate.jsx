@@ -437,13 +437,18 @@ export default function AutomatizacionEstimate({
       }
 
       const icon = (it.icon || "").toLowerCase();
-      if (icon === "cortina" || icon === "persiana") map.interior.push(it);
-      else if (icon === "toldo") map.exterior.push(it);
+
+      if (icon === "cortina" || icon === "persiana" || icon === "luz")
+        map.interior.push(it);
+      else if (icon === "toldo" || icon === "sensores") map.exterior.push(it);
       else if (
         icon === "app" ||
         icon === "instalacion" ||
         icon === "sensores" ||
-        icon === "luz"
+        icon === "garantia" ||
+        icon === "mantenimiento" ||
+        icon === "luzcontrol" ||
+        icon === "extra"
       )
         map.control.push(it);
       else map.extra.push(it);
@@ -460,7 +465,7 @@ export default function AutomatizacionEstimate({
   }, [items]);
 
   // Less scroll fatigue: show a small “preview” per column
-  const COLLAPSED_PER_COLUMN = 4;
+  const COLLAPSED_PER_COLUMN = 2;
 
   const hasMore = useMemo(() => {
     return buckets.some((b) => b.items.length > COLLAPSED_PER_COLUMN);
