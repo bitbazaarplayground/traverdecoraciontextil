@@ -1,0 +1,761 @@
+// AutomatizacionIndividual.jsx
+import {
+  ArrowRight,
+  BadgeCheck,
+  CalendarClock,
+  ChevronDown,
+  Flame,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import styled from "styled-components";
+
+/* =========================
+   /automatizacion/individual
+   SEO-friendly + human-friendly
+   ========================= */
+
+/**
+ * Usage (example):
+ * <AutomatizacionIndividual
+ *   images={{
+ *     cortinas: cortinasImg,
+ *     persianas: persianasImg,
+ *     toldos: toldosImg,
+ *   }}
+ * />
+ */
+
+/* =========================
+   STYLES
+   ========================= */
+
+const Page = styled.div`
+  background: radial-gradient(
+      1200px 520px at 18% 0%,
+      rgba(229, 0, 126, 0.14),
+      transparent 55%
+    ),
+    radial-gradient(
+      900px 520px at 85% 35%,
+      rgba(255, 255, 255, 0.06),
+      transparent 60%
+    ),
+    rgba(11, 12, 15, 0.98);
+`;
+
+const Hero = styled.header`
+  padding: clamp(2.2rem, 4vw, 3.6rem) 0 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+`;
+
+const HeroInner = styled.div`
+  width: min(1100px, calc(100% - 2.2rem));
+  margin: 0 auto;
+`;
+
+const Kicker = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.42rem 0.7rem;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.06);
+  outline: 1px solid rgba(255, 255, 255, 0.1);
+  outline-offset: -1px;
+
+  color: rgba(244, 244, 245, 0.86);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+`;
+
+const H1 = styled.h1`
+  margin: 0.9rem 0 0.4rem 0;
+  color: rgba(244, 244, 245, 0.98);
+  letter-spacing: -0.02em;
+  font-weight: 900;
+  line-height: 1.08;
+  font-size: clamp(1.9rem, 3.2vw, 2.65rem);
+`;
+
+const HeroP = styled.p`
+  margin: 0;
+  max-width: 72ch;
+  color: rgba(244, 244, 245, 0.72);
+  line-height: 1.75;
+  font-size: 1rem;
+`;
+
+const AnchorNav = styled.nav`
+  margin-top: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+`;
+
+const AnchorBtn = styled.a`
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.62rem 0.85rem;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.06);
+  outline: 1px solid rgba(255, 255, 255, 0.1);
+  outline-offset: -1px;
+
+  color: rgba(244, 244, 245, 0.9);
+  font-weight: 800;
+  font-size: 0.92rem;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.9;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.085);
+  }
+`;
+
+const TrustRow = styled.div`
+  margin-top: 1.05rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+`;
+
+const TrustChip = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.035);
+  outline: 1px solid rgba(255, 255, 255, 0.08);
+  outline-offset: -1px;
+
+  color: rgba(244, 244, 245, 0.82);
+  font-weight: 750;
+  font-size: 0.9rem;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.92;
+  }
+`;
+
+const Main = styled.main`
+  padding: 1.25rem 0 2.6rem;
+`;
+
+const Section = styled.section`
+  scroll-margin-top: 96px;
+  padding: 1.25rem 0;
+`;
+
+const SectionGrid = styled.div`
+  width: min(1100px, calc(100% - 2.2rem));
+  margin: 0 auto;
+
+  display: grid;
+  gap: 1rem;
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: stretch;
+    gap: 1.2rem;
+
+    ${(p) =>
+      p.$flip
+        ? `
+       direction: rtl;
+       & > * { direction: ltr; }
+     `
+        : ""}
+  }
+`;
+
+const Media = styled.div`
+  position: relative;
+  min-height: 320px;
+  border-radius: 24px;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.03);
+  outline: 1px solid rgba(255, 255, 255, 0.08);
+  outline-offset: -1px;
+
+  @media (max-width: 520px) {
+    min-height: 260px;
+  }
+`;
+
+const MediaPlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.015)
+  );
+`;
+
+const Img = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.02);
+  filter: saturate(1.02) contrast(1.03);
+`;
+
+const MediaOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.08),
+    rgba(0, 0, 0, 0.42)
+  );
+`;
+
+const Body = styled.div`
+  border-radius: 24px;
+  padding: 1.05rem 1.05rem 1.15rem;
+
+  background: rgba(255, 255, 255, 0.03);
+  outline: 1px solid rgba(255, 255, 255, 0.075);
+  outline-offset: -1px;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+`;
+
+const TopLine = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+`;
+
+const SectionTitle = styled.h2`
+  margin: 0;
+  color: rgba(244, 244, 245, 0.96);
+  letter-spacing: -0.02em;
+  font-weight: 900;
+  font-size: 1.35rem;
+`;
+
+const UrgencyPill = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.46rem 0.65rem;
+  border-radius: 999px;
+
+  background: rgba(229, 0, 126, 0.14);
+  outline: 1px solid rgba(229, 0, 126, 0.22);
+  outline-offset: -1px;
+
+  color: rgba(244, 244, 245, 0.9);
+  font-weight: 850;
+  font-size: 0.85rem;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.95;
+  }
+`;
+
+const SectionSub = styled.p`
+  margin: 0.45rem 0 0 0;
+  color: rgba(244, 244, 245, 0.72);
+  line-height: 1.75;
+  font-size: 1rem;
+  max-width: 70ch;
+`;
+
+const SEOText = styled.p`
+  margin: 0.65rem 0 0 0;
+  color: rgba(244, 244, 245, 0.62);
+  line-height: 1.75;
+  font-size: 0.95rem;
+  max-width: 74ch;
+`;
+
+const PriceRow = styled.div`
+  margin-top: 0.9rem;
+  padding: 0.85rem 0.85rem;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.035);
+  outline: 1px solid rgba(255, 255, 255, 0.08);
+  outline-offset: -1px;
+`;
+
+const PriceKicker = styled.div`
+  color: rgba(244, 244, 245, 0.65);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+`;
+
+const PriceValue = styled.div`
+  margin-top: 0.35rem;
+  color: rgba(244, 244, 245, 0.96);
+  font-size: 1.35rem;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+`;
+
+const PriceNote = styled.div`
+  margin-top: 0.25rem;
+  color: rgba(244, 244, 245, 0.6);
+  font-size: 0.9rem;
+  line-height: 1.55;
+`;
+
+const OfferCard = styled.div`
+  margin-top: 0.85rem;
+  border-radius: 22px;
+  padding: 0.95rem 0.95rem;
+
+  background: rgba(255, 255, 255, 0.035);
+  outline: 1px solid rgba(255, 255, 255, 0.09);
+  outline-offset: -1px;
+`;
+
+const OfferHead = styled.div`
+  display: grid;
+  gap: 0.35rem;
+`;
+
+const OfferTitle = styled.h3`
+  margin: 0;
+  color: rgba(244, 244, 245, 0.96);
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  font-size: 1.05rem;
+`;
+
+const OfferUrgency = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+
+  color: rgba(244, 244, 245, 0.7);
+  font-size: 0.92rem;
+  line-height: 1.4;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.9;
+  }
+`;
+
+const OfferList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0.8rem 0 0 0;
+  display: grid;
+  gap: 0.55rem;
+`;
+
+const OfferItem = styled.li`
+  display: grid;
+  grid-template-columns: 10px 1fr;
+  gap: 0.6rem;
+  align-items: start;
+
+  color: rgba(244, 244, 245, 0.86);
+  font-size: 0.95rem;
+  line-height: 1.55;
+`;
+
+const Dot = styled.span`
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  margin-top: 0.25rem;
+
+  background: rgba(229, 0, 126, 0.45);
+  outline: 1px solid rgba(229, 0, 126, 0.35);
+  outline-offset: -1px;
+`;
+
+const Ctas = styled.div`
+  margin-top: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+`;
+
+const PrimaryCta = styled(Link)`
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+
+  padding: 0.8rem 0.95rem;
+  border-radius: 14px;
+
+  background: rgba(229, 0, 126, 0.92);
+  color: rgba(244, 244, 245, 0.98);
+  font-weight: 900;
+
+  outline: 1px solid rgba(229, 0, 126, 0.65);
+  outline-offset: -1px;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    filter: brightness(1.02);
+    transform: translateY(-1px);
+  }
+`;
+
+const SecondaryCta = styled.button`
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  padding: 0.8rem 0.95rem;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.06);
+  outline: 1px solid rgba(255, 255, 255, 0.1);
+  outline-offset: -1px;
+
+  color: rgba(244, 244, 245, 0.9);
+  font-weight: 850;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    opacity: 0.9;
+    transform: rotate(0deg);
+    transition: transform 220ms ease;
+  }
+
+  &[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.085);
+  }
+`;
+
+const Details = styled.div`
+  overflow: hidden;
+  max-height: ${(p) => (p.$open ? "520px" : "0px")};
+  opacity: ${(p) => (p.$open ? 1 : 0)};
+  transition: max-height 320ms ease, opacity 220ms ease;
+`;
+
+const DetailsInner = styled.div`
+  padding-top: 0.85rem;
+`;
+
+const DetailsTitle = styled.h4`
+  margin: 0.65rem 0 0.25rem 0;
+  color: rgba(244, 244, 245, 0.92);
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  font-size: 0.98rem;
+`;
+
+const DetailsText = styled.p`
+  margin: 0;
+  color: rgba(244, 244, 245, 0.68);
+  line-height: 1.75;
+  font-size: 0.95rem;
+`;
+
+const MicroNote = styled.p`
+  margin: 0.85rem 0 0 0;
+  color: rgba(244, 244, 245, 0.45);
+  font-size: 0.82rem;
+  line-height: 1.5;
+`;
+
+export default function AutomatizacionIndividual({
+  images = {},
+  contactTo = "/contacto",
+}) {
+  const location = useLocation();
+  const [openKey, setOpenKey] = useState(null);
+
+  const sections = useMemo(
+    () => [
+      {
+        key: "cortinas",
+        id: "cortinas",
+        title: "Cortinas & estores",
+        subtitle:
+          "Caída perfecta, silencio absoluto y control preciso de la luz interior.",
+        priceKicker: "Precio orientativo",
+        priceValue: "desde 890€",
+        offerTitle: "Pack Interior — listo para usar",
+        offerBullets: [
+          "Motor silencioso + ajuste fino",
+          "Control por mando / app (según modelo)",
+          "Instalación y puesta en marcha",
+          "Garantía + soporte",
+        ],
+        urgency: {
+          label: "Instalación rápida",
+          note: "Plazas limitadas esta semana (agenda de montaje).",
+          icon: CalendarClock,
+        },
+        seoText:
+          "Automatiza cortinas y estores para ganar confort, privacidad y control de luz sin esfuerzo. Soluciones discretas, silenciosas y adaptadas a tus medidas.",
+        imageSrc: images.cortinas,
+        imageAlt: "Cortinas y estores motorizados en salón luminoso",
+      },
+      {
+        key: "persianas",
+        id: "persianas",
+        title: "Persianas & screens",
+        subtitle:
+          "Control solar, privacidad y confort térmico sin renunciar al diseño.",
+        priceKicker: "Precio orientativo",
+        priceValue: "desde 990€",
+        offerTitle: "Pack Screen — confort todo el año",
+        offerBullets: [
+          "Tejido técnico screen (según elección)",
+          "Automatización suave y precisa",
+          "Escenas recomendadas (día/noche/ausencia)",
+          "Instalación y configuración incluidas",
+        ],
+        urgency: {
+          label: "Ahorro y confort",
+          note: "Mejor época para instalar antes de picos de calor.",
+          icon: Flame,
+        },
+        seoText:
+          "Persianas y screens inteligentes para regular luz, temperatura y privacidad. Diseño limpio y automatización fiable, con configuración lista para el día a día.",
+        imageSrc: images.persianas,
+        imageAlt: "Screen enrollable en ventana con luz suave",
+      },
+      {
+        key: "toldos",
+        id: "toldos",
+        title: "Toldos & exterior",
+        subtitle: "Protección inteligente con sensores de sol, viento y clima.",
+        priceKicker: "Precio orientativo",
+        priceValue: "desde 1.390€",
+        offerTitle: "Pack Exterior — protección automática",
+        offerBullets: [
+          "Toldo motorizado + mando",
+          "Sensor de sol/viento (según pack)",
+          "Protecciones y límites configurados",
+          "Instalación segura + pruebas",
+        ],
+        urgency: {
+          label: "Protección del toldo",
+          note: "Evita daños por viento: automatiza antes de temporada.",
+          icon: ShieldCheck,
+        },
+        seoText:
+          "Automatiza toldos y exterior para proteger tu terraza y mejorar el confort. Sensores, seguridad y control inteligente para que se adapte al clima sin preocuparte.",
+        imageSrc: images.toldos,
+        imageAlt: "Toldo motorizado en terraza con ambiente exterior",
+      },
+    ],
+    [images]
+  );
+
+  // Hash navigation: /automatizacion/individual#cortinas
+  useEffect(() => {
+    const hash = (location.hash || "").replace("#", "");
+    if (!hash) return;
+    const el = document.getElementById(hash);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      setOpenKey(hash);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.hash]);
+
+  return (
+    <Page>
+      <Hero>
+        <HeroInner>
+          <Kicker>Automatización individual</Kicker>
+          <H1>Elige por interés. Nosotros lo dejamos perfecto.</H1>
+          <HeroP>
+            Explora por tipo de producto y descubre una propuesta clara, con
+            instalación profesional y un resultado premium.
+          </HeroP>
+
+          <AnchorNav aria-label="Secciones">
+            {sections.map((s) => (
+              <AnchorBtn
+                key={s.key}
+                href={`#${s.id}`}
+                onClick={() => setOpenKey(s.id)}
+              >
+                {s.title}
+                <ChevronDown />
+              </AnchorBtn>
+            ))}
+          </AnchorNav>
+
+          <TrustRow>
+            <TrustChip>
+              <BadgeCheck />
+              Instalación + puesta en marcha
+            </TrustChip>
+            <TrustChip>
+              <Sparkles />
+              Ajuste fino y escenas recomendadas
+            </TrustChip>
+            <TrustChip>
+              <ShieldCheck />
+              Garantía + soporte
+            </TrustChip>
+          </TrustRow>
+        </HeroInner>
+      </Hero>
+
+      <Main>
+        {sections.map((s, idx) => {
+          const isOpen = openKey === s.id;
+          const UrgIcon = s.urgency?.icon || Flame;
+
+          return (
+            <Section key={s.key} id={s.id}>
+              <SectionGrid $flip={idx % 2 === 1}>
+                <Media>
+                  {s.imageSrc ? (
+                    <Img src={s.imageSrc} alt={s.imageAlt} loading="eager" />
+                  ) : (
+                    <MediaPlaceholder aria-hidden="true" />
+                  )}
+                  <MediaOverlay />
+                </Media>
+
+                <Body>
+                  <TopLine>
+                    <SectionTitle>{s.title}</SectionTitle>
+
+                    <UrgencyPill>
+                      <UrgIcon />
+                      <span>{s.urgency?.label}</span>
+                    </UrgencyPill>
+                  </TopLine>
+
+                  <SectionSub>{s.subtitle}</SectionSub>
+
+                  <SEOText>{s.seoText}</SEOText>
+
+                  <PriceRow>
+                    <PriceKicker>{s.priceKicker}</PriceKicker>
+                    <PriceValue>{s.priceValue}</PriceValue>
+                    <PriceNote>
+                      Depende de medidas, tejidos y número de motores.
+                    </PriceNote>
+                  </PriceRow>
+
+                  <OfferCard>
+                    <OfferHead>
+                      <OfferTitle>{s.offerTitle}</OfferTitle>
+                      <OfferUrgency>
+                        <CalendarClock />
+                        {s.urgency?.note}
+                      </OfferUrgency>
+                    </OfferHead>
+
+                    <OfferList>
+                      {s.offerBullets.map((b) => (
+                        <OfferItem key={b}>
+                          <Dot />
+                          <span>{b}</span>
+                        </OfferItem>
+                      ))}
+                    </OfferList>
+
+                    <Ctas>
+                      <PrimaryCta
+                        to={contactTo}
+                        state={{
+                          from: "/automatizacion/individual",
+                          focus: s.id,
+                        }}
+                      >
+                        Pedir propuesta para {s.title.toLowerCase()}
+                        <ArrowRight />
+                      </PrimaryCta>
+
+                      <SecondaryCta
+                        type="button"
+                        onClick={() =>
+                          setOpenKey((v) => (v === s.id ? null : s.id))
+                        }
+                        aria-expanded={isOpen}
+                      >
+                        {isOpen ? "Ver menos" : "Ver detalles"}
+                        <ChevronDown />
+                      </SecondaryCta>
+                    </Ctas>
+
+                    <Details $open={isOpen}>
+                      <DetailsInner>
+                        <DetailsTitle>Qué haremos exactamente</DetailsTitle>
+                        <DetailsText>
+                          Te recomendamos el motor y el tejido adecuados,
+                          dejamos el sistema calibrado (límites/velocidad),
+                          configuramos el control (mando/app si aplica) y
+                          probamos todo contigo. Saldrás con un resultado listo
+                          para usar desde el día 1.
+                        </DetailsText>
+
+                        <DetailsTitle>Para quién es ideal</DetailsTitle>
+                        <DetailsText>
+                          Si quieres mejorar confort y diseño sin complicarte:
+                          una automatización puntual ya cambia la experiencia
+                          diaria y permite ampliar más adelante sin rehacer
+                          nada.
+                        </DetailsText>
+                      </DetailsInner>
+                    </Details>
+                  </OfferCard>
+
+                  <MicroNote>
+                    *Mensaje de urgencia “profesional”: basado en agenda de
+                    instalación y temporada (sin claims agresivos).
+                  </MicroNote>
+                </Body>
+              </SectionGrid>
+            </Section>
+          );
+        })}
+      </Main>
+    </Page>
+  );
+}

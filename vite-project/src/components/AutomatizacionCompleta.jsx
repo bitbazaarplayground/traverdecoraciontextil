@@ -477,40 +477,77 @@ export default function AutomatizacionCompleta() {
                 imageSrc={automatizacionPackImg}
                 imageAlt="Ejemplo de automatización completa: cortinas, persianas, toldo, luz y control"
                 items={[
+                  // INTERIOR / EXTERIOR
                   {
                     icon: "toldo",
                     strong: "Toldo motorizado",
-                    text: "Control por mando / app (según medidas)",
+                    text: "Ajuste automático según sol y viento",
                   },
                   {
                     icon: "cortina",
                     strong: "Cortina motorizada",
-                    text: "Riel incluido y ajuste fino",
+                    text: "Riel incluido y movimiento silencioso",
                   },
                   {
                     icon: "persiana",
                     strong: "Estor tipo screen",
-                    text: "Control solar + privacidad",
+                    text: "Control solar y privacidad interior",
                   },
                   {
                     icon: "luz",
-                    strong: "Luz inteligente",
-                    text: "Escenas y horarios",
+                    strong: "3 luces inteligentes",
+                    text: "Control por app, voz y escenas automáticas",
+                  },
+
+                  // CONTROL & INTELIGENCIA
+                  {
+                    icon: "sensores",
+                    strong: "Sensores de sol y viento",
+                    text: "Protección automática y regulación inteligente",
                   },
                   {
                     icon: "app",
-                    strong: "App + control",
-                    text: "Configuración inicial incluida",
+                    strong: "App de control central",
+                    text: "Gestión desde el móvil y control remoto",
                   },
+                  {
+                    icon: "luzControl",
+                    strong: "Escenas inteligentes",
+                    text: "Amanecer, atardecer, calor y ausencia",
+                  },
+                  {
+                    icon: "extra",
+                    strong: "Control por voz",
+                    text: "Alexa incluida y configurada",
+                  },
+
+                  // SERVICIO PROFESIONAL
                   {
                     icon: "instalacion",
                     strong: "Instalación certificada",
-                    text: "Puesta en marcha y entrega",
+                    text: "Montaje profesional y puesta en marcha",
                   },
                   {
+                    icon: "instalacion",
+                    strong: "Instalación eléctrica incluida",
+                    text: "Cableado, conexiones y pruebas completas",
+                  },
+                  {
+                    icon: "mantenimiento",
+                    strong: "Entrega guiada y soporte",
+                    text: "Te enseñamos a usar todo el sistema",
+                  },
+                  {
+                    icon: "garantia",
+                    strong: "Garantía y mantenimiento",
+                    text: "Cobertura y revisión incluida",
+                  },
+
+                  // UPSELL CLARO
+                  {
                     icon: "sensores",
-                    strong: "Sensores (opcional)",
-                    text: "Sol / viento / temperatura",
+                    strong: "Sensor de temperatura (opcional)",
+                    text: "Optimiza escenas por calor o frío (+100€)",
                   },
                 ]}
                 finePrint="*El precio final depende de medidas, tejidos elegidos, número de motores y si se añaden sensores de sol/viento/temperatura."

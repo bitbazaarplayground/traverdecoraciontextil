@@ -21,6 +21,7 @@ import velvetImg from "../assets/CortinasEstores/inspiracion/velvet.jpeg";
 // Slick styles
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
+import ComplementosVentana from "../components/ventanas/ComplementosVentana";
 
 /* =========================
    PAGE
@@ -549,15 +550,8 @@ export default function CortinasEstoresPremium() {
         </FabricsInner>
       </FabricsSection>
 
-      {/* CTA */}
-      <CTA>
-        <CTATitle>Te asesoramos en cada detalle</CTATitle>
-        <CTAText>
-          Te acompañamos desde la elección del tejido hasta la instalación
-          final, cuidando cada decisión para lograr el resultado perfecto.
-        </CTAText>
-        <CTAButton href="/contacto">Solicitar asesoramiento</CTAButton>
-      </CTA>
+      <ComplementosVentana id="sistemas" />
+
       {/* ENFOQUE */}
       <EnfoqueSection>
         <EnfoqueInner>
