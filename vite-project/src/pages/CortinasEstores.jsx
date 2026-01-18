@@ -21,6 +21,7 @@ import velvetImg from "../assets/CortinasEstores/inspiracion/velvet.jpeg";
 // Slick styles
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
+import EnfoqueSlider from "../components/EnfoqueSlider";
 import ComplementosVentana from "../components/ventanas/ComplementosVentana";
 
 /* =========================
@@ -239,73 +240,7 @@ const CarouselImage = styled.div`
     height: 260px;
   }
 `;
-/* =========================
-   ENFOQUE / PROCESS-LITE
-========================= */
 
-const EnfoqueSection = styled.section`
-  padding: 5rem 2rem;
-  background: #fff;
-
-  @media (max-width: 768px) {
-    padding: 3.5rem 1.5rem;
-  }
-`;
-
-const EnfoqueInner = styled.div`
-  max-width: 1100px;
-  margin: 0 auto;
-  text-align: center;
-`;
-
-const EnfoqueTitle = styled.h2`
-  font-size: 2.2rem;
-  font-weight: 600;
-  color: #121212;
-  margin-bottom: 1rem;
-
-  @media (max-width: 768px) {
-    font-size: 1.8rem;
-  }
-`;
-
-const EnfoqueIntro = styled.p`
-  max-width: 720px;
-  margin: 0 auto 3.5rem;
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: #555;
-`;
-
-const EnfoqueGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2.5rem;
-  text-align: left;
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const EnfoqueItem = styled.div`
-  padding: 2.5rem;
-  border-radius: 18px;
-  background: #fafafa;
-`;
-
-const EnfoqueItemTitle = styled.h3`
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 0.8rem;
-`;
-
-const EnfoqueItemText = styled.p`
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #555;
-`;
 /* =========================
    FABRICS / HANDMADE SECTION
 ========================= */
@@ -551,46 +486,7 @@ export default function CortinasEstoresPremium() {
       </FabricsSection>
 
       <ComplementosVentana id="sistemas" />
-
-      {/* ENFOQUE */}
-      <EnfoqueSection>
-        <EnfoqueInner>
-          <EnfoqueTitle>Cuidamos cada detalle del proceso</EnfoqueTitle>
-
-          <EnfoqueIntro>
-            Cada proyecto es único. Por eso trabajamos de forma cercana y
-            cuidada, combinando experiencia, materiales de calidad y una
-            ejecución impecable.
-          </EnfoqueIntro>
-
-          <EnfoqueGrid>
-            <EnfoqueItem>
-              <EnfoqueItemTitle>Asesoramiento personalizado</EnfoqueItemTitle>
-              <EnfoqueItemText>
-                Escuchamos tus necesidades y te guiamos en la elección de
-                tejidos, sistemas y soluciones que mejor encajan con tu espacio.
-              </EnfoqueItemText>
-            </EnfoqueItem>
-
-            <EnfoqueItem>
-              <EnfoqueItemTitle>Materiales seleccionados</EnfoqueItemTitle>
-              <EnfoqueItemText>
-                Trabajamos con marcas y fabricantes reconocidos para garantizar
-                calidad, durabilidad y un acabado impecable.
-              </EnfoqueItemText>
-            </EnfoqueItem>
-
-            <EnfoqueItem>
-              <EnfoqueItemTitle>Instalación profesional</EnfoqueItemTitle>
-              <EnfoqueItemText>
-                Nuestro equipo se encarga de la instalación con precisión y
-                respeto por tu hogar, cuidando cada detalle hasta el final.
-              </EnfoqueItemText>
-            </EnfoqueItem>
-          </EnfoqueGrid>
-        </EnfoqueInner>
-      </EnfoqueSection>
-
+      <EnfoqueSlider />
       {/* CAROUSEL */}
       <CarouselSection>
         <Slider {...sliderSettings}>

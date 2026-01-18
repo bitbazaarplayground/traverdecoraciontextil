@@ -421,7 +421,7 @@ export default function ComplementosVentana({
         viewport={{ once: true, amount: 0.35 }}
       >
         <motion.div variants={fade}>
-          <Kicker>Sistemas</Kicker>
+          <Kicker>Otros Sistemas</Kicker>
           <Title>Venecianas, paneles japoneses, rieles y barras</Title>
           <Lead>
             No es “un accesorio”. Es el sistema que define la caída, la luz y la

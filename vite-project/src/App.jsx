@@ -14,6 +14,7 @@ import ServicesSection from "./components/ServicesSection";
 import AutomatizacionIndividual from "./components/automatizacion/AutomatizacionIndividual";
 import PanelJapones from "./components/ventanas/PanelJapones";
 import Venecianas from "./components/ventanas/Venecianas";
+import AdminBookings from "./pages/AdminBookings";
 import Automatizacion from "./pages/Automatizacion";
 import ContactPage from "./pages/ContactPage";
 import CortinasEstores from "./pages/CortinasEstores";
@@ -73,6 +74,9 @@ function App() {
           element={<ToldosProteccionSolar />}
         />
         <Route path="/services" element={<Servicios />} />
+
+        {/* ADMIN */}
+        <Route path="/admin" element={<AdminBookings />} />
       </Routes>
       <Footer />
     </>
