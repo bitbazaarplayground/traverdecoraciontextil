@@ -1,19 +1,16 @@
-export const config = {
-  // Runs once a day at 09:05 Europe/London-ish (Netlify uses UTC internally)
-  // If you want it more frequent, we can do every 12h.
-  schedule: "5 9 * * *",
-};
-
-export default async (req, context) => {
+exports.handler = async function handler() {
   try {
     const SUPABASE_URL = process.env.SUPABASE_URL;
     const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      return new Response("Missing SUPABASE env vars", { status: 500 });
+      return {
+        statusCode: 500,
+        body: "Missing SUPABASE_URL or SUPABASE_ANON_KEY env vars",
+      };
     }
 
-    // Update heartbeat row (counts as DB activity)
+    // PATCH heartbeat row (counts as DB activity)
     const res = await fetch(`${SUPABASE_URL}/rest/v1/heartbeat?id=eq.1`, {
       method: "PATCH",
       headers: {
@@ -27,13 +24,17 @@ export default async (req, context) => {
 
     if (!res.ok) {
       const text = await res.text();
-      return new Response(`Heartbeat failed: ${text}`, { status: 500 });
+      return {
+        statusCode: 500,
+        body: `Heartbeat failed: ${text}`,
+      };
     }
 
-    return new Response("Heartbeat OK", { status: 200 });
+    return { statusCode: 200, body: "Heartbeat OK" };
   } catch (err) {
-    return new Response(`Heartbeat error: ${err?.message || "unknown"}`, {
-      status: 500,
-    });
+    return {
+      statusCode: 500,
+      body: `Heartbeat error: ${err?.message || "unknown"}`,
+    };
   }
 };
