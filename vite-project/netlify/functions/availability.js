@@ -129,14 +129,15 @@ function generateCandidateStartsForDay({ y, m, d }, timeZone, blockMinutes) {
 }
 
 /** Fetch rows from Supabase REST using anon key (RLS must allow reads for admin later; for now these tables are protected, so we fetch only public fields that are readable or we switch to service role later.) */
-async function supabaseGet({ url, anonKey, path }) {
+async function supabaseGet({ url, serviceKey, path }) {
   const res = await fetch(`${url}/rest/v1/${path}`, {
     headers: {
-      apikey: anonKey,
-      Authorization: `Bearer ${anonKey}`,
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
       "Content-Type": "application/json",
     },
   });
+
   const text = await res.text();
   if (!res.ok) {
     throw new Error(`Supabase GET failed: ${res.status} ${text}`);
@@ -214,7 +215,7 @@ exports.handler = async function handler(event) {
     // If you’ve locked them down (recommended), we’ll switch this function to use SERVICE_ROLE via Netlify secrets in Step 2.
     const bookings = await supabaseGet({
       url: SUPABASE_URL,
-      anonKey: SUPABASE_ANON_KEY,
+      serviceKey: SERVICE_KEY,
       path:
         `bookings?select=id,start_time,end_time,status` +
         `&status=eq.reserved` +
@@ -224,7 +225,7 @@ exports.handler = async function handler(event) {
 
     const blackouts = await supabaseGet({
       url: SUPABASE_URL,
-      anonKey: SUPABASE_ANON_KEY,
+      serviceKey: SERVICE_KEY,
       path:
         `blackouts?select=id,start_time,end_time,reason` +
         `&start_time=lt.${encodeURIComponent(rangeEndUtc.toISOString())}` +
