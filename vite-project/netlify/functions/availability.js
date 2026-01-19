@@ -145,7 +145,7 @@ async function supabaseGet({ url, serviceKey, path }) {
   return text ? JSON.parse(text) : [];
 }
 
-exports.handler = async function handler(event) {
+export async function handler(event) {
   try {
     const SUPABASE_URL = process.env.SUPABASE_URL;
     const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -302,4 +302,4 @@ exports.handler = async function handler(event) {
       error: err?.message || "Unknown error",
     });
   }
-};
+}

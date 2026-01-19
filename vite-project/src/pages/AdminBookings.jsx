@@ -18,6 +18,13 @@ const Card = styled.div`
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
 `;
 
+const Drawer = styled.div`
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 18px;
+  padding: 1.1rem;
+`;
+
 const Row = styled.div`
   display: grid;
   gap: 0.75rem;
@@ -131,6 +138,8 @@ export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);
   const [blackouts, setBlackouts] = useState([]);
 
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+
   // Block form
   const [blockStart, setBlockStart] = useState("");
   const [blockEnd, setBlockEnd] = useState("");
@@ -152,12 +161,8 @@ export default function AdminBookings() {
   }, [session, adminAllowlist]);
 
   useEffect(() => {
-    const url = window.location.href;
-    if (url.includes("type=recovery")) {
-      const isHash = window.location.hash?.startsWith("#/");
-      window.location.replace(
-        isHash ? "/#/admin/reset-password" : "/admin/reset-password"
-      );
+    if (window.location.href.includes("type=recovery")) {
+      window.location.replace("/admin/reset-password");
     }
   }, []);
 
@@ -236,25 +241,27 @@ export default function AdminBookings() {
     setLoading(true);
     setMsg("");
 
-    const b = await supabase
-      .from("bookings")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(200);
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess?.session?.access_token;
+      if (!token) throw new Error("Sesión no válida.");
 
-    const bl = await supabase
-      .from("blackouts")
-      .select("*")
-      .order("start_time", { ascending: true })
-      .limit(200);
+      const res = await fetch("/.netlify/functions/admin-bookings?limit=200", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    setLoading(false);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "No se pudo cargar datos.");
 
-    if (b.error) setMsg(b.error.message);
-    else setBookings(b.data || []);
-
-    if (bl.error) setMsg(bl.error.message);
-    else setBlackouts(bl.data || []);
+      setBookings(data.bookings || []);
+      setBlackouts(data.blackouts || []);
+    } catch (e) {
+      setMsg(e.message);
+      setBookings([]);
+      setBlackouts([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -263,6 +270,7 @@ export default function AdminBookings() {
   }, [session, isAllowed]);
 
   async function signOut() {
+    setSelectedCustomer(null);
     await supabase.auth.signOut();
   }
 
@@ -445,7 +453,62 @@ export default function AdminBookings() {
           </div>
         </div>
       </Card>
+      {selectedCustomer && (
+        <Drawer>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "1rem",
+            }}
+          >
+            <div>
+              <h3 style={{ margin: 0 }}>Cliente</h3>
+              <p style={{ margin: "0.35rem 0 0", opacity: 0.75 }}>
+                Historial y datos de contacto
+              </p>
+            </div>
+            <Button type="button" onClick={() => setSelectedCustomer(null)}>
+              Cerrar
+            </Button>
+          </div>
 
+          <div style={{ height: "0.75rem" }} />
+
+          <Table>
+            <tbody>
+              <tr>
+                <th style={{ width: 220 }}>Nombre</th>
+                <td>{selectedCustomer.customer_name}</td>
+              </tr>
+              <tr>
+                <th>Teléfono / WhatsApp</th>
+                <td>{selectedCustomer.phone}</td>
+              </tr>
+              <tr>
+                <th>Email</th>
+                <td>{selectedCustomer.email || "—"}</td>
+              </tr>
+              <tr>
+                <th>Preferencia</th>
+                <td>{selectedCustomer.contact_preference}</td>
+              </tr>
+              <tr>
+                <th>Dirección</th>
+                <td>
+                  {selectedCustomer.home_visit
+                    ? `${selectedCustomer.address_line1}, ${selectedCustomer.postal_code} ${selectedCustomer.city}`
+                    : "—"}
+                </td>
+              </tr>
+              <tr>
+                <th>Notas</th>
+                <td>{selectedCustomer.address_notes || "—"}</td>
+              </tr>
+            </tbody>
+          </Table>
+        </Drawer>
+      )}
       <Card>
         <h3 style={{ marginTop: 0 }}>Bloquear horas</h3>
         <form onSubmit={addBlackout}>
@@ -550,7 +613,21 @@ export default function AdminBookings() {
 
                 <td>
                   <div>
-                    <strong>{bk.customer_name}</strong>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCustomer(bk)}
+                      style={{
+                        border: 0,
+                        background: "transparent",
+                        padding: 0,
+                        cursor: "pointer",
+                        fontWeight: 900,
+                        textDecoration: "underline",
+                        textUnderlineOffset: 3,
+                      }}
+                    >
+                      {bk.customer_name}
+                    </button>
                   </div>
                   <div style={{ opacity: 0.8 }}>{bk.phone}</div>
                   {bk.email && <div style={{ opacity: 0.8 }}>{bk.email}</div>}
