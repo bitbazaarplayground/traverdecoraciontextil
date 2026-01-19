@@ -19,8 +19,13 @@ export default function AuthCallback() {
         const params = new URLSearchParams(window.location.search);
         const type = params.get("type");
 
+        if (type === "recovery") {
+          navigate("/admin/reset-password", { replace: true });
+          return;
+        }
+
         if (!data?.session) {
-          setMsg("No se encontró una sesión válida. Vuelve a intentarlo.");
+          setMsg("No se encontró una sesión válida.");
           return;
         }
 

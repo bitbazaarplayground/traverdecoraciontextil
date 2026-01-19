@@ -121,6 +121,7 @@ export default function AdminBookings() {
   const [session, setSession] = useState(null);
 
   // Login
+  const [mode, setMode] = useState("login"); // "login" | "forgot"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -149,6 +150,16 @@ export default function AdminBookings() {
     if (adminAllowlist.length === 0) return true;
     return adminAllowlist.includes(userEmail);
   }, [session, adminAllowlist]);
+
+  useEffect(() => {
+    const url = window.location.href;
+    if (url.includes("type=recovery")) {
+      const isHash = window.location.hash?.startsWith("#/");
+      window.location.replace(
+        isHash ? "/#/admin/reset-password" : "/admin/reset-password"
+      );
+    }
+  }, []);
 
   useEffect(() => {
     supabase.auth
@@ -196,7 +207,9 @@ export default function AdminBookings() {
     setPassword("");
   }
 
-  async function sendResetEmail() {
+  async function sendResetEmail(e) {
+    if (e?.preventDefault) e.preventDefault();
+
     if (!email) {
       setMsg("Introduce tu email para enviar el enlace de recuperación.");
       return;
@@ -308,11 +321,13 @@ export default function AdminBookings() {
         <Card>
           <h2 style={{ margin: "0 0 0.35rem" }}>Admin</h2>
           <p style={{ margin: "0 0 1rem", opacity: 0.75 }}>
-            Accede con email y contraseña.
+            {mode === "login"
+              ? "Accede con email y contraseña."
+              : "Te enviaremos un enlace para restablecer tu contraseña."}
           </p>
 
           <form
-            onSubmit={signInWithPassword}
+            onSubmit={mode === "login" ? signInWithPassword : sendResetEmail}
             style={{ display: "grid", gap: "0.75rem" }}
           >
             <Label>
@@ -326,28 +341,54 @@ export default function AdminBookings() {
               />
             </Label>
 
-            <Label>
-              <span>Contraseña</span>
-              <Input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                type="password"
-              />
-            </Label>
+            {mode === "login" && (
+              <Label>
+                <span>Contraseña</span>
+                <Input
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  type="password"
+                />
+              </Label>
+            )}
 
             <Button type="submit" disabled={loading}>
-              {loading ? "Entrando..." : "Entrar"}
+              {loading
+                ? mode === "login"
+                  ? "Entrando..."
+                  : "Enviando..."
+                : mode === "login"
+                ? "Entrar"
+                : "Enviar enlace"}
             </Button>
 
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-              <LinkButton
-                type="button"
-                onClick={sendResetEmail}
-                disabled={loading}
-              >
-                He olvidado mi contraseña
-              </LinkButton>
+              {mode === "login" ? (
+                <LinkButton
+                  type="button"
+                  onClick={() => {
+                    setMsg("");
+                    setPassword("");
+                    setMode("forgot");
+                  }}
+                  disabled={loading}
+                >
+                  He olvidado mi contraseña
+                </LinkButton>
+              ) : (
+                <LinkButton
+                  type="button"
+                  onClick={() => {
+                    setMsg("");
+                    setPassword("");
+                    setMode("login");
+                  }}
+                  disabled={loading}
+                >
+                  Volver a iniciar sesión
+                </LinkButton>
+              )}
             </div>
 
             {msg && <p style={{ margin: 0, opacity: 0.85 }}>{msg}</p>}
