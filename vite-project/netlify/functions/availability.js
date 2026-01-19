@@ -154,7 +154,8 @@ exports.handler = async function handler(event) {
       });
     }
 
-    const timeZone = "Europe/London";
+    const timeZone = "Europe/Madrid";
+
     const blockMinutes = 120;
     const leadTimeDays = 2;
 
