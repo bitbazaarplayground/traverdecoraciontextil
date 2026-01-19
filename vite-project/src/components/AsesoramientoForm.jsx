@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 /* =========================
-   FORM (NETLIFY)
+   FORM (NETLIFY + BOOKING)
 ========================= */
 
 const FormHint = styled.p`
@@ -116,18 +116,122 @@ const Submit = styled.button`
   }
 `;
 
+const InlineNote = styled.p`
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: rgba(17, 17, 17, 0.58);
+`;
+
+const InlineError = styled.p`
+  margin: 0;
+  color: rgba(180, 30, 30, 0.85);
+`;
+
 /* Helpers */
 function encode(data) {
   return new URLSearchParams(data).toString();
 }
 
+function firstDayWithSlots(days) {
+  return (days || []).find((d) => (d.slots || []).length > 0)?.date || "";
+}
+
 /**
- * Reusable Netlify form.
+ * Reusable form:
+ * - Default: Netlify Forms (simple contact)
+ * - If "Visita a domicilio" => calls booking API + blocks slot
+ *
+ * Props:
  * - packLabel: string shown/stored as hidden field "pack"
- * - onSuccess: callback after successful submit (e.g., close collapse/modal)
+ * - onSuccess: callback after successful submit
  */
 export default function AsesoramientoForm({ onSuccess, packLabel }) {
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
+
+  // Booking mode (home visit)
+  const [homeVisit, setHomeVisit] = useState(false);
+  const [addr, setAddr] = useState({
+    address_line1: "",
+    postal_code: "",
+    city: "",
+    address_notes: "",
+  });
+
+  const [availability, setAvailability] = useState([]); // [{date, slots:[{label,start,end}]}]
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedStart, setSelectedStart] = useState(""); // UTC ISO (slot.start)
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [slotError, setSlotError] = useState("");
+
+  const daysForSelect = useMemo(() => availability || [], [availability]);
+  const slotsForSelectedDate = useMemo(() => {
+    return daysForSelect.find((d) => d.date === selectedDate)?.slots || [];
+  }, [daysForSelect, selectedDate]);
+
+  async function loadAvailability() {
+    setLoadingSlots(true);
+    setSlotError("");
+
+    try {
+      const res = await fetch("/.netlify/functions/availability?days=14", {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok)
+        throw new Error(data?.error || "No se pudo cargar disponibilidad");
+
+      setAvailability(data.days || []);
+
+      // Auto-select first date with slots if none selected or if current date has 0 slots
+      setSelectedDate((prev) => {
+        if (prev) {
+          const has = (data.days || []).find((d) => d.date === prev)?.slots
+            ?.length;
+          if (has) return prev;
+        }
+        return firstDayWithSlots(data.days);
+      });
+    } catch (e) {
+      setSlotError(e.message);
+      setAvailability([]);
+      setSelectedDate("");
+      setSelectedStart("");
+    } finally {
+      setLoadingSlots(false);
+    }
+  }
+
+  async function handleHomeVisitChange(nextValue) {
+    setHomeVisit(nextValue);
+    setSelectedStart("");
+    setSlotError("");
+
+    if (nextValue) {
+      await loadAvailability();
+    } else {
+      // Reset address + selection when switching off
+      setAddr({
+        address_line1: "",
+        postal_code: "",
+        city: "",
+        address_notes: "",
+      });
+      setAvailability([]);
+      setSelectedDate("");
+      setSelectedStart("");
+    }
+  }
+
+  // If user toggles homeVisit on and then comes back later (component stays mounted),
+  // keep availability fresh.
+  useEffect(() => {
+    if (homeVisit && availability.length === 0 && !loadingSlots) {
+      loadAvailability();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [homeVisit]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -136,11 +240,79 @@ export default function AsesoramientoForm({ onSuccess, packLabel }) {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    // Ensure Netlify receives form-name in body
-    const data = { "form-name": "asesoramiento" };
-    for (const [key, value] of formData.entries()) data[key] = value;
+    // ------- Booking flow (home visit) -------
+    if (homeVisit) {
+      try {
+        if (!selectedStart) {
+          setStatus("error");
+          setSlotError("Selecciona una fecha y hora para la visita.");
+          return;
+        }
 
+        const res = await fetch("/.netlify/functions/book", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pack: packLabel || "Sin especificar",
+            customer_name: formData.get("nombre"),
+            phone: formData.get("telefono"),
+            email: formData.get("email") || null,
+            contact_preference: formData.get("preferencia") || "WhatsApp",
+            message: formData.get("mensaje") || "",
+            home_visit: true,
+            address_line1: addr.address_line1,
+            postal_code: addr.postal_code,
+            city: addr.city,
+            address_notes: addr.address_notes || null,
+            start: selectedStart,
+          }),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          // Slot taken => refresh availability & let user pick again
+          if (data?.code === "SLOT_TAKEN") {
+            await loadAvailability();
+            setSlotError(
+              "Ese horario ya no está disponible. Hemos actualizado la disponibilidad."
+            );
+          } else {
+            setSlotError(data?.error || "No se pudo reservar la visita.");
+          }
+          setStatus("error");
+          return;
+        }
+
+        // Success
+        setStatus("success");
+        form.reset();
+        setAddr({
+          address_line1: "",
+          postal_code: "",
+          city: "",
+          address_notes: "",
+        });
+        setSelectedStart("");
+        setAvailability([]);
+        setSelectedDate("");
+        setHomeVisit(false);
+
+        if (onSuccess) onSuccess();
+        return;
+      } catch (err) {
+        setStatus("error");
+        setSlotError("No se pudo reservar la visita. Inténtalo de nuevo.");
+        return;
+      }
+    }
+
+    // ------- Netlify form flow (normal enquiry) -------
     try {
+      // Ensure Netlify receives form-name in body
+      const data = { "form-name": "asesoramiento" };
+      for (const [key, value] of formData.entries()) data[key] = value;
+
       const res = await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -228,22 +400,169 @@ export default function AsesoramientoForm({ onSuccess, packLabel }) {
         </Row>
 
         <Field>
+          <span>¿Lo vemos en tu casa?</span>
+          <Select
+            value={homeVisit ? "Si" : "No"}
+            onChange={(e) => handleHomeVisitChange(e.target.value === "Si")}
+            disabled={status === "loading"}
+          >
+            <option value="No">No, prefiero asesoramiento remoto</option>
+            <option value="Si">Sí, visita a domicilio</option>
+          </Select>
+
+          {homeVisit && (
+            <InlineNote>
+              Selecciona fecha y hora. La visita se reserva en bloques de 2
+              horas.
+            </InlineNote>
+          )}
+        </Field>
+
+        {homeVisit && (
+          <>
+            <Row>
+              <Field>
+                <span>Dirección</span>
+                <Input
+                  value={addr.address_line1}
+                  onChange={(e) =>
+                    setAddr((p) => ({ ...p, address_line1: e.target.value }))
+                  }
+                  placeholder="Calle, número, etc."
+                  required
+                  disabled={status === "loading"}
+                />
+              </Field>
+
+              <Field>
+                <span>Código postal</span>
+                <Input
+                  value={addr.postal_code}
+                  onChange={(e) =>
+                    setAddr((p) => ({ ...p, postal_code: e.target.value }))
+                  }
+                  placeholder="12000"
+                  required
+                  disabled={status === "loading"}
+                />
+              </Field>
+            </Row>
+
+            <Row>
+              <Field>
+                <span>Ciudad</span>
+                <Input
+                  value={addr.city}
+                  onChange={(e) =>
+                    setAddr((p) => ({ ...p, city: e.target.value }))
+                  }
+                  placeholder="Castellón"
+                  required
+                  disabled={status === "loading"}
+                />
+              </Field>
+
+              <Field>
+                <span>Notas (opcional)</span>
+                <Input
+                  value={addr.address_notes}
+                  onChange={(e) =>
+                    setAddr((p) => ({ ...p, address_notes: e.target.value }))
+                  }
+                  placeholder="Piso, acceso, parking, etc."
+                  disabled={status === "loading"}
+                />
+              </Field>
+            </Row>
+
+            <Field>
+              <span>Fecha</span>
+              <Select
+                value={selectedDate}
+                onChange={(e) => {
+                  setSelectedDate(e.target.value);
+                  setSelectedStart("");
+                  setSlotError("");
+                }}
+                disabled={loadingSlots || status === "loading"}
+                required
+              >
+                <option value="" disabled>
+                  {loadingSlots ? "Cargando..." : "Selecciona una fecha"}
+                </option>
+
+                {daysForSelect.map((d) => (
+                  <option
+                    key={d.date}
+                    value={d.date}
+                    disabled={!d.slots?.length}
+                  >
+                    {d.date}{" "}
+                    {d.slots?.length
+                      ? `(${d.slots.length} horas)`
+                      : "(Sin horas)"}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+
+            <Field>
+              <span>Hora de inicio</span>
+              <Select
+                value={selectedStart}
+                onChange={(e) => {
+                  setSelectedStart(e.target.value);
+                  setSlotError("");
+                }}
+                disabled={!selectedDate || loadingSlots || status === "loading"}
+                required
+              >
+                <option value="" disabled>
+                  {!selectedDate
+                    ? "Selecciona una fecha primero"
+                    : "Selecciona una hora"}
+                </option>
+
+                {slotsForSelectedDate.map((s) => (
+                  <option key={s.start} value={s.start}>
+                    {s.label}
+                  </option>
+                ))}
+              </Select>
+
+              {slotError && <InlineError>{slotError}</InlineError>}
+            </Field>
+          </>
+        )}
+
+        <Field>
           <span>Mensaje</span>
           <TextArea
             name="mensaje"
             required
             placeholder="Cuéntanos qué necesitas (tipo de estancia, medidas aproximadas, estilo, domótica, etc.)"
+            disabled={status === "loading"}
           />
         </Field>
 
         <Submit type="submit" disabled={status === "loading"}>
-          {status === "loading" ? "Enviando..." : "Enviar solicitud"}
+          {status === "loading"
+            ? "Enviando..."
+            : homeVisit
+            ? "Reservar visita"
+            : "Enviar solicitud"}
         </Submit>
 
-        {status === "error" && (
-          <p style={{ margin: 0, color: "rgba(180, 30, 30, 0.85)" }}>
+        {status === "error" && !homeVisit && (
+          <InlineError>
             No se pudo enviar. Por favor, inténtalo de nuevo o usa WhatsApp.
-          </p>
+          </InlineError>
+        )}
+
+        {status === "error" && homeVisit && (
+          <InlineError>
+            No se pudo reservar. Revisa la fecha/hora y vuelve a intentarlo.
+          </InlineError>
         )}
       </Form>
     </>
