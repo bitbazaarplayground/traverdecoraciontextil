@@ -42,7 +42,7 @@ async function supabaseInsert({ url, serviceKey, table, row }) {
   return text ? JSON.parse(text) : [];
 }
 
-exports.handler = async function handler(event) {
+export async function handler(event) {
   try {
     if (event.httpMethod !== "POST") {
       return json(405, { error: "Use POST" });
@@ -201,4 +201,4 @@ exports.handler = async function handler(event) {
   } catch (err) {
     return json(500, { error: err?.message || "Unknown error" });
   }
-};
+}

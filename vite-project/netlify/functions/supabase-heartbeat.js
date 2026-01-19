@@ -1,4 +1,4 @@
-exports.handler = async function handler() {
+export async function handler() {
   try {
     const SUPABASE_URL = process.env.SUPABASE_URL;
     const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
@@ -37,4 +37,4 @@ exports.handler = async function handler() {
       body: `Heartbeat error: ${err?.message || "unknown"}`,
     };
   }
-};
+}
