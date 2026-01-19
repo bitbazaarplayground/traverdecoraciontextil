@@ -66,6 +66,23 @@ const Button = styled.button`
   }
 `;
 
+const LinkButton = styled.button`
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.78);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -102,10 +119,14 @@ function formatLocal(dt) {
 
 export default function AdminBookings() {
   const [session, setSession] = useState(null);
+
+  // Login
   const [email, setEmail] = useState("");
-  const [sentLink, setSentLink] = useState(false);
+  const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState("");
+
   const [bookings, setBookings] = useState([]);
   const [blackouts, setBlackouts] = useState([]);
 
@@ -125,7 +146,7 @@ export default function AdminBookings() {
   const isAllowed = useMemo(() => {
     const userEmail = session?.user?.email?.toLowerCase();
     if (!userEmail) return false;
-    if (adminAllowlist.length === 0) return true; // if you forget to set it, don’t lock yourself out
+    if (adminAllowlist.length === 0) return true;
     return adminAllowlist.includes(userEmail);
   }, [session, adminAllowlist]);
 
@@ -133,39 +154,75 @@ export default function AdminBookings() {
     supabase.auth
       .getSession()
       .then(({ data }) => setSession(data.session || null));
+
     const { data: sub } = supabase.auth.onAuthStateChange(
       (_event, newSession) => {
         setSession(newSession);
       }
     );
+
     return () => sub?.subscription?.unsubscribe?.();
   }, []);
 
-  async function sendMagicLink(e) {
+  async function signInWithPassword(e) {
     e.preventDefault();
     setLoading(true);
-    setSentLink(false);
+    setMsg("");
 
-    const { error } = await supabase.auth.signInWithOtp({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      options: {
-        // make sure this is your deployed domain callback if needed
-        emailRedirectTo: window.location.origin + "/admin",
-      },
+      password,
     });
 
     setLoading(false);
+
     if (error) {
-      alert(error.message);
+      setMsg("Email o contraseña incorrectos.");
       return;
     }
-    setSentLink(true);
+
+    // Immediately check allow-list
+    const loggedEmail = data?.user?.email?.toLowerCase();
+    if (
+      adminAllowlist.length &&
+      loggedEmail &&
+      !adminAllowlist.includes(loggedEmail)
+    ) {
+      await supabase.auth.signOut();
+      setMsg("Acceso denegado. Este email no está autorizado.");
+      return;
+    }
+
+    setPassword("");
+  }
+
+  async function sendResetEmail() {
+    if (!email) {
+      setMsg("Introduce tu email para enviar el enlace de recuperación.");
+      return;
+    }
+
+    setLoading(true);
+    setMsg("");
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/auth/callback?type=recovery",
+    });
+
+    setLoading(false);
+
+    if (error) {
+      setMsg("No se pudo enviar el email de recuperación.");
+      return;
+    }
+
+    setMsg("Te hemos enviado un email para restablecer tu contraseña.");
   }
 
   async function loadData() {
     setLoading(true);
+    setMsg("");
 
-    // Latest bookings first
     const b = await supabase
       .from("bookings")
       .select("*")
@@ -180,10 +237,10 @@ export default function AdminBookings() {
 
     setLoading(false);
 
-    if (b.error) alert(b.error.message);
+    if (b.error) setMsg(b.error.message);
     else setBookings(b.data || []);
 
-    if (bl.error) alert(bl.error.message);
+    if (bl.error) setMsg(bl.error.message);
     else setBlackouts(bl.data || []);
   }
 
@@ -198,17 +255,34 @@ export default function AdminBookings() {
 
   async function addBlackout(e) {
     e.preventDefault();
-    if (!blockStart || !blockEnd) return alert("Completa inicio y fin.");
+    setMsg("");
+
+    if (!blockStart || !blockEnd) {
+      setMsg("Completa inicio y fin.");
+      return;
+    }
+
+    const startIso = new Date(blockStart).toISOString();
+    const endIso = new Date(blockEnd).toISOString();
+
+    if (new Date(endIso) <= new Date(startIso)) {
+      setMsg("El fin debe ser posterior al inicio.");
+      return;
+    }
 
     setLoading(true);
     const { error } = await supabase.from("blackouts").insert({
-      start_time: new Date(blockStart).toISOString(),
-      end_time: new Date(blockEnd).toISOString(),
+      start_time: startIso,
+      end_time: endIso,
       reason: blockReason || "Bloqueado",
     });
     setLoading(false);
 
-    if (error) return alert(error.message);
+    if (error) {
+      setMsg(error.message);
+      return;
+    }
+
     setBlockStart("");
     setBlockEnd("");
     setBlockReason("Bloqueado");
@@ -220,21 +294,25 @@ export default function AdminBookings() {
     setLoading(true);
     const { error } = await supabase.from("blackouts").delete().eq("id", id);
     setLoading(false);
-    if (error) return alert(error.message);
+    if (error) {
+      setMsg(error.message);
+      return;
+    }
     loadData();
   }
 
+  // ---------- LOGIN SCREEN ----------
   if (!session) {
     return (
       <Wrap>
         <Card>
           <h2 style={{ margin: "0 0 0.35rem" }}>Admin</h2>
           <p style={{ margin: "0 0 1rem", opacity: 0.75 }}>
-            Accede con enlace seguro por email.
+            Accede con email y contraseña.
           </p>
 
           <form
-            onSubmit={sendMagicLink}
+            onSubmit={signInWithPassword}
             style={{ display: "grid", gap: "0.75rem" }}
           >
             <Label>
@@ -242,27 +320,44 @@ export default function AdminBookings() {
               <Input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@email.com"
+                placeholder="admin@email.com"
                 required
                 type="email"
               />
             </Label>
 
+            <Label>
+              <span>Contraseña</span>
+              <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                type="password"
+              />
+            </Label>
+
             <Button type="submit" disabled={loading}>
-              {loading ? "Enviando..." : "Enviar enlace"}
+              {loading ? "Entrando..." : "Entrar"}
             </Button>
 
-            {sentLink && (
-              <p style={{ margin: 0, opacity: 0.8 }}>
-                Revisa tu email y abre el enlace para iniciar sesión.
-              </p>
-            )}
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+              <LinkButton
+                type="button"
+                onClick={sendResetEmail}
+                disabled={loading}
+              >
+                He olvidado mi contraseña
+              </LinkButton>
+            </div>
+
+            {msg && <p style={{ margin: 0, opacity: 0.85 }}>{msg}</p>}
           </form>
         </Card>
       </Wrap>
     );
   }
 
+  // ---------- NOT ALLOWED ----------
   if (!isAllowed) {
     return (
       <Wrap>
@@ -279,6 +374,7 @@ export default function AdminBookings() {
     );
   }
 
+  // ---------- DASHBOARD ----------
   return (
     <Wrap>
       <Card>
@@ -295,7 +391,11 @@ export default function AdminBookings() {
             <p style={{ margin: 0, opacity: 0.75 }}>
               Ver reservas + bloquear disponibilidad.
             </p>
+            {msg && (
+              <p style={{ margin: "0.5rem 0 0", opacity: 0.85 }}>{msg}</p>
+            )}
           </div>
+
           <div style={{ display: "flex", gap: "0.6rem" }}>
             <Button onClick={loadData} disabled={loading}>
               {loading ? "Cargando..." : "Actualizar"}
@@ -406,6 +506,7 @@ export default function AdminBookings() {
                     {formatLocal(bk.end_time)}
                   </div>
                 </td>
+
                 <td>
                   <div>
                     <strong>{bk.customer_name}</strong>
@@ -418,6 +519,7 @@ export default function AdminBookings() {
                     </div>
                   )}
                 </td>
+
                 <td>
                   <div>
                     <strong>{bk.pack}</strong>
@@ -425,9 +527,11 @@ export default function AdminBookings() {
                   <div style={{ opacity: 0.75 }}>{bk.contact_preference}</div>
                   <div style={{ opacity: 0.75 }}>Estado: {bk.status}</div>
                 </td>
+
                 <td style={{ whiteSpace: "pre-wrap" }}>{bk.message || ""}</td>
               </tr>
             ))}
+
             {bookings.length === 0 && (
               <tr>
                 <td colSpan="4" style={{ opacity: 0.7 }}>

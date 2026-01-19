@@ -15,6 +15,7 @@ import AutomatizacionIndividual from "./components/automatizacion/Automatizacion
 import PanelJapones from "./components/ventanas/PanelJapones";
 import Venecianas from "./components/ventanas/Venecianas";
 import AdminBookings from "./pages/AdminBookings";
+import AuthCallback from "./pages/AuthCallback";
 import Automatizacion from "./pages/Automatizacion";
 import ContactPage from "./pages/ContactPage";
 import CortinasEstores from "./pages/CortinasEstores";
@@ -77,6 +78,9 @@ function App() {
 
         {/* ADMIN */}
         <Route path="/admin" element={<AdminBookings />} />
+
+        {/* ROUTES */}
+        <Route path="/auth/callback" element={<AuthCallback />} />
       </Routes>
       <Footer />
     </>
