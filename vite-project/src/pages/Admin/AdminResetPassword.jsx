@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { supabase } from "../lib/supabaseClient";
@@ -63,6 +63,11 @@ export default function AdminResetPassword() {
   const [pw2, setPw2] = useState("");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    // Ensures Supabase parses any tokens present in the URL/hash on first load
+    supabase.auth.getSession().catch(() => {});
+  }, []);
 
   async function handleReset(e) {
     e.preventDefault();

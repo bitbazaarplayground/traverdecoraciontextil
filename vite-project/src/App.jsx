@@ -14,6 +14,7 @@ import ServicesSection from "./components/ServicesSection";
 import AutomatizacionIndividual from "./components/automatizacion/AutomatizacionIndividual";
 import PanelJapones from "./components/ventanas/PanelJapones";
 import Venecianas from "./components/ventanas/Venecianas";
+import AdminResetPassword from "./pages/Admin/AdminResetPassword";
 import AdminBookings from "./pages/AdminBookings";
 import AuthCallback from "./pages/AuthCallback";
 import Automatizacion from "./pages/Automatizacion";
@@ -81,6 +82,7 @@ function App() {
 
         {/* ROUTES */}
         <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/admin/reset-password" element={<AdminResetPassword />} />
       </Routes>
       <Footer />
     </>
