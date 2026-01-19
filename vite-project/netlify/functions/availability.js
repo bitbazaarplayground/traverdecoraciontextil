@@ -147,10 +147,10 @@ async function supabaseGet({ url, anonKey, path }) {
 exports.handler = async function handler(event) {
   try {
     const SUPABASE_URL = process.env.SUPABASE_URL;
-    const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!SUPABASE_URL || !SERVICE_KEY) {
       return json(500, {
-        error: "Missing SUPABASE_URL or SUPABASE_ANON_KEY env vars",
+        error: "Missing SUPABASE_URL or SERVICE_KEY env vars",
       });
     }
 
