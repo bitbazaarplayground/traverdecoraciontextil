@@ -145,6 +145,10 @@ export default function AdminBookings() {
   const [blockEnd, setBlockEnd] = useState("");
   const [blockReason, setBlockReason] = useState("Bloqueado");
 
+  // Image bucket
+  const [images, setImages] = useState([]);
+  const [imgLoading, setImgLoading] = useState(false);
+
   const adminAllowlist = useMemo(() => {
     const raw = import.meta.env.VITE_ADMIN_EMAILS || "";
     return raw
@@ -320,6 +324,56 @@ export default function AdminBookings() {
       return;
     }
     loadData();
+  }
+
+  // ---------- LOAD CUSTOMER IMAGES ----------
+  async function loadCustomerImages(customerKey) {
+    setImgLoading(true);
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess?.session?.access_token;
+      if (!token) throw new Error("Sesión no válida.");
+
+      const res = await fetch(
+        `/.netlify/functions/admin-customer-images?key=${encodeURIComponent(
+          customerKey
+        )}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const data = await res.json();
+      if (!res.ok)
+        throw new Error(data?.error || "No se pudieron cargar imágenes.");
+      setImages(data.images || []);
+    } catch (e) {
+      setImages([]);
+    } finally {
+      setImgLoading(false);
+    }
+  }
+  useEffect(() => {
+    if (!selectedCustomer) return;
+
+    const key = (selectedCustomer.phone || selectedCustomer.email || "")
+      .trim()
+      .toLowerCase();
+
+    if (!key) return;
+
+    loadCustomerImages(key);
+  }, [selectedCustomer]);
+  // Browser safe
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result; // "data:image/png;base64,...."
+        const base64 = String(result).split(",")[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
 
   // ---------- LOGIN SCREEN ----------
@@ -504,6 +558,118 @@ export default function AdminBookings() {
               <tr>
                 <th>Notas</th>
                 <td>{selectedCustomer.address_notes || "—"}</td>
+              </tr>
+
+              <tr>
+                <th>Imágenes</th>
+                <td>
+                  <div style={{ marginTop: "0.25rem" }}>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={async (e) => {
+                        const files = Array.from(e.target.files || []);
+                        if (!files.length) return;
+
+                        const key = (
+                          selectedCustomer.phone ||
+                          selectedCustomer.email ||
+                          ""
+                        )
+                          .trim()
+                          .toLowerCase();
+
+                        if (!key) return;
+
+                        setImgLoading(true);
+                        try {
+                          const { data: sess } =
+                            await supabase.auth.getSession();
+                          const token = sess?.session?.access_token;
+                          if (!token) throw new Error("Sesión no válida.");
+
+                          for (const file of files) {
+                            const base64 = await fileToBase64(file);
+
+                            const res = await fetch(
+                              "/.netlify/functions/admin-customer-images",
+                              {
+                                method: "POST",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                  Authorization: `Bearer ${token}`,
+                                },
+                                body: JSON.stringify({
+                                  key,
+                                  filename: file.name,
+                                  contentType: file.type,
+                                  base64,
+                                }),
+                              }
+                            );
+
+                            const data = await res.json();
+                            if (!res.ok)
+                              throw new Error(
+                                data?.error || "Error subiendo imagen"
+                              );
+                          }
+
+                          await loadCustomerImages(key);
+                        } catch (err) {
+                          console.error(err);
+                          setMsg(err?.message || "Error subiendo imagen");
+                        } finally {
+                          setImgLoading(false);
+                          e.target.value = "";
+                        }
+                      }}
+                    />
+
+                    {imgLoading && (
+                      <p style={{ opacity: 0.75, marginTop: "0.5rem" }}>
+                        Cargando…
+                      </p>
+                    )}
+
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3, 1fr)",
+                        gap: "0.5rem",
+                        marginTop: "0.75rem",
+                      }}
+                    >
+                      {images.map((img) => (
+                        <a
+                          key={img.path}
+                          href={img.url || "#"}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <img
+                            src={img.url || ""}
+                            alt=""
+                            style={{
+                              width: "100%",
+                              height: 110,
+                              objectFit: "cover",
+                              borderRadius: 12,
+                              border: "1px solid rgba(17,17,17,0.12)",
+                            }}
+                          />
+                        </a>
+                      ))}
+                    </div>
+
+                    {!imgLoading && images.length === 0 && (
+                      <p style={{ marginTop: "0.5rem", opacity: 0.7 }}>
+                        No hay imágenes aún.
+                      </p>
+                    )}
+                  </div>
+                </td>
               </tr>
             </tbody>
           </Table>
