@@ -329,6 +329,20 @@ export default function AdminBookings() {
   // ---------- LOAD CUSTOMER IMAGES ----------
   async function loadCustomerImages(customerKey) {
     setImgLoading(true);
+
+    // 0) If offline, try to use cache immediately
+    const cached = loadImagesCache(customerKey);
+    if (!navigator.onLine && cached?.images) {
+      setImages(cached.images);
+      setMsg(
+        `Modo offline. Última sincronización: ${new Date(
+          cached.savedAt
+        ).toLocaleString()}`
+      );
+      setImgLoading(false);
+      return;
+    }
+
     try {
       const { data: sess } = await supabase.auth.getSession();
       const token = sess?.session?.access_token;
@@ -342,26 +356,37 @@ export default function AdminBookings() {
       );
 
       const data = await res.json();
-      if (!res.ok)
+      if (!res.ok) {
         throw new Error(data?.error || "No se pudieron cargar imágenes.");
-      setImages(data.images || []);
+      }
+
+      const imgs = data.images || [];
+      setImages(imgs);
+
+      // 1) Save successful results to cache
+      saveImagesCache(customerKey, imgs);
+
+      // 2) Clear offline message if we successfully loaded online
+      if (msg?.startsWith("Modo offline")) setMsg("");
     } catch (e) {
-      setImages([]);
+      // 3) If fetch fails, fallback to cache if possible
+      const fallback = loadImagesCache(customerKey);
+      if (fallback?.images) {
+        setImages(fallback.images);
+        setMsg(
+          `No se pudo sincronizar. Mostrando caché (última: ${new Date(
+            fallback.savedAt
+          ).toLocaleString()})`
+        );
+      } else {
+        setImages([]);
+        setMsg(e?.message || "No se pudieron cargar imágenes.");
+      }
     } finally {
       setImgLoading(false);
     }
   }
-  useEffect(() => {
-    if (!selectedCustomer) return;
 
-    const key = (selectedCustomer.phone || selectedCustomer.email || "")
-      .trim()
-      .toLowerCase();
-
-    if (!key) return;
-
-    loadCustomerImages(key);
-  }, [selectedCustomer]);
   // Browser safe
   function fileToBase64(file) {
     return new Promise((resolve, reject) => {
@@ -374,6 +399,43 @@ export default function AdminBookings() {
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
+  }
+  function cacheKeyForCustomer(key) {
+    return `customer-images-cache:${key}`;
+  }
+
+  function saveImagesCache(key, images) {
+    try {
+      localStorage.setItem(
+        cacheKeyForCustomer(key),
+        JSON.stringify({ savedAt: Date.now(), images })
+      );
+    } catch {}
+  }
+  function buildAddressString(c) {
+    if (!c?.home_visit) return "";
+    const parts = [c.address_line1, `${c.postal_code || ""} ${c.city || ""}`];
+    return parts.filter(Boolean).join(", ");
+  }
+
+  function googleMapsUrl(address) {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      address
+    )}`;
+  }
+
+  function appleMapsUrl(address) {
+    return `https://maps.apple.com/?q=${encodeURIComponent(address)}`;
+  }
+
+  function loadImagesCache(key) {
+    try {
+      const raw = localStorage.getItem(cacheKeyForCustomer(key));
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
   }
 
   // ---------- LOGIN SCREEN ----------
@@ -551,10 +613,64 @@ export default function AdminBookings() {
                 <th>Dirección</th>
                 <td>
                   {selectedCustomer.home_visit
-                    ? `${selectedCustomer.address_line1}, ${selectedCustomer.postal_code} ${selectedCustomer.city}`
+                    ? (() => {
+                        const address = [
+                          selectedCustomer.address_line1,
+                          `${selectedCustomer.postal_code || ""} ${
+                            selectedCustomer.city || ""
+                          }`,
+                        ]
+                          .filter(Boolean)
+                          .join(", ");
+
+                        return (
+                          <div style={{ display: "grid", gap: "0.5rem" }}>
+                            <div>{address}</div>
+
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "0.5rem",
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                  address
+                                )}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                  fontWeight: 800,
+                                  textDecoration: "underline",
+                                  textUnderlineOffset: 3,
+                                }}
+                              >
+                                Abrir en Google Maps
+                              </a>
+
+                              <a
+                                href={`https://maps.apple.com/?q=${encodeURIComponent(
+                                  address
+                                )}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                  fontWeight: 800,
+                                  textDecoration: "underline",
+                                  textUnderlineOffset: 3,
+                                }}
+                              >
+                                Abrir en Apple Maps
+                              </a>
+                            </div>
+                          </div>
+                        );
+                      })()
                     : "—"}
                 </td>
               </tr>
+
               <tr>
                 <th>Notas</th>
                 <td>{selectedCustomer.address_notes || "—"}</td>
@@ -642,24 +758,136 @@ export default function AdminBookings() {
                       }}
                     >
                       {images.map((img) => (
-                        <a
-                          key={img.path}
-                          href={img.url || "#"}
-                          target="_blank"
-                          rel="noreferrer"
+                        <div
+                          key={img.id || img.path}
+                          style={{ display: "grid", gap: "0.35rem" }}
                         >
-                          <img
-                            src={img.url || ""}
-                            alt=""
+                          <a
+                            href={img.url || "#"}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <img
+                              src={img.url || ""}
+                              alt=""
+                              style={{
+                                width: "100%",
+                                height: 110,
+                                objectFit: "cover",
+                                borderRadius: 12,
+                                border: "1px solid rgba(17,17,17,0.12)",
+                              }}
+                            />
+                          </a>
+
+                          <input
+                            value={img.caption || ""}
+                            placeholder="Añadir nota..."
+                            onChange={(e) => {
+                              const caption = e.target.value;
+                              setImages((prev) =>
+                                prev.map((p) =>
+                                  p.id === img.id ? { ...p, caption } : p
+                                )
+                              );
+                            }}
+                            onBlur={async () => {
+                              // Si por lo que sea llega una imagen sin id, no intentes guardar
+                              if (!img.id) {
+                                setMsg(
+                                  "Esta imagen no tiene id (no se puede guardar la nota)."
+                                );
+                                return;
+                              }
+
+                              try {
+                                const { data: sess } =
+                                  await supabase.auth.getSession();
+                                const token = sess?.session?.access_token;
+                                if (!token)
+                                  throw new Error("Sesión no válida.");
+
+                                const res = await fetch(
+                                  "/.netlify/functions/admin-customer-images",
+                                  {
+                                    method: "PATCH",
+                                    headers: {
+                                      "Content-Type": "application/json",
+                                      Authorization: `Bearer ${token}`,
+                                    },
+                                    body: JSON.stringify({
+                                      id: img.id,
+                                      caption: img.caption || "",
+                                    }),
+                                  }
+                                );
+
+                                const data = await res.json();
+                                if (!res.ok)
+                                  throw new Error(
+                                    data?.error || "No se pudo guardar la nota"
+                                  );
+
+                                // opcional: si quieres limpiar un msg anterior al guardar bien
+                                // setMsg("");
+                              } catch (err) {
+                                console.error(err);
+                                setMsg(err?.message || "Error guardando nota");
+                              }
+                            }}
                             style={{
                               width: "100%",
-                              height: 110,
-                              objectFit: "cover",
-                              borderRadius: 12,
+                              padding: "0.5rem 0.6rem",
+                              borderRadius: 10,
                               border: "1px solid rgba(17,17,17,0.12)",
                             }}
                           />
-                        </a>
+
+                          <Button
+                            $variant="danger"
+                            type="button"
+                            onClick={async () => {
+                              if (!confirm("¿Eliminar esta imagen?")) return;
+
+                              try {
+                                const { data: sess } =
+                                  await supabase.auth.getSession();
+                                const token = sess?.session?.access_token;
+                                if (!token)
+                                  throw new Error("Sesión no válida.");
+
+                                const res = await fetch(
+                                  "/.netlify/functions/admin-customer-images",
+                                  {
+                                    method: "DELETE",
+                                    headers: {
+                                      "Content-Type": "application/json",
+                                      Authorization: `Bearer ${token}`,
+                                    },
+                                    body: JSON.stringify({ id: img.id }),
+                                  }
+                                );
+
+                                const data = await res.json();
+                                if (!res.ok)
+                                  throw new Error(
+                                    data?.error || "No se pudo eliminar"
+                                  );
+
+                                setImages((prev) =>
+                                  prev.filter((p) => p.id !== img.id)
+                                );
+                              } catch (err) {
+                                console.error(err);
+                                setMsg(
+                                  err?.message || "Error eliminando imagen"
+                                );
+                              }
+                            }}
+                          >
+                            Eliminar
+                          </Button>
+                        </div>
                       ))}
                     </div>
 
