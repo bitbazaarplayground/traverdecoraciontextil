@@ -149,6 +149,10 @@ export default function AdminBookings() {
   const [images, setImages] = useState([]);
   const [imgLoading, setImgLoading] = useState(false);
 
+  // Notes
+  const [adminNote, setAdminNote] = useState("");
+  const [noteLoading, setNoteLoading] = useState(false);
+
   const adminAllowlist = useMemo(() => {
     const raw = import.meta.env.VITE_ADMIN_EMAILS || "";
     return raw
@@ -273,6 +277,20 @@ export default function AdminBookings() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, isAllowed]);
 
+  useEffect(() => {
+    if (!selectedCustomer) return;
+
+    const key = (selectedCustomer.phone || selectedCustomer.email || "")
+      .trim()
+      .toLowerCase();
+
+    if (!key) return;
+
+    loadCustomerImages(key);
+    loadCustomerNote(key);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCustomer]);
+
   async function signOut() {
     setSelectedCustomer(null);
     await supabase.auth.signOut();
@@ -324,6 +342,48 @@ export default function AdminBookings() {
       return;
     }
     loadData();
+  }
+
+  // ---------- LOAD / SAVE CUSTOMER NOTE ----------
+  async function loadCustomerNote(customerKey) {
+    setNoteLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("customer_admin_notes")
+        .select("note")
+        .eq("customer_key", customerKey)
+        .maybeSingle();
+
+      if (error) throw error;
+      setAdminNote(data?.note || "");
+    } catch (err) {
+      console.error(err);
+      setAdminNote("");
+    } finally {
+      setNoteLoading(false);
+    }
+  }
+
+  async function saveCustomerNote(customerKey) {
+    setNoteLoading(true);
+    try {
+      const { error } = await supabase.from("customer_admin_notes").upsert(
+        {
+          customer_key: customerKey,
+          note: adminNote || "",
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "customer_key" }
+      );
+
+      if (error) throw error;
+      setMsg("Nota guardada ✅");
+    } catch (err) {
+      console.error(err);
+      setMsg(err?.message || "Error guardando nota");
+    } finally {
+      setNoteLoading(false);
+    }
   }
 
   // ---------- LOAD CUSTOMER IMAGES ----------
@@ -386,6 +446,24 @@ export default function AdminBookings() {
       setImgLoading(false);
     }
   }
+  // Save image caption
+  async function saveImageCaption(img) {
+    const { data: sess } = await supabase.auth.getSession();
+    const token = sess?.session?.access_token;
+    if (!token) throw new Error("Sesión no válida.");
+
+    const res = await fetch("/.netlify/functions/admin-customer-images", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ id: img.id, caption: img.caption || "" }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error || "No se pudo guardar la nota");
+  }
 
   // Browser safe
   function fileToBase64(file) {
@@ -411,21 +489,6 @@ export default function AdminBookings() {
         JSON.stringify({ savedAt: Date.now(), images })
       );
     } catch {}
-  }
-  function buildAddressString(c) {
-    if (!c?.home_visit) return "";
-    const parts = [c.address_line1, `${c.postal_code || ""} ${c.city || ""}`];
-    return parts.filter(Boolean).join(", ");
-  }
-
-  function googleMapsUrl(address) {
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-      address
-    )}`;
-  }
-
-  function appleMapsUrl(address) {
-    return `https://maps.apple.com/?q=${encodeURIComponent(address)}`;
   }
 
   function loadImagesCache(key) {
@@ -562,9 +625,29 @@ export default function AdminBookings() {
           </div>
 
           <div style={{ display: "flex", gap: "0.6rem" }}>
-            <Button onClick={loadData} disabled={loading}>
+            <Button
+              onClick={async () => {
+                await loadData();
+
+                if (selectedCustomer) {
+                  const key = (
+                    selectedCustomer.phone ||
+                    selectedCustomer.email ||
+                    ""
+                  )
+                    .trim()
+                    .toLowerCase();
+                  if (key) {
+                    await loadCustomerImages(key);
+                    await loadCustomerNote(key);
+                  }
+                }
+              }}
+              disabled={loading}
+            >
               {loading ? "Cargando..." : "Actualizar"}
             </Button>
+
             <Button onClick={signOut}>Salir</Button>
           </div>
         </div>
@@ -584,7 +667,15 @@ export default function AdminBookings() {
                 Historial y datos de contacto
               </p>
             </div>
-            <Button type="button" onClick={() => setSelectedCustomer(null)}>
+            <Button
+              type="button"
+              onClick={() => {
+                setSelectedCustomer(null);
+                setImages([]);
+                setAdminNote("");
+                setMsg("");
+              }}
+            >
               Cerrar
             </Button>
           </div>
@@ -674,6 +765,44 @@ export default function AdminBookings() {
               <tr>
                 <th>Notas</th>
                 <td>{selectedCustomer.address_notes || "—"}</td>
+              </tr>
+              <tr>
+                <th>Notas internas</th>
+                <td>
+                  <textarea
+                    value={adminNote}
+                    onChange={(e) => setAdminNote(e.target.value)}
+                    placeholder="Notas para admins/empleados (código de puerta, perro, instrucciones, etc.)"
+                    style={{
+                      width: "100%",
+                      minHeight: 90,
+                      padding: "0.75rem",
+                      borderRadius: 12,
+                      border: "1px solid rgba(17,17,17,0.12)",
+                      resize: "vertical",
+                    }}
+                  />
+
+                  <div style={{ marginTop: "0.5rem" }}>
+                    <Button
+                      type="button"
+                      disabled={noteLoading}
+                      onClick={async () => {
+                        const key = (
+                          selectedCustomer.phone ||
+                          selectedCustomer.email ||
+                          ""
+                        )
+                          .trim()
+                          .toLowerCase();
+                        if (!key) return;
+                        await saveCustomerNote(key);
+                      }}
+                    >
+                      {noteLoading ? "Guardando..." : "Guardar nota"}
+                    </Button>
+                  </div>
+                </td>
               </tr>
 
               <tr>
@@ -791,8 +920,17 @@ export default function AdminBookings() {
                                 )
                               );
                             }}
-                            onBlur={async () => {
-                              // Si por lo que sea llega una imagen sin id, no intentes guardar
+                            style={{
+                              width: "100%",
+                              padding: "0.5rem 0.6rem",
+                              borderRadius: 10,
+                              border: "1px solid rgba(17,17,17,0.12)",
+                            }}
+                          />
+
+                          <Button
+                            type="button"
+                            onClick={async () => {
                               if (!img.id) {
                                 setMsg(
                                   "Esta imagen no tiene id (no se puede guardar la nota)."
@@ -801,47 +939,16 @@ export default function AdminBookings() {
                               }
 
                               try {
-                                const { data: sess } =
-                                  await supabase.auth.getSession();
-                                const token = sess?.session?.access_token;
-                                if (!token)
-                                  throw new Error("Sesión no válida.");
-
-                                const res = await fetch(
-                                  "/.netlify/functions/admin-customer-images",
-                                  {
-                                    method: "PATCH",
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                      Authorization: `Bearer ${token}`,
-                                    },
-                                    body: JSON.stringify({
-                                      id: img.id,
-                                      caption: img.caption || "",
-                                    }),
-                                  }
-                                );
-
-                                const data = await res.json();
-                                if (!res.ok)
-                                  throw new Error(
-                                    data?.error || "No se pudo guardar la nota"
-                                  );
-
-                                // opcional: si quieres limpiar un msg anterior al guardar bien
-                                // setMsg("");
+                                await saveImageCaption(img);
+                                setMsg("Nota guardada ✅");
                               } catch (err) {
                                 console.error(err);
                                 setMsg(err?.message || "Error guardando nota");
                               }
                             }}
-                            style={{
-                              width: "100%",
-                              padding: "0.5rem 0.6rem",
-                              borderRadius: 10,
-                              border: "1px solid rgba(17,17,17,0.12)",
-                            }}
-                          />
+                          >
+                            Guardar
+                          </Button>
 
                           <Button
                             $variant="danger"
