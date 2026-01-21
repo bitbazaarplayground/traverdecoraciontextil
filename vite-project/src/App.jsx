@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import AutomatizacionCompleta from "./components/AutomatizacionCompleta";
 import BrandLogos from "./components/BrandLogos";
@@ -15,6 +15,7 @@ import AutomatizacionIndividual from "./components/automatizacion/Automatizacion
 import PanelJapones from "./components/ventanas/PanelJapones";
 import Venecianas from "./components/ventanas/Venecianas";
 import AdminBookings from "./pages/Admin/AdminBookings";
+import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminResetPassword from "./pages/Admin/AdminResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Automatizacion from "./pages/Automatizacion";
@@ -26,10 +27,14 @@ import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
 
 function App() {
   const [overlayOpen, setOverlayOpen] = useState(false);
+  const { pathname } = useLocation();
+  const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
+
   return (
     <>
       <ScrollToTop />
-      <Navbar />
+
+      {!isAdminRoute && <Navbar />}
 
       <Routes>
         {/* HOME PAGE */}
@@ -46,30 +51,30 @@ function App() {
             </>
           }
         />
+
         <Route
           path="/propuestas"
           element={<Propuestas setOverlayOpen={setOverlayOpen} />}
         />
+
         {/* AUTOMATIZACION */}
         <Route path="/automatizacion" element={<Automatizacion />} />
         <Route
           path="/automatizacion/completa"
           element={<AutomatizacionCompleta />}
         />
-
         <Route
           path="/automatizacion/individual"
           element={<AutomatizacionIndividual />}
         />
 
         {/* CONTACT PAGE */}
-
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/propuestas" element={<Propuestas />} />
+        {/* <Route path="/propuestas" element={<Propuestas />} /> */}
+
         {/* VENTANAS */}
         <Route path="/panel-japones" element={<PanelJapones />} />
         <Route path="/venecianas" element={<Venecianas />} />
-
         <Route path="/cortinas-estores" element={<CortinasEstores />} />
         <Route
           path="/toldos-proteccionsolar"
@@ -78,13 +83,16 @@ function App() {
         <Route path="/services" element={<Servicios />} />
 
         {/* ADMIN */}
-        <Route path="/admin" element={<AdminBookings />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminBookings />} />
+        </Route>
 
         {/* ROUTES */}
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/admin/reset-password" element={<AdminResetPassword />} />
       </Routes>
-      <Footer />
+
+      {!isAdminRoute && <Footer />}
     </>
   );
 }
