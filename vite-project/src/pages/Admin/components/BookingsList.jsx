@@ -2,6 +2,20 @@ import React, { useMemo, useState } from "react";
 import { Button, Card, Input, Table } from "../adminStyles";
 import { formatLocal } from "../utils";
 
+function statusLabel(s) {
+  return (
+    {
+      nuevo: "Nuevo",
+      presupuesto: "Presupuesto",
+      en_proceso: "En proceso",
+      finalizado: "Finalizado",
+      no_interesado: "No interesado",
+    }[s] ||
+    s ||
+    "—"
+  );
+}
+
 export default function BookingsList({
   bookings,
   loading,
@@ -11,6 +25,7 @@ export default function BookingsList({
 }) {
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState("upcoming"); // upcoming | today | past | all
+  const [statusFilter, setStatusFilter] = useState("todos");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -36,6 +51,9 @@ export default function BookingsList({
 
     return (bookings || [])
       .filter(matches)
+      .filter((bk) =>
+        statusFilter === "todos" ? true : bk.status_admin === statusFilter
+      )
       .filter((bk) => {
         const start = new Date(bk.start_time);
         const end = new Date(bk.end_time);
@@ -47,7 +65,7 @@ export default function BookingsList({
         return true;
       })
       .sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
-  }, [bookings, query, tab]);
+  }, [bookings, query, tab, statusFilter]);
 
   return (
     <Card>
@@ -97,6 +115,25 @@ export default function BookingsList({
             </Button>
           ))}
         </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          style={{
+            padding: "0.6rem 0.75rem",
+            borderRadius: 12,
+            border: "1px solid rgba(17,17,17,0.12)",
+            background: "rgba(17,17,17,0.02)",
+            fontWeight: 800,
+            maxWidth: 260,
+          }}
+        >
+          <option value="todos">Todos los estados</option>
+          <option value="nuevo">Nuevo</option>
+          <option value="presupuesto">Presupuesto</option>
+          <option value="en_proceso">En proceso</option>
+          <option value="finalizado">Finalizado</option>
+          <option value="no_interesado">No interesado</option>
+        </select>
 
         <Table>
           <thead>
@@ -131,7 +168,34 @@ export default function BookingsList({
                     {bk.city && <div style={{ opacity: 0.75 }}>{bk.city}</div>}
                   </td>
                   <td>
-                    <strong>{bk.pack}</strong>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "0.5rem",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      <strong>{bk.pack}</strong>
+
+                      <span
+                        style={{
+                          padding: "0.2rem 0.45rem",
+                          borderRadius: 999,
+                          fontSize: "0.7rem",
+                          fontWeight: 800,
+                          background:
+                            bk.status_admin === "finalizado"
+                              ? "#e6f7ea"
+                              : bk.status_admin === "presupuesto"
+                              ? "#fff4e5"
+                              : "#eef2ff",
+                        }}
+                      >
+                        {statusLabel(bk.status_admin)}
+                      </span>
+                    </div>
+
                     <div style={{ opacity: 0.75 }}>{bk.status}</div>
                   </td>
                 </tr>

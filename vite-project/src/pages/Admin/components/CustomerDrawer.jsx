@@ -1,26 +1,65 @@
-import React from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { supabase } from "../../../lib/supabaseClient.js";
 import { Button, Drawer, Table } from "../adminStyles";
 
-export default function CustomerDrawer({
-  customer,
-  images,
-  imgLoading,
-  adminNote,
-  noteLoading,
-  setAdminNote,
-  onClose,
-  saveCustomerNote,
-  saveImageCaption,
-  setImages,
-  setMsg,
-  uploadCustomerImages,
-  deleteCustomerImage,
-}) {
-  if (!customer) return null;
+function cacheKeyForCustomer(key) {
+  return `customer-images-cache:${key}`;
+}
 
-  const key = (customer.phone || customer.email || "").trim().toLowerCase();
+function loadImagesCache(key) {
+  try {
+    const raw = localStorage.getItem(cacheKeyForCustomer(key));
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
 
-  const address = customer.home_visit
+function saveImagesCache(key, images) {
+  try {
+    localStorage.setItem(
+      cacheKeyForCustomer(key),
+      JSON.stringify({ savedAt: Date.now(), images })
+    );
+  } catch {}
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result; // data:image/png;base64,...
+      const base64 = String(result).split(",")[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
+  const customerKey = useMemo(() => {
+    return (customer?.phone || customer?.email || "").trim().toLowerCase();
+  }, [customer]);
+
+  const [drawerMsg, setDrawerMsg] = useState("");
+
+  // Notes
+  const [adminNote, setAdminNote] = useState("");
+  const [noteLoading, setNoteLoading] = useState(false);
+
+  // Images
+  const [images, setImages] = useState([]);
+  const [imgLoading, setImgLoading] = useState(false);
+
+  // Status
+  const [status, setStatus] = useState(customer?.status_admin || "nuevo");
+  useEffect(() => {
+    setStatus(customer?.status_admin || "nuevo");
+  }, [customer]);
+
+  const address = customer?.home_visit
     ? [
         customer.address_line1,
         `${customer.postal_code || ""} ${customer.city || ""}`,
@@ -28,6 +67,297 @@ export default function CustomerDrawer({
         .filter(Boolean)
         .join(", ")
     : "";
+
+  // ---------------- Shared realtime channel (broadcast) ----------------
+  const syncChannelRef = useRef(null);
+
+  useEffect(() => {
+    // Create once
+    const ch = supabase.channel("admin-sync");
+
+    // Listen for updates from other admins
+    ch.on("broadcast", { event: "customer_updated" }, ({ payload }) => {
+      const key = payload?.customerKey;
+      if (!key) return;
+
+      // If THIS drawer is open on that customer, refresh just that customer data
+      if (key === customerKey) {
+        loadCustomerImages(customerKey);
+        loadCustomerNote(customerKey);
+        setDrawerMsg("Actualizado en tiempo real ✅");
+      }
+    });
+
+    ch.subscribe();
+    syncChannelRef.current = ch;
+
+    return () => {
+      supabase.removeChannel(ch);
+      syncChannelRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // <- important: subscribe once
+
+  async function broadcastCustomerUpdated(key) {
+    if (!key) return;
+    try {
+      const ch = syncChannelRef.current;
+      if (!ch) return;
+
+      await ch.send({
+        type: "broadcast",
+        event: "customer_updated",
+        payload: { customerKey: key },
+      });
+    } catch (err) {
+      // Do not break UX if broadcast fails
+      console.warn("Broadcast failed:", err?.message || err);
+    }
+  }
+
+  // ---------------- Notes ----------------
+  async function loadCustomerNote(key) {
+    if (!key) return;
+    setNoteLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("customer_admin_notes")
+        .select("note")
+        .eq("customer_key", key)
+        .maybeSingle();
+
+      if (error) throw error;
+      setAdminNote(data?.note || "");
+    } catch (err) {
+      console.error(err);
+      setAdminNote("");
+    } finally {
+      setNoteLoading(false);
+    }
+  }
+
+  async function saveCustomerNote(key) {
+    if (!key) return;
+    setNoteLoading(true);
+    setDrawerMsg("");
+    try {
+      const { error } = await supabase.from("customer_admin_notes").upsert(
+        {
+          customer_key: key,
+          note: adminNote || "",
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "customer_key" }
+      );
+
+      if (error) throw error;
+
+      setDrawerMsg("Nota guardada ✅");
+      await broadcastCustomerUpdated(key);
+    } catch (err) {
+      console.error(err);
+      setDrawerMsg(err?.message || "Error guardando nota");
+    } finally {
+      setNoteLoading(false);
+    }
+  }
+
+  // ---------------- Images ----------------
+  async function loadCustomerImages(key) {
+    if (!key) return;
+    setImgLoading(true);
+
+    // If offline -> cache
+    const cached = loadImagesCache(key);
+    if (!navigator.onLine && cached?.images) {
+      setImages(cached.images);
+      setDrawerMsg(
+        `Modo offline. Última sincronización: ${new Date(
+          cached.savedAt
+        ).toLocaleString()}`
+      );
+      setImgLoading(false);
+      return;
+    }
+
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess?.session?.access_token;
+      if (!token) throw new Error("Sesión no válida.");
+
+      const res = await fetch(
+        `/.netlify/functions/admin-customer-images?key=${encodeURIComponent(
+          key
+        )}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok)
+        throw new Error(data?.error || "No se pudieron cargar imágenes.");
+
+      const imgs = data.images || [];
+      setImages(imgs);
+      saveImagesCache(key, imgs);
+
+      // Clear offline warning if we got online results
+      setDrawerMsg((prev) => (prev?.startsWith("Modo offline") ? "" : prev));
+    } catch (err) {
+      console.error(err);
+
+      // fallback cache
+      const fallback = loadImagesCache(key);
+      if (fallback?.images) {
+        setImages(fallback.images);
+        setDrawerMsg(
+          `No se pudo sincronizar. Mostrando caché (última: ${new Date(
+            fallback.savedAt
+          ).toLocaleString()}`
+        );
+      } else {
+        setImages([]);
+        setDrawerMsg(err?.message || "No se pudieron cargar imágenes.");
+      }
+    } finally {
+      setImgLoading(false);
+    }
+  }
+
+  async function uploadCustomerImages(key, files) {
+    if (!key) throw new Error("Customer key no válido.");
+    if (!files?.length) return;
+
+    setImgLoading(true);
+    setDrawerMsg("");
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess?.session?.access_token;
+      if (!token) throw new Error("Sesión no válida.");
+
+      for (const file of files) {
+        const base64 = await fileToBase64(file);
+
+        const res = await fetch("/.netlify/functions/admin-customer-images", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            key,
+            filename: file.name,
+            contentType: file.type,
+            base64,
+          }),
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.error || "Error subiendo imagen");
+      }
+
+      await loadCustomerImages(key);
+      setDrawerMsg("Imágenes subidas ✅");
+      await broadcastCustomerUpdated(key);
+    } catch (err) {
+      console.error(err);
+      setDrawerMsg(err?.message || "Error subiendo imagen");
+      throw err;
+    } finally {
+      setImgLoading(false);
+    }
+  }
+
+  async function saveImageCaption(img) {
+    const { data: sess } = await supabase.auth.getSession();
+    const token = sess?.session?.access_token;
+    if (!token) throw new Error("Sesión no válida.");
+
+    const res = await fetch("/.netlify/functions/admin-customer-images", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ id: img.id, caption: img.caption || "" }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.error || "No se pudo guardar la nota");
+  }
+
+  async function deleteCustomerImage(imageId) {
+    if (!imageId) throw new Error("Imagen sin id.");
+
+    const { data: sess } = await supabase.auth.getSession();
+    const token = sess?.session?.access_token;
+    if (!token) throw new Error("Sesión no válida.");
+
+    const res = await fetch("/.netlify/functions/admin-customer-images", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ id: imageId }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.error || "No se pudo eliminar");
+
+    setImages((prev) => prev.filter((p) => p.id !== imageId));
+    setDrawerMsg("Imagen eliminada ✅");
+
+    await broadcastCustomerUpdated(customerKey);
+  }
+
+  async function updateStatus(next) {
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess?.session?.access_token;
+      if (!token) throw new Error("Sesión no válida.");
+
+      const res = await fetch("/.netlify/functions/admin-bookings-status", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          bookingId: customer.id,
+          status_admin: next,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "No se pudo guardar");
+
+      setStatus(next);
+      onStatusChange?.(next);
+      setDrawerMsg("Estado actualizado ✅");
+
+      await broadcastCustomerUpdated(customerKey);
+    } catch (err) {
+      console.error(err);
+      alert(err?.message || "Error guardando estado");
+    }
+  }
+
+  // Load everything when customer changes
+  useEffect(() => {
+    if (!customer) return;
+
+    setDrawerMsg("");
+    setImages([]);
+    setAdminNote("");
+
+    if (!customerKey) return;
+
+    loadCustomerImages(customerKey);
+    loadCustomerNote(customerKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customer, customerKey]);
+
+  if (!customer) return null;
 
   return (
     <Drawer>
@@ -43,14 +373,12 @@ export default function CustomerDrawer({
           <p style={{ margin: "0.35rem 0 0", opacity: 0.75 }}>
             Historial y datos de contacto
           </p>
+          {drawerMsg && (
+            <p style={{ margin: "0.5rem 0 0", opacity: 0.85 }}>{drawerMsg}</p>
+          )}
         </div>
 
-        <Button
-          type="button"
-          onClick={() => {
-            onClose?.();
-          }}
-        >
+        <Button type="button" onClick={onClose}>
           Cerrar
         </Button>
       </div>
@@ -77,6 +405,28 @@ export default function CustomerDrawer({
           </tr>
 
           <tr>
+            <th>Estado</th>
+            <td>
+              <select
+                value={status}
+                onChange={(e) => updateStatus(e.target.value)}
+                style={{
+                  padding: "0.4rem 0.6rem",
+                  borderRadius: 10,
+                  border: "1px solid rgba(17,17,17,0.15)",
+                  fontWeight: 700,
+                }}
+              >
+                <option value="nuevo">Nuevo</option>
+                <option value="presupuesto">Presupuesto</option>
+                <option value="en_proceso">En proceso</option>
+                <option value="finalizado">Finalizado</option>
+                <option value="no_interesado">No interesado</option>
+              </select>
+            </td>
+          </tr>
+
+          <tr>
             <th>Dirección</th>
             <td>
               {customer.home_visit ? (
@@ -99,21 +449,6 @@ export default function CustomerDrawer({
                       }}
                     >
                       Abrir en Google Maps
-                    </a>
-
-                    <a
-                      href={`https://maps.apple.com/?q=${encodeURIComponent(
-                        address
-                      )}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        fontWeight: 800,
-                        textDecoration: "underline",
-                        textUnderlineOffset: 3,
-                      }}
-                    >
-                      Abrir en Apple Maps
                     </a>
                   </div>
                 </div>
@@ -149,10 +484,7 @@ export default function CustomerDrawer({
                 <Button
                   type="button"
                   disabled={noteLoading}
-                  onClick={async () => {
-                    if (!key) return;
-                    await saveCustomerNote(key);
-                  }}
+                  onClick={() => saveCustomerNote(customerKey)}
                 >
                   {noteLoading ? "Guardando..." : "Guardar nota"}
                 </Button>
@@ -171,22 +503,15 @@ export default function CustomerDrawer({
                   onChange={async (e) => {
                     const files = Array.from(e.target.files || []);
                     if (!files.length) return;
-                    if (!key) return;
+                    if (!customerKey) return;
 
                     try {
-                      await uploadCustomerImages(key, files);
-                    } catch (err) {
-                      // msg already set in parent
+                      await uploadCustomerImages(customerKey, files);
                     } finally {
                       e.target.value = "";
                     }
                   }}
                 />
-
-                <p style={{ marginTop: 0, opacity: 0.7 }}>
-                  (Upload se mantiene en AdminBookings en este paso para no
-                  romper nada. En el siguiente paso lo movemos aquí.)
-                </p>
 
                 {imgLoading && (
                   <p style={{ opacity: 0.75, marginTop: "0.5rem" }}>
@@ -244,17 +569,20 @@ export default function CustomerDrawer({
                         type="button"
                         onClick={async () => {
                           if (!img.id) {
-                            setMsg(
+                            setDrawerMsg(
                               "Esta imagen no tiene id (no se puede guardar la nota)."
                             );
                             return;
                           }
                           try {
                             await saveImageCaption(img);
-                            setMsg("Nota guardada ✅");
+                            setDrawerMsg("Nota guardada ✅");
+                            await broadcastCustomerUpdated(customerKey);
                           } catch (err) {
                             console.error(err);
-                            setMsg(err?.message || "Error guardando nota");
+                            setDrawerMsg(
+                              err?.message || "Error guardando nota"
+                            );
                           }
                         }}
                       >
@@ -267,16 +595,18 @@ export default function CustomerDrawer({
                         onClick={async () => {
                           if (!confirm("¿Eliminar esta imagen?")) return;
                           if (!img.id) {
-                            setMsg(
+                            setDrawerMsg(
                               "Esta imagen no tiene id (no se puede eliminar)."
                             );
                             return;
                           }
-
                           try {
                             await deleteCustomerImage(img.id);
                           } catch (err) {
-                            // msg already set in parent
+                            console.error(err);
+                            setDrawerMsg(
+                              err?.message || "Error eliminando imagen"
+                            );
                           }
                         }}
                       >
