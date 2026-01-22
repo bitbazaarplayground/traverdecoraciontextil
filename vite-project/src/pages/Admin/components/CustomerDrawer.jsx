@@ -5,7 +5,6 @@ import { Button, Drawer, Table } from "../adminStyles";
 function cacheKeyForCustomer(key) {
   return `customer-images-cache:${key}`;
 }
-
 function loadImagesCache(key) {
   try {
     const raw = localStorage.getItem(cacheKeyForCustomer(key));
@@ -15,7 +14,6 @@ function loadImagesCache(key) {
     return null;
   }
 }
-
 function saveImagesCache(key, images) {
   try {
     localStorage.setItem(
@@ -68,52 +66,55 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
         .join(", ")
     : "";
 
-  // ---------------- Shared realtime channel (broadcast) ----------------
-  const syncChannelRef = useRef(null);
+  // Keep ONE channel instance for broadcast (avoid creating new ones)
+  const broadcastChannelRef = useRef(null);
 
+  async function broadcastCustomerUpdated(key) {
+    try {
+      if (!key) return;
+
+      // Lazily create & subscribe once
+      if (!broadcastChannelRef.current) {
+        broadcastChannelRef.current = supabase.channel("admin-sync");
+        await broadcastChannelRef.current.subscribe();
+      }
+
+      await broadcastChannelRef.current.send({
+        type: "broadcast",
+        event: "customer_updated",
+        payload: { customerKey: key, at: Date.now() },
+      });
+    } catch (e) {
+      // Don't block UX if broadcast fails
+      console.warn("Broadcast failed:", e?.message || e);
+    }
+  }
+
+  // Listen to broadcasts from other admins and refresh this drawer if same customer
   useEffect(() => {
-    // Create once
+    if (!customerKey) return;
+
     const ch = supabase.channel("admin-sync");
 
-    // Listen for updates from other admins
     ch.on("broadcast", { event: "customer_updated" }, ({ payload }) => {
       const key = payload?.customerKey;
       if (!key) return;
 
-      // If THIS drawer is open on that customer, refresh just that customer data
+      // only refresh if the drawer is open for same customer
       if (key === customerKey) {
-        loadCustomerImages(customerKey);
         loadCustomerNote(customerKey);
+        loadCustomerImages(customerKey);
         setDrawerMsg("Actualizado en tiempo real ✅");
       }
     });
 
     ch.subscribe();
-    syncChannelRef.current = ch;
 
     return () => {
       supabase.removeChannel(ch);
-      syncChannelRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // <- important: subscribe once
-
-  async function broadcastCustomerUpdated(key) {
-    if (!key) return;
-    try {
-      const ch = syncChannelRef.current;
-      if (!ch) return;
-
-      await ch.send({
-        type: "broadcast",
-        event: "customer_updated",
-        payload: { customerKey: key },
-      });
-    } catch (err) {
-      // Do not break UX if broadcast fails
-      console.warn("Broadcast failed:", err?.message || err);
-    }
-  }
+  }, [customerKey]);
 
   // ---------------- Notes ----------------
   async function loadCustomerNote(key) {
@@ -167,7 +168,6 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
     if (!key) return;
     setImgLoading(true);
 
-    // If offline -> cache
     const cached = loadImagesCache(key);
     if (!navigator.onLine && cached?.images) {
       setImages(cached.images);
@@ -200,19 +200,17 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
       setImages(imgs);
       saveImagesCache(key, imgs);
 
-      // Clear offline warning if we got online results
-      setDrawerMsg((prev) => (prev?.startsWith("Modo offline") ? "" : prev));
+      if (drawerMsg?.startsWith("Modo offline")) setDrawerMsg("");
     } catch (err) {
       console.error(err);
 
-      // fallback cache
       const fallback = loadImagesCache(key);
       if (fallback?.images) {
         setImages(fallback.images);
         setDrawerMsg(
           `No se pudo sincronizar. Mostrando caché (última: ${new Date(
             fallback.savedAt
-          ).toLocaleString()}`
+          ).toLocaleString()})`
         );
       } else {
         setImages([]);
@@ -283,6 +281,8 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data?.error || "No se pudo guardar la nota");
+
+    await broadcastCustomerUpdated(customerKey);
   }
 
   async function deleteCustomerImage(imageId) {
@@ -356,6 +356,16 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
     loadCustomerNote(customerKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customer, customerKey]);
+
+  // Cleanup broadcast channel instance if component unmounts
+  useEffect(() => {
+    return () => {
+      if (broadcastChannelRef.current) {
+        supabase.removeChannel(broadcastChannelRef.current);
+        broadcastChannelRef.current = null;
+      }
+    };
+  }, []);
 
   if (!customer) return null;
 
@@ -432,7 +442,6 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
               {customer.home_visit ? (
                 <div style={{ display: "grid", gap: "0.5rem" }}>
                   <div>{address}</div>
-
                   <div
                     style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}
                   >
@@ -569,15 +578,12 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
                         type="button"
                         onClick={async () => {
                           if (!img.id) {
-                            setDrawerMsg(
-                              "Esta imagen no tiene id (no se puede guardar la nota)."
-                            );
+                            setDrawerMsg("Esta imagen no tiene id.");
                             return;
                           }
                           try {
                             await saveImageCaption(img);
                             setDrawerMsg("Nota guardada ✅");
-                            await broadcastCustomerUpdated(customerKey);
                           } catch (err) {
                             console.error(err);
                             setDrawerMsg(
@@ -595,9 +601,7 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
                         onClick={async () => {
                           if (!confirm("¿Eliminar esta imagen?")) return;
                           if (!img.id) {
-                            setDrawerMsg(
-                              "Esta imagen no tiene id (no se puede eliminar)."
-                            );
+                            setDrawerMsg("Esta imagen no tiene id.");
                             return;
                           }
                           try {
