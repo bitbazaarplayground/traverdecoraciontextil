@@ -160,18 +160,10 @@ export async function handler(event) {
     const blockMinutes = 120;
     const leadTimeDays = 2;
 
-    const days = Math.max(
-      1,
-      Math.min(
-        30,
-        Number(
-          new URLSearchParams(event.queryStringParameters || {}).get("days") ||
-            14
-        )
-      )
-    );
+    const daysRaw = event.queryStringParameters?.days;
+    const days = Math.max(1, Math.min(30, Number(daysRaw || 14)));
 
-    // Today in London (YYYY-MM-DD)
+    // Today in Madrid (YYYY-MM-DD)
     const nowUtc = new Date();
     const todayYMD = formatYMDInZone(nowUtc, timeZone);
 
