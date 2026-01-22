@@ -17,6 +17,7 @@ import Venecianas from "./components/ventanas/Venecianas";
 import AdminBookings from "./pages/Admin/AdminBookings";
 import AdminCalendar from "./pages/Admin/AdminCalendar";
 import AdminClients from "./pages/Admin/AdminClientes";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminResetPassword from "./pages/Admin/AdminResetPassword";
 import AuthCallback from "./pages/AuthCallback";
@@ -86,12 +87,23 @@ function App() {
 
         {/* ADMIN */}
 
+        {/* ADMIN */}
         <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminBookings />} />
+          <Route index element={<AdminDashboard />} />
+          <Route path="requests" element={<AdminBookings />} />
           <Route path="calendario" element={<AdminCalendar />} />
           <Route path="clientes" element={<AdminClients />} />
         </Route>
 
+        {/* <Route path="/admin" element={<AdminLayout />}>
+  <Route index element={<AdminDashboard />} />
+  <Route path="requests" element={<AdminBookings />} />
+  <Route path="clients" element={<AdminClients />} />
+  <Route path="calendar" element={<AdminCalendar />} />
+  <Route path="quotes" element={<AdminQuotes />} />
+  <Route path="settings" element={<AdminSettings />} />
+</Route>
+ */}
         {/* ROUTES */}
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/admin/reset-password" element={<AdminResetPassword />} />
