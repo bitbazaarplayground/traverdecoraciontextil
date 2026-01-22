@@ -235,6 +235,37 @@ const PrimaryButton = styled(Link)`
     background: rgba(255, 255, 255, 0.96);
   }
 `;
+const PrimaryAction = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.9rem 2.05rem;
+  border-radius: 999px;
+  border: 0;
+
+  background: rgba(255, 255, 255, 0.9);
+  color: #0b0c0f;
+
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    "Helvetica Neue", sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+
+  text-decoration: none;
+
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  transition: transform 0.25s ease, background 0.25s ease, opacity 0.25s ease;
+
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.96);
+  }
+`;
 
 /* Optional subtle hint (replaces paragraph) */
 // const SubtleNote = styled(motion.p)`
@@ -280,7 +311,7 @@ const ScrollHint = styled.div`
    COMPONENT
 ========================= */
 
-export default function Hero() {
+export default function Hero({ onOpenAsesoramiento }) {
   const slides = useMemo(
     () => [cortina4, Img2, blackoutImg, chenilleImg, Img3, wallpaper],
     []
@@ -342,7 +373,12 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.05, delay: 0.22, ease: "easeOut" }}
         >
-          <PrimaryButton to="/contact">Solicitar asesoramiento</PrimaryButton>
+          <PrimaryAction
+            type="button"
+            onClick={() => onOpenAsesoramiento?.("General")}
+          >
+            Solicitar asesoramiento
+          </PrimaryAction>
         </Actions>
       </Content>
 
@@ -350,3 +386,5 @@ export default function Hero() {
     </HeroWrapper>
   );
 }
+
+// onClick={() => onOpenAsesoramiento?.("General")}

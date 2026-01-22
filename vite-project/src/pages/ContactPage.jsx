@@ -273,12 +273,11 @@ const StaticItem = styled.div`
 
 const InlineCollapse = styled.div`
   overflow: hidden;
-  max-height: ${({ $open }) => ($open ? "560px" : "0px")};
+  max-height: ${({ $open }) => ($open ? "1400px" : "0px")};
   opacity: ${({ $open }) => ($open ? 1 : 0)};
   transform: ${({ $open }) => ($open ? "translateY(0)" : "translateY(-4px)")};
-  transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease;
+  transition: max-height 0.4s ease, opacity 0.25s ease, transform 0.25s ease;
 
-  /* IMPORTANT: inline collapse only on desktop */
   @media (max-width: 768px) {
     display: none;
   }
@@ -287,6 +286,12 @@ const InlineCollapse = styled.div`
 const InlineInner = styled.div`
   padding: 0.75rem 0.2rem 0.2rem;
 `;
+// Scroll scrollbars
+// const InlineInner = styled.div`
+//   padding: 0.75rem 0.2rem 0.2rem;
+//   max-height: 70vh;
+//   overflow: auto;
+// `;
 
 /* =========================
    MODAL (MOBILE)

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
+import AsesoramientoModal from "./components/AsesoramientoModal";
 import AutomatizacionCompleta from "./components/AutomatizacionCompleta";
 import BrandLogos from "./components/BrandLogos";
 import ContactCTA from "./components/ContactCTA";
@@ -28,24 +29,43 @@ import Propuestas from "./pages/Propuestas";
 import Servicios from "./pages/Servicios";
 import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
 
-function App() {
-  const [overlayOpen, setOverlayOpen] = useState(false);
+export default function App() {
+  const [isAsesoramientoOpen, setIsAsesoramientoOpen] = useState(false);
+  const [modalPack, setModalPack] = useState(null);
+
   const { pathname } = useLocation();
   const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
+
+  const openAsesoramiento = (pack = "General") => {
+    setModalPack(pack);
+    setIsAsesoramientoOpen(true);
+  };
+
+  const closeAsesoramiento = () => {
+    setIsAsesoramientoOpen(false);
+    setModalPack(null);
+  };
+
+  // ✅ Debug (remove later)
+  // useEffect(() => {
+  //   console.log("Asesoramiento modal:", {
+  //     isAsesoramientoOpen,
+  //     modalPack,
+  //   });
+  // }, [isAsesoramientoOpen, modalPack]);
 
   return (
     <>
       <ScrollToTop />
-
       {!isAdminRoute && <Navbar />}
 
       <Routes>
-        {/* HOME PAGE */}
+        {/* HOME */}
         <Route
           path="/"
           element={
             <>
-              <Hero />
+              <Hero onOpenAsesoramiento={openAsesoramiento} />
               <ServicesSection />
               <Process />
               <ContactCTA />
@@ -55,9 +75,10 @@ function App() {
           }
         />
 
+        {/* PROPUESTAS */}
         <Route
           path="/propuestas"
-          element={<Propuestas setOverlayOpen={setOverlayOpen} />}
+          element={<Propuestas onOpenAsesoramiento={openAsesoramiento} />}
         />
 
         {/* AUTOMATIZACION */}
@@ -71,11 +92,10 @@ function App() {
           element={<AutomatizacionIndividual />}
         />
 
-        {/* CONTACT PAGE */}
+        {/* CONTACTO */}
         <Route path="/contact" element={<ContactPage />} />
-        {/* <Route path="/propuestas" element={<Propuestas />} /> */}
 
-        {/* VENTANAS */}
+        {/* SERVICIOS / CATEGORIAS */}
         <Route path="/panel-japones" element={<PanelJapones />} />
         <Route path="/venecianas" element={<Venecianas />} />
         <Route path="/cortinas-estores" element={<CortinasEstores />} />
@@ -86,8 +106,6 @@ function App() {
         <Route path="/services" element={<Servicios />} />
 
         {/* ADMIN */}
-
-        {/* ADMIN */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="requests" element={<AdminBookings />} />
@@ -95,23 +113,19 @@ function App() {
           <Route path="clientes" element={<AdminClients />} />
         </Route>
 
-        {/* <Route path="/admin" element={<AdminLayout />}>
-  <Route index element={<AdminDashboard />} />
-  <Route path="requests" element={<AdminBookings />} />
-  <Route path="clients" element={<AdminClients />} />
-  <Route path="calendar" element={<AdminCalendar />} />
-  <Route path="quotes" element={<AdminQuotes />} />
-  <Route path="settings" element={<AdminSettings />} />
-</Route>
- */}
-        {/* ROUTES */}
+        {/* AUTH */}
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/admin/reset-password" element={<AdminResetPassword />} />
       </Routes>
+
+      {/* ✅ Global modal (outside Routes) */}
+      <AsesoramientoModal
+        open={isAsesoramientoOpen}
+        packLabel={modalPack}
+        onClose={closeAsesoramiento}
+      />
 
       {!isAdminRoute && <Footer />}
     </>
   );
 }
-
-export default App;
