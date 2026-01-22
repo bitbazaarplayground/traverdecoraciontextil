@@ -3,12 +3,12 @@ import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Input, Label, Row, Table, Wrap } from "./adminStyles";
 import AdminLogin from "./components/AdminLogin.jsx";
 import CustomerDrawer from "./components/CustomerDrawer.jsx";
-
 import { formatLocal } from "./utils";
 
 export default function AdminBookings() {
   const [session, setSession] = useState(null);
-  // login
+
+  // Login / UI feedback
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
 
@@ -22,13 +22,9 @@ export default function AdminBookings() {
   const [blockEnd, setBlockEnd] = useState("");
   const [blockReason, setBlockReason] = useState("Bloqueado");
 
-  // Image bucket
-  const [images, setImages] = useState([]);
-  const [imgLoading, setImgLoading] = useState(false);
-
-  // Notes
-  const [adminNote, setAdminNote] = useState("");
-  const [noteLoading, setNoteLoading] = useState(false);
+  // ✅ Step 6 filters
+  const [statusFilter, setStatusFilter] = useState("todos");
+  const [timeFilter, setTimeFilter] = useState("upcoming"); // upcoming | past | all
 
   const adminAllowlist = useMemo(() => {
     const raw = import.meta.env.VITE_ADMIN_EMAILS || "";
@@ -78,13 +74,13 @@ export default function AdminBookings() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || "No se pudo cargar datos.");
 
       setBookings(data.bookings || []);
       setBlackouts(data.blackouts || []);
     } catch (e) {
-      setMsg(e.message);
+      setMsg(e?.message || "Error cargando datos");
       setBookings([]);
       setBlackouts([]);
     } finally {
@@ -96,20 +92,6 @@ export default function AdminBookings() {
     if (session && isAllowed) loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, isAllowed]);
-
-  useEffect(() => {
-    if (!selectedCustomer) return;
-
-    const key = (selectedCustomer.phone || selectedCustomer.email || "")
-      .trim()
-      .toLowerCase();
-
-    if (!key) return;
-
-    loadCustomerImages(key);
-    loadCustomerNote(key);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCustomer]);
 
   async function signOut() {
     setSelectedCustomer(null);
@@ -164,232 +146,26 @@ export default function AdminBookings() {
     loadData();
   }
 
-  // ---------- LOAD / SAVE CUSTOMER NOTE ----------
-  async function loadCustomerNote(customerKey) {
-    setNoteLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("customer_admin_notes")
-        .select("note")
-        .eq("customer_key", customerKey)
-        .maybeSingle();
+  // ✅ Step 6 filtered array
+  const filteredBookings = useMemo(() => {
+    const now = new Date();
 
-      if (error) throw error;
-      setAdminNote(data?.note || "");
-    } catch (err) {
-      console.error(err);
-      setAdminNote("");
-    } finally {
-      setNoteLoading(false);
-    }
-  }
+    return (bookings || []).filter((b) => {
+      const status = b.status_admin || "nuevo";
+      const matchesStatus =
+        statusFilter === "todos" ? true : status === statusFilter;
 
-  async function saveCustomerNote(customerKey) {
-    setNoteLoading(true);
-    try {
-      const { error } = await supabase.from("customer_admin_notes").upsert(
-        {
-          customer_key: customerKey,
-          note: adminNote || "",
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "customer_key" }
-      );
+      const start = new Date(b.start_time);
+      const matchesTime =
+        timeFilter === "all"
+          ? true
+          : timeFilter === "upcoming"
+          ? start >= now
+          : start < now;
 
-      if (error) throw error;
-      setMsg("Nota guardada ✅");
-    } catch (err) {
-      console.error(err);
-      setMsg(err?.message || "Error guardando nota");
-    } finally {
-      setNoteLoading(false);
-    }
-  }
-
-  // ---------- LOAD CUSTOMER IMAGES ----------
-  async function loadCustomerImages(customerKey) {
-    setImgLoading(true);
-
-    // 0) If offline, try to use cache immediately
-    const cached = loadImagesCache(customerKey);
-    if (!navigator.onLine && cached?.images) {
-      setImages(cached.images);
-      setMsg(
-        `Modo offline. Última sincronización: ${new Date(
-          cached.savedAt
-        ).toLocaleString()}`
-      );
-      setImgLoading(false);
-      return;
-    }
-
-    try {
-      const { data: sess } = await supabase.auth.getSession();
-      const token = sess?.session?.access_token;
-      if (!token) throw new Error("Sesión no válida.");
-
-      const res = await fetch(
-        `/.netlify/functions/admin-customer-images?key=${encodeURIComponent(
-          customerKey
-        )}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data?.error || "No se pudieron cargar imágenes.");
-      }
-
-      const imgs = data.images || [];
-      setImages(imgs);
-
-      // 1) Save successful results to cache
-      saveImagesCache(customerKey, imgs);
-
-      // 2) Clear offline message if we successfully loaded online
-      if (msg?.startsWith("Modo offline")) setMsg("");
-    } catch (e) {
-      // 3) If fetch fails, fallback to cache if possible
-      const fallback = loadImagesCache(customerKey);
-      if (fallback?.images) {
-        setImages(fallback.images);
-        setMsg(
-          `No se pudo sincronizar. Mostrando caché (última: ${new Date(
-            fallback.savedAt
-          ).toLocaleString()})`
-        );
-      } else {
-        setImages([]);
-        setMsg(e?.message || "No se pudieron cargar imágenes.");
-      }
-    } finally {
-      setImgLoading(false);
-    }
-  }
-  // Save image caption
-  async function saveImageCaption(img) {
-    const { data: sess } = await supabase.auth.getSession();
-    const token = sess?.session?.access_token;
-    if (!token) throw new Error("Sesión no válida.");
-
-    const res = await fetch("/.netlify/functions/admin-customer-images", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ id: img.id, caption: img.caption || "" }),
+      return matchesStatus && matchesTime;
     });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data?.error || "No se pudo guardar la nota");
-  }
-
-  // Browser safe
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result; // "data:image/png;base64,...."
-        const base64 = String(result).split(",")[1];
-        resolve(base64);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-  function cacheKeyForCustomer(key) {
-    return `customer-images-cache:${key}`;
-  }
-
-  function saveImagesCache(key, images) {
-    try {
-      localStorage.setItem(
-        cacheKeyForCustomer(key),
-        JSON.stringify({ savedAt: Date.now(), images })
-      );
-    } catch {}
-  }
-
-  function loadImagesCache(key) {
-    try {
-      const raw = localStorage.getItem(cacheKeyForCustomer(key));
-      if (!raw) return null;
-      return JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  }
-  async function uploadCustomerImages(customerKey, files) {
-    if (!customerKey) throw new Error("Customer key no válido.");
-    if (!files?.length) return;
-
-    setImgLoading(true);
-    try {
-      const { data: sess } = await supabase.auth.getSession();
-      const token = sess?.session?.access_token;
-      if (!token) throw new Error("Sesión no válida.");
-
-      for (const file of files) {
-        const base64 = await fileToBase64(file);
-
-        const res = await fetch("/.netlify/functions/admin-customer-images", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            key: customerKey,
-            filename: file.name,
-            contentType: file.type,
-            base64,
-          }),
-        });
-
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data?.error || "Error subiendo imagen");
-      }
-
-      await loadCustomerImages(customerKey);
-      setMsg("Imágenes subidas ✅");
-    } catch (err) {
-      console.error(err);
-      setMsg(err?.message || "Error subiendo imagen");
-      throw err;
-    } finally {
-      setImgLoading(false);
-    }
-  }
-
-  async function deleteCustomerImage(imageId) {
-    if (!imageId) throw new Error("Imagen sin id.");
-    try {
-      const { data: sess } = await supabase.auth.getSession();
-      const token = sess?.session?.access_token;
-      if (!token) throw new Error("Sesión no válida.");
-
-      const res = await fetch("/.netlify/functions/admin-customer-images", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ id: imageId }),
-      });
-
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || "No se pudo eliminar");
-
-      // optimistic UI
-      setImages((prev) => prev.filter((p) => p.id !== imageId));
-      setMsg("Imagen eliminada ✅");
-    } catch (err) {
-      console.error(err);
-      setMsg(err?.message || "Error eliminando imagen");
-      throw err;
-    }
-  }
+  }, [bookings, statusFilter, timeFilter]);
 
   // ---------- LOGIN SCREEN ----------
   if (!session) {
@@ -438,50 +214,31 @@ export default function AdminBookings() {
           </div>
 
           <div style={{ display: "flex", gap: "0.6rem" }}>
-            <Button
-              onClick={async () => {
-                await loadData();
-
-                if (selectedCustomer) {
-                  const key = (
-                    selectedCustomer.phone ||
-                    selectedCustomer.email ||
-                    ""
-                  )
-                    .trim()
-                    .toLowerCase();
-                  if (key) {
-                    await loadCustomerImages(key);
-                    await loadCustomerNote(key);
-                  }
-                }
-              }}
-              disabled={loading}
-            >
+            <Button onClick={loadData} disabled={loading}>
               {loading ? "Cargando..." : "Actualizar"}
             </Button>
-
             <Button onClick={signOut}>Salir</Button>
           </div>
         </div>
       </Card>
+
       <CustomerDrawer
         customer={selectedCustomer}
-        images={images}
-        imgLoading={imgLoading}
-        adminNote={adminNote}
-        noteLoading={noteLoading}
-        setAdminNote={setAdminNote}
-        setImages={setImages}
-        setMsg={setMsg}
-        saveCustomerNote={saveCustomerNote}
-        saveImageCaption={saveImageCaption}
-        uploadCustomerImages={uploadCustomerImages}
-        deleteCustomerImage={deleteCustomerImage}
+        onStatusChange={(nextStatus) => {
+          setSelectedCustomer((prev) =>
+            prev ? { ...prev, status_admin: nextStatus } : prev
+          );
+
+          setBookings((prev) =>
+            prev.map((b) =>
+              b.id === selectedCustomer?.id
+                ? { ...b, status_admin: nextStatus }
+                : b
+            )
+          );
+        }}
         onClose={() => {
           setSelectedCustomer(null);
-          setImages([]);
-          setAdminNote("");
           setMsg("");
         }}
       />
@@ -509,7 +266,9 @@ export default function AdminBookings() {
               />
             </Label>
           </Row>
+
           <div style={{ height: "0.75rem" }} />
+
           <Row>
             <Label>
               <span>Motivo</span>
@@ -554,6 +313,7 @@ export default function AdminBookings() {
                 </td>
               </tr>
             ))}
+
             {blackouts.length === 0 && (
               <tr>
                 <td colSpan="3" style={{ opacity: 0.7 }}>
@@ -567,6 +327,53 @@ export default function AdminBookings() {
 
       <Card>
         <h3 style={{ marginTop: 0 }}>Reservas</h3>
+
+        {/* ✅ Step 6 UI dropdowns */}
+        <div
+          style={{
+            display: "flex",
+            gap: "0.75rem",
+            flexWrap: "wrap",
+            marginTop: "0.75rem",
+            marginBottom: "0.75rem",
+          }}
+        >
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            style={{
+              padding: "0.5rem 0.65rem",
+              borderRadius: 12,
+              border: "1px solid rgba(17,17,17,0.12)",
+              background: "rgba(17,17,17,0.02)",
+              fontWeight: 800,
+            }}
+          >
+            <option value="todos">Todos</option>
+            <option value="nuevo">Nuevo</option>
+            <option value="presupuesto">Presupuesto</option>
+            <option value="en_proceso">En proceso</option>
+            <option value="finalizado">Finalizado</option>
+            <option value="no_interesado">No interesado</option>
+          </select>
+
+          <select
+            value={timeFilter}
+            onChange={(e) => setTimeFilter(e.target.value)}
+            style={{
+              padding: "0.5rem 0.65rem",
+              borderRadius: 12,
+              border: "1px solid rgba(17,17,17,0.12)",
+              background: "rgba(17,17,17,0.02)",
+              fontWeight: 800,
+            }}
+          >
+            <option value="upcoming">Próximas</option>
+            <option value="past">Pasadas</option>
+            <option value="all">Todas</option>
+          </select>
+        </div>
+
         <Table>
           <thead>
             <tr>
@@ -577,7 +384,8 @@ export default function AdminBookings() {
             </tr>
           </thead>
           <tbody>
-            {bookings.map((bk) => (
+            {/* ✅ Use filteredBookings */}
+            {filteredBookings.map((bk) => (
               <tr key={bk.id}>
                 <td>
                   <div>
@@ -627,10 +435,10 @@ export default function AdminBookings() {
               </tr>
             ))}
 
-            {bookings.length === 0 && (
+            {filteredBookings.length === 0 && (
               <tr>
                 <td colSpan="4" style={{ opacity: 0.7 }}>
-                  No hay reservas aún.
+                  No hay reservas que coincidan.
                 </td>
               </tr>
             )}

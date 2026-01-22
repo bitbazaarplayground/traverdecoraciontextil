@@ -15,6 +15,8 @@ import AutomatizacionIndividual from "./components/automatizacion/Automatizacion
 import PanelJapones from "./components/ventanas/PanelJapones";
 import Venecianas from "./components/ventanas/Venecianas";
 import AdminBookings from "./pages/Admin/AdminBookings";
+import AdminCalendar from "./pages/Admin/AdminCalendar";
+import AdminClients from "./pages/Admin/AdminClientes";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminResetPassword from "./pages/Admin/AdminResetPassword";
 import AuthCallback from "./pages/AuthCallback";
@@ -83,8 +85,11 @@ function App() {
         <Route path="/services" element={<Servicios />} />
 
         {/* ADMIN */}
+
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminBookings />} />
+          <Route path="calendario" element={<AdminCalendar />} />
+          <Route path="clientes" element={<AdminClients />} />
         </Route>
 
         {/* ROUTES */}

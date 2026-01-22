@@ -1,11 +1,24 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import { Button } from "./adminStyles";
 
+const linkStyle = ({ isActive }) => ({
+  padding: "0.5rem 0.75rem",
+  borderRadius: 999,
+  textDecoration: "none",
+  fontWeight: 800,
+  fontSize: "0.9rem",
+  color: "rgba(17,17,17,0.85)",
+  background: isActive ? "rgba(17,17,17,0.08)" : "transparent",
+});
+
 export default function AdminLayout() {
+  const navigate = useNavigate();
+
   async function signOut() {
     await supabase.auth.signOut();
+    navigate("/admin"); // or navigate("/") if you prefer
     window.location.reload();
   }
 
@@ -33,17 +46,31 @@ export default function AdminLayout() {
           <div style={{ fontWeight: 900, fontSize: "1.1rem" }}>
             Traver Admin
           </div>
-          <div style={{ opacity: 0.7, fontSize: "0.9rem" }}>
-            Reservas · Clientes · Notas · Imágenes
+
+          {/* Nav */}
+          <div
+            style={{
+              marginTop: "0.5rem",
+              display: "flex",
+              gap: "0.5rem",
+              flexWrap: "wrap",
+            }}
+          >
+            <NavLink to="/admin" end style={linkStyle}>
+              Bandeja
+            </NavLink>
+            <NavLink to="/admin/calendario" style={linkStyle}>
+              Calendario
+            </NavLink>
+            <NavLink to="/admin/clientes" style={linkStyle}>
+              Clientes
+            </NavLink>
           </div>
         </div>
 
         <div style={{ display: "flex", gap: "0.5rem" }}>
-          <Button type="button" onClick={() => window.location.reload()}>
-            Recargar
-          </Button>
           <Button type="button" onClick={signOut}>
-            Salir
+            Cerrar sesión
           </Button>
         </div>
       </div>
