@@ -18,6 +18,7 @@ import Venecianas from "./components/ventanas/Venecianas";
 import AdminBookings from "./pages/Admin/AdminBookings";
 import AdminCalendar from "./pages/Admin/AdminCalendar";
 import AdminClients from "./pages/Admin/AdminClientes";
+import AdminCustomer from "./pages/Admin/AdminCustomer";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminResetPassword from "./pages/Admin/AdminResetPassword";
@@ -104,6 +105,10 @@ export default function App() {
           <Route path="requests" element={<AdminBookings />} />
           <Route path="calendario" element={<AdminCalendar />} />
           <Route path="clientes" element={<AdminClients />} />
+          <Route
+            path="/admin/clientes/:bookingId"
+            element={<AdminCustomer />}
+          />
           <Route path="/admin/ajustes" element={<AdminSettings />} />
         </Route>
 

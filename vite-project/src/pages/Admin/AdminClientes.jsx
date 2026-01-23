@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Table, Wrap } from "./adminStyles";
 import { formatLocal } from "./utils";
@@ -22,6 +23,9 @@ function inNextDays(dateIso, days = 7) {
 }
 
 export default function AdminClients() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
@@ -128,6 +132,38 @@ export default function AdminClients() {
       supabase.removeChannel(channel);
     };
   }, [session, isAllowed]);
+  // Open customer drawer when coming from dashboard: /admin/clientes?open=<bookingId>
+  useEffect(() => {
+    if (!session || !isAllowed) return;
+
+    const params = new URLSearchParams(location.search);
+    const openId = params.get("open");
+    if (!openId) return;
+
+    // If bookings already loaded, open immediately
+    const found = (bookings || []).find((b) => String(b.id) === String(openId));
+    if (found) {
+      setSelectedCustomer(found);
+
+      // Optional: remove ?open= from URL so refresh won't reopen
+      params.delete("open");
+      navigate(
+        {
+          pathname: location.pathname,
+          search: params.toString() ? `?${params}` : "",
+        },
+        { replace: true }
+      );
+      return;
+    }
+
+    // If not found yet, trigger a load (once) and we’ll resolve it when bookings arrives.
+    // We avoid spamming by only calling loadBookings if we currently have no bookings loaded.
+    if ((bookings || []).length === 0 && !loading) {
+      loadBookings();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, isAllowed, location.search, bookings]);
 
   useEffect(() => {
     if (session && isAllowed) loadBookings();
@@ -337,7 +373,15 @@ export default function AdminClients() {
                 <td>
                   <Button
                     type="button"
-                    onClick={() => setSelectedCustomer(c.refBooking)}
+                    onClick={() => {
+                      setSelectedCustomer(c.refBooking);
+                      navigate(
+                        `/admin/clientes?open=${encodeURIComponent(
+                          c.refBooking.id
+                        )}`,
+                        { replace: true }
+                      );
+                    }}
                   >
                     Abrir
                   </Button>
@@ -415,7 +459,15 @@ export default function AdminClients() {
                 <td>
                   <Button
                     type="button"
-                    onClick={() => setSelectedCustomer(c.refBooking)}
+                    onClick={() => {
+                      setSelectedCustomer(c.refBooking);
+                      navigate(
+                        `/admin/clientes?open=${encodeURIComponent(
+                          c.refBooking.id
+                        )}`,
+                        { replace: true }
+                      );
+                    }}
                   >
                     Abrir
                   </Button>
