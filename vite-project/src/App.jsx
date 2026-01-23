@@ -21,6 +21,7 @@ import AdminClients from "./pages/Admin/AdminClientes";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminResetPassword from "./pages/Admin/AdminResetPassword";
+import AdminSettings from "./pages/Admin/AdminSettings";
 import AuthCallback from "./pages/AuthCallback";
 import Automatizacion from "./pages/Automatizacion";
 import ContactPage from "./pages/ContactPage";
@@ -45,14 +46,6 @@ export default function App() {
     setIsAsesoramientoOpen(false);
     setModalPack(null);
   };
-
-  // ✅ Debug (remove later)
-  // useEffect(() => {
-  //   console.log("Asesoramiento modal:", {
-  //     isAsesoramientoOpen,
-  //     modalPack,
-  //   });
-  // }, [isAsesoramientoOpen, modalPack]);
 
   return (
     <>
@@ -111,6 +104,7 @@ export default function App() {
           <Route path="requests" element={<AdminBookings />} />
           <Route path="calendario" element={<AdminCalendar />} />
           <Route path="clientes" element={<AdminClients />} />
+          <Route path="/admin/ajustes" element={<AdminSettings />} />
         </Route>
 
         {/* AUTH */}

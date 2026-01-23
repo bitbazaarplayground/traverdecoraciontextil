@@ -1,4 +1,5 @@
-import React from "react";
+// src/pages/Admin/AdminLayout.jsx
+import React, { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import { Button } from "./adminStyles";
@@ -7,14 +8,23 @@ import { Button } from "./adminStyles";
 const navItemStyle = ({ isActive }) => ({
   display: "flex",
   alignItems: "center",
-  gap: "0.6rem",
-  padding: "0.7rem 0.85rem",
-  borderRadius: 12,
+  gap: "0.75rem",
+
+  // ✅ full-width row feel
+  width: "100%",
+  padding: "0.85rem 1rem",
+  borderRadius: 0,
   textDecoration: "none",
+
   fontWeight: 800,
   fontSize: "0.95rem",
-  color: "rgba(17,17,17,0.88)",
-  background: isActive ? "rgba(17,17,17,0.07)" : "transparent",
+  color: isActive ? "#4f4234" : "#6a5a49",
+
+  background: isActive ? "#f7f1e7" : "transparent",
+  transition: "background 150ms ease",
+
+  // ✅ left indicator bar
+  borderLeft: isActive ? "4px solid #b08d57" : "4px solid transparent",
 });
 
 const bottomItemStyle = ({ isActive }) => ({
@@ -54,14 +64,51 @@ function Icon({ children }) {
 export default function AdminLayout() {
   const navigate = useNavigate();
 
+  const [adminName, setAdminName] = useState("Admin");
+
   async function signOut() {
     await supabase.auth.signOut();
     navigate("/admin");
     window.location.reload();
   }
 
+  useEffect(() => {
+    let alive = true;
+
+    async function loadAdminName() {
+      const { data } = await supabase.auth.getSession();
+      const user = data?.session?.user;
+      if (!user) return;
+
+      const { data: adminRow } = await supabase
+        .from("admin_users")
+        .select("name")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!alive) return;
+
+      const name = adminRow?.name?.trim();
+      if (name) {
+        setAdminName(name);
+        return;
+      }
+
+      // fallback: email prefix
+      const email = user.email || "";
+      const fallback = email.includes("@") ? email.split("@")[0] : "Admin";
+      setAdminName(fallback || "Admin");
+    }
+
+    loadAdminName();
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
-    <div style={{ minHeight: "100vh", background: "rgba(245,245,245,0.9)" }}>
+    <div style={{ minHeight: "100vh", background: "#f1ebe6" }}>
       {/* Small CSS (kept inside this file) */}
       <style>{`
         .adminShell {
@@ -73,10 +120,14 @@ export default function AdminLayout() {
           position: sticky;
           top: 0;
           height: 100vh;
-          padding: 1.25rem 1rem;
+          padding: 1.75rem 1rem;
+
           border-right: 1px solid rgba(17,17,17,0.08);
-          background: rgba(255,255,255,0.7);
+          background: #eae3df;
+
           backdrop-filter: blur(8px);
+          display: flex;
+          flex-direction: column;
         }
         .adminMain {
           display: grid;
@@ -99,7 +150,11 @@ export default function AdminLayout() {
           margin: 0 auto;
           min-width: 0;
         }
-
+        .adminNavLink:hover {
+          background: #f7f1e7 !important;
+        }
+        
+        
         /* Responsive: collapse sidebar + show bottom nav */
         .adminBottomNav {
           display: none;
@@ -113,6 +168,9 @@ export default function AdminLayout() {
           }
           .adminContent {
             padding-bottom: 5.5rem; /* room for bottom nav */
+          }
+          .adminNavLink:hover {
+            background: #f7f0e7 !important;
           }
           .adminBottomNav {
             display: flex;
@@ -137,7 +195,7 @@ export default function AdminLayout() {
             style={{ display: "grid", gap: "0.35rem", marginBottom: "1rem" }}
           >
             <div style={{ fontWeight: 900, fontSize: "1.15rem" }}>
-              TRAVER <span style={{ opacity: 0.6 }}>ADMIN</span>
+              Hola, {adminName}
             </div>
             <div style={{ opacity: 0.65, fontSize: "0.9rem" }}>
               Gestión · Clientes · Calendario
@@ -145,26 +203,45 @@ export default function AdminLayout() {
           </div>
 
           {/* Nav */}
-          <nav style={{ display: "grid", gap: "0.35rem" }}>
-            {/* NOTE: Keep your current routes for now */}
-            <NavLink to="/admin" end style={navItemStyle}>
+          <nav style={{ display: "grid", margin: "0 -1rem" }}>
+            <NavLink
+              to="/admin"
+              end
+              style={navItemStyle}
+              className="adminNavLink"
+            >
               <Icon>▦</Icon> Bandeja
             </NavLink>
 
-            <NavLink to="/admin/clientes" style={navItemStyle}>
+            <NavLink
+              to="/admin/clientes"
+              style={navItemStyle}
+              className="adminNavLink"
+            >
               <Icon>👥</Icon> Clientes
             </NavLink>
 
-            <NavLink to="/admin/calendario" style={navItemStyle}>
+            <NavLink
+              to="/admin/calendario"
+              style={navItemStyle}
+              className="adminNavLink"
+            >
               <Icon>📅</Icon> Calendario
             </NavLink>
 
-            {/* Placeholders (we’ll wire these later) */}
-            <NavLink to="/admin/presupuestos" style={navItemStyle}>
+            <NavLink
+              to="/admin/presupuestos"
+              style={navItemStyle}
+              className="adminNavLink"
+            >
               <Icon>🧾</Icon> Presupuestos
             </NavLink>
 
-            <NavLink to="/admin/ajustes" style={navItemStyle}>
+            <NavLink
+              to="/admin/ajustes"
+              style={navItemStyle}
+              className="adminNavLink"
+            >
               <Icon>⚙</Icon> Ajustes
             </NavLink>
           </nav>
@@ -180,42 +257,9 @@ export default function AdminLayout() {
 
         {/* Main */}
         <div className="adminMain">
-          {/* Top bar */}
-          <header className="adminTopbar">
-            <div
-              style={{
-                maxWidth: 1200,
-                margin: "0 auto",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "1rem",
-                flexWrap: "wrap",
-              }}
-            >
-              <div style={{ display: "grid", gap: 2 }}>
-                <div style={{ fontWeight: 900, fontSize: "1.1rem" }}>
-                  Traver Admin
-                </div>
-                <div style={{ opacity: 0.7, fontSize: "0.9rem" }}>
-                  Manage all requests, calendar availability, and more.
-                </div>
-              </div>
-
-              <div style={{ display: "flex", gap: "0.5rem" }}>
-                <Button type="button" onClick={() => window.location.reload()}>
-                  Recargar
-                </Button>
-                <Button type="button" onClick={signOut}>
-                  Salir
-                </Button>
-              </div>
-            </div>
-          </header>
-
           {/* Page content */}
           <main className="adminContent">
-            <Outlet />
+            <Outlet context={{ adminName, setAdminName }} />
           </main>
         </div>
       </div>
@@ -226,18 +270,22 @@ export default function AdminLayout() {
           <span style={{ fontSize: 16 }}>▦</span>
           <span>Dashboard</span>
         </NavLink>
+
         <NavLink to="/admin" style={bottomItemStyle}>
           <span style={{ fontSize: 16 }}>🧾</span>
           <span>Requests</span>
         </NavLink>
+
         <NavLink to="/admin/calendario" style={bottomItemStyle}>
           <span style={{ fontSize: 16 }}>📅</span>
           <span>Calendar</span>
         </NavLink>
+
         <NavLink to="/admin/presupuestos" style={bottomItemStyle}>
           <span style={{ fontSize: 16 }}>💬</span>
           <span>Quotes</span>
         </NavLink>
+
         <NavLink to="/admin/ajustes" style={bottomItemStyle}>
           <span style={{ fontSize: 16 }}>⚙</span>
           <span>More</span>
