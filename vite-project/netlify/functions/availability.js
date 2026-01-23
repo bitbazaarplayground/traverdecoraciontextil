@@ -90,7 +90,7 @@ function overlaps(aStartMs, aEndMs, bStartMs, bEndMs) {
  */
 function getOpeningSegments(weekday /* 1..7 */) {
   // Example schedule:
-  // Mon-Fri: 09-13 and 16-20
+  // Mon-Fri: 09-14 and 16-20
   // Sat: 10-14
   // Sun: closed
   if (weekday >= 1 && weekday <= 5) {
