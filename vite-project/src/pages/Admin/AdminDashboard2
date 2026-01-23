@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient.js";
-import { Button, Card, Input } from "./adminStyles";
-import { formatLocal } from "./utils";
+import { Button, Card } from "./adminStyles";
 
 /** Brand palette */
 const COLORS = {
@@ -614,16 +613,12 @@ export default function AdminDashboard() {
                 <div
                   key={bk.id}
                   className="reqRow"
-                  onClick={() =>
-                    navigate(`/admin/clientes/${encodeURIComponent(bk.id)}`)
-                  }
+                  onClick={() => navigate("/admin/requests")}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ")
-                      navigate(
-                        navigate(`/admin/clientes/${encodeURIComponent(bk.id)}`)
-                      );
+                      navigate("/admin/requests");
                   }}
                 >
                   <div className="reqAvatar">{initials(bk.customer_name)}</div>

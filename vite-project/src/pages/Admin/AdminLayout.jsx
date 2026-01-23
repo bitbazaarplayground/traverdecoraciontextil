@@ -192,13 +192,41 @@ export default function AdminLayout() {
         <aside className="adminSidebar">
           {/* Brand */}
           <div
-            style={{ display: "grid", gap: "0.35rem", marginBottom: "1rem" }}
+            style={{
+              display: "grid",
+              gap: "0.15rem",
+              marginBottom: "1.75rem",
+              paddingLeft: "0.25rem",
+            }}
           >
-            <div style={{ fontWeight: 900, fontSize: "1.15rem" }}>
-              Hola, {adminName}
+            <div
+              style={{
+                fontFamily:
+                  '"Playfair Display","Cormorant Garamond","Times New Roman",serif',
+                fontWeight: 700,
+                fontSize: "1.35rem",
+                letterSpacing: "0.08em",
+                color: "#a58048",
+                textTransform: "uppercase",
+                lineHeight: 1.1,
+              }}
+            >
+              Traver
             </div>
-            <div style={{ opacity: 0.65, fontSize: "0.9rem" }}>
-              Gestión · Clientes · Calendario
+
+            <div
+              style={{
+                fontFamily:
+                  '"Playfair Display","Cormorant Garamond","Times New Roman",serif',
+                fontWeight: 500,
+                fontSize: "0.72rem",
+                letterSpacing: "0.22em",
+                color: "#645345",
+                textTransform: "uppercase",
+                lineHeight: 1.1,
+              }}
+            >
+              Decoración Textil
             </div>
           </div>
 
