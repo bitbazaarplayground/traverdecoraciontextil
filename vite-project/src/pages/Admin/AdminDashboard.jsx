@@ -125,6 +125,9 @@ export default function AdminDashboard() {
   const [bookings, setBookings] = useState([]);
   const [blackouts, setBlackouts] = useState([]);
 
+  // ✅ NEW: customers table (source of truth for status)
+  const [customers, setCustomers] = useState([]);
+
   const [query, setQuery] = useState("");
 
   // calendar state (mini view)
@@ -152,6 +155,7 @@ export default function AdminDashboard() {
       const token = sess?.session?.access_token;
       if (!token) throw new Error("Sesión no válida.");
 
+      // 1) bookings + blackouts from your existing endpoint
       const res = await fetch("/.netlify/functions/admin-bookings?limit=500", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -161,10 +165,25 @@ export default function AdminDashboard() {
 
       setBookings(Array.isArray(data.bookings) ? data.bookings : []);
       setBlackouts(Array.isArray(data.blackouts) ? data.blackouts : []);
+
+      // 2) ✅ customers from Supabase (join in UI)
+      //    Note: this relies on RLS being correct for admins.
+      const { data: customerRows, error: custErr } = await supabase
+        .from("customers")
+        .select("customer_key,status,interested_at,completed_at,updated_at");
+
+      if (custErr) {
+        console.warn("Customers load error:", custErr.message);
+        // We don't hard-fail the dashboard: it still works with fallback.
+        setCustomers([]);
+      } else {
+        setCustomers(Array.isArray(customerRows) ? customerRows : []);
+      }
     } catch (e) {
       setMsg(e?.message || "Error cargando datos");
       setBookings([]);
       setBlackouts([]);
+      setCustomers([]);
     } finally {
       setLoading(false);
     }
@@ -177,29 +196,54 @@ export default function AdminDashboard() {
 
   const now = new Date();
 
-  // KPIs
+  // ✅ map customer_key -> customer row
+  const customerByKey = useMemo(() => {
+    const map = new Map();
+    for (const c of customers || []) {
+      if (!c?.customer_key) continue;
+      map.set(String(c.customer_key).trim().toLowerCase(), c);
+    }
+    return map;
+  }, [customers]);
+
+  // ✅ helper: get customer status for a booking
+  function getCustomerStatusForBooking(bk) {
+    const key = toCustomerKey(bk);
+    const row = customerByKey.get(key);
+    return (row?.status || "nuevo").trim().toLowerCase();
+  }
+
+  // ✅ KPIs should be customer-pipeline based
   const kpis = useMemo(() => {
-    const upcoming = bookings.filter((b) => new Date(b.start_time) >= now);
+    const upcomingBookings = bookings.filter(
+      (b) => new Date(b.start_time) >= now
+    );
 
-    const presupuestos = bookings.filter((b) => {
-      const s = b.status_admin || "nuevo";
-      return s === "nuevo" || s === "presupuesto";
-    });
+    // Unique customers with upcoming bookings (still useful KPI)
+    const clientesSolicitando = new Set(upcomingBookings.map(toCustomerKey))
+      .size;
 
-    const instalaciones = bookings.filter((b) => {
-      const s = b.status_admin || "nuevo";
-      return s === "en_proceso" || s === "finalizado";
-    });
+    // Customers in stages (pipeline)
+    let presupuestosPend = 0;
+    let instalacionesProg = 0;
 
-    const bloquesProx = blackouts.filter((x) => new Date(x.end_time) >= now);
+    for (const c of customers || []) {
+      const s = (c.status || "nuevo").toLowerCase();
+      if (s === "nuevo" || s === "presupuesto") presupuestosPend += 1;
+      if (s === "en_proceso" || s === "finalizado") instalacionesProg += 1;
+    }
+
+    const bloqueosCalendario = blackouts.filter(
+      (x) => new Date(x.end_time) >= now
+    ).length;
 
     return {
-      clientesSolicitando: new Set(upcoming.map(toCustomerKey)).size,
-      presupuestosPend: presupuestos.length,
-      instalacionesProg: instalaciones.length,
-      bloqueosCalendario: bloquesProx.length,
+      clientesSolicitando,
+      presupuestosPend,
+      instalacionesProg,
+      bloqueosCalendario,
     };
-  }, [bookings, blackouts]);
+  }, [bookings, blackouts, customers]);
 
   // Requests list (dashboard summary)
   const requestList = useMemo(() => {
@@ -219,17 +263,21 @@ export default function AdminDashboard() {
       .slice(0, 6);
   }, [bookings, query]);
 
-  // Installations (simple approximation until you add a dedicated table)
-  // Treat en_proceso / finalizado as installation pipeline items.
+  // ✅ Installations: derived from customer pipeline status (not booking status)
   const installations = useMemo(() => {
+    // show upcoming bookings for customers in en_proceso/finalizado
     return bookings
-      .filter((b) => {
-        const s = (b.status_admin || "nuevo").toLowerCase();
-        return s === "en_proceso" || s === "finalizado";
+      .map((b) => ({ b, status: getCustomerStatusForBooking(b) }))
+      .filter(({ b, status }) => {
+        const dt = new Date(b.start_time);
+        return (
+          dt >= now && (status === "en_proceso" || status === "finalizado")
+        );
       })
-      .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
-      .slice(0, 6);
-  }, [bookings]);
+      .sort((a, b) => new Date(a.b.start_time) - new Date(b.b.start_time))
+      .slice(0, 6)
+      .map((x) => ({ ...x.b, _customer_status: x.status }));
+  }, [bookings, customers]); // customerByKey is derived from customers
 
   // Mini calendar: build days grid
   const calendarDays = useMemo(() => {
@@ -246,14 +294,11 @@ export default function AdminDashboard() {
       cells.push(new Date(start.getFullYear(), start.getMonth(), d));
     }
 
-    // pad to complete weeks
     while (cells.length % 7 !== 0) cells.push(null);
-
     return cells;
   }, [calMonth]);
 
   const monthStats = useMemo(() => {
-    // count bookings + blocks per day (current month)
     const start = startOfMonth(calMonth);
     const end = endOfMonth(calMonth);
 
@@ -282,37 +327,23 @@ export default function AdminDashboard() {
   return (
     <div style={{ display: "grid", gap: "1rem" }}>
       <style>{`
-        .dashShell {
-          display: grid;
-          gap: 1rem;
-        }
-
-        /* KPIs should wrap nicely on big + small screens */
         .kpiGrid {
           display: grid;
           gap: 0.75rem;
           grid-template-columns: repeat(4, minmax(0, 1fr));
         }
-
-        /* Main content grid adapts */
         .mainGrid {
           display: grid;
           gap: 1rem;
           align-items: start;
           grid-template-columns: 1.35fr 0.85fr;
         }
-
-        /* Luxury: softer cards + consistent borders */
         .softCard {
           border: 1px solid ${COLORS.border};
           background: rgba(255,255,255,0.88);
         }
 
-        /* Request list styles (like screenshot rows) */
-        .reqList {
-          margin-top: 0.9rem;
-          display: grid;
-        }
+        .reqList { margin-top: 0.9rem; display: grid; }
         .reqRow {
           display: grid;
           grid-template-columns: 42px 1.2fr 1fr auto;
@@ -322,10 +353,7 @@ export default function AdminDashboard() {
           border-top: 1px solid ${COLORS.softLine};
           cursor: pointer;
         }
-        .reqRow:first-child {
-          border-top: none;
-          padding-top: 0.4rem;
-        }
+        .reqRow:first-child { border-top: none; padding-top: 0.4rem; }
         .reqRow:hover {
           background: rgba(248,227,190,0.22);
           border-radius: 12px;
@@ -346,33 +374,12 @@ export default function AdminDashboard() {
           color: ${COLORS.coffee};
           font-size: 0.8rem;
         }
-        .reqTitle {
-          font-weight: 900;
-          color: ${COLORS.coffee};
-          line-height: 1.1;
-        }
-        .reqSub {
-          opacity: 0.78;
-          color: ${COLORS.stone};
-          font-size: 0.88rem;
-          margin-top: 0.15rem;
-        }
-        .reqMeta {
-          text-align: right;
-        }
-        .reqMetaTop {
-          font-weight: 900;
-          color: ${COLORS.coffee};
-          font-size: 0.92rem;
-        }
-        .reqMetaBottom {
-          opacity: 0.78;
-          color: ${COLORS.stone};
-          font-size: 0.86rem;
-          margin-top: 0.15rem;
-        }
+        .reqTitle { font-weight: 900; color: ${COLORS.coffee}; line-height: 1.1; }
+        .reqSub { opacity: 0.78; color: ${COLORS.stone}; font-size: 0.88rem; margin-top: 0.15rem; }
+        .reqMeta { text-align: right; }
+        .reqMetaTop { font-weight: 900; color: ${COLORS.coffee}; font-size: 0.92rem; }
+        .reqMetaBottom { opacity: 0.78; color: ${COLORS.stone}; font-size: 0.86rem; margin-top: 0.15rem; }
 
-        /* Mini calendar buttons */
         .calNavBtn {
           border: 1px solid ${COLORS.border};
           background: white;
@@ -383,7 +390,6 @@ export default function AdminDashboard() {
           color: ${COLORS.coffee};
         }
 
-        /* Installations table */
         .instHeaderRow {
           display: flex;
           justify-content: space-between;
@@ -424,38 +430,19 @@ export default function AdminDashboard() {
           transform: translateY(1px);
         }
 
-        @media (max-width: 1100px) {
-          .mainGrid {
-            grid-template-columns: 1fr;
-          }
-        }
-
+        @media (max-width: 1100px) { .mainGrid { grid-template-columns: 1fr; } }
         @media (max-width: 980px) {
-          .kpiGrid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
+          .kpiGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
           .reqRow {
             grid-template-columns: 42px 1fr;
             grid-template-rows: auto auto;
             row-gap: 0.35rem;
           }
-          .reqMeta {
-            text-align: left;
-          }
-          .reqMeta,
-          .reqStatus {
-            grid-column: 2 / -1;
-          }
-          .reqStatus {
-            justify-self: start;
-          }
+          .reqMeta { text-align: left; }
+          .reqMeta, .reqStatus { grid-column: 2 / -1; }
+          .reqStatus { justify-self: start; }
         }
-
-        @media (max-width: 520px) {
-          .kpiGrid {
-            grid-template-columns: 1fr;
-          }
-        }
+        @media (max-width: 520px) { .kpiGrid { grid-template-columns: 1fr; } }
       `}</style>
 
       {/* Header */}
@@ -595,7 +582,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Screenshot-like list */}
+          {/* List */}
           <div className="reqList">
             {requestList.map((bk) => {
               const s = new Date(bk.start_time);
@@ -610,20 +597,25 @@ export default function AdminDashboard() {
                 year: "numeric",
               });
 
+              const customerStatus = getCustomerStatusForBooking(bk);
+
+              const go = () =>
+                navigate(`/admin/clientes/${encodeURIComponent(bk.id)}`);
+
               return (
                 <div
                   key={bk.id}
                   className="reqRow"
-                  onClick={() =>
-                    navigate(`/admin/clientes/${encodeURIComponent(bk.id)}`)
-                  }
+                  onClick={go}
                   role="button"
                   tabIndex={0}
+                  aria-label={`Abrir ficha de ${bk.customer_name || "cliente"}`}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ")
-                      navigate(
-                        navigate(`/admin/clientes/${encodeURIComponent(bk.id)}`)
-                      );
+                    if (e.key === "Enter") go();
+                    if (e.key === " ") {
+                      e.preventDefault(); // prevent page scroll
+                      go();
+                    }
                   }}
                 >
                   <div className="reqAvatar">{initials(bk.customer_name)}</div>
@@ -641,7 +633,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <div className="reqStatus" style={{ justifySelf: "end" }}>
-                    <StatusChip value={bk.status_admin || "nuevo"} />
+                    <StatusChip value={customerStatus} />
                   </div>
                 </div>
               );
@@ -660,7 +652,7 @@ export default function AdminDashboard() {
             )}
           </div>
 
-          {/* Installations section (like screenshot) */}
+          {/* Installations */}
           <div className="instHeaderRow">
             <div
               style={{
@@ -699,7 +691,7 @@ export default function AdminDashboard() {
             </thead>
             <tbody>
               {installations.map((bk) => {
-                const status = (bk.status_admin || "nuevo").toLowerCase();
+                const status = bk._customer_status || "en_proceso";
                 const dotBg = status === "finalizado" ? "#61b07a" : "#e0b15c";
 
                 return (
@@ -781,7 +773,7 @@ export default function AdminDashboard() {
 
           <div style={{ height: "0.75rem" }} />
 
-          {/* Mini month header */}
+          {/* Month header */}
           <div
             style={{
               display: "flex",
@@ -878,8 +870,6 @@ export default function AdminDashboard() {
                   title="Ver día"
                 >
                   {d.getDate()}
-
-                  {/* tiny indicators */}
                   <div
                     style={{
                       position: "absolute",
@@ -920,7 +910,6 @@ export default function AdminDashboard() {
 
           <div style={{ height: "0.9rem" }} />
 
-          {/* ✅ Requirement: remove the blocked-day preview list under calendar */}
           <Button
             type="button"
             onClick={() => navigate("/admin/calendario")}

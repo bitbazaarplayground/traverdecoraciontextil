@@ -373,15 +373,7 @@ export default function AdminClients() {
                 <td>
                   <Button
                     type="button"
-                    onClick={() => {
-                      setSelectedCustomer(c.refBooking);
-                      navigate(
-                        `/admin/clientes?open=${encodeURIComponent(
-                          c.refBooking.id
-                        )}`,
-                        { replace: true }
-                      );
-                    }}
+                    onClick={() => setSelectedCustomer(c.refBooking)}
                   >
                     Abrir
                   </Button>
@@ -459,15 +451,7 @@ export default function AdminClients() {
                 <td>
                   <Button
                     type="button"
-                    onClick={() => {
-                      setSelectedCustomer(c.refBooking);
-                      navigate(
-                        `/admin/clientes?open=${encodeURIComponent(
-                          c.refBooking.id
-                        )}`,
-                        { replace: true }
-                      );
-                    }}
+                    onClick={() => setSelectedCustomer(c.refBooking)}
                   >
                     Abrir
                   </Button>
