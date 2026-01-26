@@ -188,7 +188,7 @@ export default function AdminClients() {
         city: bk.city || prev?.city || "",
         last_booking_start: bk.start_time,
         last_booking_pack: bk.pack,
-        last_status_admin: bk.status_admin || "nuevo", // ✅ ADD
+        last_status_admin: bk.status || "nuevo",
         bookings_count: (prev?.bookings_count || 0) + 1,
         refBooking: bk, // ✅ default to current booking
       };

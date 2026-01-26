@@ -190,10 +190,7 @@ export default function AsesoramientoModal({ open, onClose, packLabel }) {
         </Top>
 
         <Body>
-          <AsesoramientoForm
-            packLabel={packLabel}
-            onSuccess={() => setTimeout(() => onClose?.(), 1200)}
-          />
+          <AsesoramientoForm packLabel={packLabel} />
         </Body>
       </Drawer>
     </Overlay>

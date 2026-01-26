@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
 /* =========================
@@ -137,11 +137,33 @@ function firstDayWithSlots(days) {
   return (days || []).find((d) => (d.slots || []).length > 0)?.date || "";
 }
 
+/* Real WhatsApp icon (SVG) */
+function WhatsAppIcon({ size = 18 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="#25D366"
+        d="M19.11 17.42c-.27-.14-1.58-.78-1.82-.87-.24-.09-.42-.14-.6.14-.18.27-.69.87-.84 1.05-.15.18-.31.2-.58.07-.27-.14-1.12-.41-2.13-1.31-.79-.7-1.32-1.56-1.47-1.83-.15-.27-.02-.42.12-.55.12-.12.27-.31.4-.47.13-.16.18-.27.27-.45.09-.18.04-.34-.02-.47-.07-.14-.6-1.45-.82-1.99-.22-.53-.44-.46-.6-.47h-.51c-.18 0-.47.07-.71.34-.24.27-.93.91-.93 2.22 0 1.31.95 2.57 1.08 2.75.13.18 1.87 2.86 4.53 4.01.63.27 1.12.43 1.5.55.63.2 1.2.17 1.65.1.5-.07 1.58-.65 1.8-1.28.22-.63.22-1.17.15-1.28-.07-.11-.24-.18-.51-.31z"
+      />
+      <path
+        fill="#25D366"
+        d="M26.67 5.33A13.27 13.27 0 0 0 16.02 1C8.83 1 3 6.83 3 14.02c0 2.31.6 4.56 1.74 6.55L3 31l10.62-1.69a13.03 13.03 0 0 0 6.4 1.63h.01c7.19 0 13.02-5.83 13.02-13.02 0-3.48-1.35-6.75-3.78-9.19zM20.02 28.6h-.01c-2.07 0-4.1-.56-5.88-1.62l-.42-.25-6.3 1 1.03-6.14-.27-.44a11 11 0 0 1-1.69-5.78C6.48 8.1 10.1 4.48 16.02 4.48c2.97 0 5.76 1.16 7.86 3.25a11.04 11.04 0 0 1 3.26 7.86c0 5.92-3.62 11.01-7.12 11.01z"
+      />
+    </svg>
+  );
+}
+
 /**
  * Props:
  * - packLabel: string shown/stored as hidden field "pack"
  * - onSuccess: callback after successful submit
- * - variant: "full" | "simple" (optional)
+ * - variant: "full" | "simple"
  */
 export default function AsesoramientoForm({
   onSuccess,
@@ -149,6 +171,25 @@ export default function AsesoramientoForm({
   variant = "full",
 }) {
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [lockUI, setLockUI] = useState(false);
+  const successRef = useRef(null);
+  const successTimerRef = useRef(null);
+
+  useEffect(() => {
+    console.log(
+      "[AssesoramientoForm] status =",
+      status,
+      "showSuccess =",
+      showSuccess
+    );
+  }, [status, showSuccess]);
+
+  useEffect(() => {
+    console.log("[AsesoramientoForm] mounted", { packLabel, variant });
+    return () =>
+      console.log("[AsesoramientoForm] unmounted", { packLabel, variant });
+  }, [packLabel, variant]);
 
   /**
    * meetingMode:
@@ -173,8 +214,6 @@ export default function AsesoramientoForm({
   const [selectedStart, setSelectedStart] = useState(""); // UTC ISO (slot.start)
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [slotError, setSlotError] = useState("");
-  // Booking mode (home visit)
-  const [homeVisit, setHomeVisit] = useState(false);
 
   const needsBooking = meetingMode === "domicilio" || meetingMode === "tienda";
   const needsAddress = meetingMode === "domicilio";
@@ -184,17 +223,7 @@ export default function AsesoramientoForm({
     return daysForSelect.find((d) => d.date === selectedDate)?.slots || [];
   }, [daysForSelect, selectedDate]);
 
-  useEffect(() => {
-    if (!homeVisit) return;
-
-    // when date changes, auto-pick the first available slot
-    if (selectedDate && slotsForSelectedDate.length > 0) {
-      setSelectedStart(slotsForSelectedDate[0].start);
-    } else {
-      setSelectedStart("");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [homeVisit, selectedDate, slotsForSelectedDate.length]);
+  const showWhatsAppCTA = meetingMode === "remoto" || meetingMode === "otro";
 
   async function loadAvailability() {
     setLoadingSlots(true);
@@ -210,8 +239,6 @@ export default function AsesoramientoForm({
         throw new Error(data?.error || "No se pudo cargar disponibilidad");
 
       setAvailability(data.days || []);
-      console.log("availability days:", data.days);
-
       setSelectedDate((prev) => {
         if (prev) {
           const has = (data.days || []).find((d) => d.date === prev)?.slots
@@ -221,7 +248,7 @@ export default function AsesoramientoForm({
         return firstDayWithSlots(data.days);
       });
     } catch (e) {
-      setSlotError(e.message);
+      setSlotError(e?.message || "No se pudo cargar disponibilidad.");
       setAvailability([]);
       setSelectedDate("");
       setSelectedStart("");
@@ -253,18 +280,89 @@ export default function AsesoramientoForm({
     setSlotError("");
 
     if (needsBooking) {
-      // load slots when booking mode enabled
       if (availability.length === 0 && !loadingSlots) loadAvailability();
     } else {
-      // contact-only mode
       resetBookingState();
       resetAddress();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meetingMode]);
 
+  // Auto-pick first slot on date change (booking modes)
+  useEffect(() => {
+    if (!needsBooking) return;
+    if (selectedDate && slotsForSelectedDate.length > 0) {
+      setSelectedStart(slotsForSelectedDate[0].start);
+    } else {
+      setSelectedStart("");
+    }
+  }, [needsBooking, selectedDate, slotsForSelectedDate]);
+
+  // ✅ REPLACE YOUR CURRENT "Show + auto-hide success message" useEffect WITH THIS:
+  // Show + auto-hide success message (30s)
+  useEffect(() => {
+    if (status !== "success") return;
+
+    setShowSuccess(true);
+
+    // lock interactions briefly (prevents double taps)
+    setLockUI(true);
+    const lockT = setTimeout(() => setLockUI(false), 900);
+
+    // focus + scroll into view (nice on mobile)
+    requestAnimationFrame(() => {
+      if (successRef.current) {
+        successRef.current.focus?.();
+        successRef.current.scrollIntoView?.({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    });
+
+    // IMPORTANT: clear any previous timer, then start a fresh 30s timer
+    if (successTimerRef.current) clearTimeout(successTimerRef.current);
+
+    successTimerRef.current = setTimeout(() => {
+      setShowSuccess(false); // ✅ hide the success card
+      // setStatus("idle");  // ❌ remove this (can cause “instant disappear”)
+    }, 30000);
+
+    return () => {
+      clearTimeout(lockT);
+      if (successTimerRef.current) clearTimeout(successTimerRef.current);
+    };
+  }, [status]);
+
+  // Close success on click outside (premium, but optional)
+  useEffect(() => {
+    if (!(status === "success" && showSuccess)) return;
+
+    const onAnyPointer = (e) => {
+      if (lockUI) return;
+
+      const box = successRef.current;
+      if (box && box.contains(e.target)) return;
+
+      setShowSuccess(false);
+      setStatus("idle");
+    };
+
+    window.addEventListener("mousedown", onAnyPointer);
+    window.addEventListener("touchstart", onAnyPointer);
+
+    return () => {
+      window.removeEventListener("mousedown", onAnyPointer);
+      window.removeEventListener("touchstart", onAnyPointer);
+    };
+  }, [status, showSuccess, lockUI]);
+
   async function handleSubmit(e) {
     e.preventDefault();
+
+    // prevent double submit
+    if (status === "loading") return;
+
     setStatus("loading");
 
     const form = e.currentTarget;
@@ -297,7 +395,7 @@ export default function AsesoramientoForm({
             email: formData.get("email") || null,
             contact_preference: formData.get("preferencia") || "WhatsApp",
             message: formData.get("mensaje") || "",
-            home_visit: needsAddress, // true only for domicilio
+            home_visit: needsAddress,
             address_line1: needsAddress ? addr.address_line1 : null,
             postal_code: needsAddress ? addr.postal_code : null,
             city: needsAddress ? addr.city : null,
@@ -322,15 +420,24 @@ export default function AsesoramientoForm({
         }
 
         // Success
+        // Success
+        console.log(
+          "[AsesoramientoForm] booking success -> setting status=success"
+        );
         setStatus("success");
+
         form.reset();
         resetAddress();
         resetBookingState();
         setMeetingMode("remoto");
 
-        if (onSuccess) onSuccess();
+        console.log("[AsesoramientoForm] before onSuccess");
+        // onSuccess?.();
+        console.log("[AsesoramientoForm] after onSuccess");
+
         return;
       } catch (err) {
+        console.error(err);
         setStatus("error");
         setSlotError("No se pudo reservar. Inténtalo de nuevo.");
         return;
@@ -341,8 +448,6 @@ export default function AsesoramientoForm({
     try {
       const data = { "form-name": "asesoramiento" };
       for (const [key, value] of formData.entries()) data[key] = value;
-
-      // store meetingMode too (helps admin know intent)
       data.meeting_mode = meetingMode;
 
       const res = await fetch("/", {
@@ -355,25 +460,120 @@ export default function AsesoramientoForm({
 
       setStatus("success");
       form.reset();
-      if (onSuccess) onSuccess();
+      onSuccess?.();
     } catch (err) {
+      console.error(err);
       setStatus("error");
     }
   }
 
-  if (status === "success") {
+  // Success UI
+  if (status === "success" && showSuccess) {
+    const whatsappHref =
+      "https://wa.me/34614952856?text=" +
+      encodeURIComponent(
+        `Hola, he enviado una solicitud desde la web (${
+          packLabel || "sin pack"
+        }).`
+      );
+
     return (
-      <div style={{ padding: "0.75rem 0", display: "grid", gap: "0.4rem" }}>
-        <strong style={{ fontSize: "1rem", color: "rgba(17,17,17,0.92)" }}>
-          ¡Gracias!
-        </strong>
-        <p style={{ margin: 0, color: "rgba(17,17,17,0.65)", lineHeight: 1.6 }}>
-          Hemos recibido tu solicitud y te responderemos lo antes posible.
-        </p>
-      </div>
+      <>
+        <style>{`
+          @keyframes popIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.99); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+          }
+        `}</style>
+
+        <div
+          ref={successRef}
+          tabIndex={-1}
+          aria-live="polite"
+          role="status"
+          style={{
+            position: "relative",
+            padding: "1rem",
+            borderRadius: 18,
+            border: "1px solid rgba(17,17,17,0.12)",
+            background: "rgba(255,255,255,0.92)",
+            backdropFilter: "blur(10px)",
+            display: "grid",
+            gap: "0.5rem",
+            boxShadow: "0 10px 30px rgba(17,17,17,0.06)",
+            animation: "popIn 260ms ease-out",
+            outline: "none",
+            pointerEvents: lockUI ? "none" : "auto",
+            opacity: lockUI ? 0.985 : 1,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <strong style={{ fontSize: "1.05rem", color: "rgba(17,17,17,0.92)" }}>
+            ¡Gracias!
+          </strong>
+
+          <p
+            style={{ margin: 0, color: "rgba(17,17,17,0.66)", lineHeight: 1.6 }}
+          >
+            Hemos recibido tu solicitud y te responderemos lo antes posible.
+          </p>
+
+          {/* ✅ Mature UX: only for remoto / otro */}
+          {showWhatsAppCTA && (
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                marginTop: "0.35rem",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                padding: "0.6rem 0.9rem",
+                borderRadius: 999,
+                border: "1px solid rgba(17,17,17,0.14)",
+                background: "rgba(17,17,17,0.02)",
+                color: "rgba(17,17,17,0.85)",
+                fontWeight: 900,
+                fontSize: "0.78rem",
+                textDecoration: "none",
+                width: "fit-content",
+              }}
+            >
+              <WhatsAppIcon size={18} />
+              Hablar por WhatsApp
+            </a>
+          )}
+
+          <div
+            style={{
+              marginTop: "0.25rem",
+              display: "flex",
+              gap: "0.6rem",
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <span
+              style={{
+                padding: "0.25rem 0.6rem",
+                borderRadius: 999,
+                border: "1px solid rgba(17,17,17,0.10)",
+                background: "rgba(17,17,17,0.03)",
+                fontWeight: 800,
+                fontSize: "0.78rem",
+                color: "rgba(17,17,17,0.72)",
+              }}
+            >
+              Confirmado
+            </span>
+          </div>
+        </div>
+      </>
     );
   }
 
+  // Normal form UI
   return (
     <>
       <FormHint>
@@ -395,7 +595,7 @@ export default function AsesoramientoForm({
         <input type="hidden" name="form-name" value="asesoramiento" />
         <input type="hidden" name="bot-field" />
 
-        {/* Context field: which pack/solicitud */}
+        {/* Context */}
         <input
           type="hidden"
           name="pack"
@@ -616,7 +816,7 @@ export default function AsesoramientoForm({
 
         {status === "error" && !needsBooking && (
           <InlineError>
-            No se pudo enviar. Por favor, inténtalo de nuevo o usa WhatsApp.
+            No se pudo enviar. Por favor, inténtalo de nuevo.
           </InlineError>
         )}
 
