@@ -2,8 +2,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient.js";
-import { Card, Wrap } from "./adminStyles";
-import CustomerDrawer from "./components/CustomerDrawer.jsx"; // reuse your existing component
+import { Button, Card, Wrap } from "./adminStyles";
+import CustomerDrawer from "./components/CustomerDrawer.jsx";
 
 export default function AdminCustomer() {
   const { bookingId } = useParams();
@@ -14,7 +14,6 @@ export default function AdminCustomer() {
   const [msg, setMsg] = useState("");
   const [customerBooking, setCustomerBooking] = useState(null);
 
-  // auth session
   useEffect(() => {
     supabase.auth
       .getSession()
@@ -45,7 +44,6 @@ export default function AdminCustomer() {
         const token = sess?.session?.access_token;
         if (!token) throw new Error("Sesión no válida.");
 
-        // Simple: reuse existing endpoint and find by id
         const res = await fetch(
           "/.netlify/functions/admin-bookings?limit=500",
           {
@@ -101,28 +99,61 @@ export default function AdminCustomer() {
 
   return (
     <Wrap>
-      <Card>
-        {loading && <p style={{ margin: 0, opacity: 0.75 }}>Cargando…</p>}
+      <div style={{ display: "grid", gap: "0.75rem" }}>
+        {/* Top header row */}
+        <Card>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "1rem",
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <div>
+              <h2 style={{ margin: 0 }}>{title}</h2>
+              <p style={{ margin: "0.25rem 0 0", opacity: 0.75 }}>
+                Ficha privada del cliente
+              </p>
+              {msg && (
+                <p style={{ margin: "0.5rem 0 0", opacity: 0.85 }}>{msg}</p>
+              )}
+            </div>
+
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <Button type="button" onClick={() => navigate(-1)}>
+                ← Volver
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Main content */}
+        {loading && (
+          <Card>
+            <p style={{ margin: 0, opacity: 0.75 }}>Cargando…</p>
+          </Card>
+        )}
 
         {!loading && customerBooking && (
-          // Reuse drawer UI, but render it as “page section”
-          <div style={{ position: "relative" }}>
-            <CustomerDrawer
-              customer={customerBooking}
-              onClose={() => navigate(-1)} // close behaves like back
-              onStatusChange={(nextStatus) => {
-                setCustomerBooking((prev) =>
-                  prev ? { ...prev, status_admin: nextStatus } : prev
-                );
-              }}
-            />
-          </div>
+          <CustomerDrawer
+            customer={customerBooking}
+            onClose={() => navigate(-1)}
+            onStatusChange={(nextStatus) => {
+              setCustomerBooking((prev) =>
+                prev ? { ...prev, status_admin: nextStatus } : prev
+              );
+            }}
+          />
         )}
 
         {!loading && !customerBooking && !msg && (
-          <p style={{ margin: 0, opacity: 0.75 }}>Cliente no disponible.</p>
+          <Card>
+            <p style={{ margin: 0, opacity: 0.75 }}>Cliente no disponible.</p>
+          </Card>
         )}
-      </Card>
+      </div>
     </Wrap>
   );
 }

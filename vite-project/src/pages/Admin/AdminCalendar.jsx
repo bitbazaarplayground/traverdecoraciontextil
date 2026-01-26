@@ -1,5 +1,6 @@
 // src/pages/Admin/AdminCalendar.jsx
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Input, Label, Row, Table, Wrap } from "./adminStyles";
 
@@ -121,6 +122,8 @@ function getBearerToken(eventLikeHeaders) {
 // Component
 // ============================
 export default function AdminCalendar() {
+  const navigate = useNavigate();
+
   const [session, setSession] = useState(null);
 
   const [loading, setLoading] = useState(false);
@@ -775,7 +778,34 @@ export default function AdminCalendar() {
                   return (
                     <tr key={b.id}>
                       <td>{label}</td>
-                      <td>{b.customer_name || "—"}</td>
+                      <td>
+                        {b.customer_name ? (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              navigate(
+                                `/admin/clientes/${encodeURIComponent(b.id)}`
+                              )
+                            }
+                            style={{
+                              background: "none",
+                              border: "none",
+                              padding: 0,
+                              margin: 0,
+                              cursor: "pointer",
+                              color: ACCENT,
+                              fontWeight: 800,
+                              textDecoration: "underline",
+                            }}
+                            title="Abrir perfil del cliente"
+                          >
+                            {b.customer_name}
+                          </button>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+
                       <td>{b.pack || "—"}</td>
                     </tr>
                   );

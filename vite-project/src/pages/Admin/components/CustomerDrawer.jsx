@@ -312,24 +312,22 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
 
   async function updateStatus(next) {
     try {
-      const { data: sess } = await supabase.auth.getSession();
-      const token = sess?.session?.access_token;
-      if (!token) throw new Error("Sesión no válida.");
+      if (!customerKey) throw new Error("Customer key no válido.");
 
-      const res = await fetch("/.netlify/functions/admin-bookings-status", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const { error } = await supabase.from("customers").upsert(
+        {
+          customer_key: customerKey,
+          status: next,
+          name: customer.customer_name || null,
+          phone: customer.phone || null,
+          email: customer.email || null,
+          city: customer.city || null,
+          updated_at: new Date().toISOString(),
         },
-        body: JSON.stringify({
-          bookingId: customer.id,
-          status_admin: next,
-        }),
-      });
+        { onConflict: "customer_key" }
+      );
 
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || "No se pudo guardar");
+      if (error) throw error;
 
       setStatus(next);
       onStatusChange?.(next);
@@ -340,6 +338,16 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
       console.error(err);
       alert(err?.message || "Error guardando estado");
     }
+  }
+
+  async function loadCustomerStatus(key) {
+    const { data, error } = await supabase
+      .from("customers")
+      .select("status")
+      .eq("customer_key", key)
+      .maybeSingle();
+
+    if (!error && data?.status) setStatus(data.status);
   }
 
   // Load everything when customer changes
@@ -354,6 +362,8 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
 
     loadCustomerImages(customerKey);
     loadCustomerNote(customerKey);
+    loadCustomerStatus(customerKey);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customer, customerKey]);
 

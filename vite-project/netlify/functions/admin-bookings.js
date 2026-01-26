@@ -44,6 +44,12 @@ async function supabaseRestGet({ supabaseUrl, serviceKey, path }) {
   return text ? JSON.parse(text) : [];
 }
 
+// Same customer_key logic as your frontend
+function toCustomerKey(bk) {
+  const raw = (bk?.phone || bk?.email || "").trim().toLowerCase();
+  return raw;
+}
+
 export async function handler(event) {
   try {
     const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -95,7 +101,44 @@ export async function handler(event) {
       path: `blackouts?select=*&order=start_time.asc&limit=${limit}`,
     });
 
-    return json(200, { ok: true, bookings, blackouts });
+    // Fetch customer statuses (small table, safe to grab all)
+    // If you expect thousands later, we can optimize with an `in.(...)` filter.
+    const customers = await supabaseRestGet({
+      supabaseUrl: SUPABASE_URL,
+      serviceKey: SERVICE_KEY,
+      path: `customers?select=customer_key,status,updated_at&limit=2000`,
+    });
+
+    const statusByKey = new Map();
+    for (const c of customers || []) {
+      const k = String(c.customer_key || "")
+        .trim()
+        .toLowerCase();
+      if (!k) continue;
+      statusByKey.set(k, c.status);
+    }
+
+    // Merge into bookings response:
+    // - add `customer_key` (computed)
+    // - add `status` (from customers table if exists, else fallback to booking.status_admin)
+    const bookingsMerged = (bookings || []).map((bk) => {
+      const customer_key = toCustomerKey(bk);
+      const statusFromCustomers = customer_key
+        ? statusByKey.get(customer_key)
+        : null;
+
+      return {
+        ...bk,
+        customer_key,
+        status: statusFromCustomers || bk.status_admin || "nuevo",
+      };
+    });
+
+    return json(200, {
+      ok: true,
+      bookings: bookingsMerged,
+      blackouts,
+    });
   } catch (e) {
     return json(500, { error: e.message || "Internal error" });
   }
