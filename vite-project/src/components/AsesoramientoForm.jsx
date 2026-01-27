@@ -446,21 +446,25 @@ export default function AsesoramientoForm({
 
     // ------- Netlify form flow (normal enquiry) -------
     try {
-      const data = { "form-name": "asesoramiento" };
-      for (const [key, value] of formData.entries()) data[key] = value;
-      data.meeting_mode = meetingMode;
-
-      const res = await fetch("/", {
+      const res = await fetch("/.netlify/functions/enquiry", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: encode(data),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pack: packLabel || "Sin especificar",
+          customer_name: formData.get("nombre"),
+          phone: formData.get("telefono"),
+          email: formData.get("email") || null,
+          contact_preference: formData.get("preferencia") || "WhatsApp",
+          message: formData.get("mensaje") || "",
+          meeting_mode: meetingMode, // remoto | otro
+        }),
       });
 
-      if (!res.ok) throw new Error("Network response was not ok");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "No se pudo enviar.");
 
       setStatus("success");
       form.reset();
-      onSuccess?.();
     } catch (err) {
       console.error(err);
       setStatus("error");
