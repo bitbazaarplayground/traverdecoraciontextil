@@ -28,6 +28,10 @@ export default function AdminBookings() {
   // 1) AUTH / ACCESS CONTROL
   // -------------------------
   const [session, setSession] = useState(null);
+  useEffect(() => {
+    console.log("[AdminBookings] mounted");
+    return () => console.log("[AdminBookings] unmounted");
+  }, []);
 
   const adminAllowlist = useMemo(() => {
     const raw = import.meta.env.VITE_ADMIN_EMAILS || "";
@@ -69,7 +73,10 @@ export default function AdminBookings() {
   // 5) FILTERS
   // -------------------------
   const [statusFilter, setStatusFilter] = useState("todos");
-  const [timeFilter, setTimeFilter] = useState("upcoming"); // upcoming | past | all
+  const [timeFilter, setTimeFilter] = useState("upcoming");
+
+  // ✅ enquiries have their own filter
+  const [enquiryStatusFilter, setEnquiryStatusFilter] = useState("todos");
 
   // -------------------------
   // 6) ROUTING QUIRK (RECOVERY)
@@ -140,14 +147,15 @@ export default function AdminBookings() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || "No se pudo cargar datos.");
 
+      console.log("[AdminBookings] loaded:", {
+        bookings: (data.bookings || []).length,
+        enquiries: (data.enquiries || []).length,
+        blackouts: (data.blackouts || []).length,
+        firstEnquiry: data.enquiries?.[0],
+      });
+
       setBookings(data.bookings || []);
       setEnquiries(data.enquiries || []);
-      console.log(
-        "[AdminBookings] loaded enquiries:",
-        (data.enquiries || []).length,
-        data.enquiries?.[0]
-      );
-
       setBlackouts(data.blackouts || []);
     } catch (e) {
       setMsg(e?.message || "Error cargando datos");
@@ -252,9 +260,11 @@ export default function AdminBookings() {
   const filteredEnquiries = useMemo(() => {
     return (enquiries || []).filter((e) => {
       const status = e.status_admin || "nuevo";
-      return statusFilter === "todos" ? true : status === statusFilter;
+      return enquiryStatusFilter === "todos"
+        ? true
+        : status === enquiryStatusFilter;
     });
-  }, [enquiries, statusFilter]);
+  }, [enquiries, enquiryStatusFilter]);
 
   // -------------------------
   // 13) RENDER: LOGIN SCREEN
@@ -446,8 +456,8 @@ export default function AdminBookings() {
           }}
         >
           <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            value={enquiryStatusFilter}
+            onChange={(e) => setEnquiryStatusFilter(e.target.value)}
             style={{
               padding: "0.5rem 0.65rem",
               borderRadius: 12,
@@ -610,7 +620,7 @@ export default function AdminBookings() {
             </tr>
           </thead>
           <tbody>
-            {(enquiries || []).map((enq) => (
+            {filteredEnquiries.map((enq) => (
               <tr key={enq.id}>
                 <td>
                   <strong>{receivedLabel(enq)}</strong>
@@ -652,7 +662,7 @@ export default function AdminBookings() {
               </tr>
             ))}
 
-            {(enquiries || []).length === 0 && (
+            {filteredEnquiries.length === 0 && (
               <tr>
                 <td colSpan="4" style={{ opacity: 0.7 }}>
                   No hay solicitudes que coincidan.
