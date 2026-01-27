@@ -92,7 +92,13 @@ export async function handler(event) {
     const bookings = await supabaseRestGet({
       supabaseUrl: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
-      path: `bookings?select=*&order=created_at.desc&limit=${limit}`,
+      path: `bookings?select=*&status=eq.reserved&order=start_time.asc&limit=${limit}`,
+    });
+
+    const enquiries = await supabaseRestGet({
+      supabaseUrl: SUPABASE_URL,
+      serviceKey: SERVICE_KEY,
+      path: `bookings?select=*&status=eq.enquiry&order=created_at.desc&limit=${limit}`,
     });
 
     const blackouts = await supabaseRestGet({
@@ -137,6 +143,7 @@ export async function handler(event) {
     return json(200, {
       ok: true,
       bookings: bookingsMerged,
+      enquiries,
       blackouts,
     });
   } catch (e) {

@@ -5,26 +5,29 @@ import AdminLogin from "./components/AdminLogin.jsx";
 import CustomerDrawer from "./components/CustomerDrawer.jsx";
 import { formatLocal } from "./utils";
 
+/**
+ * AdminBookings.jsx
+ * ---------------------------------------------------------
+ * Sections (notes):
+ * 1) Auth + allowlist gating
+ * 2) Data loading (Netlify function, Bearer token)
+ * 3) Helpers (labels, formatting)
+ * 4) Mutations (blackouts)
+ * 5) Filters (status + time)
+ * 6) UI (header, drawer, blackout form, tables)
+ *
+ * Fixes included (per your list):
+ * ✅ (1) Removed duplicated typeLabel + receivedLabel (single definition only)
+ * ✅ (2) Drawer status change updates BOTH bookings + enquiries
+ * ✅ (3) “Citas” table shows status_admin (safe & explicit) instead of bk.status
+ * ✅ (5) Added “Recibido” column for bookings too (created_at)
+ */
+
 export default function AdminBookings() {
+  // -------------------------
+  // 1) AUTH / ACCESS CONTROL
+  // -------------------------
   const [session, setSession] = useState(null);
-
-  // Login / UI feedback
-  const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState("");
-
-  const [bookings, setBookings] = useState([]);
-  const [blackouts, setBlackouts] = useState([]);
-
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
-
-  // Block form
-  const [blockStart, setBlockStart] = useState("");
-  const [blockEnd, setBlockEnd] = useState("");
-  const [blockReason, setBlockReason] = useState("Bloqueado");
-
-  // ✅ Step 6 filters
-  const [statusFilter, setStatusFilter] = useState("todos");
-  const [timeFilter, setTimeFilter] = useState("upcoming"); // upcoming | past | all
 
   const adminAllowlist = useMemo(() => {
     const raw = import.meta.env.VITE_ADMIN_EMAILS || "";
@@ -41,12 +44,45 @@ export default function AdminBookings() {
     return adminAllowlist.includes(userEmail);
   }, [session, adminAllowlist]);
 
+  // -------------------------
+  // 2) UI / FEEDBACK STATE
+  // -------------------------
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  // -------------------------
+  // 3) DATA STATE
+  // -------------------------
+  const [bookings, setBookings] = useState([]);
+  const [enquiries, setEnquiries] = useState([]);
+  const [blackouts, setBlackouts] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+
+  // -------------------------
+  // 4) BLACKOUT FORM STATE
+  // -------------------------
+  const [blockStart, setBlockStart] = useState("");
+  const [blockEnd, setBlockEnd] = useState("");
+  const [blockReason, setBlockReason] = useState("Bloqueado");
+
+  // -------------------------
+  // 5) FILTERS
+  // -------------------------
+  const [statusFilter, setStatusFilter] = useState("todos");
+  const [timeFilter, setTimeFilter] = useState("upcoming"); // upcoming | past | all
+
+  // -------------------------
+  // 6) ROUTING QUIRK (RECOVERY)
+  // -------------------------
   useEffect(() => {
     if (window.location.href.includes("type=recovery")) {
       window.location.replace("/admin/reset-password");
     }
   }, []);
 
+  // -------------------------
+  // 7) SESSION BOOTSTRAP
+  // -------------------------
   useEffect(() => {
     supabase.auth
       .getSession()
@@ -61,6 +97,33 @@ export default function AdminBookings() {
     return () => sub?.subscription?.unsubscribe?.();
   }, []);
 
+  // -------------------------
+  // 8) HELPERS (ONE COPY ONLY ✅)
+  // -------------------------
+  function typeLabel(row) {
+    if (row.meeting_mode) {
+      if (row.meeting_mode === "remoto") return "Online / Teléfono";
+      if (row.meeting_mode === "otro") return "Otro / No lo tengo claro";
+      if (row.meeting_mode === "tienda") return "Tienda";
+      if (row.meeting_mode === "domicilio") return "Domicilio";
+      return row.meeting_mode;
+    }
+
+    // fallback (older rows)
+    if (row.status === "reserved")
+      return row.home_visit ? "Domicilio" : "Tienda";
+    return "Online / Otro";
+  }
+
+  function receivedLabel(row) {
+    // Prefer created_at if your table has it
+    if (row.created_at) return formatLocal(row.created_at);
+    return "-";
+  }
+
+  // -------------------------
+  // 9) DATA LOADING
+  // -------------------------
   async function loadData() {
     setLoading(true);
     setMsg("");
@@ -78,10 +141,12 @@ export default function AdminBookings() {
       if (!res.ok) throw new Error(data?.error || "No se pudo cargar datos.");
 
       setBookings(data.bookings || []);
+      setEnquiries(data.enquiries || []);
       setBlackouts(data.blackouts || []);
     } catch (e) {
       setMsg(e?.message || "Error cargando datos");
       setBookings([]);
+      setEnquiries([]);
       setBlackouts([]);
     } finally {
       setLoading(false);
@@ -93,11 +158,17 @@ export default function AdminBookings() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, isAllowed]);
 
+  // -------------------------
+  // 10) AUTH ACTIONS
+  // -------------------------
   async function signOut() {
     setSelectedCustomer(null);
     await supabase.auth.signOut();
   }
 
+  // -------------------------
+  // 11) BLACKOUT MUTATIONS
+  // -------------------------
   async function addBlackout(e) {
     e.preventDefault();
     setMsg("");
@@ -136,17 +207,22 @@ export default function AdminBookings() {
 
   async function deleteBlackout(id) {
     if (!confirm("¿Eliminar bloqueo?")) return;
+
     setLoading(true);
     const { error } = await supabase.from("blackouts").delete().eq("id", id);
     setLoading(false);
+
     if (error) {
       setMsg(error.message);
       return;
     }
+
     loadData();
   }
 
-  // ✅ Step 6 filtered array
+  // -------------------------
+  // 12) FILTERED ARRAYS
+  // -------------------------
   const filteredBookings = useMemo(() => {
     const now = new Date();
 
@@ -167,14 +243,25 @@ export default function AdminBookings() {
     });
   }, [bookings, statusFilter, timeFilter]);
 
-  // ---------- LOGIN SCREEN ----------
+  const filteredEnquiries = useMemo(() => {
+    return (enquiries || []).filter((e) => {
+      const status = e.status_admin || "nuevo";
+      return statusFilter === "todos" ? true : status === statusFilter;
+    });
+  }, [enquiries, statusFilter]);
+
+  // -------------------------
+  // 13) RENDER: LOGIN SCREEN
+  // -------------------------
   if (!session) {
     return (
       <AdminLogin adminAllowlist={adminAllowlist} onSession={setSession} />
     );
   }
 
-  // ---------- NOT ALLOWED ----------
+  // -------------------------
+  // 14) RENDER: NOT ALLOWED
+  // -------------------------
   if (!isAllowed) {
     return (
       <Wrap>
@@ -191,9 +278,12 @@ export default function AdminBookings() {
     );
   }
 
-  // ---------- DASHBOARD ----------
+  // -------------------------
+  // 15) RENDER: DASHBOARD
+  // -------------------------
   return (
     <Wrap>
+      {/* Header */}
       <Card>
         <div
           style={{
@@ -222,6 +312,7 @@ export default function AdminBookings() {
         </div>
       </Card>
 
+      {/* Drawer (Fix #2: update both bookings + enquiries ✅) */}
       <CustomerDrawer
         customer={selectedCustomer}
         onStatusChange={(nextStatus) => {
@@ -236,6 +327,14 @@ export default function AdminBookings() {
                 : b
             )
           );
+
+          setEnquiries((prev) =>
+            prev.map((e) =>
+              e.id === selectedCustomer?.id
+                ? { ...e, status_admin: nextStatus }
+                : e
+            )
+          );
         }}
         onClose={() => {
           setSelectedCustomer(null);
@@ -243,6 +342,7 @@ export default function AdminBookings() {
         }}
       />
 
+      {/* Blackouts */}
       <Card>
         <h3 style={{ marginTop: 0 }}>Bloquear horas</h3>
         <form onSubmit={addBlackout}>
@@ -325,10 +425,11 @@ export default function AdminBookings() {
         </Table>
       </Card>
 
+      {/* Bookings table */}
       <Card>
-        <h3 style={{ marginTop: 0 }}>Reservas</h3>
+        <h3 style={{ marginTop: 0 }}>Citas (Tienda / Domicilio)</h3>
 
-        {/* ✅ Step 6 UI dropdowns */}
+        {/* Filters */}
         <div
           style={{
             display: "flex",
@@ -378,13 +479,13 @@ export default function AdminBookings() {
           <thead>
             <tr>
               <th>Fecha</th>
+              <th>Recibido</th> {/* ✅ Fix #5 */}
               <th>Cliente</th>
               <th>Contexto</th>
               <th>Mensaje</th>
             </tr>
           </thead>
           <tbody>
-            {/* ✅ Use filteredBookings */}
             {filteredBookings.map((bk) => (
               <tr key={bk.id}>
                 <td>
@@ -394,6 +495,10 @@ export default function AdminBookings() {
                   <div style={{ opacity: 0.75 }}>
                     {formatLocal(bk.end_time)}
                   </div>
+                </td>
+
+                <td>
+                  <strong>{receivedLabel(bk)}</strong> {/* ✅ Fix #5 */}
                 </td>
 
                 <td>
@@ -428,7 +533,16 @@ export default function AdminBookings() {
                     <strong>{bk.pack}</strong>
                   </div>
                   <div style={{ opacity: 0.75 }}>{bk.contact_preference}</div>
-                  <div style={{ opacity: 0.75 }}>Estado: {bk.status}</div>
+
+                  {/* ✅ Fix #3 (safe & explicit): show admin workflow status */}
+                  <div style={{ opacity: 0.75 }}>
+                    Estado: {bk.status_admin || "nuevo"}
+                  </div>
+
+                  {/* Optional context line if helpful */}
+                  <div style={{ opacity: 0.75 }}>
+                    <em>{typeLabel(bk)}</em>
+                  </div>
                 </td>
 
                 <td style={{ whiteSpace: "pre-wrap" }}>{bk.message || ""}</td>
@@ -437,8 +551,105 @@ export default function AdminBookings() {
 
             {filteredBookings.length === 0 && (
               <tr>
-                <td colSpan="4" style={{ opacity: 0.7 }}>
+                <td colSpan="5" style={{ opacity: 0.7 }}>
                   No hay reservas que coincidan.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </Card>
+
+      {/* Enquiries table */}
+      <Card>
+        <h3 style={{ marginTop: 0 }}>Solicitudes (Online / Teléfono / Otro)</h3>
+
+        {/* Status filter only */}
+        <div
+          style={{
+            display: "flex",
+            gap: "0.75rem",
+            flexWrap: "wrap",
+            marginTop: "0.75rem",
+            marginBottom: "0.75rem",
+          }}
+        >
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            style={{
+              padding: "0.5rem 0.65rem",
+              borderRadius: 12,
+              border: "1px solid rgba(17,17,17,0.12)",
+              background: "rgba(17,17,17,0.02)",
+              fontWeight: 800,
+            }}
+          >
+            <option value="todos">Todos</option>
+            <option value="nuevo">Nuevo</option>
+            <option value="presupuesto">Presupuesto</option>
+            <option value="en_proceso">En proceso</option>
+            <option value="finalizado">Finalizado</option>
+            <option value="no_interesado">No interesado</option>
+          </select>
+        </div>
+
+        <Table>
+          <thead>
+            <tr>
+              <th>Recibido</th>
+              <th>Cliente</th>
+              <th>Tipo</th>
+              <th>Mensaje</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredEnquiries.map((enq) => (
+              <tr key={enq.id}>
+                <td>
+                  <strong>{receivedLabel(enq)}</strong>
+                </td>
+
+                <td>
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCustomer(enq)}
+                      style={{
+                        border: 0,
+                        background: "transparent",
+                        padding: 0,
+                        cursor: "pointer",
+                        fontWeight: 900,
+                        textDecoration: "underline",
+                        textUnderlineOffset: 3,
+                      }}
+                    >
+                      {enq.customer_name}
+                    </button>
+                  </div>
+                  <div style={{ opacity: 0.8 }}>{enq.phone}</div>
+                  {enq.email && <div style={{ opacity: 0.8 }}>{enq.email}</div>}
+                </td>
+
+                <td>
+                  <div>
+                    <strong>{typeLabel(enq)}</strong>
+                  </div>
+                  <div style={{ opacity: 0.75 }}>{enq.contact_preference}</div>
+                  <div style={{ opacity: 0.75 }}>
+                    Estado: {enq.status_admin || "nuevo"}
+                  </div>
+                </td>
+
+                <td style={{ whiteSpace: "pre-wrap" }}>{enq.message || ""}</td>
+              </tr>
+            ))}
+
+            {filteredEnquiries.length === 0 && (
+              <tr>
+                <td colSpan="4" style={{ opacity: 0.7 }}>
+                  No hay solicitudes que coincidan.
                 </td>
               </tr>
             )}

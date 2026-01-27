@@ -97,6 +97,7 @@ export async function handler(event) {
       table: "bookings",
       row: {
         status: "enquiry",
+        meeting_mode,
         pack,
         customer_name,
         phone,
