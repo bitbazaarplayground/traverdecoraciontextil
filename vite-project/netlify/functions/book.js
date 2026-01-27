@@ -200,6 +200,7 @@ export async function handler(event) {
       table: "bookings",
       row: {
         status: "reserved",
+        meeting_mode: home_visit ? "domicilio" : "tienda",
         pack,
         customer_name,
         phone,
