@@ -142,6 +142,12 @@ export default function AdminBookings() {
 
       setBookings(data.bookings || []);
       setEnquiries(data.enquiries || []);
+      console.log(
+        "[AdminBookings] loaded enquiries:",
+        (data.enquiries || []).length,
+        data.enquiries?.[0]
+      );
+
       setBlackouts(data.blackouts || []);
     } catch (e) {
       setMsg(e?.message || "Error cargando datos");
