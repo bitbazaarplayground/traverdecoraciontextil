@@ -1,3 +1,5 @@
+// netlify/functions/book.js
+
 function json(statusCode, bodyObj) {
   return {
     statusCode,
@@ -40,6 +42,31 @@ async function supabaseInsert({ url, serviceKey, table, row }) {
   const text = await res.text();
   if (!res.ok) throw new Error(`Supabase INSERT failed: ${res.status} ${text}`);
   return text ? JSON.parse(text) : [];
+}
+
+// ✅ Submit to Netlify Forms so Netlify triggers email notifications
+async function submitToNetlifyForms(formName, fields) {
+  const siteUrl = process.env.URL || process.env.DEPLOY_PRIME_URL;
+  if (!siteUrl) throw new Error("Missing site URL env (URL/DEPLOY_PRIME_URL)");
+
+  const body = new URLSearchParams({
+    "form-name": formName,
+    ...fields,
+  }).toString();
+
+  const res = await fetch(siteUrl + "/", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+
+  // Netlify often responds 200/302. Treat non-2xx/3xx as failure.
+  if (!(res.status >= 200 && res.status < 400)) {
+    const t = await res.text().catch(() => "");
+    throw new Error(`Netlify Forms submit failed: ${res.status} ${t}`);
+  }
+
+  return true;
 }
 
 export async function handler(event) {
@@ -99,9 +126,7 @@ export async function handler(event) {
       return json(400, { error: "Invalid start datetime" });
     }
 
-    // Enforce lead time (2 days) based on Europe/Madrid local date
-    // We do a simple server-side check in UTC: start must be >= now + 2 days.
-    // (Your availability endpoint already enforces this, but we enforce again.)
+    // Enforce lead time (2 days) - server-side re-check
     const leadTimeDays = 2;
     const minStart = Date.now() + leadTimeDays * 24 * 60 * 60_000;
     if (startDate.getTime() < minStart) {
@@ -168,7 +193,7 @@ export async function handler(event) {
       });
     }
 
-    // Insert booking
+    // 1) Insert booking into Supabase (Admin)
     const inserted = await supabaseInsert({
       url: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
@@ -191,12 +216,37 @@ export async function handler(event) {
       },
     });
 
+    // 2) Also submit to Netlify Forms (Email notifications)
+    //    IMPORTANT: don't fail the booking if Netlify Forms fails.
+    let netlifyWarning = null;
+    try {
+      await submitToNetlifyForms("asesoramiento", {
+        meeting_mode: home_visit ? "domicilio" : "tienda",
+        pack,
+        nombre: customer_name,
+        telefono: phone,
+        email: email || "",
+        preferencia: contact_preference,
+        mensaje: message || "",
+        start_time: startIso,
+        end_time: endIso,
+        address_line1: address_line1 || "",
+        postal_code: postal_code || "",
+        city: city || "",
+        address_notes: address_notes || "",
+        kind: "booking",
+      });
+    } catch (e) {
+      netlifyWarning = e?.message || String(e);
+    }
+
     return json(200, {
       ok: true,
       booking: inserted?.[0] || null,
       start: startIso,
       end: endIso,
       blockMinutes,
+      netlifyWarning, // ✅ useful for debugging if emails aren't coming
     });
   } catch (err) {
     return json(500, { error: err?.message || "Unknown error" });

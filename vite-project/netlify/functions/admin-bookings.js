@@ -92,7 +92,7 @@ export async function handler(event) {
     const bookings = await supabaseRestGet({
       supabaseUrl: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
-      path: `bookings?select=*&order=start_time.asc&limit=${limit}`,
+      path: `bookings?select=*&order=created_at.desc&limit=${limit}`,
     });
 
     const blackouts = await supabaseRestGet({
