@@ -28,6 +28,10 @@ export default function AdminBookings() {
   // 1) AUTH / ACCESS CONTROL
   // -------------------------
   const [session, setSession] = useState(null);
+  useEffect(() => {
+    console.log("[AdminBookings] mounted");
+    return () => console.log("[AdminBookings] unmounted");
+  }, []);
 
   const adminAllowlist = useMemo(() => {
     const raw = import.meta.env.VITE_ADMIN_EMAILS || "";
