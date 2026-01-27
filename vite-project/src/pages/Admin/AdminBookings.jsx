@@ -610,7 +610,7 @@ export default function AdminBookings() {
             </tr>
           </thead>
           <tbody>
-            {filteredEnquiries.map((enq) => (
+            {(enquiries || []).map((enq) => (
               <tr key={enq.id}>
                 <td>
                   <strong>{receivedLabel(enq)}</strong>
@@ -652,7 +652,7 @@ export default function AdminBookings() {
               </tr>
             ))}
 
-            {filteredEnquiries.length === 0 && (
+            {(enquiries || []).length === 0 && (
               <tr>
                 <td colSpan="4" style={{ opacity: 0.7 }}>
                   No hay solicitudes que coincidan.
