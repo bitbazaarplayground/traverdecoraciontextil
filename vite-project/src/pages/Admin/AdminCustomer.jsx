@@ -33,7 +33,7 @@ export default function AdminCustomer() {
   }, []);
 
   const title = useMemo(() => {
-    return customer?.display_name || customer?.customer_name || "Cliente";
+    return customer?.name || "Cliente";
   }, [customer]);
 
   useEffect(() => {
