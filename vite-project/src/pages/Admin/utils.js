@@ -10,3 +10,26 @@ export function formatLocal(dt) {
     minute: "2-digit",
   });
 }
+
+export function meetingModeLabel(row) {
+  if (row?.meeting_mode) {
+    switch (String(row.meeting_mode).trim().toLowerCase()) {
+      case "remoto":
+        return "Online / Teléfono";
+      case "tienda":
+        return "En tienda";
+      case "domicilio":
+        return "Visita a domicilio";
+      case "otro":
+        return "Otro / No lo tengo claro";
+      default:
+        return row.meeting_mode;
+    }
+  }
+
+  // fallback for older rows
+  if (row?.status === "reserved")
+    return row?.home_visit ? "Visita a domicilio" : "En tienda";
+  if (row?.status === "enquiry") return "Online / Teléfono";
+  return "—";
+}
