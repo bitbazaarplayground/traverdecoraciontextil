@@ -660,8 +660,10 @@ export default function AdminDashboard() {
 
               const customerStatus = getCustomerStatusForBooking(bk);
 
+              const customerKey = toCustomerKey(bk);
+
               const go = () =>
-                navigate(`/admin/clientes/${encodeURIComponent(bk.id)}`);
+                navigate(`/admin/clientes/${encodeURIComponent(customerKey)}`);
 
               return (
                 <div

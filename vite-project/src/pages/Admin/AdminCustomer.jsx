@@ -5,14 +5,20 @@ import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Wrap } from "./adminStyles";
 import CustomerDrawer from "./components/CustomerDrawer.jsx";
 
+function toCustomerKeyFromBooking(bk) {
+  return (bk?.phone || bk?.email || "").trim().toLowerCase();
+}
+
 export default function AdminCustomer() {
-  const { bookingId } = useParams();
+  const { customerKey } = useParams(); // ✅ route param now
   const navigate = useNavigate();
 
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
-  const [customerBooking, setCustomerBooking] = useState(null);
+
+  const [customer, setCustomer] = useState(null); // row from customers
+  const [latestBooking, setLatestBooking] = useState(null); // latest booking/enquiry row
 
   useEffect(() => {
     supabase.auth
@@ -27,11 +33,11 @@ export default function AdminCustomer() {
   }, []);
 
   const title = useMemo(() => {
-    return customerBooking?.customer_name || "Cliente";
-  }, [customerBooking]);
+    return customer?.display_name || customer?.customer_name || "Cliente";
+  }, [customer]);
 
   useEffect(() => {
-    if (!session?.user || !bookingId) return;
+    if (!session?.user || !customerKey) return;
 
     let alive = true;
 
@@ -40,38 +46,51 @@ export default function AdminCustomer() {
       setMsg("");
 
       try {
-        const { data: sess } = await supabase.auth.getSession();
-        const token = sess?.session?.access_token;
-        if (!token) throw new Error("Sesión no válida.");
+        const decodedKey = decodeURIComponent(customerKey).trim().toLowerCase();
+        if (!decodedKey) throw new Error("customerKey inválido.");
 
-        const res = await fetch(
-          "/.netlify/functions/admin-bookings?limit=500",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        // 1) Load customer record from customers table
+        const { data: customerRow, error: customerErr } = await supabase
+          .from("customers")
+          .select("*")
+          .eq("customer_key", decodedKey)
+          .maybeSingle();
 
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data?.error || "No se pudo cargar datos.");
-
-        const found = (data.bookings || []).find(
-          (b) => String(b.id) === String(bookingId)
-        );
+        if (customerErr) throw new Error(customerErr.message);
 
         if (!alive) return;
 
-        if (!found) {
-          setCustomerBooking(null);
-          setMsg("Cliente no encontrado (bookingId no existe).");
+        if (!customerRow) {
+          setCustomer(null);
+          setLatestBooking(null);
+          setMsg("Cliente no encontrado (customer_key no existe).");
           return;
         }
 
-        setCustomerBooking(found);
+        setCustomer(customerRow);
+
+        // 2) Load latest booking/enquiry for this customer_key (by phone/email match)
+        //    We match using the same rule you use to compute customer_key.
+        const { data: bookingRows, error: bookingErr } = await supabase
+          .from("bookings")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(200);
+
+        if (bookingErr) throw new Error(bookingErr.message);
+
+        const match =
+          (bookingRows || []).find(
+            (b) => toCustomerKeyFromBooking(b) === decodedKey
+          ) || null;
+
+        setLatestBooking(match);
       } catch (e) {
         if (!alive) return;
         console.error(e);
         setMsg(e?.message || "No se pudo cargar el cliente.");
-        setCustomerBooking(null);
+        setCustomer(null);
+        setLatestBooking(null);
       } finally {
         if (alive) setLoading(false);
       }
@@ -82,7 +101,7 @@ export default function AdminCustomer() {
     return () => {
       alive = false;
     };
-  }, [session, bookingId]);
+  }, [session, customerKey]);
 
   if (!session) {
     return (
@@ -96,6 +115,27 @@ export default function AdminCustomer() {
       </Wrap>
     );
   }
+
+  // What CustomerDrawer expects: it currently expects a "booking-like" object.
+  // We’ll pass latestBooking if available, otherwise we create a minimal object
+  // from customer data so the drawer still renders.
+  const drawerCustomer =
+    latestBooking ||
+    (customer
+      ? {
+          id: customer.customer_key, // stable id for React key / drawer
+          customer_key: customer.customer_key,
+          customer_name: customer.customer_name || customer.display_name || "—",
+          phone: customer.phone || "",
+          email: customer.email || "",
+          city: customer.city || "",
+          status_admin: customer.status || "nuevo",
+          meeting_mode: null,
+          pack: null,
+          message: "",
+          created_at: customer.updated_at || customer.created_at || null,
+        }
+      : null);
 
   return (
     <Wrap>
@@ -129,26 +169,44 @@ export default function AdminCustomer() {
           </div>
         </Card>
 
-        {/* Main content */}
         {loading && (
           <Card>
             <p style={{ margin: 0, opacity: 0.75 }}>Cargando…</p>
           </Card>
         )}
 
-        {!loading && customerBooking && (
+        {!loading && drawerCustomer && (
           <CustomerDrawer
-            customer={customerBooking}
+            customer={drawerCustomer}
             onClose={() => navigate(-1)}
-            onStatusChange={(nextStatus) => {
-              setCustomerBooking((prev) =>
+            onStatusChange={async (nextStatus) => {
+              // update UI immediately
+              setCustomer((prev) =>
+                prev ? { ...prev, status: nextStatus } : prev
+              );
+              setLatestBooking((prev) =>
                 prev ? { ...prev, status_admin: nextStatus } : prev
               );
+
+              // persist status to customers table (source of truth)
+              const decodedKey = decodeURIComponent(customerKey)
+                .trim()
+                .toLowerCase();
+
+              const { error } = await supabase
+                .from("customers")
+                .update({
+                  status: nextStatus,
+                  updated_at: new Date().toISOString(),
+                })
+                .eq("customer_key", decodedKey);
+
+              if (error) setMsg(error.message);
             }}
           />
         )}
 
-        {!loading && !customerBooking && !msg && (
+        {!loading && !drawerCustomer && !msg && (
           <Card>
             <p style={{ margin: 0, opacity: 0.75 }}>Cliente no disponible.</p>
           </Card>
