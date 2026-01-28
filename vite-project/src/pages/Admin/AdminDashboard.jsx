@@ -16,7 +16,13 @@ const COLORS = {
 };
 
 function toCustomerKey(bk) {
-  return (bk.phone || bk.email || "").trim().toLowerCase();
+  const email = String(bk?.email || "")
+    .trim()
+    .toLowerCase();
+  if (email) return email;
+
+  const phone = String(bk?.phone || "").trim();
+  return phone.replace(/\D/g, "");
 }
 
 function statusLabel(s) {

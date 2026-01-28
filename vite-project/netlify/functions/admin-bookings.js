@@ -46,8 +46,14 @@ async function supabaseRestGet({ supabaseUrl, serviceKey, path }) {
 
 // Same customer_key logic as your frontend
 function toCustomerKey(bk) {
-  const raw = (bk?.phone || bk?.email || "").trim().toLowerCase();
-  return raw;
+  const email = String(bk?.email || "")
+    .trim()
+    .toLowerCase();
+  if (email) return email;
+
+  const phone = String(bk?.phone || "").trim();
+  const digits = phone.replace(/\D/g, "");
+  return digits;
 }
 
 export async function handler(event) {
