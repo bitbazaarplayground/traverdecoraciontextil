@@ -106,7 +106,7 @@ export default function App() {
           <Route path="calendario" element={<AdminCalendar />} />
           <Route path="clientes" element={<AdminClients />} />
           <Route
-            path="/admin/clientes/:bookingId"
+            path="/admin/clientes/:customerKey"
             element={<AdminCustomer />}
           />
           <Route path="/admin/ajustes" element={<AdminSettings />} />
