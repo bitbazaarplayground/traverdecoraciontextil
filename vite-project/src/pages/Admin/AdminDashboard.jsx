@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Input } from "./adminStyles";
-import { formatLocal } from "./utils";
+import { formatLocal, meetingModeLabel } from "./utils";
 
 /** Brand palette */
 const COLORS = {
@@ -34,7 +34,8 @@ function statusLabel(s) {
 }
 
 function StatusChip({ value }) {
-  const v = value || "nuevo";
+  const v = (value || "nuevo").trim().toLowerCase();
+
   const bg =
     v === "finalizado"
       ? "#e6f7ea"
@@ -163,7 +164,11 @@ export default function AdminDashboard() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || "No se pudo cargar datos.");
 
-      setBookings(Array.isArray(data.bookings) ? data.bookings : []);
+      setBookings([
+        ...(Array.isArray(data.bookings) ? data.bookings : []),
+        ...(Array.isArray(data.enquiries) ? data.enquiries : []),
+      ]);
+
       setBlackouts(Array.isArray(data.blackouts) ? data.blackouts : []);
 
       // 2) ✅ customers from Supabase (join in UI)
@@ -215,9 +220,10 @@ export default function AdminDashboard() {
 
   // ✅ KPIs should be customer-pipeline based
   const kpis = useMemo(() => {
-    const upcomingBookings = bookings.filter(
-      (b) => new Date(b.start_time) >= now
-    );
+    const upcomingBookings = bookings.filter((b) => {
+      if (b.status === "enquiry") return true; // enquiries are open requests
+      return b.start_time && new Date(b.start_time) >= now;
+    });
 
     // Unique customers with upcoming bookings (still useful KPI)
     const clientesSolicitando = new Set(upcomingBookings.map(toCustomerKey))
@@ -249,19 +255,49 @@ export default function AdminDashboard() {
   const requestList = useMemo(() => {
     const q = query.trim().toLowerCase();
 
-    return bookings
-      .filter((b) => new Date(b.start_time) >= now)
-      .filter((b) => {
-        if (!q) return true;
-        const hay = [b.customer_name, b.phone, b.email, b.city, b.pack]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-        return hay.includes(q);
-      })
-      .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
-      .slice(0, 6);
-  }, [bookings, query]);
+    return (
+      bookings
+        // include:
+        // - future reserved bookings
+        // - any enquiries (no start_time)
+        .filter((b) => {
+          if (b.status === "enquiry") return true;
+          const st = b.start_time ? new Date(b.start_time) : null;
+          return st && st >= now;
+        })
+        .filter((b) => {
+          if (!q) return true;
+          const hay = [
+            b.customer_name,
+            b.phone,
+            b.email,
+            b.city,
+            b.pack,
+            meetingModeLabel(b),
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          return hay.includes(q);
+        })
+        // sorting rule:
+        // enquiries first by created_at (newest first),
+        // otherwise upcoming bookings by start_time (soonest first)
+        .sort((a, b) => {
+          const aIsEnq = a.status === "enquiry";
+          const bIsEnq = b.status === "enquiry";
+
+          if (aIsEnq && bIsEnq) {
+            return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+          }
+          if (aIsEnq) return -1;
+          if (bIsEnq) return 1;
+
+          return new Date(a.start_time) - new Date(b.start_time);
+        })
+        .slice(0, 6)
+    );
+  }, [bookings, query]); // ok: `now` is "current render" time
 
   // ✅ Installations: derived from customer pipeline status (not booking status)
   const installations = useMemo(() => {
@@ -269,6 +305,9 @@ export default function AdminDashboard() {
     return bookings
       .map((b) => ({ b, status: getCustomerStatusForBooking(b) }))
       .filter(({ b, status }) => {
+        // ✅ Fix #2: ignore enquiries / non-scheduled
+        if (!b.start_time) return false;
+
         const dt = new Date(b.start_time);
         return (
           dt >= now && (status === "en_proceso" || status === "finalizado")
@@ -310,6 +349,7 @@ export default function AdminDashboard() {
     }
 
     for (const b of bookings) {
+      if (!b.start_time) continue;
       const dt = new Date(b.start_time);
       if (dt < start || dt > end) continue;
       bump(counts, isoDate(dt), "bookings");
@@ -585,17 +625,38 @@ export default function AdminDashboard() {
           {/* List */}
           <div className="reqList">
             {requestList.map((bk) => {
-              const s = new Date(bk.start_time);
-              const time = s.toLocaleTimeString("es-ES", {
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-              const date = s.toLocaleDateString("es-ES", {
-                weekday: "short",
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              });
+              const isEnquiry = bk.status === "enquiry";
+
+              // For bookings (reserved): show scheduled start_time
+              // For enquiries: show created_at (when received)
+              let time = "—";
+              let date = "Solicitud";
+
+              if (!isEnquiry && bk.start_time) {
+                const s = new Date(bk.start_time);
+                time = s.toLocaleTimeString("es-ES", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                });
+                date = s.toLocaleDateString("es-ES", {
+                  weekday: "short",
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                });
+              } else if (isEnquiry && bk.created_at) {
+                const c = new Date(bk.created_at);
+                time = c.toLocaleTimeString("es-ES", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                });
+                date = c.toLocaleDateString("es-ES", {
+                  weekday: "short",
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                });
+              }
 
               const customerStatus = getCustomerStatusForBooking(bk);
 
@@ -629,7 +690,9 @@ export default function AdminDashboard() {
                     <div className="reqMetaTop">
                       {date}, {time}
                     </div>
-                    <div className="reqMetaBottom">{bk.pack || "—"}</div>
+                    <div className="reqMetaBottom">
+                      {meetingModeLabel(bk)} · {bk.pack || "—"}
+                    </div>
                   </div>
 
                   <div className="reqStatus" style={{ justifySelf: "end" }}>
@@ -708,7 +771,13 @@ export default function AdminDashboard() {
                         {bk.city || "—"}
                       </div>
                     </td>
-                    <td style={{ fontWeight: 800 }}>{bk.pack || "—"}</td>
+                    <td style={{ fontWeight: 800 }}>
+                      {bk.pack || "—"}
+                      <div style={{ opacity: 0.75, fontWeight: 700 }}>
+                        {meetingModeLabel(bk)}
+                      </div>
+                    </td>
+
                     <td>
                       <span className="instDot" style={{ background: dotBg }} />
                       <span style={{ fontWeight: 900 }}>

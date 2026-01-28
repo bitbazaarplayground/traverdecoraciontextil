@@ -3,7 +3,7 @@ import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Input, Label, Row, Table, Wrap } from "./adminStyles";
 import AdminLogin from "./components/AdminLogin.jsx";
 import CustomerDrawer from "./components/CustomerDrawer.jsx";
-import { formatLocal } from "./utils";
+import { formatLocal, meetingModeLabel } from "./utils";
 
 /**
  * AdminBookings.jsx
@@ -17,7 +17,7 @@ import { formatLocal } from "./utils";
  * 6) UI (header, drawer, blackout form, tables)
  *
  * Fixes included (per your list):
- * ✅ (1) Removed duplicated typeLabel + receivedLabel (single definition only)
+ *
  * ✅ (2) Drawer status change updates BOTH bookings + enquiries
  * ✅ (3) “Citas” table shows status_admin (safe & explicit) instead of bk.status
  * ✅ (5) Added “Recibido” column for bookings too (created_at)
@@ -107,20 +107,6 @@ export default function AdminBookings() {
   // -------------------------
   // 8) HELPERS (ONE COPY ONLY ✅)
   // -------------------------
-  function typeLabel(row) {
-    if (row.meeting_mode) {
-      if (row.meeting_mode === "remoto") return "Online / Teléfono";
-      if (row.meeting_mode === "otro") return "Otro / No lo tengo claro";
-      if (row.meeting_mode === "tienda") return "Tienda";
-      if (row.meeting_mode === "domicilio") return "Domicilio";
-      return row.meeting_mode;
-    }
-
-    // fallback (older rows)
-    if (row.status === "reserved")
-      return row.home_visit ? "Domicilio" : "Tienda";
-    return "Online / Otro";
-  }
 
   function receivedLabel(row) {
     // Prefer created_at if your table has it
@@ -269,6 +255,11 @@ export default function AdminBookings() {
   // -------------------------
   // 13) RENDER: LOGIN SCREEN
   // -------------------------
+  console.log("[AdminBookings] render check:", {
+    hasSession: !!session,
+    isAllowed,
+  });
+
   if (!session) {
     return (
       <AdminLogin adminAllowlist={adminAllowlist} onSession={setSession} />
@@ -557,7 +548,7 @@ export default function AdminBookings() {
 
                   {/* Optional context line if helpful */}
                   <div style={{ opacity: 0.75 }}>
-                    <em>{typeLabel(bk)}</em>
+                    <em>{meetingModeLabel(bk)}</em>
                   </div>
                 </td>
 
@@ -591,8 +582,8 @@ export default function AdminBookings() {
           }}
         >
           <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            value={enquiryStatusFilter}
+            onChange={(e) => setEnquiryStatusFilter(e.target.value)}
             style={{
               padding: "0.5rem 0.65rem",
               borderRadius: 12,
@@ -650,7 +641,7 @@ export default function AdminBookings() {
 
                 <td>
                   <div>
-                    <strong>{typeLabel(enq)}</strong>
+                    <strong>{meetingModeLabel(enq)}</strong>
                   </div>
                   <div style={{ opacity: 0.75 }}>{enq.contact_preference}</div>
                   <div style={{ opacity: 0.75 }}>
