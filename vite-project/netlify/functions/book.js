@@ -68,6 +68,25 @@ async function submitToNetlifyForms(formName, fields) {
 
   return true;
 }
+async function supabaseUpsert({ url, serviceKey, table, row, onConflict }) {
+  const res = await fetch(
+    `${url}/rest/v1/${table}?on_conflict=${encodeURIComponent(onConflict)}`,
+    {
+      method: "POST",
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates,return=representation",
+      },
+      body: JSON.stringify(row),
+    }
+  );
+
+  const text = await res.text();
+  if (!res.ok) throw new Error(`Supabase UPSERT failed: ${res.status} ${text}`);
+  return text ? JSON.parse(text) : [];
+}
 
 export async function handler(event) {
   try {
@@ -214,6 +233,22 @@ export async function handler(event) {
         start_time: startIso,
         end_time: endIso,
         message,
+      },
+    });
+    const customer_key = (phone || email || "").trim().toLowerCase();
+
+    await supabaseUpsert({
+      url: SUPABASE_URL,
+      serviceKey: SERVICE_KEY,
+      table: "customers",
+      onConflict: "customer_key",
+      row: {
+        customer_key,
+        name: customer_name,
+        phone,
+        email,
+        city: city || null,
+        updated_at: new Date().toISOString(),
       },
     });
 
