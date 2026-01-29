@@ -15,14 +15,25 @@ const COLORS = {
   softLine: "rgba(17,17,17,0.06)",
 };
 
+// function toCustomerKey(bk) {
+//   const email = String(bk?.email || "")
+//     .trim()
+//     .toLowerCase();
+//   if (email) return email;
+
+//   const phone = String(bk?.phone || "").trim();
+//   return phone.replace(/\D/g, "");
+// }
 function toCustomerKey(bk) {
-  const email = String(bk?.email || "")
+  const phone = String(bk.phone || "").replace(/\D/g, "");
+  if (phone) return phone;
+
+  const email = String(bk.email || "")
     .trim()
     .toLowerCase();
   if (email) return email;
 
-  const phone = String(bk?.phone || "").trim();
-  return phone.replace(/\D/g, "");
+  return "";
 }
 
 function statusLabel(s) {
@@ -668,8 +679,13 @@ export default function AdminDashboard() {
 
               const customerKey = toCustomerKey(bk);
 
-              const go = () =>
+              const go = () => {
+                if (!customerKey) {
+                  console.warn("No customer_key for booking/enquiry:", bk);
+                  return;
+                }
                 navigate(`/admin/clientes/${encodeURIComponent(customerKey)}`);
+              };
 
               return (
                 <div

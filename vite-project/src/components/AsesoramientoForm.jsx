@@ -442,9 +442,7 @@ export default function AsesoramientoForm({
 
     if (telefono && !isValidSpanishPhone(telefono)) {
       setStatus("error");
-      setFormError(
-        "Por favor, introduce un teléfono válido de España (9 dígitos)."
-      );
+      setFormError("Por favor, introduce un teléfono válido.");
       return;
     }
 
@@ -553,8 +551,8 @@ export default function AsesoramientoForm({
         }),
       });
 
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || "No se pudo enviar.");
+      // const data = await res.json().catch(() => ({}));
+      // if (!res.ok) throw new Error(data?.error || "No se pudo enviar.");
 
       setStatus("success");
       form.reset();
@@ -712,7 +710,6 @@ export default function AsesoramientoForm({
               name="telefono"
               autoComplete="tel"
               inputMode="tel"
-              placeholder="Ej: 612345678"
               disabled={status === "loading"}
             />
           </Field>
