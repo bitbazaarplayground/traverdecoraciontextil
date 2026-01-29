@@ -68,6 +68,7 @@ async function submitToNetlifyForms(formName, fields) {
 
   return true;
 }
+
 async function supabaseUpsert({ url, serviceKey, table, row, onConflict }) {
   const res = await fetch(
     `${url}/rest/v1/${table}?on_conflict=${encodeURIComponent(onConflict)}`,
@@ -127,9 +128,25 @@ export async function handler(event) {
       start, // e.g. "2026-01-21T08:00:00.000Z"
     } = payload;
 
-    if (!customer_name || !phone || !start) {
-      return json(400, { error: "Missing customer_name, phone, or start" });
+    // ✅ NEW: normalization + customer_key creation (server-side)
+    function normalizeSpanishPhone(input) {
+      const digits = String(input || "").replace(/\D/g, "");
+      if (!/^[6789]\d{8}$/.test(digits)) return null;
+      return digits;
     }
+
+    const name = String(customer_name || "").trim();
+    const emailLower = email ? String(email).trim().toLowerCase() : null;
+    const phoneNorm = phone ? normalizeSpanishPhone(phone) : null;
+    const customer_key = phoneNorm || emailLower;
+
+    if (!name) return json(400, { error: "Missing customer_name" });
+    if (!customer_key) {
+      return json(400, {
+        error: "Provide a valid Spanish phone or a valid email",
+      });
+    }
+    if (!start) return json(400, { error: "Missing start" });
 
     if (home_visit) {
       if (!address_line1 || !postal_code || !city) {
@@ -151,6 +168,35 @@ export async function handler(event) {
     if (startDate.getTime() < minStart) {
       return json(400, {
         error: "Selected slot is too soon (lead time enforced).",
+      });
+    }
+
+    // ✅ Rate limit: max 2 enquiries/reserved per day for same phone/email
+    // Place it here (after start validation, before slot checks)
+    const startOfTodayUtc = new Date();
+    startOfTodayUtc.setUTCHours(0, 0, 0, 0);
+    const todayIso = startOfTodayUtc.toISOString();
+
+    const filterKey = phoneNorm
+      ? `phone=eq.${encodeURIComponent(phoneNorm)}`
+      : `email=eq.${encodeURIComponent(emailLower)}`;
+
+    const recent = await supabaseGet({
+      url: SUPABASE_URL,
+      serviceKey: SERVICE_KEY,
+      path:
+        `bookings?select=id,status,created_at&` +
+        `${filterKey}` +
+        `&created_at=gte.${encodeURIComponent(todayIso)}` +
+        `&status=in.(enquiry,reserved)` +
+        `&limit=3`,
+    });
+
+    if ((recent || []).length >= 2) {
+      return json(429, {
+        error:
+          "Has alcanzado el límite de solicitudes de hoy. Por favor, inténtalo mañana o contáctanos por WhatsApp.",
+        code: "RATE_LIMIT_DAILY",
       });
     }
 
@@ -212,7 +258,7 @@ export async function handler(event) {
       });
     }
 
-    // 1) Insert booking into Supabase (Admin)
+    // 1) Insert booking into Supabase (Admin) ✅ normalized values
     const inserted = await supabaseInsert({
       url: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
@@ -221,9 +267,9 @@ export async function handler(event) {
         status: "reserved",
         meeting_mode: home_visit ? "domicilio" : "tienda",
         pack,
-        customer_name,
-        phone,
-        email,
+        customer_name: name,
+        phone: phoneNorm,
+        email: emailLower,
         contact_preference,
         home_visit: !!home_visit,
         address_line1,
@@ -235,8 +281,8 @@ export async function handler(event) {
         message,
       },
     });
-    const customer_key = (phone || email || "").trim().toLowerCase();
 
+    // 2) Upsert customer row (✅ consistent customer_key + normalized fields)
     await supabaseUpsert({
       url: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
@@ -244,24 +290,25 @@ export async function handler(event) {
       onConflict: "customer_key",
       row: {
         customer_key,
-        name: customer_name,
-        phone,
-        email,
+        status: "nuevo",
+        name,
+        phone: phoneNorm,
+        email: emailLower,
         city: city || null,
         updated_at: new Date().toISOString(),
       },
     });
 
-    // 2) Also submit to Netlify Forms (Email notifications)
+    // 3) Also submit to Netlify Forms (Email notifications)
     //    IMPORTANT: don't fail the booking if Netlify Forms fails.
     let netlifyWarning = null;
     try {
       await submitToNetlifyForms("asesoramiento", {
         meeting_mode: home_visit ? "domicilio" : "tienda",
         pack,
-        nombre: customer_name,
-        telefono: phone,
-        email: email || "",
+        nombre: name,
+        telefono: phoneNorm || "",
+        email: emailLower || "",
         preferencia: contact_preference,
         mensaje: message || "",
         start_time: startIso,
@@ -282,6 +329,7 @@ export async function handler(event) {
       start: startIso,
       end: endIso,
       blockMinutes,
+      customer_key, // ✅ useful for debugging in the response
       netlifyWarning, // ✅ useful for debugging if emails aren't coming
     });
   } catch (err) {

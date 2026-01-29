@@ -137,6 +137,27 @@ function firstDayWithSlots(days) {
   return (days || []).find((d) => (d.slots || []).length > 0)?.date || "";
 }
 
+function normalizeSpanishPhone(input) {
+  const digits = String(input || "").replace(/\D/g, ""); // keep only numbers
+  // Spain: 9 digits, starts 6/7/8/9
+  if (!/^[6789]\d{8}$/.test(digits)) return null;
+  return digits;
+}
+
+function isValidEmail(input) {
+  const v = String(input || "").trim();
+  if (!v) return false;
+  // simple + safe email check
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
+function friendlyFieldList(fields) {
+  // fields is array of strings already in Spanish
+  if (fields.length === 1) return fields[0];
+  if (fields.length === 2) return `${fields[0]} y ${fields[1]}`;
+  return `${fields.slice(0, -1).join(", ")} y ${fields[fields.length - 1]}`;
+}
+
 /* Real WhatsApp icon (SVG) */
 function WhatsAppIcon({ size = 18 }) {
   return (
@@ -217,6 +238,9 @@ export default function AsesoramientoForm({
 
   const needsBooking = meetingMode === "domicilio" || meetingMode === "tienda";
   const needsAddress = meetingMode === "domicilio";
+
+  // Email and phone validation
+  const [formError, setFormError] = useState("");
 
   const daysForSelect = useMemo(() => availability || [], [availability]);
   const slotsForSelectedDate = useMemo(() => {
@@ -363,10 +387,44 @@ export default function AsesoramientoForm({
     // prevent double submit
     if (status === "loading") return;
 
+    // reset errors (do this before validation)
+    setFormError("");
+    setSlotError("");
+
     setStatus("loading");
 
     const form = e.currentTarget;
     const formData = new FormData(form);
+
+    // ✅ --- validation (name + phone/email rules) ---
+    const nombre = String(formData.get("nombre") || "").trim();
+    const telefonoRaw = String(formData.get("telefono") || "").trim();
+    const emailRaw = String(formData.get("email") || "").trim();
+    const preferencia = String(
+      formData.get("preferencia") || "WhatsApp"
+    ).trim();
+
+    const phoneNorm = telefonoRaw ? normalizeSpanishPhone(telefonoRaw) : null;
+    const emailOk = emailRaw ? isValidEmail(emailRaw) : false;
+
+    const missing = [];
+    if (!nombre) missing.push("tu nombre");
+
+    // require at least one of phone/email
+    if (!phoneNorm && !emailOk) {
+      missing.push("un teléfono español válido (9 dígitos) o un email válido");
+    }
+
+    // if they chose Email, enforce email
+    if (preferencia === "Email" && !emailOk) {
+      missing.push("tu email (porque has elegido Email)");
+    }
+
+    if (missing.length) {
+      setStatus("error");
+      setFormError(`Por favor, incluye ${friendlyFieldList(missing)}.`);
+      return;
+    }
 
     // ------- Booking flow (domicilio or tienda) -------
     if (needsBooking) {
@@ -390,10 +448,10 @@ export default function AsesoramientoForm({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             pack: packLabel || "Sin especificar",
-            customer_name: formData.get("nombre"),
-            phone: formData.get("telefono"),
-            email: formData.get("email") || null,
-            contact_preference: formData.get("preferencia") || "WhatsApp",
+            customer_name: nombre,
+            phone: phoneNorm || telefonoRaw,
+            email: emailOk ? emailRaw : null,
+            contact_preference: preferencia,
             message: formData.get("mensaje") || "",
             home_visit: needsAddress,
             address_line1: needsAddress ? addr.address_line1 : null,
@@ -419,7 +477,6 @@ export default function AsesoramientoForm({
           return;
         }
 
-        // Success
         // Success
         console.log(
           "[AsesoramientoForm] booking success -> setting status=success"
@@ -617,9 +674,10 @@ export default function AsesoramientoForm({
             <span>Teléfono / WhatsApp</span>
             <Input
               name="telefono"
-              required
               autoComplete="tel"
               inputMode="tel"
+              placeholder="Ej: 612345678"
+              disabled={status === "loading"}
             />
           </Field>
         </Row>
@@ -627,7 +685,12 @@ export default function AsesoramientoForm({
         <Row>
           <Field>
             <span>Email (opcional)</span>
-            <Input name="email" type="email" autoComplete="email" />
+            <Input
+              name="email"
+              type="email"
+              autoComplete="email"
+              disabled={status === "loading"}
+            />
           </Field>
 
           <Field>
@@ -809,6 +872,8 @@ export default function AsesoramientoForm({
             disabled={status === "loading"}
           />
         </Field>
+
+        {formError && <InlineError>{formError}</InlineError>}
 
         <Submit type="submit" disabled={status === "loading"}>
           {status === "loading"
