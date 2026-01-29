@@ -2,6 +2,9 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../../../lib/supabaseClient.js";
 import { Button, Drawer, Table } from "../adminStyles";
 
+/* ---------------------------
+   Local cache helpers (images)
+---------------------------- */
 function cacheKeyForCustomer(key) {
   return `customer-images-cache:${key}`;
 }
@@ -36,9 +39,45 @@ function fileToBase64(file) {
   });
 }
 
+/* ---------------------------
+   Customer history helpers
+---------------------------- */
+function isEmailKey(key) {
+  return String(key || "").includes("@");
+}
+
+function formatDateTimeEs(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+
+  const date = d.toLocaleDateString("es-ES", {
+    weekday: "short",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  const time = d.toLocaleTimeString("es-ES", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return `${date} · ${time}`;
+}
+
+function safePreview(msg, n = 180) {
+  const s = String(msg || "").trim();
+  if (!s) return "—";
+  return s.length > n ? `${s.slice(0, n).trim()}…` : s;
+}
+
 export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
+  // IMPORTANT: customer_key is now the canonical identifier (phone digits OR email lower)
   const customerKey = useMemo(() => {
-    return (customer?.phone || customer?.email || "").trim().toLowerCase();
+    return String(
+      customer?.customer_key || customer?.phone || customer?.email || ""
+    )
+      .trim()
+      .toLowerCase();
   }, [customer]);
 
   const [drawerMsg, setDrawerMsg] = useState("");
@@ -104,6 +143,9 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
       if (key === customerKey) {
         loadCustomerNote(customerKey);
         loadCustomerImages(customerKey);
+        loadCustomerStatus(customerKey);
+
+        // history is lazy (only when section open); no need to reload here
         setDrawerMsg("Actualizado en tiempo real ✅");
       }
     });
@@ -116,7 +158,7 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerKey]);
 
-  // ---------------- Notes ----------------
+  /* ---------------- Notes ---------------- */
   async function loadCustomerNote(key) {
     if (!key) return;
     setNoteLoading(true);
@@ -163,7 +205,7 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
     }
   }
 
-  // ---------------- Images ----------------
+  /* ---------------- Images ---------------- */
   async function loadCustomerImages(key) {
     if (!key) return;
     setImgLoading(true);
@@ -318,10 +360,11 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
         {
           customer_key: customerKey,
           status: next,
-          name: customer.customer_name || null,
-          phone: customer.phone || null,
-          email: customer.email || null,
-          city: customer.city || null,
+          // NOTE: on customers table we store `name` (not customer_name)
+          name: customer?.name || customer?.customer_name || null,
+          phone: customer?.phone || null,
+          email: customer?.email || null,
+          city: customer?.city || null,
           updated_at: new Date().toISOString(),
         },
         { onConflict: "customer_key" }
@@ -341,6 +384,8 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
   }
 
   async function loadCustomerStatus(key) {
+    if (!key) return;
+
     const { data, error } = await supabase
       .from("customers")
       .select("status")
@@ -349,6 +394,63 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
 
     if (!error && data?.status) setStatus(data.status);
   }
+
+  /* ---------------- History (NEW) ---------------- */
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState("");
+  const [historyItems, setHistoryItems] = useState([]);
+
+  useEffect(() => {
+    // reset on customer change
+    setHistoryOpen(false);
+    setHistoryItems([]);
+    setHistoryError("");
+    setHistoryLoading(false);
+  }, [customerKey]);
+
+  useEffect(() => {
+    if (!historyOpen) return;
+    if (!customerKey) return;
+
+    let cancelled = false;
+
+    async function loadHistory() {
+      setHistoryLoading(true);
+      setHistoryError("");
+
+      try {
+        const key = String(customerKey).trim().toLowerCase();
+        const keyIsEmail = isEmailKey(key);
+
+        let q = supabase
+          .from("bookings")
+          .select(
+            "id,status,created_at,message,meeting_mode,pack,start_time,phone,email"
+          )
+          .order("created_at", { ascending: false })
+          .limit(25);
+
+        q = keyIsEmail ? q.eq("email", key) : q.eq("phone", key);
+
+        const { data, error } = await q;
+        if (error) throw error;
+
+        if (!cancelled) setHistoryItems(Array.isArray(data) ? data : []);
+      } catch (e) {
+        if (!cancelled)
+          setHistoryError(e?.message || "No se pudo cargar el historial.");
+      } finally {
+        if (!cancelled) setHistoryLoading(false);
+      }
+    }
+
+    loadHistory();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [historyOpen, customerKey]);
 
   // Load everything when customer changes
   useEffect(() => {
@@ -409,19 +511,19 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
         <tbody>
           <tr>
             <th style={{ width: 220 }}>Nombre</th>
-            <td>{customer.customer_name}</td>
+            <td>{customer?.name || customer?.customer_name || "—"}</td>
           </tr>
           <tr>
             <th>Teléfono / WhatsApp</th>
-            <td>{customer.phone}</td>
+            <td>{customer?.phone || "—"}</td>
           </tr>
           <tr>
             <th>Email</th>
-            <td>{customer.email || "—"}</td>
+            <td>{customer?.email || "—"}</td>
           </tr>
           <tr>
             <th>Preferencia</th>
-            <td>{customer.contact_preference}</td>
+            <td>{customer?.contact_preference || "—"}</td>
           </tr>
 
           <tr>
@@ -449,27 +551,33 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
           <tr>
             <th>Dirección</th>
             <td>
-              {customer.home_visit ? (
+              {customer?.home_visit ? (
                 <div style={{ display: "grid", gap: "0.5rem" }}>
-                  <div>{address}</div>
-                  <div
-                    style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}
-                  >
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                        address
-                      )}`}
-                      target="_blank"
-                      rel="noreferrer"
+                  <div>{address || "—"}</div>
+                  {address && (
+                    <div
                       style={{
-                        fontWeight: 800,
-                        textDecoration: "underline",
-                        textUnderlineOffset: 3,
+                        display: "flex",
+                        gap: "0.5rem",
+                        flexWrap: "wrap",
                       }}
                     >
-                      Abrir en Google Maps
-                    </a>
-                  </div>
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          address
+                        )}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          fontWeight: 800,
+                          textDecoration: "underline",
+                          textUnderlineOffset: 3,
+                        }}
+                      >
+                        Abrir en Google Maps
+                      </a>
+                    </div>
+                  )}
                 </div>
               ) : (
                 "—"
@@ -479,7 +587,7 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
 
           <tr>
             <th>Notas</th>
-            <td>{customer.address_notes || "—"}</td>
+            <td>{customer?.address_notes || "—"}</td>
           </tr>
 
           <tr>
@@ -507,6 +615,96 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
                 >
                   {noteLoading ? "Guardando..." : "Guardar nota"}
                 </Button>
+              </div>
+            </td>
+          </tr>
+
+          {/* ✅ NEW: Historial */}
+          <tr>
+            <th>Historial</th>
+            <td>
+              <div style={{ display: "grid", gap: "0.6rem" }}>
+                <Button type="button" onClick={() => setHistoryOpen((v) => !v)}>
+                  {historyOpen ? "Ocultar historial" : "Ver historial"}
+                </Button>
+
+                {historyOpen && (
+                  <div style={{ display: "grid", gap: "0.6rem" }}>
+                    {historyLoading && (
+                      <p style={{ margin: 0, opacity: 0.75 }}>Cargando…</p>
+                    )}
+
+                    {historyError && (
+                      <p
+                        style={{ margin: 0, color: "rgba(180, 30, 30, 0.85)" }}
+                      >
+                        {historyError}
+                      </p>
+                    )}
+
+                    {!historyLoading &&
+                      !historyError &&
+                      historyItems.length === 0 && (
+                        <p style={{ margin: 0, opacity: 0.75 }}>
+                          No hay mensajes todavía.
+                        </p>
+                      )}
+
+                    {!historyLoading &&
+                      !historyError &&
+                      historyItems.map((x) => {
+                        const isEnquiry = x.status === "enquiry";
+                        const created = formatDateTimeEs(x.created_at);
+
+                        let scheduled = "";
+                        if (!isEnquiry && x.start_time) {
+                          scheduled = ` · Cita: ${formatDateTimeEs(
+                            x.start_time
+                          )}`;
+                        }
+
+                        return (
+                          <div
+                            key={x.id}
+                            style={{
+                              border: "1px solid rgba(17,17,17,0.10)",
+                              background: "rgba(255,255,255,0.92)",
+                              borderRadius: 14,
+                              padding: "0.75rem 0.85rem",
+                              display: "grid",
+                              gap: "0.35rem",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                gap: "0.75rem",
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              <div style={{ fontWeight: 900 }}>
+                                {isEnquiry ? "Solicitud" : "Reserva"}
+                                <span style={{ opacity: 0.7, fontWeight: 800 }}>
+                                  {" "}
+                                  · {x.meeting_mode || "—"} · {x.pack || "—"}
+                                </span>
+                              </div>
+
+                              <div style={{ opacity: 0.75, fontWeight: 800 }}>
+                                {created}
+                                {scheduled}
+                              </div>
+                            </div>
+
+                            <div style={{ opacity: 0.9, lineHeight: 1.5 }}>
+                              {safePreview(x.message)}
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                )}
               </div>
             </td>
           </tr>
