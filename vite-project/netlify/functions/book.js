@@ -1,4 +1,5 @@
 // netlify/functions/book.js
+// Clean version: server-side validation + normalized customer_key + atomic rate-limit via RPC allow_request
 
 function json(statusCode, bodyObj) {
   return {
@@ -44,6 +45,26 @@ async function supabaseInsert({ url, serviceKey, table, row }) {
   return text ? JSON.parse(text) : [];
 }
 
+async function supabaseUpsert({ url, serviceKey, table, row, onConflict }) {
+  const res = await fetch(
+    `${url}/rest/v1/${table}?on_conflict=${encodeURIComponent(onConflict)}`,
+    {
+      method: "POST",
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates,return=representation",
+      },
+      body: JSON.stringify(row),
+    }
+  );
+
+  const text = await res.text();
+  if (!res.ok) throw new Error(`Supabase UPSERT failed: ${res.status} ${text}`);
+  return text ? JSON.parse(text) : [];
+}
+
 // ✅ Submit to Netlify Forms so Netlify triggers email notifications
 async function submitToNetlifyForms(formName, fields) {
   const siteUrl = process.env.URL || process.env.DEPLOY_PRIME_URL;
@@ -69,24 +90,54 @@ async function submitToNetlifyForms(formName, fields) {
   return true;
 }
 
-async function supabaseUpsert({ url, serviceKey, table, row, onConflict }) {
-  const res = await fetch(
-    `${url}/rest/v1/${table}?on_conflict=${encodeURIComponent(onConflict)}`,
-    {
-      method: "POST",
-      headers: {
-        apikey: serviceKey,
-        Authorization: `Bearer ${serviceKey}`,
-        "Content-Type": "application/json",
-        Prefer: "resolution=merge-duplicates,return=representation",
-      },
-      body: JSON.stringify(row),
-    }
-  );
+function normalizeSpanishPhone(input) {
+  const digits = String(input || "").replace(/\D/g, "");
+  if (!/^[6789]\d{8}$/.test(digits)) return null;
+  return digits;
+}
 
-  const text = await res.text();
-  if (!res.ok) throw new Error(`Supabase UPSERT failed: ${res.status} ${text}`);
-  return text ? JSON.parse(text) : [];
+function parseRpcBoolean(rpcJson) {
+  // can be: true | false | [{ allow_request: true }] | { allow_request: true }
+  if (rpcJson === true || rpcJson === false) return rpcJson;
+  if (Array.isArray(rpcJson)) return rpcJson[0]?.allow_request;
+  return rpcJson?.allow_request;
+}
+
+async function rateLimitHourly({
+  supabaseUrl,
+  serviceKey,
+  customer_key,
+  maxPerHour = 2,
+}) {
+  const rpcRes = await fetch(`${supabaseUrl}/rest/v1/rpc/allow_request`, {
+    method: "POST",
+    headers: {
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      p_customer_key: customer_key,
+      p_max: maxPerHour,
+      p_window_minutes: 60, // NOTE: your SQL buckets by hour currently
+    }),
+  });
+
+  const rpcJson = await rpcRes.json().catch(() => null);
+  const allowed = parseRpcBoolean(rpcJson);
+
+  if (!rpcRes.ok || allowed !== true) {
+    return {
+      ok: false,
+      statusCode: 429,
+      body: {
+        error: "Has alcanzado el límite: máximo 2 solicitudes por hora.",
+        code: "RATE_LIMIT_HOURLY",
+      },
+    };
+  }
+
+  return { ok: true };
 }
 
 export async function handler(event) {
@@ -110,7 +161,6 @@ export async function handler(event) {
       return json(400, { error: "Invalid JSON body" });
     }
 
-    // Required fields
     const {
       pack = "Sin especificar",
       customer_name,
@@ -123,18 +173,10 @@ export async function handler(event) {
       postal_code = null,
       city = null,
       address_notes = null,
-
-      // IMPORTANT: client should send start as UTC ISO from availability endpoint
-      start, // e.g. "2026-01-21T08:00:00.000Z"
+      start, // client sends UTC ISO from availability endpoint
     } = payload;
 
-    // ✅ NEW: normalization + customer_key creation (server-side)
-    function normalizeSpanishPhone(input) {
-      const digits = String(input || "").replace(/\D/g, "");
-      if (!/^[6789]\d{8}$/.test(digits)) return null;
-      return digits;
-    }
-
+    // ---- Validate + normalize ----
     const name = String(customer_name || "").trim();
     const emailLower = email ? String(email).trim().toLowerCase() : null;
     const phoneNorm = phone ? normalizeSpanishPhone(phone) : null;
@@ -171,34 +213,16 @@ export async function handler(event) {
       });
     }
 
-    // ✅ Rate limit: max 2 enquiries/reserved per day for same phone/email
-    // Place it here (after start validation, before slot checks)
-    const startOfTodayUtc = new Date();
-    startOfTodayUtc.setUTCHours(0, 0, 0, 0);
-    const todayIso = startOfTodayUtc.toISOString();
+    const pref = String(contact_preference || "WhatsApp").trim();
 
-    const filterKey = phoneNorm
-      ? `phone=eq.${encodeURIComponent(phoneNorm)}`
-      : `email=eq.${encodeURIComponent(emailLower)}`;
-
-    const recent = await supabaseGet({
-      url: SUPABASE_URL,
+    // ---- Rate limit (atomic, hourly) ----
+    const rl = await rateLimitHourly({
+      supabaseUrl: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
-      path:
-        `bookings?select=id,status,created_at&` +
-        `${filterKey}` +
-        `&created_at=gte.${encodeURIComponent(todayIso)}` +
-        `&status=in.(enquiry,reserved)` +
-        `&limit=3`,
+      customer_key,
+      maxPerHour: 2,
     });
-
-    if ((recent || []).length >= 2) {
-      return json(429, {
-        error:
-          "Has alcanzado el límite de solicitudes de hoy. Por favor, inténtalo mañana o contáctanos por WhatsApp.",
-        code: "RATE_LIMIT_DAILY",
-      });
-    }
+    if (!rl.ok) return json(rl.statusCode, rl.body);
 
     // Booking blocks 2 hours
     const blockMinutes = 120;
@@ -207,9 +231,9 @@ export async function handler(event) {
     const startIso = startDate.toISOString();
     const endIso = endDate.toISOString();
 
-    // Pull any overlapping bookings & blackouts in the slot window
+    // Pull any overlapping reserved bookings & blackouts in the slot window
     // Query: start_time < end AND end_time > start
-    const bookings = await supabaseGet({
+    const reserved = await supabaseGet({
       url: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
       path:
@@ -234,7 +258,7 @@ export async function handler(event) {
 
     const busy = []
       .concat(
-        bookings.map((b) => ({
+        reserved.map((b) => ({
           kind: "booking",
           startMs: new Date(b.start_time).getTime(),
           endMs: new Date(b.end_time).getTime(),
@@ -258,7 +282,7 @@ export async function handler(event) {
       });
     }
 
-    // 1) Insert booking into Supabase (Admin) ✅ normalized values
+    // ---- 1) Insert booking row ----
     const inserted = await supabaseInsert({
       url: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
@@ -270,7 +294,7 @@ export async function handler(event) {
         customer_name: name,
         phone: phoneNorm,
         email: emailLower,
-        contact_preference,
+        contact_preference: pref,
         home_visit: !!home_visit,
         address_line1,
         postal_code,
@@ -282,7 +306,7 @@ export async function handler(event) {
       },
     });
 
-    // 2) Upsert customer row (✅ consistent customer_key + normalized fields)
+    // ---- 2) Upsert customer row ----
     await supabaseUpsert({
       url: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
@@ -299,8 +323,7 @@ export async function handler(event) {
       },
     });
 
-    // 3) Also submit to Netlify Forms (Email notifications)
-    //    IMPORTANT: don't fail the booking if Netlify Forms fails.
+    // ---- 3) Netlify email (non-blocking) ----
     let netlifyWarning = null;
     try {
       await submitToNetlifyForms("asesoramiento", {
@@ -309,7 +332,7 @@ export async function handler(event) {
         nombre: name,
         telefono: phoneNorm || "",
         email: emailLower || "",
-        preferencia: contact_preference,
+        preferencia: pref,
         mensaje: message || "",
         start_time: startIso,
         end_time: endIso,
@@ -329,8 +352,8 @@ export async function handler(event) {
       start: startIso,
       end: endIso,
       blockMinutes,
-      customer_key, // ✅ useful for debugging in the response
-      netlifyWarning, // ✅ useful for debugging if emails aren't coming
+      customer_key,
+      netlifyWarning,
     });
   } catch (err) {
     return json(500, { error: err?.message || "Unknown error" });

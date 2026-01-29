@@ -143,19 +143,49 @@ function normalizeSpanishPhone(input) {
   if (!/^[6789]\d{8}$/.test(digits)) return null;
   return digits;
 }
+function normalizeSpanishDigits(raw) {
+  const p = normalizePhone(raw);
+  if (!p) return null;
 
-function isValidEmail(input) {
-  const v = String(input || "").trim();
-  if (!v) return false;
-  // simple + safe email check
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  let digits = p;
+  if (digits.startsWith("+")) digits = digits.slice(1);
+  if (digits.startsWith("0034")) digits = digits.slice(4);
+  else if (digits.startsWith("34")) digits = digits.slice(2);
+
+  // ✅ only accept Spain 9-digit numbers starting 6/7/8/9
+  if (!/^[6789]\d{8}$/.test(digits)) return null;
+
+  return digits;
 }
 
-function friendlyFieldList(fields) {
-  // fields is array of strings already in Spanish
-  if (fields.length === 1) return fields[0];
-  if (fields.length === 2) return `${fields[0]} y ${fields[1]}`;
-  return `${fields.slice(0, -1).join(", ")} y ${fields[fields.length - 1]}`;
+function isValidEmail(v) {
+  const s = String(v || "").trim();
+  if (!s) return true; // ✅ optional
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+}
+
+// pragmatic Spain-focused: allow +34, 0034, spaces, dashes.
+// Validate final digits length and starting digit.
+function normalizePhone(raw) {
+  return String(raw || "")
+    .replace(/[^\d+]/g, "")
+    .trim();
+}
+
+function isValidSpanishPhone(raw) {
+  const p = normalizePhone(raw);
+
+  if (!p) return true; // ✅ optional
+
+  // remove prefixes
+  let digits = p;
+  if (digits.startsWith("+")) digits = digits.slice(1);
+  if (digits.startsWith("0034")) digits = digits.slice(4);
+  else if (digits.startsWith("34")) digits = digits.slice(2);
+
+  // Spain numbers are typically 9 digits and start 6/7/8/9
+  if (!/^\d{9}$/.test(digits)) return false;
+  return /^[6789]/.test(digits);
 }
 
 /* Real WhatsApp icon (SVG) */
@@ -387,44 +417,45 @@ export default function AsesoramientoForm({
     // prevent double submit
     if (status === "loading") return;
 
-    // reset errors (do this before validation)
+    // reset errors
     setFormError("");
     setSlotError("");
-
-    setStatus("loading");
 
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    // ✅ --- validation (name + phone/email rules) ---
     const nombre = String(formData.get("nombre") || "").trim();
-    const telefonoRaw = String(formData.get("telefono") || "").trim();
-    const emailRaw = String(formData.get("email") || "").trim();
-    const preferencia = String(
-      formData.get("preferencia") || "WhatsApp"
-    ).trim();
+    const telefono = String(formData.get("telefono") || "").trim();
+    const email = String(formData.get("email") || "").trim();
 
-    const phoneNorm = telefonoRaw ? normalizeSpanishPhone(telefonoRaw) : null;
-    const emailOk = emailRaw ? isValidEmail(emailRaw) : false;
-
-    const missing = [];
-    if (!nombre) missing.push("tu nombre");
-
-    // require at least one of phone/email
-    if (!phoneNorm && !emailOk) {
-      missing.push("un teléfono español válido (9 dígitos) o un email válido");
-    }
-
-    // if they chose Email, enforce email
-    if (preferencia === "Email" && !emailOk) {
-      missing.push("tu email (porque has elegido Email)");
-    }
-
-    if (missing.length) {
+    if (!nombre) {
       setStatus("error");
-      setFormError(`Por favor, incluye ${friendlyFieldList(missing)}.`);
+      setFormError("Por favor, incluye tu nombre.");
       return;
     }
+
+    if (!telefono && !email) {
+      setStatus("error");
+      setFormError("Por favor, incluye un teléfono o un email.");
+      return;
+    }
+
+    if (telefono && !isValidSpanishPhone(telefono)) {
+      setStatus("error");
+      setFormError(
+        "Por favor, introduce un teléfono válido de España (9 dígitos)."
+      );
+      return;
+    }
+
+    if (email && !isValidEmail(email)) {
+      setStatus("error");
+      setFormError("Por favor, introduce un email válido.");
+      return;
+    }
+
+    // ✅ only now set loading
+    setStatus("loading");
 
     // ------- Booking flow (domicilio or tienda) -------
     if (needsBooking) {
@@ -449,9 +480,12 @@ export default function AsesoramientoForm({
           body: JSON.stringify({
             pack: packLabel || "Sin especificar",
             customer_name: nombre,
-            phone: phoneNorm || telefonoRaw,
-            email: emailOk ? emailRaw : null,
-            contact_preference: preferencia,
+            phone: telefono ? normalizeSpanishDigits(telefono) : null,
+            email: email ? email.trim() : null,
+            contact_preference: String(
+              formData.get("preferencia") || "WhatsApp"
+            ).trim(),
+
             message: formData.get("mensaje") || "",
             home_visit: needsAddress,
             address_line1: needsAddress ? addr.address_line1 : null,
@@ -508,12 +542,14 @@ export default function AsesoramientoForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           pack: packLabel || "Sin especificar",
-          customer_name: formData.get("nombre"),
-          phone: formData.get("telefono"),
-          email: formData.get("email") || null,
-          contact_preference: formData.get("preferencia") || "WhatsApp",
+          customer_name: nombre,
+          phone: telefono ? normalizeSpanishDigits(telefono) : null,
+          email: email ? email.trim() : null,
+          contact_preference: String(
+            formData.get("preferencia") || "WhatsApp"
+          ).trim(),
           message: formData.get("mensaje") || "",
-          meeting_mode: meetingMode, // remoto | otro
+          meeting_mode: meetingMode,
         }),
       });
 
@@ -695,7 +731,11 @@ export default function AsesoramientoForm({
 
           <Field>
             <span>Preferencia de contacto</span>
-            <Select name="preferencia" defaultValue="WhatsApp">
+            <Select
+              name="preferencia"
+              defaultValue="WhatsApp"
+              disabled={status === "loading"}
+            >
               <option value="WhatsApp">WhatsApp</option>
               <option value="Llamada">Llamada</option>
               <option value="Email">Email</option>
