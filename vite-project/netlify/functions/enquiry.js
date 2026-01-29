@@ -11,19 +11,6 @@ function json(statusCode, bodyObj) {
   };
 }
 
-// ✅ ONE SOURCE OF TRUTH for customer_key (used for lookup everywhere)
-// Prefer email (stable). Otherwise digits-only phone (stable even with +34/spaces).
-function makeCustomerKey({ phone, email }) {
-  const e = String(email || "")
-    .trim()
-    .toLowerCase();
-  if (e) return e;
-
-  const p = String(phone || "").trim();
-  const digits = p.replace(/\D/g, ""); // keep digits only
-  return digits;
-}
-
 async function supabaseInsert({ url, serviceKey, table, row }) {
   const res = await fetch(`${url}/rest/v1/${table}`, {
     method: "POST",
@@ -61,6 +48,20 @@ async function supabaseUpsert({ url, serviceKey, table, row, onConflict }) {
 
   const text = await res.text();
   if (!res.ok) throw new Error(`Supabase UPSERT failed: ${res.status} ${text}`);
+  return text ? JSON.parse(text) : [];
+}
+
+// ✅ NEW: Supabase GET helper (for rate-limit checks)
+async function supabaseGet({ url, serviceKey, path }) {
+  const res = await fetch(`${url}/rest/v1/${path}`, {
+    headers: {
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
+      "Content-Type": "application/json",
+    },
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(`Supabase GET failed: ${res.status} ${text}`);
   return text ? JSON.parse(text) : [];
 }
 
@@ -116,25 +117,65 @@ export async function handler(event) {
       meeting_mode,
     } = payload;
 
+    // ✅ REPLACED validation block (server-side)
+    const name = String(customer_name || "").trim();
+    const emailLower = email ? String(email).trim().toLowerCase() : null;
+
+    function normalizeSpanishPhone(input) {
+      const digits = String(input || "").replace(/\D/g, "");
+      if (!/^[6789]\d{8}$/.test(digits)) return null;
+      return digits;
+    }
+
+    const phoneNorm = phone ? normalizeSpanishPhone(phone) : null;
+    const customer_key = phoneNorm || emailLower;
+
+    if (!name) {
+      return json(400, { error: "Missing customer_name" });
+    }
+    if (!customer_key) {
+      return json(400, {
+        error: "Provide a valid Spanish phone or a valid email",
+      });
+    }
+
     const cleanMeetingMode = String(meeting_mode || "")
       .trim()
       .toLowerCase();
     const allowedModes = ["remoto", "tienda", "domicilio", "otro"];
+    if (!allowedModes.includes(cleanMeetingMode)) {
+      return json(400, { error: "Invalid meeting_mode" });
+    }
 
-    if (!customer_name || !phone || !allowedModes.includes(cleanMeetingMode)) {
-      return json(400, {
-        error: "Invalid customer_name, phone or meeting_mode",
+    // ✅ Rate limit: max 2 enquiries/reserved per day for same phone/email
+    const startOfTodayUtc = new Date();
+    startOfTodayUtc.setUTCHours(0, 0, 0, 0);
+    const todayIso = startOfTodayUtc.toISOString();
+
+    const filterKey = phoneNorm
+      ? `phone=eq.${encodeURIComponent(phoneNorm)}`
+      : `email=eq.${encodeURIComponent(emailLower)}`;
+
+    const recent = await supabaseGet({
+      url: SUPABASE_URL,
+      serviceKey: SERVICE_KEY,
+      path:
+        `bookings?select=id,status,created_at&` +
+        `${filterKey}` +
+        `&created_at=gte.${encodeURIComponent(todayIso)}` +
+        `&status=in.(enquiry,reserved)` +
+        `&limit=3`,
+    });
+
+    if ((recent || []).length >= 2) {
+      return json(429, {
+        error:
+          "Has alcanzado el límite de solicitudes de hoy. Por favor, inténtalo mañana o contáctanos por WhatsApp.",
+        code: "RATE_LIMIT_DAILY",
       });
     }
 
-    // ✅ Compute customer_key deterministically
-    const customer_key = makeCustomerKey({ phone, email });
-
-    if (!customer_key) {
-      return json(400, { error: "Could not compute customer_key" });
-    }
-
-    // 1) Insert enquiry booking
+    // 1) Insert enquiry booking (✅ normalized phone/email)
     const inserted = await supabaseInsert({
       url: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
@@ -143,9 +184,9 @@ export async function handler(event) {
         status: "enquiry",
         meeting_mode: cleanMeetingMode,
         pack,
-        customer_name,
-        phone,
-        email,
+        customer_name: name,
+        phone: phoneNorm,
+        email: emailLower,
         contact_preference,
         home_visit: cleanMeetingMode === "domicilio",
         address_line1: null,
@@ -158,7 +199,7 @@ export async function handler(event) {
       },
     });
 
-    // 2) Upsert customer row (schema: customers.name, NOT customer_name)
+    // 2) Upsert customer row (✅ normalized + consistent customer_key)
     //    IMPORTANT: don't overwrite pipeline status if admin already set it.
     await supabaseUpsert({
       url: SUPABASE_URL,
@@ -167,9 +208,9 @@ export async function handler(event) {
       onConflict: "customer_key",
       row: {
         customer_key,
-        name: customer_name,
-        phone,
-        email,
+        name,
+        phone: phoneNorm,
+        email: emailLower,
         city: null,
         updated_at: new Date().toISOString(),
       },
@@ -180,9 +221,9 @@ export async function handler(event) {
       await submitToNetlifyForms("asesoramiento", {
         meeting_mode: cleanMeetingMode,
         pack,
-        nombre: customer_name,
-        telefono: phone,
-        email: email || "",
+        nombre: name,
+        telefono: phoneNorm || "",
+        email: emailLower || "",
         mensaje: message || "",
         kind: "enquiry",
       });

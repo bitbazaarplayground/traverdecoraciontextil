@@ -143,7 +143,7 @@ export default function AsesoramientoModal({ open, onClose, packLabel }) {
     document.body.style.overflow = "hidden";
 
     // focus close button for accessibility
-    setTimeout(() => closeBtnRef.current?.focus(), 0);
+    requestAnimationFrame(() => closeBtnRef.current?.focus());
 
     return () => {
       window.removeEventListener("keydown", onKey);
