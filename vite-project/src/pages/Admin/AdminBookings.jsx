@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Input, Label, Row, Table, Wrap } from "./adminStyles";
 import AdminLogin from "./components/AdminLogin.jsx";
-import { formatLocal, meetingModeLabel, toCustomerKey } from "./utils";
+import { formatLocal, meetingModeLabel } from "./utils";
 
 /**
  * AdminBookings.jsx
@@ -110,14 +110,33 @@ export default function AdminBookings() {
   // 8) HELPERS (ONE COPY ONLY ✅)
   // -------------------------
 
+  function digitsOnly(v) {
+    return String(v || "").replace(/\D+/g, "");
+  }
+
+  function canonicalProfileKey(row) {
+    // 1) if backend already provides a customer_key, use it
+    const k = String(row?.customer_key || "").trim();
+    if (k) return k;
+
+    // 2) prefer email (merges Jose/Pepa if email same)
+    const email = String(row?.email || "")
+      .trim()
+      .toLowerCase();
+    if (email) return email;
+
+    // 3) fallback phone
+    const phone = digitsOnly(row?.phone);
+    return phone;
+  }
+
   function receivedLabel(row) {
-    // Prefer created_at if your table has it
     if (row.created_at) return formatLocal(row.created_at);
     return "-";
   }
 
   function goToCustomer(row) {
-    const key = toCustomerKey(row);
+    const key = canonicalProfileKey(row);
     if (!key) {
       alert("Este registro no tiene teléfono ni email para abrir la ficha.");
       return;
@@ -427,8 +446,8 @@ export default function AdminBookings() {
           }}
         >
           <select
-            value={enquiryStatusFilter}
-            onChange={(e) => setEnquiryStatusFilter(e.target.value)}
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
             style={{
               padding: "0.5rem 0.65rem",
               borderRadius: 12,

@@ -315,6 +315,20 @@ export async function handler(event) {
         message,
       },
     });
+    // ---- 1b) Insert contact history row (for timeline / names / messages) ----
+    await supabaseInsert({
+      url: SUPABASE_URL,
+      serviceKey: SERVICE_KEY,
+      table: "customer_contacts",
+      row: {
+        customer_key,
+        customer_name: name,
+        phone: phoneNorm,
+        email: emailLower,
+        message,
+        source: "booking",
+      },
+    });
 
     // ---- 2) Upsert customer row ----
     await supabaseUpsert({
