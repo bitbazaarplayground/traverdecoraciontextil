@@ -42,10 +42,6 @@ function fileToBase64(file) {
 /* ---------------------------
    Customer history helpers
 ---------------------------- */
-function isEmailKey(key) {
-  return String(key || "").includes("@");
-}
-
 function formatDateTimeEs(iso) {
   if (!iso) return "—";
   const d = new Date(iso);
@@ -69,12 +65,14 @@ function safePreview(msg, n = 180) {
   if (!s) return "—";
   return s.length > n ? `${s.slice(0, n).trim()}…` : s;
 }
+
 function digitsOnly(value) {
   return String(value || "").replace(/\D+/g, "");
 }
 
 function normalizeCustomerKey(raw) {
   const v = String(raw || "").trim();
+  if (!v) return "";
 
   // email
   if (v.includes("@")) return v.toLowerCase();
@@ -89,10 +87,16 @@ export default function CustomerDrawer({
   onClose,
   onStatusChange,
 }) {
-  // IMPORTANT: customer_key is now the canonical identifier (phone digits OR email lower)
+  // ✅ IMPORTANT: prefer canonical `customer.customer_key` (email key in your current plan),
+  // then email, then phone. This prevents notes/images/status being saved under phone by accident.
   const customerKey = useMemo(() => {
     const raw =
-      customer?.customer_key || customer?.phone || customer?.email || "";
+      customer?.customer_key ||
+      String(customer?.email || "")
+        .trim()
+        .toLowerCase() ||
+      digitsOnly(customer?.phone) ||
+      "";
     return normalizeCustomerKey(raw);
   }, [customer]);
 
@@ -149,7 +153,6 @@ export default function CustomerDrawer({
         payload: { customerKey: key, at: Date.now() },
       });
     } catch (e) {
-      // Don't block UX if broadcast fails
       console.warn("Broadcast failed:", e?.message || e);
     }
   }
@@ -164,13 +167,10 @@ export default function CustomerDrawer({
       const key = payload?.customerKey;
       if (!key) return;
 
-      // only refresh if the drawer is open for same customer
       if (key === customerKey) {
         loadCustomerNote(customerKey);
         loadCustomerImages(customerKey);
         loadCustomerStatus(customerKey);
-
-        // history is lazy (only when section open); no need to reload here
         setDrawerMsg("Actualizado en tiempo real ✅");
       }
     });
@@ -385,7 +385,6 @@ export default function CustomerDrawer({
         {
           customer_key: customerKey,
           status: next,
-          // NOTE: on customers table we store `name` (not customer_name)
           name: customer?.name || customer?.customer_name || null,
           phone: customer?.phone || null,
           email: customer?.email || null,
@@ -423,7 +422,6 @@ export default function CustomerDrawer({
   const [historyOpen, setHistoryOpen] = useState(false);
 
   useEffect(() => {
-    // close history when switching customer
     setHistoryOpen(false);
   }, [customerKey]);
 
@@ -594,7 +592,7 @@ export default function CustomerDrawer({
             </td>
           </tr>
 
-          {/* ✅ NEW: Historial */}
+          {/* ✅ UPDATED: Historial now shows name used + received time + message */}
           <tr>
             <th>Historial</th>
             <td>
@@ -613,7 +611,12 @@ export default function CustomerDrawer({
 
                     {historySorted.map((x) => {
                       const isEnquiry = x.status === "enquiry";
-                      const created = formatDateTimeEs(x.created_at);
+                      const received = formatDateTimeEs(x.created_at);
+
+                      const nameUsed =
+                        String(x.customer_name || "").trim() || "—";
+                      const mode = x.meeting_mode || "—";
+                      const pack = x.pack || "—";
 
                       let scheduled = "";
                       if (!isEnquiry && x.start_time) {
@@ -640,18 +643,20 @@ export default function CustomerDrawer({
                               justifyContent: "space-between",
                               gap: "0.75rem",
                               flexWrap: "wrap",
+                              alignItems: "baseline",
                             }}
                           >
                             <div style={{ fontWeight: 900 }}>
-                              {isEnquiry ? "Solicitud" : "Reserva"}
-                              <span style={{ opacity: 0.7, fontWeight: 800 }}>
+                              {nameUsed}
+                              <span style={{ opacity: 0.75, fontWeight: 800 }}>
                                 {" "}
-                                · {x.meeting_mode || "—"} · {x.pack || "—"}
+                                · {isEnquiry ? "Solicitud" : "Reserva"} · {mode}{" "}
+                                · {pack}
                               </span>
                             </div>
 
                             <div style={{ opacity: 0.75, fontWeight: 800 }}>
-                              {created}
+                              Recibido: {received}
                               {scheduled}
                             </div>
                           </div>

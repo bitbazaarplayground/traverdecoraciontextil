@@ -110,6 +110,28 @@ function monthLabel(d) {
   return d.toLocaleString("es-ES", { month: "long", year: "numeric" });
 }
 
+/* -----------------------------------------
+   ✅ Canonical key resolver (for grouping)
+   Priority:
+   1) bk.customer_key if present
+   2) email (lowercase)
+   3) phone digits
+------------------------------------------ */
+function canonicalCustomerKey(bk) {
+  const ck = String(bk?.customer_key || "")
+    .trim()
+    .toLowerCase();
+  if (ck) return ck;
+
+  const email = String(bk?.email || "")
+    .trim()
+    .toLowerCase();
+  if (email) return email;
+
+  const phoneDigits = String(bk?.phone || "").replace(/\D+/g, "");
+  return phoneDigits;
+}
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const outlet = useOutletContext() || {};
@@ -122,7 +144,7 @@ export default function AdminDashboard() {
   const [bookings, setBookings] = useState([]);
   const [blackouts, setBlackouts] = useState([]);
 
-  // ✅ NEW: customers table (source of truth for status)
+  // customers table (source of truth for status)
   const [customers, setCustomers] = useState([]);
 
   const [query, setQuery] = useState("");
@@ -152,7 +174,7 @@ export default function AdminDashboard() {
       const token = sess?.session?.access_token;
       if (!token) throw new Error("Sesión no válida.");
 
-      // 1) bookings + blackouts from your existing endpoint
+      // bookings + enquiries + blackouts from endpoint
       const res = await fetch("/.netlify/functions/admin-bookings?limit=500", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -167,15 +189,13 @@ export default function AdminDashboard() {
 
       setBlackouts(Array.isArray(data.blackouts) ? data.blackouts : []);
 
-      // 2) ✅ customers from Supabase (join in UI)
-      //    Note: this relies on RLS being correct for admins.
+      // customers for status
       const { data: customerRows, error: custErr } = await supabase
         .from("customers")
         .select("customer_key,status,interested_at,completed_at,updated_at");
 
       if (custErr) {
         console.warn("Customers load error:", custErr.message);
-        // We don't hard-fail the dashboard: it still works with fallback.
         setCustomers([]);
       } else {
         setCustomers(Array.isArray(customerRows) ? customerRows : []);
@@ -197,7 +217,7 @@ export default function AdminDashboard() {
 
   const now = new Date();
 
-  // ✅ map customer_key -> customer row
+  // map customer_key -> customer row
   const customerByKey = useMemo(() => {
     const map = new Map();
     for (const c of customers || []) {
@@ -207,29 +227,22 @@ export default function AdminDashboard() {
     return map;
   }, [customers]);
 
-  // ✅ helper: get customer status for a booking
   function getCustomerStatusForBooking(bk) {
-    const key = String(bk.customer_key || toCustomerKey(bk) || "")
-      .trim()
-      .toLowerCase();
-
+    const key = canonicalCustomerKey(bk);
     const row = customerByKey.get(key);
-
     return (row?.status || "nuevo").trim().toLowerCase();
   }
 
-  // ✅ KPIs should be customer-pipeline based
+  // KPIs
   const kpis = useMemo(() => {
     const upcomingBookings = bookings.filter((b) => {
-      if (b.status === "enquiry") return true; // enquiries are open requests
+      if (b.status === "enquiry") return true;
       return b.start_time && new Date(b.start_time) >= now;
     });
 
-    // Unique customers with upcoming bookings (still useful KPI)
     const clientesSolicitando = new Set(upcomingBookings.map(toCustomerKey))
       .size;
 
-    // Customers in stages (pipeline)
     let presupuestosPend = 0;
     let instalacionesProg = 0;
 
@@ -251,63 +264,92 @@ export default function AdminDashboard() {
     };
   }, [bookings, blackouts, customers]);
 
-  // Requests list (dashboard summary)
+  /* -------------------------------------------------------
+     ✅ Requests list (dashboard summary)
+     NOW grouped by canonical customer key:
+     - one row per customer
+     - shows (count) if multiple requests
+     - uses _customer_key for navigation
+  -------------------------------------------------------- */
   const requestList = useMemo(() => {
     const q = query.trim().toLowerCase();
 
-    return (
-      bookings
-        // include:
-        // - future reserved bookings
-        // - any enquiries (no start_time)
-        .filter((b) => {
-          if (b.status === "enquiry") return true;
-          const st = b.start_time ? new Date(b.start_time) : null;
-          return st && st >= now;
-        })
-        .filter((b) => {
-          if (!q) return true;
-          const hay = [
-            b.customer_name,
-            b.phone,
-            b.email,
-            b.city,
-            b.pack,
-            meetingModeLabel(b),
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
-          return hay.includes(q);
-        })
-        // sorting rule:
-        // enquiries first by created_at (newest first),
-        // otherwise upcoming bookings by start_time (soonest first)
-        .sort((a, b) => {
-          const aIsEnq = a.status === "enquiry";
-          const bIsEnq = b.status === "enquiry";
+    // 1) keep upcoming bookings + enquiries
+    const visible = bookings
+      .filter((b) => {
+        if (b.status === "enquiry") return true;
+        const st = b.start_time ? new Date(b.start_time) : null;
+        return st && st >= now;
+      })
+      .filter((b) => {
+        if (!q) return true;
+        const hay = [
+          b.customer_name,
+          b.phone,
+          b.email,
+          b.city,
+          b.pack,
+          meetingModeLabel(b),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return hay.includes(q);
+      });
 
-          if (aIsEnq && bIsEnq) {
-            return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-          }
-          if (aIsEnq) return -1;
-          if (bIsEnq) return 1;
+    // 2) group by customer key
+    const groups = new Map(); // key -> { items: [], latest: booking/enquiry }
+    for (const b of visible) {
+      const key = canonicalCustomerKey(b);
+      if (!key) continue;
 
-          return new Date(a.start_time) - new Date(b.start_time);
-        })
-        .slice(0, 6)
-    );
-  }, [bookings, query]); // ok: `now` is "current render" time
+      const entry = groups.get(key) || { items: [], latest: null };
+      entry.items.push(b);
 
-  // ✅ Installations: derived from customer pipeline status (not booking status)
+      // Compare recency: enquiries use created_at, bookings use start_time
+      const bTime = new Date(b.created_at || b.start_time || 0).getTime();
+      const lTime = entry.latest
+        ? new Date(
+            entry.latest.created_at || entry.latest.start_time || 0
+          ).getTime()
+        : -1;
+
+      if (!entry.latest || bTime > lTime) entry.latest = b;
+
+      groups.set(key, entry);
+    }
+
+    // 3) flatten: attach count + canonical key
+    const out = Array.from(groups.entries()).map(([key, entry]) => ({
+      ...entry.latest,
+      _customer_key: key,
+      _count: entry.items.length,
+    }));
+
+    // 4) sort:
+    // enquiries first by created_at desc; then bookings by start_time asc
+    out.sort((a, b) => {
+      const aIsEnq = a.status === "enquiry";
+      const bIsEnq = b.status === "enquiry";
+
+      if (aIsEnq && bIsEnq) {
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      }
+      if (aIsEnq) return -1;
+      if (bIsEnq) return 1;
+
+      return new Date(a.start_time) - new Date(b.start_time);
+    });
+
+    return out.slice(0, 6);
+  }, [bookings, query, calMonth]); // calMonth not required, but harmless; now is per render
+
+  // Installations
   const installations = useMemo(() => {
-    // show upcoming bookings for customers in en_proceso/finalizado
     return bookings
       .map((b) => ({ b, status: getCustomerStatusForBooking(b) }))
       .filter(({ b, status }) => {
-        // ✅ Fix #2: ignore enquiries / non-scheduled
         if (!b.start_time) return false;
-
         const dt = new Date(b.start_time);
         return (
           dt >= now && (status === "en_proceso" || status === "finalizado")
@@ -316,14 +358,13 @@ export default function AdminDashboard() {
       .sort((a, b) => new Date(a.b.start_time) - new Date(b.b.start_time))
       .slice(0, 6)
       .map((x) => ({ ...x.b, _customer_status: x.status }));
-  }, [bookings, customers]); // customerByKey is derived from customers
+  }, [bookings, customers]);
 
   // Mini calendar: build days grid
   const calendarDays = useMemo(() => {
     const start = startOfMonth(calMonth);
     const end = endOfMonth(calMonth);
 
-    // Convert Sunday-based to Monday-based index (Mon=0..Sun=6)
     const firstDow = (start.getDay() + 6) % 7;
     const totalDays = end.getDate();
 
@@ -332,7 +373,6 @@ export default function AdminDashboard() {
     for (let d = 1; d <= totalDays; d++) {
       cells.push(new Date(start.getFullYear(), start.getMonth(), d));
     }
-
     while (cells.length % 7 !== 0) cells.push(null);
     return cells;
   }, [calMonth]);
@@ -341,7 +381,7 @@ export default function AdminDashboard() {
     const start = startOfMonth(calMonth);
     const end = endOfMonth(calMonth);
 
-    const counts = new Map(); // iso -> { bookings, blocks }
+    const counts = new Map();
     function bump(map, dayIso, k) {
       const prev = map.get(dayIso) || { bookings: 0, blocks: 0 };
       prev[k] += 1;
@@ -627,8 +667,6 @@ export default function AdminDashboard() {
             {requestList.map((bk) => {
               const isEnquiry = bk.status === "enquiry";
 
-              // For bookings (reserved): show scheduled start_time
-              // For enquiries: show created_at (when received)
               let time = "—";
               let date = "Solicitud";
 
@@ -660,7 +698,9 @@ export default function AdminDashboard() {
 
               const customerStatus = getCustomerStatusForBooking(bk);
 
+              // ✅ Use grouped canonical key for navigation
               const canonicalKey =
+                String(bk._customer_key || "").trim() ||
                 String(bk.customer_key || "").trim() ||
                 String(toCustomerKey(bk) || "").trim();
 
@@ -674,7 +714,7 @@ export default function AdminDashboard() {
 
               return (
                 <div
-                  key={bk.id}
+                  key={canonicalKey} // ✅ one row per customer
                   className="reqRow"
                   onClick={go}
                   role="button"
@@ -683,7 +723,7 @@ export default function AdminDashboard() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") go();
                     if (e.key === " ") {
-                      e.preventDefault(); // prevent page scroll
+                      e.preventDefault();
                       go();
                     }
                   }}
@@ -691,7 +731,15 @@ export default function AdminDashboard() {
                   <div className="reqAvatar">{initials(bk.customer_name)}</div>
 
                   <div>
-                    <div className="reqTitle">{bk.customer_name || "—"}</div>
+                    <div className="reqTitle">
+                      {bk.customer_name || "—"}
+                      {bk._count > 1 && (
+                        <span style={{ opacity: 0.75, fontWeight: 900 }}>
+                          {" "}
+                          ({bk._count})
+                        </span>
+                      )}
+                    </div>
                     <div className="reqSub">{bk.city || "—"}</div>
                   </div>
 
@@ -1000,10 +1048,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-
-/**
- * Suggested next components (optional):
- * 1) <RequestsTabs />: "All / New / Pending / Closed" chip filters like screenshot
- * 2) <InstallationsStore />: a real table for installations instead of inferring from bookings
- * 3) <MiniCalendar />: extracted component with consistent sizing + keyboard navigation
- */
