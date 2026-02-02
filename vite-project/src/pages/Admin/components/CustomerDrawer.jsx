@@ -69,16 +69,41 @@ function safePreview(msg, n = 180) {
   if (!s) return "—";
   return s.length > n ? `${s.slice(0, n).trim()}…` : s;
 }
+function digitsOnly(value) {
+  return String(value || "").replace(/\D+/g, "");
+}
 
-export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
+function normalizeCustomerKey(raw) {
+  const v = String(raw || "").trim();
+
+  // email
+  if (v.includes("@")) return v.toLowerCase();
+
+  // phone
+  return digitsOnly(v);
+}
+
+export default function CustomerDrawer({
+  customer,
+  history: historyProp = [],
+  onClose,
+  onStatusChange,
+}) {
   // IMPORTANT: customer_key is now the canonical identifier (phone digits OR email lower)
   const customerKey = useMemo(() => {
-    return String(
-      customer?.customer_key || customer?.phone || customer?.email || ""
-    )
-      .trim()
-      .toLowerCase();
+    const raw =
+      customer?.customer_key || customer?.phone || customer?.email || "";
+    return normalizeCustomerKey(raw);
   }, [customer]);
+
+  const historySorted = useMemo(() => {
+    const rows = Array.isArray(historyProp) ? historyProp : [];
+    return [...rows].sort((a, b) => {
+      const aTime = new Date(a?.created_at || 0).getTime();
+      const bTime = new Date(b?.created_at || 0).getTime();
+      return bTime - aTime;
+    });
+  }, [historyProp]);
 
   const [drawerMsg, setDrawerMsg] = useState("");
 
@@ -395,62 +420,12 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
     if (!error && data?.status) setStatus(data.status);
   }
 
-  /* ---------------- History (NEW) ---------------- */
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [historyLoading, setHistoryLoading] = useState(false);
-  const [historyError, setHistoryError] = useState("");
-  const [historyItems, setHistoryItems] = useState([]);
 
   useEffect(() => {
-    // reset on customer change
+    // close history when switching customer
     setHistoryOpen(false);
-    setHistoryItems([]);
-    setHistoryError("");
-    setHistoryLoading(false);
   }, [customerKey]);
-
-  useEffect(() => {
-    if (!historyOpen) return;
-    if (!customerKey) return;
-
-    let cancelled = false;
-
-    async function loadHistory() {
-      setHistoryLoading(true);
-      setHistoryError("");
-
-      try {
-        const key = String(customerKey).trim().toLowerCase();
-        const keyIsEmail = isEmailKey(key);
-
-        let q = supabase
-          .from("bookings")
-          .select(
-            "id,status,created_at,message,meeting_mode,pack,start_time,phone,email"
-          )
-          .order("created_at", { ascending: false })
-          .limit(25);
-
-        q = keyIsEmail ? q.eq("email", key) : q.eq("phone", key);
-
-        const { data, error } = await q;
-        if (error) throw error;
-
-        if (!cancelled) setHistoryItems(Array.isArray(data) ? data : []);
-      } catch (e) {
-        if (!cancelled)
-          setHistoryError(e?.message || "No se pudo cargar el historial.");
-      } finally {
-        if (!cancelled) setHistoryLoading(false);
-      }
-    }
-
-    loadHistory();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [historyOpen, customerKey]);
 
   // Load everything when customer changes
   useEffect(() => {
@@ -630,79 +605,63 @@ export default function CustomerDrawer({ customer, onClose, onStatusChange }) {
 
                 {historyOpen && (
                   <div style={{ display: "grid", gap: "0.6rem" }}>
-                    {historyLoading && (
-                      <p style={{ margin: 0, opacity: 0.75 }}>Cargando…</p>
-                    )}
-
-                    {historyError && (
-                      <p
-                        style={{ margin: 0, color: "rgba(180, 30, 30, 0.85)" }}
-                      >
-                        {historyError}
+                    {historySorted.length === 0 && (
+                      <p style={{ margin: 0, opacity: 0.75 }}>
+                        No hay mensajes todavía.
                       </p>
                     )}
 
-                    {!historyLoading &&
-                      !historyError &&
-                      historyItems.length === 0 && (
-                        <p style={{ margin: 0, opacity: 0.75 }}>
-                          No hay mensajes todavía.
-                        </p>
-                      )}
+                    {historySorted.map((x) => {
+                      const isEnquiry = x.status === "enquiry";
+                      const created = formatDateTimeEs(x.created_at);
 
-                    {!historyLoading &&
-                      !historyError &&
-                      historyItems.map((x) => {
-                        const isEnquiry = x.status === "enquiry";
-                        const created = formatDateTimeEs(x.created_at);
+                      let scheduled = "";
+                      if (!isEnquiry && x.start_time) {
+                        scheduled = ` · Cita: ${formatDateTimeEs(
+                          x.start_time
+                        )}`;
+                      }
 
-                        let scheduled = "";
-                        if (!isEnquiry && x.start_time) {
-                          scheduled = ` · Cita: ${formatDateTimeEs(
-                            x.start_time
-                          )}`;
-                        }
-
-                        return (
+                      return (
+                        <div
+                          key={x.id}
+                          style={{
+                            border: "1px solid rgba(17,17,17,0.10)",
+                            background: "rgba(255,255,255,0.92)",
+                            borderRadius: 14,
+                            padding: "0.75rem 0.85rem",
+                            display: "grid",
+                            gap: "0.35rem",
+                          }}
+                        >
                           <div
-                            key={x.id}
                             style={{
-                              border: "1px solid rgba(17,17,17,0.10)",
-                              background: "rgba(255,255,255,0.92)",
-                              borderRadius: 14,
-                              padding: "0.75rem 0.85rem",
-                              display: "grid",
-                              gap: "0.35rem",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              gap: "0.75rem",
+                              flexWrap: "wrap",
                             }}
                           >
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                gap: "0.75rem",
-                                flexWrap: "wrap",
-                              }}
-                            >
-                              <div style={{ fontWeight: 900 }}>
-                                {isEnquiry ? "Solicitud" : "Reserva"}
-                                <span style={{ opacity: 0.7, fontWeight: 800 }}>
-                                  {" "}
-                                  · {x.meeting_mode || "—"} · {x.pack || "—"}
-                                </span>
-                              </div>
-
-                              <div style={{ opacity: 0.75, fontWeight: 800 }}>
-                                {created}
-                                {scheduled}
-                              </div>
+                            <div style={{ fontWeight: 900 }}>
+                              {isEnquiry ? "Solicitud" : "Reserva"}
+                              <span style={{ opacity: 0.7, fontWeight: 800 }}>
+                                {" "}
+                                · {x.meeting_mode || "—"} · {x.pack || "—"}
+                              </span>
                             </div>
 
-                            <div style={{ opacity: 0.9, lineHeight: 1.5 }}>
-                              {safePreview(x.message)}
+                            <div style={{ opacity: 0.75, fontWeight: 800 }}>
+                              {created}
+                              {scheduled}
                             </div>
                           </div>
-                        );
-                      })}
+
+                          <div style={{ opacity: 0.9, lineHeight: 1.5 }}>
+                            {safePreview(x.message)}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>

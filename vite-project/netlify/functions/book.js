@@ -1,5 +1,6 @@
 // netlify/functions/book.js
-// Clean version: server-side validation + normalized customer_key + atomic rate-limit via RPC allow_request
+// Server-side validation + normalized customer_key + atomic rate-limit via RPC allow_request
+// ✅ IMPORTANT: bookings rows now store customer_key so bookings merge in admin history.
 
 function json(statusCode, bodyObj) {
   return {
@@ -119,7 +120,7 @@ async function rateLimitHourly({
     body: JSON.stringify({
       p_customer_key: customer_key,
       p_max: maxPerHour,
-      p_window_minutes: 60, // NOTE: your SQL buckets by hour currently
+      p_window_minutes: 60,
     }),
   });
 
@@ -180,7 +181,9 @@ export async function handler(event) {
     const name = String(customer_name || "").trim();
     const emailLower = email ? String(email).trim().toLowerCase() : null;
     const phoneNorm = phone ? normalizeSpanishPhone(phone) : null;
-    const customer_key = phoneNorm || emailLower;
+
+    // ✅ Canonical key: email first, else phone (digits)
+    const customer_key = emailLower || phoneNorm;
 
     if (!name) return json(400, { error: "Missing customer_name" });
     if (!customer_key) {
@@ -283,17 +286,19 @@ export async function handler(event) {
     }
 
     // ---- 1) Insert booking row ----
+    // ✅ IMPORTANT: write customer_key to bookings (so admin can merge history reliably)
     const inserted = await supabaseInsert({
       url: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
       table: "bookings",
       row: {
+        customer_key,
         status: "reserved",
         meeting_mode: home_visit ? "domicilio" : "tienda",
         pack,
         customer_name: name,
-        phone: phoneNorm,
-        email: emailLower,
+        phone: phoneNorm, // normalized digits or null
+        email: emailLower, // lowercase or null
         contact_preference: pref,
         home_visit: !!home_visit,
         address_line1,

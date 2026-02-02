@@ -3,11 +3,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Input, Label, Row, Table, Wrap } from "./adminStyles";
+import { toCustomerKey } from "./utils";
 
 // ============================
 // Config
 // ============================
-const TZ = "Europe/Madrid";
 const LOCALE = "es-ES";
 const ACCENT = "#a07f55"; // Barley Corn
 const TEXT = "#756452"; // Coffee
@@ -16,10 +16,6 @@ const MUTED = "#918170"; // Stonewall
 
 // Blocks should cover the booking window (2h)
 const BLOCK_MINUTES = 120;
-
-function addMinutesIso(iso, minutes) {
-  return new Date(new Date(iso).getTime() + minutes * 60_000).toISOString();
-}
 
 // start ISO for selectedDay + hour (uses admin browser local TZ)
 function startIsoForSelectedDayHour(selectedDay, hour) {
@@ -109,13 +105,6 @@ function formatHourLabel(h) {
 // Overlap: [aStart,aEnd) overlaps [bStart,bEnd)
 function overlaps(aStart, aEnd, bStart, bEnd) {
   return aStart < bEnd && aEnd > bStart;
-}
-
-function getBearerToken(eventLikeHeaders) {
-  const h =
-    eventLikeHeaders?.authorization || eventLikeHeaders?.Authorization || "";
-  const match = String(h).match(/^Bearer\s+(.+)$/i);
-  return match ? match[1] : null;
 }
 
 // ============================
@@ -420,6 +409,7 @@ export default function AdminCalendar() {
       setLoading(false);
     }
   }
+
   async function blockWholeDay() {
     // get working segments for this weekday
     const dow = selectedDay.getDay();
@@ -509,6 +499,15 @@ export default function AdminCalendar() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function goToCustomerFromBooking(b) {
+    const key = toCustomerKey(b);
+    if (!key) {
+      alert("Este registro no tiene teléfono ni email para abrir la ficha.");
+      return;
+    }
+    navigate(`/admin/clientes/${encodeURIComponent(key)}`);
   }
 
   if (!session) {
@@ -775,6 +774,7 @@ export default function AdminCalendar() {
                     hour: "2-digit",
                     minute: "2-digit",
                   });
+
                   return (
                     <tr key={b.id}>
                       <td>{label}</td>
@@ -782,11 +782,7 @@ export default function AdminCalendar() {
                         {b.customer_name ? (
                           <button
                             type="button"
-                            onClick={() =>
-                              navigate(
-                                `/admin/clientes/${encodeURIComponent(b.id)}`
-                              )
-                            }
+                            onClick={() => goToCustomerFromBooking(b)}
                             style={{
                               background: "none",
                               border: "none",

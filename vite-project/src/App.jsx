@@ -105,10 +105,8 @@ export default function App() {
           <Route path="requests" element={<AdminBookings />} />
           <Route path="calendario" element={<AdminCalendar />} />
           <Route path="clientes" element={<AdminClients />} />
-          <Route
-            path="/admin/clientes/:customerKey"
-            element={<AdminCustomer />}
-          />
+          <Route path="clientes/:customerKey" element={<AdminCustomer />} />
+
           <Route path="/admin/ajustes" element={<AdminSettings />} />
         </Route>
 

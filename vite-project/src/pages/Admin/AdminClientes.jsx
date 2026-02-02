@@ -1,17 +1,13 @@
+// src/pages/Admin/AdminClientes.jsx
+// ✅ Profile-first navigation via customer_key (phone digits OR email lower)
+// ✅ Aggregates by phone/email so repeated enquiries become ONE profile
+// ✅ Includes BOTH bookings + enquiries from admin-bookings endpoint
+
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Table, Wrap } from "./adminStyles";
-import { formatLocal } from "./utils";
-
-// Reuse your existing customer drawer (if you already extracted it)
-// If not, keep this file self-contained for now and we’ll extract later.
-import CustomerDrawer from "./components/CustomerDrawer.jsx"; // <-- if you have it
-// If you DON'T have CustomerDrawer yet, tell me and I’ll paste an inline version.
-
-function toCustomerKey(bk) {
-  return (bk.phone || bk.email || "").trim().toLowerCase();
-}
+import { formatLocal, toCustomerKey } from "./utils";
 
 function inNextDays(dateIso, days = 7) {
   const now = new Date();
@@ -22,7 +18,13 @@ function inNextDays(dateIso, days = 7) {
   return dt >= now && dt <= max;
 }
 
-export default function AdminClients() {
+function getActivityIso(row) {
+  // For reserved bookings: start_time exists
+  // For enquiries: use created_at
+  return row?.start_time || row?.created_at || null;
+}
+
+export default function AdminClientes() {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -30,14 +32,11 @@ export default function AdminClients() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
 
-  const [bookings, setBookings] = useState([]);
+  // IMPORTANT: this holds BOTH reserved bookings + enquiries
+  const [rows, setRows] = useState([]);
+
   const [query, setQuery] = useState("");
-
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [statusFilter, setStatusFilter] = useState("todos");
-
-  // Notes/images state live in CustomerDrawer in your refactor (recommended).
-  // If your CustomerDrawer expects props for these, we’ll wire it in next.
 
   const adminAllowlist = useMemo(() => {
     const raw = import.meta.env.VITE_ADMIN_EMAILS || "";
@@ -60,9 +59,7 @@ export default function AdminClients() {
       .then(({ data }) => setSession(data.session || null));
 
     const { data: sub } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
-        setSession(newSession);
-      }
+      (_event, newSession) => setSession(newSession)
     );
 
     return () => sub?.subscription?.unsubscribe?.();
@@ -81,19 +78,26 @@ export default function AdminClients() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const data = await res.json().catch(() => ({})); // ✅ safe parse
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || "No se pudo cargar datos.");
 
-      setBookings(data.bookings || []);
+      // ✅ FIX: include enquiries too
+      const combined = [
+        ...(Array.isArray(data.bookings) ? data.bookings : []),
+        ...(Array.isArray(data.enquiries) ? data.enquiries : []),
+      ];
+
+      setRows(combined);
     } catch (e) {
       console.error(e);
       setMsg(e?.message || "No se pudieron cargar clientes.");
-      setBookings([]);
+      setRows([]);
     } finally {
       setLoading(false);
     }
   }
-  //   Realtime updates for bookings/status
+
+  // Realtime updates (table: bookings) — enquiries are also in bookings table
   useEffect(() => {
     if (!session || !isAllowed) return;
 
@@ -103,7 +107,7 @@ export default function AdminClients() {
         "postgres_changes",
         { event: "*", schema: "public", table: "bookings" },
         (payload) => {
-          setBookings((prev) => {
+          setRows((prev) => {
             const old = prev || [];
             const type = payload.eventType;
 
@@ -128,116 +132,123 @@ export default function AdminClients() {
       )
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => supabase.removeChannel(channel);
   }, [session, isAllowed]);
-  // Open customer drawer when coming from dashboard: /admin/clientes?open=<bookingId>
+
+  // ✅ Profile-first opening:
+  // /admin/clientes?open=<customerKey> -> redirects to /admin/clientes/:customerKey
   useEffect(() => {
     if (!session || !isAllowed) return;
 
     const params = new URLSearchParams(location.search);
-    const openId = params.get("open");
-    if (!openId) return;
+    const openKey = params.get("open");
+    if (!openKey) return;
 
-    // If bookings already loaded, open immediately
-    const found = (bookings || []).find((b) => String(b.id) === String(openId));
-    if (found) {
-      setSelectedCustomer(found);
+    const key = decodeURIComponent(String(openKey)).trim().toLowerCase();
+    if (!key) return;
 
-      // Optional: remove ?open= from URL so refresh won't reopen
-      params.delete("open");
-      navigate(
-        {
-          pathname: location.pathname,
-          search: params.toString() ? `?${params}` : "",
-        },
-        { replace: true }
-      );
-      return;
-    }
+    params.delete("open");
+    navigate(
+      {
+        pathname: location.pathname,
+        search: params.toString() ? `?${params}` : "",
+      },
+      { replace: true }
+    );
 
-    // If not found yet, trigger a load (once) and we’ll resolve it when bookings arrives.
-    // We avoid spamming by only calling loadBookings if we currently have no bookings loaded.
-    if ((bookings || []).length === 0 && !loading) {
-      loadBookings();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, isAllowed, location.search, bookings]);
+    navigate(`/admin/clientes/${encodeURIComponent(key)}`, { replace: true });
+  }, [session, isAllowed, location.search, navigate, location.pathname]);
 
   useEffect(() => {
     if (session && isAllowed) loadBookings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, isAllowed]);
 
-  // Build unique clients list from bookings
+  function goToCustomer(row) {
+    const key = toCustomerKey(row);
+    if (!key) {
+      alert("Este registro no tiene teléfono ni email para abrir la ficha.");
+      return;
+    }
+    navigate(`/admin/clientes/${encodeURIComponent(key)}`);
+  }
+
+  // Build unique clients list from BOTH bookings + enquiries
   const clients = useMemo(() => {
     const map = new Map();
 
-    for (const bk of bookings) {
-      const key = toCustomerKey(bk);
+    for (const r of rows || []) {
+      const key = toCustomerKey(r);
       if (!key) continue;
 
       const prev = map.get(key);
+      const activityIso = getActivityIso(r);
 
       const next = {
         customer_key: key,
-        customer_name: bk.customer_name || prev?.customer_name || "—",
-        phone: bk.phone || prev?.phone || "",
-        email: bk.email || prev?.email || null,
-        city: bk.city || prev?.city || "",
-        last_booking_start: bk.start_time,
-        last_booking_pack: bk.pack,
-        last_status_admin: bk.status || "nuevo",
-        bookings_count: (prev?.bookings_count || 0) + 1,
-        refBooking: bk, // ✅ default to current booking
+        customer_name: r.customer_name || prev?.customer_name || "—",
+        phone: r.phone || prev?.phone || "",
+        email: r.email || prev?.email || null,
+        city: r.city || prev?.city || "",
+        last_activity_at: activityIso || prev?.last_activity_at || null,
+        last_pack: r.pack || prev?.last_pack || "—",
+        last_status_admin: r.status_admin || prev?.last_status_admin || "nuevo",
+        total_count: (prev?.total_count || 0) + 1,
+        refRow: r,
       };
 
-      // If prev exists and prev booking is newer, keep prev "latest"
-      if (
-        prev?.last_booking_start &&
-        new Date(prev.last_booking_start) > new Date(bk.start_time)
-      ) {
-        next.last_booking_start = prev.last_booking_start;
-        next.last_booking_pack = prev.last_booking_pack;
+      // keep prev as "latest" if prev is newer
+      if (prev?.last_activity_at && activityIso) {
+        if (new Date(prev.last_activity_at) > new Date(activityIso)) {
+          next.last_activity_at = prev.last_activity_at;
+          next.last_pack = prev.last_pack;
+          next.last_status_admin = prev.last_status_admin || "nuevo";
+          next.refRow = prev.refRow;
+        }
+      } else if (prev?.last_activity_at && !activityIso) {
+        next.last_activity_at = prev.last_activity_at;
+        next.last_pack = prev.last_pack;
         next.last_status_admin = prev.last_status_admin || "nuevo";
-        next.refBooking = prev.refBooking;
+        next.refRow = prev.refRow;
       }
 
       map.set(key, next);
     }
 
-    // sort by most recent booking
-    return Array.from(map.values()).sort(
-      (a, b) =>
-        new Date(b.last_booking_start).getTime() -
-        new Date(a.last_booking_start).getTime()
-    );
-  }, [bookings]);
+    return Array.from(map.values()).sort((a, b) => {
+      const ta = a.last_activity_at
+        ? new Date(a.last_activity_at).getTime()
+        : 0;
+      const tb = b.last_activity_at
+        ? new Date(b.last_activity_at).getTime()
+        : 0;
+      return tb - ta;
+    });
+  }, [rows]);
 
+  // Upcoming (only real scheduled bookings)
   const upcomingClients = useMemo(() => {
-    // Upcoming is derived from bookings, not unique clients only.
-    // We show upcoming bookings grouped by customer key.
     const map = new Map();
-    for (const bk of bookings) {
-      if (!bk?.start_time) continue;
-      if (!inNextDays(bk.start_time, 7)) continue;
 
-      const key = toCustomerKey(bk);
+    for (const r of rows || []) {
+      if (!r?.start_time) continue; // enquiries don't have visits
+      if (!inNextDays(r.start_time, 7)) continue;
+
+      const key = toCustomerKey(r);
       if (!key) continue;
 
       const prev = map.get(key);
       const item = {
         customer_key: key,
-        customer_name: bk.customer_name,
-        phone: bk.phone,
-        city: bk.city,
-        next_visit: bk.start_time,
-        pack: bk.pack,
-        refBooking: bk,
+        customer_name: r.customer_name,
+        phone: r.phone,
+        city: r.city,
+        next_visit: r.start_time,
+        pack: r.pack,
+        refRow: r,
       };
 
-      if (!prev || new Date(bk.start_time) < new Date(prev.next_visit)) {
+      if (!prev || new Date(r.start_time) < new Date(prev.next_visit)) {
         map.set(key, item);
       }
     }
@@ -245,28 +256,21 @@ export default function AdminClients() {
     return Array.from(map.values()).sort(
       (a, b) => new Date(a.next_visit) - new Date(b.next_visit)
     );
-  }, [bookings]);
+  }, [rows]);
 
   const filteredClients = useMemo(() => {
     const q = query.trim().toLowerCase();
 
-    return clients.filter((c) => {
+    return (clients || []).filter((c) => {
       const matchesStatus =
         statusFilter === "todos"
           ? true
           : (c.last_status_admin || "nuevo") === statusFilter;
 
       if (!matchesStatus) return false;
-
       if (!q) return true;
 
-      const hay = [
-        c.customer_name,
-        c.phone,
-        c.email,
-        c.city,
-        c.last_booking_pack,
-      ]
+      const hay = [c.customer_name, c.phone, c.email, c.city, c.last_pack]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
@@ -315,7 +319,7 @@ export default function AdminClients() {
           <div>
             <h2 style={{ margin: "0 0 0.25rem" }}>Clientes</h2>
             <p style={{ margin: 0, opacity: 0.75 }}>
-              Busca clientes y revisa notas e imágenes.
+              Busca clientes y revisa su historial.
             </p>
             {msg && (
               <p style={{ margin: "0.5rem 0 0", opacity: 0.85 }}>{msg}</p>
@@ -371,10 +375,7 @@ export default function AdminClients() {
                 </td>
                 <td>{c.pack}</td>
                 <td>
-                  <Button
-                    type="button"
-                    onClick={() => setSelectedCustomer(c.refBooking)}
-                  >
+                  <Button type="button" onClick={() => goToCustomer(c.refRow)}>
                     Abrir
                   </Button>
                 </td>
@@ -398,6 +399,7 @@ export default function AdminClients() {
         <p style={{ margin: "0 0 0.75rem", opacity: 0.75 }}>
           {filteredClients.length} clientes
         </p>
+
         <div
           style={{
             display: "flex",
@@ -430,9 +432,9 @@ export default function AdminClients() {
           <thead>
             <tr>
               <th>Cliente</th>
-              <th>Última visita</th>
+              <th>Última actividad</th>
               <th>Pack</th>
-              <th>Reservas</th>
+              <th>Registros</th>
               <th></th>
             </tr>
           </thead>
@@ -445,14 +447,11 @@ export default function AdminClients() {
                   {c.email && <div style={{ opacity: 0.8 }}>{c.email}</div>}
                   {c.city && <div style={{ opacity: 0.7 }}>{c.city}</div>}
                 </td>
-                <td>{formatLocal(c.last_booking_start)}</td>
-                <td>{c.last_booking_pack}</td>
-                <td>{c.bookings_count}</td>
+                <td>{formatLocal(c.last_activity_at)}</td>
+                <td>{c.last_pack}</td>
+                <td>{c.total_count}</td>
                 <td>
-                  <Button
-                    type="button"
-                    onClick={() => setSelectedCustomer(c.refBooking)}
-                  >
+                  <Button type="button" onClick={() => goToCustomer(c.refRow)}>
                     Abrir
                   </Button>
                 </td>
@@ -469,29 +468,6 @@ export default function AdminClients() {
           </tbody>
         </Table>
       </Card>
-
-      {/* Customer drawer */}
-      {selectedCustomer && (
-        <CustomerDrawer
-          customer={selectedCustomer}
-          onClose={() => setSelectedCustomer(null)}
-          onStatusChange={(nextStatus) => {
-            // update drawer view instantly
-            setSelectedCustomer((prev) =>
-              prev ? { ...prev, status_admin: nextStatus } : prev
-            );
-
-            // update bookings list so clients recompute instantly
-            setBookings((prev) =>
-              prev.map((b) =>
-                b.id === selectedCustomer.id
-                  ? { ...b, status_admin: nextStatus }
-                  : b
-              )
-            );
-          }}
-        />
-      )}
     </Wrap>
   );
 }

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Input } from "./adminStyles";
-import { formatLocal, meetingModeLabel } from "./utils";
+import { formatLocal, meetingModeLabel, toCustomerKey } from "./utils";
 
 /** Brand palette */
 const COLORS = {
@@ -14,27 +14,6 @@ const COLORS = {
   border: "rgba(17,17,17,0.10)",
   softLine: "rgba(17,17,17,0.06)",
 };
-
-// function toCustomerKey(bk) {
-//   const email = String(bk?.email || "")
-//     .trim()
-//     .toLowerCase();
-//   if (email) return email;
-
-//   const phone = String(bk?.phone || "").trim();
-//   return phone.replace(/\D/g, "");
-// }
-function toCustomerKey(bk) {
-  const phone = String(bk.phone || "").replace(/\D/g, "");
-  if (phone) return phone;
-
-  const email = String(bk.email || "")
-    .trim()
-    .toLowerCase();
-  if (email) return email;
-
-  return "";
-}
 
 function statusLabel(s) {
   return (
@@ -230,8 +209,9 @@ export default function AdminDashboard() {
 
   // ✅ helper: get customer status for a booking
   function getCustomerStatusForBooking(bk) {
-    const key = toCustomerKey(bk);
+    const key = toCustomerKey(bk).trim().toLowerCase();
     const row = customerByKey.get(key);
+
     return (row?.status || "nuevo").trim().toLowerCase();
   }
 

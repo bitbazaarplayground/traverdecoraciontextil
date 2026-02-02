@@ -33,3 +33,20 @@ export function meetingModeLabel(row) {
   if (row?.status === "enquiry") return "Online / Teléfono";
   return "—";
 }
+
+export function digitsOnly(value) {
+  return String(value || "").replace(/\D+/g, "");
+}
+
+// Canonical customer key: PHONE FIRST (digits-only), else email lowercase
+export function toCustomerKey(bk) {
+  const phone = digitsOnly(bk?.phone);
+  if (phone) return phone;
+
+  const email = String(bk?.email || "")
+    .trim()
+    .toLowerCase();
+  if (email) return email;
+
+  return "";
+}

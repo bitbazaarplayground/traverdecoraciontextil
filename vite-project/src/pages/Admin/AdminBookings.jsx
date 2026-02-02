@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Input, Label, Row, Table, Wrap } from "./adminStyles";
 import AdminLogin from "./components/AdminLogin.jsx";
-import CustomerDrawer from "./components/CustomerDrawer.jsx";
-import { formatLocal, meetingModeLabel } from "./utils";
+import { formatLocal, meetingModeLabel, toCustomerKey } from "./utils";
 
 /**
  * AdminBookings.jsx
@@ -24,6 +25,8 @@ import { formatLocal, meetingModeLabel } from "./utils";
  */
 
 export default function AdminBookings() {
+  const navigate = useNavigate();
+
   // -------------------------
   // 1) AUTH / ACCESS CONTROL
   // -------------------------
@@ -60,7 +63,6 @@ export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
   const [blackouts, setBlackouts] = useState([]);
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   // -------------------------
   // 4) BLACKOUT FORM STATE
@@ -114,6 +116,15 @@ export default function AdminBookings() {
     return "-";
   }
 
+  function goToCustomer(row) {
+    const key = toCustomerKey(row);
+    if (!key) {
+      alert("Este registro no tiene teléfono ni email para abrir la ficha.");
+      return;
+    }
+    navigate(`/admin/clientes/${encodeURIComponent(key)}`);
+  }
+
   // -------------------------
   // 9) DATA LOADING
   // -------------------------
@@ -162,7 +173,6 @@ export default function AdminBookings() {
   // 10) AUTH ACTIONS
   // -------------------------
   async function signOut() {
-    setSelectedCustomer(null);
     await supabase.auth.signOut();
   }
 
@@ -318,36 +328,6 @@ export default function AdminBookings() {
           </div>
         </div>
       </Card>
-
-      {/* Drawer (Fix #2: update both bookings + enquiries ✅) */}
-      <CustomerDrawer
-        customer={selectedCustomer}
-        onStatusChange={(nextStatus) => {
-          setSelectedCustomer((prev) =>
-            prev ? { ...prev, status_admin: nextStatus } : prev
-          );
-
-          setBookings((prev) =>
-            prev.map((b) =>
-              b.id === selectedCustomer?.id
-                ? { ...b, status_admin: nextStatus }
-                : b
-            )
-          );
-
-          setEnquiries((prev) =>
-            prev.map((e) =>
-              e.id === selectedCustomer?.id
-                ? { ...e, status_admin: nextStatus }
-                : e
-            )
-          );
-        }}
-        onClose={() => {
-          setSelectedCustomer(null);
-          setMsg("");
-        }}
-      />
 
       {/* Blackouts */}
       <Card>
@@ -512,7 +492,7 @@ export default function AdminBookings() {
                   <div>
                     <button
                       type="button"
-                      onClick={() => setSelectedCustomer(bk)}
+                      onClick={() => goToCustomer(bk)}
                       style={{
                         border: 0,
                         background: "transparent",
@@ -621,7 +601,7 @@ export default function AdminBookings() {
                   <div>
                     <button
                       type="button"
-                      onClick={() => setSelectedCustomer(enq)}
+                      onClick={() => goToCustomer(enq)}
                       style={{
                         border: 0,
                         background: "transparent",
