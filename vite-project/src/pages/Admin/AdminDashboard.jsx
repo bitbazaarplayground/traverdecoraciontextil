@@ -209,7 +209,10 @@ export default function AdminDashboard() {
 
   // ✅ helper: get customer status for a booking
   function getCustomerStatusForBooking(bk) {
-    const key = toCustomerKey(bk).trim().toLowerCase();
+    const key = String(bk.customer_key || toCustomerKey(bk) || "")
+      .trim()
+      .toLowerCase();
+
     const row = customerByKey.get(key);
 
     return (row?.status || "nuevo").trim().toLowerCase();
@@ -657,14 +660,16 @@ export default function AdminDashboard() {
 
               const customerStatus = getCustomerStatusForBooking(bk);
 
-              const customerKey = toCustomerKey(bk);
+              const canonicalKey =
+                String(bk.customer_key || "").trim() ||
+                String(toCustomerKey(bk) || "").trim();
 
               const go = () => {
-                if (!customerKey) {
-                  console.warn("No customer_key for booking/enquiry:", bk);
+                if (!canonicalKey) {
+                  console.warn("No customer key for booking/enquiry:", bk);
                   return;
                 }
-                navigate(`/admin/clientes/${encodeURIComponent(customerKey)}`);
+                navigate(`/admin/clientes/${encodeURIComponent(canonicalKey)}`);
               };
 
               return (
