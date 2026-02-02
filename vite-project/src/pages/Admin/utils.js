@@ -38,15 +38,25 @@ export function digitsOnly(value) {
   return String(value || "").replace(/\D+/g, "");
 }
 
-// Canonical customer key: PHONE FIRST (digits-only), else email lowercase
+// Canonical customer key: prefer stored customer_key, else email, else phone digits
 export function toCustomerKey(bk) {
-  const phone = digitsOnly(bk?.phone);
-  if (phone) return phone;
+  const raw = String(bk?.customer_key || "").trim();
 
+  // If DB already provides a canonical key, use it
+  if (raw) {
+    if (raw.includes("@")) return raw.toLowerCase();
+    return digitsOnly(raw);
+  }
+
+  // Otherwise, email first
   const email = String(bk?.email || "")
     .trim()
     .toLowerCase();
   if (email) return email;
+
+  // Then phone digits
+  const phone = digitsOnly(bk?.phone);
+  if (phone) return phone;
 
   return "";
 }

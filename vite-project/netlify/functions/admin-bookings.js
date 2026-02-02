@@ -44,16 +44,30 @@ async function supabaseRestGet({ supabaseUrl, serviceKey, path }) {
   return text ? JSON.parse(text) : [];
 }
 
-// Same customer_key logic as your frontend
-function toCustomerKey(bk) {
-  const email = String(bk?.email || "")
-    .trim()
-    .toLowerCase();
+function digitsOnly(value) {
+  return String(value || "").replace(/\D+/g, "");
+}
+
+function normalizeKey(raw) {
+  const v = String(raw || "").trim();
+  if (!v) return "";
+  if (v.includes("@")) return v.toLowerCase();
+  return digitsOnly(v);
+}
+
+// Canonical key:
+// 1) use DB column customer_key if present
+// 2) else email
+// 3) else phone digits
+function getCustomerKey(bk) {
+  const fromDb = normalizeKey(bk?.customer_key);
+  if (fromDb) return fromDb;
+
+  const email = normalizeKey(bk?.email);
   if (email) return email;
 
-  const phone = String(bk?.phone || "").trim();
-  const digits = phone.replace(/\D/g, "");
-  return digits;
+  const phone = normalizeKey(bk?.phone);
+  return phone;
 }
 
 export async function handler(event) {
@@ -94,7 +108,8 @@ export async function handler(event) {
     const qs = new URLSearchParams(event.queryStringParameters || {});
     const limit = Math.min(Number(qs.get("limit") || 200), 500);
 
-    // Fetch bookings + blackouts
+    // Fetch bookings + enquiries + blackouts
+    // ✅ Must include customer_key (we use select=*)
     const bookings = await supabaseRestGet({
       supabaseUrl: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
@@ -114,7 +129,6 @@ export async function handler(event) {
     });
 
     // Fetch customer statuses (small table, safe to grab all)
-    // If you expect thousands later, we can optimize with an `in.(...)` filter.
     const customers = await supabaseRestGet({
       supabaseUrl: SUPABASE_URL,
       serviceKey: SERVICE_KEY,
@@ -123,33 +137,32 @@ export async function handler(event) {
 
     const statusByKey = new Map();
     for (const c of customers || []) {
-      const k = String(c.customer_key || "")
-        .trim()
-        .toLowerCase();
+      const k = normalizeKey(c.customer_key);
       if (!k) continue;
-      statusByKey.set(k, c.status);
+      statusByKey.set(k, (c.status || "nuevo").trim().toLowerCase());
     }
 
-    // Merge into bookings response:
-    // - add `customer_key` (computed)
-    // - add `status` (from customers table if exists, else fallback to booking.status_admin)
-    const bookingsMerged = (bookings || []).map((bk) => {
-      const customer_key = toCustomerKey(bk);
-      const statusFromCustomers = customer_key
-        ? statusByKey.get(customer_key)
-        : null;
+    // ✅ Merge helper (DO NOT overwrite booking/enquiry status!)
+    function mergeRow(bk) {
+      const customer_key = getCustomerKey(bk);
+      const customer_status = customer_key
+        ? statusByKey.get(customer_key) || bk.status_admin || "nuevo"
+        : bk.status_admin || "nuevo";
 
       return {
         ...bk,
         customer_key,
-        status: statusFromCustomers || bk.status_admin || "nuevo",
+        customer_status, // ✅ pipeline status lives here
       };
-    });
+    }
+
+    const bookingsMerged = (bookings || []).map(mergeRow);
+    const enquiriesMerged = (enquiries || []).map(mergeRow);
 
     return json(200, {
       ok: true,
       bookings: bookingsMerged,
-      enquiries,
+      enquiries: enquiriesMerged,
       blackouts,
     });
   } catch (e) {

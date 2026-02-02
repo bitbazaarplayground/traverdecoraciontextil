@@ -27,6 +27,10 @@ function normalizeCustomerKey(raw) {
   return digitsOnly(v);
 }
 
+function isEmailKey(key) {
+  return String(key || "").includes("@");
+}
+
 export default function AdminCustomer() {
   const { customerKey: customerKeyParam } = useParams();
   const navigate = useNavigate();
@@ -35,11 +39,12 @@ export default function AdminCustomer() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
 
-  const [customer, setCustomer] = useState(null); // row from customers (optional but preferred)
-  const [latestBooking, setLatestBooking] = useState(null); // newest booking/enquiry
-  const [history, setHistory] = useState([]); // all bookings/enquiries for this customer_key
+  const [customer, setCustomer] = useState(null);
+  const [latestBooking, setLatestBooking] = useState(null);
+  const [history, setHistory] = useState([]);
 
-  const customerKey = useMemo(
+  // This is the key coming from the URL (can be phone or email)
+  const inputKey = useMemo(
     () => normalizeCustomerKey(customerKeyParam),
     [customerKeyParam]
   );
@@ -62,52 +67,109 @@ export default function AdminCustomer() {
   const title = useMemo(() => customer?.name || "Cliente", [customer]);
 
   /* ---------------------------
-     Load customer + history
+     Core loader:
+     - Accepts URL key (phone/email)
+     - Resolves canonical customer_key
+     - Redirects if needed
+     - Loads history + customer using canonical key
   ---------------------------- */
   useEffect(() => {
-    if (!session?.user || !customerKey) return;
+    if (!session?.user || !inputKey) return;
 
     let alive = true;
 
-    async function loadCustomerAndHistory() {
+    async function load() {
       setLoading(true);
       setMsg("");
 
       try {
-        // 1) Load full history FIRST (this is your source of truth now)
-        const { data: bookingRows, error: bookingErr } = await supabase
+        // STEP 1: try using inputKey as canonical customer_key directly
+        const { data: rows1, error: err1 } = await supabase
           .from("bookings")
           .select("*")
-          .eq("customer_key", customerKey)
+          .eq("customer_key", inputKey)
           .order("created_at", { ascending: false })
           .limit(200);
 
-        if (bookingErr) throw new Error(bookingErr.message);
+        if (err1) throw new Error(err1.message);
 
-        if (!alive) return;
+        const directRows = Array.isArray(rows1) ? rows1 : [];
 
-        const rows = Array.isArray(bookingRows) ? bookingRows : [];
-        setHistory(rows);
-        setLatestBooking(rows[0] || null);
-
-        // 2) Load customer row (if it exists)
-        const { data: customerRow, error: customerErr } = await supabase
+        // Also try customers by customer_key
+        const { data: customer1, error: cErr1 } = await supabase
           .from("customers")
           .select("*")
-          .eq("customer_key", customerKey)
+          .eq("customer_key", inputKey)
           .maybeSingle();
 
-        if (customerErr) throw new Error(customerErr.message);
+        if (cErr1) throw new Error(cErr1.message);
 
         if (!alive) return;
 
-        // If customer row doesn't exist yet, we can still show the drawer using booking info.
-        setCustomer(customerRow || null);
-
-        // Optional UX: if neither exists, show a clear message
-        if (!customerRow && rows.length === 0) {
-          setMsg("Cliente no encontrado (sin historial y sin ficha).");
+        // If we found anything directly, great
+        if (directRows.length || customer1) {
+          setHistory(directRows);
+          setLatestBooking(directRows[0] || null);
+          setCustomer(customer1 || null);
+          return;
         }
+
+        // STEP 2: fallback: inputKey might be phone/email (old links)
+        // - if email-like => bookings.email
+        // - else => bookings.phone (digits-only)
+        let fbQuery = supabase.from("bookings").select("*");
+
+        if (isEmailKey(inputKey)) {
+          fbQuery = fbQuery.eq("email", inputKey.toLowerCase());
+        } else {
+          fbQuery = fbQuery.eq("phone", digitsOnly(inputKey));
+        }
+
+        const { data: rows2, error: err2 } = await fbQuery
+          .order("created_at", { ascending: false })
+          .limit(200);
+
+        if (err2) throw new Error(err2.message);
+
+        const fallbackRows = Array.isArray(rows2) ? rows2 : [];
+
+        if (!alive) return;
+
+        if (fallbackRows.length) {
+          // Get canonical key from booking row (THIS is the truth)
+          const canonical = normalizeCustomerKey(fallbackRows[0]?.customer_key);
+
+          // Redirect to canonical route if needed
+          if (canonical && canonical !== inputKey) {
+            navigate(`/admin/clientes/${encodeURIComponent(canonical)}`, {
+              replace: true,
+            });
+            return;
+          }
+
+          // If canonical equals inputKey (or missing), still render using fallback data
+          setHistory(fallbackRows);
+          setLatestBooking(fallbackRows[0] || null);
+
+          // Try to load customer record using canonical
+          if (canonical) {
+            const { data: customer2, error: cErr2 } = await supabase
+              .from("customers")
+              .select("*")
+              .eq("customer_key", canonical)
+              .maybeSingle();
+
+            if (!cErr2) setCustomer(customer2 || null);
+          }
+
+          return;
+        }
+
+        // STEP 3: nothing found
+        setCustomer(null);
+        setLatestBooking(null);
+        setHistory([]);
+        setMsg("Cliente no encontrado (sin historial y sin ficha).");
       } catch (e) {
         if (!alive) return;
         console.error(e);
@@ -120,12 +182,12 @@ export default function AdminCustomer() {
       }
     }
 
-    loadCustomerAndHistory();
+    load();
 
     return () => {
       alive = false;
     };
-  }, [session, customerKey]);
+  }, [session, inputKey, navigate]);
 
   /* ---------------------------
      Not logged in
@@ -145,14 +207,12 @@ export default function AdminCustomer() {
 
   /* ---------------------------
      Drawer "customer" object
-     CustomerDrawer expects booking-like fields,
-     so we prefer latestBooking; fallback to customers row.
   ---------------------------- */
   const drawerCustomer =
     latestBooking ||
     (customer
       ? {
-          id: customer.customer_key, // stable
+          id: customer.customer_key,
           customer_key: customer.customer_key,
           customer_name: customer.name || "—",
           phone: customer.phone || "",
@@ -210,19 +270,21 @@ export default function AdminCustomer() {
             history={history}
             onClose={() => navigate(-1)}
             onStatusChange={async (nextStatus) => {
-              // Optimistic update
+              // optimistic UI (customer row might not exist; handle gracefully)
               setCustomer((prev) =>
                 prev ? { ...prev, status: nextStatus } : prev
               );
 
-              // Persist
+              // Use canonical key (drawerCustomer has it)
+              const key = normalizeCustomerKey(drawerCustomer.customer_key);
+
               const { error } = await supabase
                 .from("customers")
                 .update({
                   status: nextStatus,
                   updated_at: new Date().toISOString(),
                 })
-                .eq("customer_key", customerKey);
+                .eq("customer_key", key);
 
               if (error) setMsg(error.message);
             }}
