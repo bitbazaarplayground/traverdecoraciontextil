@@ -5,25 +5,52 @@ import { supabase } from "../../lib/supabaseClient.js";
 import { Button, Card, Wrap } from "./adminStyles";
 import CustomerDrawer from "./components/CustomerDrawer.jsx";
 
-function toCustomerKeyFromBooking(bk) {
-  return (bk?.phone || bk?.email || "").trim().toLowerCase();
+/* ---------------------------
+   customer_key helpers
+---------------------------- */
+function digitsOnly(value) {
+  return String(value || "").replace(/\D+/g, "");
+}
+
+function normalizeCustomerKey(raw) {
+  let v = "";
+  try {
+    v = decodeURIComponent(String(raw || "")).trim();
+  } catch {
+    v = String(raw || "").trim();
+  }
+
+  // email
+  if (v.includes("@")) return v.toLowerCase();
+
+  // phone
+  return digitsOnly(v);
 }
 
 export default function AdminCustomer() {
-  const { customerKey } = useParams(); // ✅ route param now
+  const { customerKey: customerKeyParam } = useParams();
   const navigate = useNavigate();
 
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
 
-  const [customer, setCustomer] = useState(null); // row from customers
-  const [latestBooking, setLatestBooking] = useState(null); // latest booking/enquiry row
+  const [customer, setCustomer] = useState(null); // row from customers (optional but preferred)
+  const [latestBooking, setLatestBooking] = useState(null); // newest booking/enquiry
+  const [history, setHistory] = useState([]); // all bookings/enquiries for this customer_key
 
+  const customerKey = useMemo(
+    () => normalizeCustomerKey(customerKeyParam),
+    [customerKeyParam]
+  );
+
+  /* ---------------------------
+     Auth session
+  ---------------------------- */
   useEffect(() => {
-    supabase.auth
-      .getSession()
-      .then(({ data }) => setSession(data.session || null));
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session || null);
+    });
 
     const { data: sub } = supabase.auth.onAuthStateChange(
       (_event, newSession) => setSession(newSession)
@@ -32,77 +59,77 @@ export default function AdminCustomer() {
     return () => sub?.subscription?.unsubscribe?.();
   }, []);
 
-  const title = useMemo(() => {
-    return customer?.name || "Cliente";
-  }, [customer]);
+  const title = useMemo(() => customer?.name || "Cliente", [customer]);
 
+  /* ---------------------------
+     Load customer + history
+  ---------------------------- */
   useEffect(() => {
     if (!session?.user || !customerKey) return;
 
     let alive = true;
 
-    async function loadOne() {
+    async function loadCustomerAndHistory() {
       setLoading(true);
       setMsg("");
 
       try {
-        const decodedKey = decodeURIComponent(customerKey).trim().toLowerCase();
-        if (!decodedKey) throw new Error("customerKey inválido.");
+        // 1) Load full history FIRST (this is your source of truth now)
+        const { data: bookingRows, error: bookingErr } = await supabase
+          .from("bookings")
+          .select("*")
+          .eq("customer_key", customerKey)
+          .order("created_at", { ascending: false })
+          .limit(200);
 
-        // 1) Load customer record from customers table
+        if (bookingErr) throw new Error(bookingErr.message);
+
+        if (!alive) return;
+
+        const rows = Array.isArray(bookingRows) ? bookingRows : [];
+        setHistory(rows);
+        setLatestBooking(rows[0] || null);
+
+        // 2) Load customer row (if it exists)
         const { data: customerRow, error: customerErr } = await supabase
           .from("customers")
           .select("*")
-          .eq("customer_key", decodedKey)
+          .eq("customer_key", customerKey)
           .maybeSingle();
 
         if (customerErr) throw new Error(customerErr.message);
 
         if (!alive) return;
 
-        if (!customerRow) {
-          setCustomer(null);
-          setLatestBooking(null);
-          setMsg("Cliente no encontrado (customer_key no existe).");
-          return;
+        // If customer row doesn't exist yet, we can still show the drawer using booking info.
+        setCustomer(customerRow || null);
+
+        // Optional UX: if neither exists, show a clear message
+        if (!customerRow && rows.length === 0) {
+          setMsg("Cliente no encontrado (sin historial y sin ficha).");
         }
-
-        setCustomer(customerRow);
-
-        // 2) Load latest booking/enquiry for this customer_key (by phone/email match)
-        //    We match using the same rule you use to compute customer_key.
-        const { data: bookingRows, error: bookingErr } = await supabase
-          .from("bookings")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(200);
-
-        if (bookingErr) throw new Error(bookingErr.message);
-
-        const match =
-          (bookingRows || []).find(
-            (b) => toCustomerKeyFromBooking(b) === decodedKey
-          ) || null;
-
-        setLatestBooking(match);
       } catch (e) {
         if (!alive) return;
         console.error(e);
         setMsg(e?.message || "No se pudo cargar el cliente.");
         setCustomer(null);
         setLatestBooking(null);
+        setHistory([]);
       } finally {
         if (alive) setLoading(false);
       }
     }
 
-    loadOne();
+    loadCustomerAndHistory();
 
     return () => {
       alive = false;
     };
   }, [session, customerKey]);
 
+  /* ---------------------------
+     Not logged in
+  ---------------------------- */
   if (!session) {
     return (
       <Wrap>
@@ -116,20 +143,23 @@ export default function AdminCustomer() {
     );
   }
 
-  // What CustomerDrawer expects: it currently expects a "booking-like" object.
-  // We’ll pass latestBooking if available, otherwise we create a minimal object
-  // from customer data so the drawer still renders.
+  /* ---------------------------
+     Drawer "customer" object
+     CustomerDrawer expects booking-like fields,
+     so we prefer latestBooking; fallback to customers row.
+  ---------------------------- */
   const drawerCustomer =
     latestBooking ||
     (customer
       ? {
-          id: customer.customer_key, // stable id for React key / drawer
+          id: customer.customer_key, // stable
           customer_key: customer.customer_key,
-          customer_name: customer.customer_name || customer.display_name || "—",
+          customer_name: customer.name || "—",
           phone: customer.phone || "",
           email: customer.email || "",
           city: customer.city || "",
           status_admin: customer.status || "nuevo",
+          contact_preference: customer.contact_preference || "WhatsApp",
           meeting_mode: null,
           pack: null,
           message: "",
@@ -140,7 +170,6 @@ export default function AdminCustomer() {
   return (
     <Wrap>
       <div style={{ display: "grid", gap: "0.75rem" }}>
-        {/* Top header row */}
         <Card>
           <div
             style={{
@@ -178,28 +207,22 @@ export default function AdminCustomer() {
         {!loading && drawerCustomer && (
           <CustomerDrawer
             customer={drawerCustomer}
+            history={history}
             onClose={() => navigate(-1)}
             onStatusChange={async (nextStatus) => {
-              // update UI immediately
+              // Optimistic update
               setCustomer((prev) =>
                 prev ? { ...prev, status: nextStatus } : prev
               );
-              setLatestBooking((prev) =>
-                prev ? { ...prev, status_admin: nextStatus } : prev
-              );
 
-              // persist status to customers table (source of truth)
-              const decodedKey = decodeURIComponent(customerKey)
-                .trim()
-                .toLowerCase();
-
+              // Persist
               const { error } = await supabase
                 .from("customers")
                 .update({
                   status: nextStatus,
                   updated_at: new Date().toISOString(),
                 })
-                .eq("customer_key", decodedKey);
+                .eq("customer_key", customerKey);
 
               if (error) setMsg(error.message);
             }}
