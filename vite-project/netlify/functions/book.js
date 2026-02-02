@@ -179,18 +179,23 @@ export async function handler(event) {
 
     // ---- Validate + normalize ----
     const name = String(customer_name || "").trim();
-    const emailLower = email ? String(email).trim().toLowerCase() : null;
-    const phoneNorm = phone ? normalizeSpanishPhone(phone) : null;
-
-    // ✅ Canonical key: email first, else phone (digits)
-    const customer_key = emailLower || phoneNorm;
-
     if (!name) return json(400, { error: "Missing customer_name" });
-    if (!customer_key) {
+
+    // Phone is REQUIRED for bookings (DB phone is NOT NULL)
+    const phoneNorm = normalizeSpanishPhone(phone);
+    if (!phoneNorm) {
       return json(400, {
-        error: "Provide a valid Spanish phone or a valid email",
+        error:
+          "Provide a valid Spanish phone number (9 digits, starts 6/7/8/9)",
       });
     }
+
+    // Email is optional
+    const emailLower = email ? String(email).trim().toLowerCase() : null;
+
+    // ✅ Canonical key: email first if present, else phone digits
+    const customer_key = emailLower || phoneNorm;
+
     if (!start) return json(400, { error: "Missing start" });
 
     if (home_visit) {
