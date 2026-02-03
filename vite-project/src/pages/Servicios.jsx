@@ -162,9 +162,12 @@ const ServicesGrid = styled.div`
 `;
 
 const ServiceCard = styled.article`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
   border-radius: 26px;
   overflow: hidden;
-
   background: rgba(255, 255, 255, 0.55);
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.08);
 
@@ -234,6 +237,10 @@ const Badge = styled.div`
 `;
 
 const ServiceContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
   padding: 1.7rem 1.7rem 1.55rem;
 
   @media (max-width: 768px) {
@@ -270,40 +277,41 @@ const ServiceText = styled.p`
 `;
 
 const Actions = styled.div`
+  margin-top: auto;
   display: flex;
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
 `;
 
+// const PrimaryCTA = styled(Link)`
+//   display: inline-flex;
+//   align-items: center;
+//   justify-content: center;
+
+//   padding: 0.8rem 1.15rem;
+//   border-radius: 999px;
+
+//   background: rgba(0, 0, 0, 0.06);
+//   color: rgba(0, 0, 0, 0.86);
+
+//   border: 1px solid rgba(0, 0, 0, 0.1);
+
+//   font-weight: 750;
+//   letter-spacing: 0.08em;
+//   text-transform: uppercase;
+//   font-size: 0.78rem;
+
+//   text-decoration: none;
+//   transition: transform 240ms ease, background 240ms ease;
+
+//   &:hover {
+//     background: rgba(0, 0, 0, 0.09);
+//     transform: translateY(-1px);
+//   }
+// `;
+
 const PrimaryCTA = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0.8rem 1.15rem;
-  border-radius: 999px;
-
-  background: rgba(0, 0, 0, 0.06);
-  color: rgba(0, 0, 0, 0.86);
-
-  border: 1px solid rgba(0, 0, 0, 0.1);
-
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-
-  text-decoration: none;
-  transition: transform 240ms ease, background 240ms ease;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.09);
-    transform: translateY(-1px);
-  }
-`;
-
-const SecondaryCTA = styled(Link)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -514,7 +522,6 @@ export default function Servicios() {
         primaryTo: "/cortinas-estores",
         primaryLabel: "Ver detalles",
         secondaryTo: "/contact",
-        secondaryLabel: "Pedir propuesta",
       },
       {
         badge: "Exterior",
@@ -526,11 +533,10 @@ export default function Servicios() {
         primaryTo: "/toldos-proteccionsolar",
         primaryLabel: "Ver detalles",
         secondaryTo: "/contact",
-        secondaryLabel: "Pedir propuesta",
       },
       {
         badge: "Smart Home",
-        title: "Automatización Somfy",
+        title: "Automatización",
         value: "El confort se anticipa. Tú mantienes el control.",
         text: "Motores, sensores y control inteligente para cortinas, estores y toldos. Integración cuidadosa y escenas que encajan con tu rutina.",
         img: somfyApp,
@@ -538,7 +544,6 @@ export default function Servicios() {
         primaryTo: "/automatizacion",
         primaryLabel: "Ver detalles",
         secondaryTo: "/contact",
-        secondaryLabel: "Pedir propuesta",
       },
       {
         badge: "Estudio",
@@ -550,7 +555,6 @@ export default function Servicios() {
         primaryTo: "/propuestas",
         primaryLabel: "Ver propuestas",
         secondaryTo: "/contact",
-        secondaryLabel: "Hablar con nosotros",
       },
       {
         badge: "Interior",
@@ -562,7 +566,6 @@ export default function Servicios() {
         primaryTo: "/panel-japones",
         primaryLabel: "Ver detalles",
         secondaryTo: "/contact",
-        secondaryLabel: "Pedir propuesta",
       },
 
       {
@@ -572,10 +575,20 @@ export default function Servicios() {
         text: "Aluminio o madera (según colección) con regulación milimétrica de la entrada de luz. Instalación limpia y acabados premium.",
         img: venecianasImg,
         alt: "Venecianas instaladas en ventana",
-        primaryTo: "/venecianas", // or your route
+        primaryTo: "/venecianas",
         primaryLabel: "Ver detalles",
         secondaryTo: "/contact",
-        secondaryLabel: "Pedir propuesta",
+      },
+      {
+        badge: "Exterior",
+        title: "Mosquiteras",
+        value: "Aire fresco sin visitas indeseadas.",
+        text: "Soluciones a medida para ventanas y puertas: discretas, resistentes y fáciles de usar. Mantén la ventilación sin renunciar a confort y tranquilidad.",
+        img: venecianasImg,
+        alt: "Mosquiteras instaladas en ventana",
+        primaryTo: "/mosquiteras",
+        primaryLabel: "Ver detalles",
+        secondaryTo: "/contact",
       },
     ],
     []
@@ -627,9 +640,6 @@ export default function Servicios() {
 
                     <Actions>
                       <PrimaryCTA to={s.primaryTo}>{s.primaryLabel}</PrimaryCTA>
-                      <SecondaryCTA to={s.secondaryTo}>
-                        {s.secondaryLabel}
-                      </SecondaryCTA>
                     </Actions>
                   </ServiceContent>
                 </ServiceCard>

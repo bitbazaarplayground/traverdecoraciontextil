@@ -29,7 +29,7 @@ const Nav = styled.nav`
 
   transition: background 0.3s ease, box-shadow 0.3s ease;
 `;
-
+// rgba(245, 244, 242, 0.9)
 const LeftWrapper = styled.div`
   flex: 1;
 `;
