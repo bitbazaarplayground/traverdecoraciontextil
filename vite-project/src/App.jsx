@@ -13,6 +13,7 @@ import Process from "./components/Process";
 import ScrollToTop from "./components/ScrollToTop";
 import ServicesSection from "./components/ServicesSection";
 import AutomatizacionIndividual from "./components/automatizacion/AutomatizacionIndividual";
+import Mosquiteras from "./components/ventanas/Mosquiteras";
 import PanelJapones from "./components/ventanas/PanelJapones";
 import Venecianas from "./components/ventanas/Venecianas";
 import AdminBookings from "./pages/Admin/AdminBookings";
@@ -97,6 +98,7 @@ export default function App() {
           path="/toldos-proteccionsolar"
           element={<ToldosProteccionSolar />}
         />
+        <Route path="/mosquiteras" element={<Mosquiteras />} />
         <Route path="/services" element={<Servicios />} />
 
         {/* ADMIN */}

@@ -1,9 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta http-equiv="Content-Language" content="es" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Title (fallback – Helmet overrides per page) -->
+    <title>Traver Decoración Textil | Castellón y Valencia</title>
+
+    <!-- SEO description (fallback – Helmet can override per page) -->
+    <meta
+      name="description"
+      content="Traver Decoración Textil en Castellón y Valencia. Cortinas, estores, protección solar, automatización y mosquiteras a medida con instalación profesional."
+    />
+
+    <!-- Indexing -->
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+
+    <!-- Canonical fallback -->
+    <link rel="canonical" href="https://www.traverdecoraciontextil.es/" />
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#f5f4f2" />
+
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- Android / PWA -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/android-chrome-192x192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="/android-chrome-512x512.png"
+    />
+
+    <!-- Open Graph (fallback) -->
+    <meta property="og:site_name" content="Traver Decoración Textil" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:url" content="https://www.traverdecoraciontextil.es/" />
+    <meta
+      property="og:title"
+      content="Traver Decoración Textil | Castellón y Valencia"
+    />
+    <meta
+      property="og:description"
+      content="Cortinas, estores, protección solar, automatización y mosquiteras a medida con instalación profesional en Castellón y Valencia."
+    />
+
+    <!-- Social preview image -->
+    <meta
+      property="og:image"
+      content="https://www.traverdecoraciontextil.es/og.png"
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Traver Decoración Textil - Cortinas, toldos y mucho más en Castellón y Valencia"
+    />
+
+    <!-- Twitter (keep as fallback for scrapers; no account needed) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Traver Decoración Textil | Castellón y Valencia"
+    />
+    <meta
+      name="twitter:description"
+      content="Soluciones a medida en decoración textil y protección solar con instalación profesional."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.traverdecoraciontextil.es/og.png"
+    />
+
+    <!-- LocalBusiness JSON-LD (important for local SEO) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "HomeAndConstructionBusiness",
+        "name": "Traver Decoración Textil",
+        "url": "https://www.traverdecoraciontextil.es/",
+        "email": "traveralmazora@gmail.com",
+        "telephone": "+34 964 562 357",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Carrer de Sant Felip, 67",
+          "addressLocality": "Almassora",
+          "addressRegion": "Castellón",
+          "postalCode": "12550",
+          "addressCountry": "ES"
+        },
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "Castellón" },
+          { "@type": "AdministrativeArea", "name": "Valencia" }
+        ],
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "telephone": "+34 614 952 856",
+            "contactType": "customer support",
+            "availableLanguage": ["es"],
+            "contactOption": "WhatsApp"
+          },
+          {
+            "@type": "ContactPoint",
+            "telephone": "+34 964 562 357",
+            "contactType": "customer support",
+            "availableLanguage": ["es"]
+          }
+        ],
+        "sameAs": ["https://www.facebook.com/traver.decoraciontextil"]
+      }
+    </script>
+
+    <!-- Performance: Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
@@ -11,16 +133,14 @@
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap"
       rel="stylesheet"
     />
-
-    <title>Traver Decoración Textil</title>
   </head>
+
   <body>
-    <!-- Netlify Forms: build-time form detection -->
+    <!-- Netlify Forms: build-time detection -->
     <form name="asesoramiento" netlify netlify-honeypot="bot-field" hidden>
       <input type="hidden" name="form-name" value="asesoramiento" />
 
@@ -28,7 +148,6 @@
         <label> Don’t fill this out: <input name="bot-field" /> </label>
       </p>
 
-      <!-- Common fields -->
       <input type="text" name="nombre" />
       <input type="text" name="telefono" />
       <input type="email" name="email" />
@@ -39,12 +158,10 @@
       </select>
       <textarea name="mensaje"></textarea>
 
-      <!--  -->
       <input type="text" name="meeting_mode" />
       <input type="text" name="pack" />
       <input type="text" name="kind" />
 
-      <!-- Booking-only extras -->
       <input type="text" name="start_time" />
       <input type="text" name="end_time" />
       <input type="text" name="address_line1" />
