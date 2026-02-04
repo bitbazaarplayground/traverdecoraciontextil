@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link, Link as RouterLink, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import logo from "../assets/logo.png";
 
 // NAV CONTAINER
 const Nav = styled.nav`
@@ -173,7 +172,7 @@ export default function Navbar({ hidden }) {
                 $isHome={isHome}
                 aria-label="Volver a inicio"
               >
-                <img src={logo} alt="Traver logo" />
+                <img src="/logo.png" alt="Traver logo" />
               </Logo>
             )}
           </LeftWrapper>

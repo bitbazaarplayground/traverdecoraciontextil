@@ -1,5 +1,7 @@
+import { Helmet } from "react-helmet-async";
 import Slider from "react-slick";
 import styled from "styled-components";
+import { CONTACT } from "../config/contact";
 
 // Assets
 import heroImg from "../assets/CortinasEstores/carousel/cortinas1.jpeg";
@@ -10,6 +12,7 @@ import cortina3 from "../assets/CortinasEstores/carousel/cortinas3.jpeg";
 import cortina4 from "../assets/CortinasEstores/carousel/cortinas4.jpeg";
 import cortina5 from "../assets/CortinasEstores/carousel/cortinas5.jpeg";
 import cortina6 from "../assets/CortinasEstores/carousel/cortinas6.webp";
+
 // Inspiracion
 import blackoutImg from "../assets/CortinasEstores/inspiracion/blackout.jpeg";
 import chenilleImg from "../assets/CortinasEstores/inspiracion/chenille.jpeg";
@@ -21,6 +24,7 @@ import velvetImg from "../assets/CortinasEstores/inspiracion/velvet.jpeg";
 // Slick styles
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
+
 import EnfoqueSlider from "../components/EnfoqueSlider";
 import ComplementosVentana from "../components/ventanas/ComplementosVentana";
 
@@ -34,7 +38,7 @@ const Page = styled.main`
 `;
 
 /* =========================
-   HERO 
+   HERO
 ========================= */
 
 const Hero = styled.section`
@@ -131,7 +135,7 @@ const EditorialText = styled.p`
 `;
 
 /* =========================
-   FEATURE STRIP (NEW)
+   FEATURE STRIP
 ========================= */
 
 const Features = styled.section`
@@ -170,7 +174,7 @@ const FeatureText = styled.p`
 `;
 
 /* =========================
-   CTA (REFINED)
+   CTA
 ========================= */
 
 const CTA = styled.section`
@@ -218,7 +222,7 @@ const CTAButton = styled.a`
 `;
 
 /* =========================
-   CAROUSEL (KEEP, CLEAN)
+   CAROUSEL
 ========================= */
 
 const CarouselSection = styled.section`
@@ -351,10 +355,181 @@ const HandmadeNote = styled.div`
 `;
 
 /* =========================
+   FAQ (UI)
+========================= */
+
+const FAQSection = styled.section`
+  padding: 5.5rem 2rem;
+  background: #fafafa;
+`;
+
+const FAQInner = styled.div`
+  max-width: 900px;
+  margin: 0 auto;
+`;
+
+const FAQTitle = styled.h2`
+  font-size: 2rem;
+  font-weight: 650;
+  color: #121212;
+  margin: 0 0 1.2rem 0;
+  text-align: center;
+`;
+
+const FAQGrid = styled.div`
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1.6rem;
+`;
+
+const FAQItem = styled.details`
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  padding: 1.05rem 1.1rem;
+`;
+
+const FAQSummary = styled.summary`
+  list-style: none;
+  cursor: pointer;
+  font-weight: 750;
+  color: rgba(17, 17, 17, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::after {
+    content: "+";
+    font-size: 1.25rem;
+    line-height: 1;
+    color: rgba(17, 17, 17, 0.6);
+  }
+
+  ${FAQItem}[open] &::after {
+    content: "–";
+  }
+`;
+
+const FAQBody = styled.p`
+  margin: 0.85rem 0 0 0;
+  color: rgba(17, 17, 17, 0.68);
+  line-height: 1.7;
+`;
+
+/* =========================
    COMPONENT
 ========================= */
 
 export default function CortinasEstoresPremium() {
+  const baseUrl = (
+    import.meta.env.VITE_SITE_URL || window.location.origin
+  ).replace(/\/$/, "");
+
+  const canonical = `${baseUrl}/cortinas-estores`;
+  const siteName = CONTACT.siteName;
+
+  const title =
+    "Cortinas y estores a medida | Traver Decoración Textil (Castellón y Valencia)";
+  const description =
+    "Cortinas y estores a medida en Almassora: tejidos seleccionados, caída impecable y control de luz y privacidad. Medición y instalación profesional en Castellón y Valencia.";
+
+  const ogImage = `${baseUrl}/og.png`;
+  const ogImageAlt = "Cortinas y estores a medida — Traver Decoración Textil";
+
+  const faqItems = [
+    {
+      q: "¿Qué diferencia hay entre cortinas y estores?",
+      a: "Las cortinas aportan más presencia textil y caída decorativa; los estores son más minimalistas y prácticos para controlar luz en ventanas con poco espacio. Te recomendamos según uso, estilo y orientación.",
+    },
+    {
+      q: "¿Hacéis visita y medición en casa?",
+      a: "Sí. La medición precisa es clave para que el resultado quede perfecto. Te asesoramos sobre tejido, confección y sistema antes de fabricar.",
+    },
+    {
+      q: "¿Tenéis opciones térmicas o blackout?",
+      a: "Sí. Hay tejidos térmicos y blackout para reducir entrada de luz y mejorar confort. En dormitorios solemos proponer combinaciones (visillo + blackout) para flexibilidad.",
+    },
+    {
+      q: "¿Cuánto tarda el proceso?",
+      a: "Depende del tejido y la confección. Tras la visita y la elección, te confirmamos plazos reales de fabricación e instalación.",
+    },
+    {
+      q: "¿Instaláis también rieles y sistemas?",
+      a: "Sí. Instalamos rieles, barras y sistemas de estor con una puesta a punto final para que el movimiento sea suave y limpio.",
+    },
+  ];
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: `${baseUrl}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Servicios",
+        item: `${baseUrl}/services`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Cortinas y Estores",
+        item: canonical,
+      },
+    ],
+  };
+
+  const webPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${canonical}#webpage`,
+    url: canonical,
+    name: title,
+    description,
+    inLanguage: "es-ES",
+    isPartOf: { "@id": `${baseUrl}/#website` },
+  };
+
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${canonical}#service`,
+    name: "Cortinas y estores a medida",
+    description,
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "Castellón" },
+      { "@type": "AdministrativeArea", name: "Valencia" },
+    ],
+    provider: {
+      "@type": "LocalBusiness",
+      name: siteName,
+      url: `${baseUrl}/`,
+      telephone: CONTACT.phoneLandline,
+      email: CONTACT.email,
+      address: {
+        "@type": "PostalAddress",
+        ...CONTACT.address,
+      },
+    },
+  };
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+
+  const jsonLd = [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd, faqJsonLd];
+
   const sliderSettings = {
     dots: true,
     arrows: false,
@@ -368,6 +543,32 @@ export default function CortinasEstoresPremium() {
 
   return (
     <Page>
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+
+        {/* Open Graph */}
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:alt" content={ogImageAlt} />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:image:alt" content={ogImageAlt} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
+
       {/* HERO */}
       <Hero>
         <HeroInner>
@@ -381,6 +582,47 @@ export default function CortinasEstoresPremium() {
           </HeroText>
         </HeroInner>
       </Hero>
+
+      {/* EDITORIAL (añade contexto semántico útil) */}
+      <Editorial>
+        <EditorialInner>
+          <EditorialTitle>Caída, luz y proporción</EditorialTitle>
+          <EditorialText>
+            Un buen resultado depende del tejido, la confección y la medición.
+            Te orientamos para elegir la combinación adecuada (visillo, lino,
+            terciopelo o blackout) y el sistema más limpio para tu ventana.
+          </EditorialText>
+        </EditorialInner>
+      </Editorial>
+
+      {/* FEATURES */}
+      <Features>
+        <FeaturesGrid>
+          <Feature>
+            <FeatureTitle>Asesoramiento real</FeatureTitle>
+            <FeatureText>
+              Te recomendamos tejido y confección según orientación, privacidad
+              y estilo del espacio.
+            </FeatureText>
+          </Feature>
+
+          <Feature>
+            <FeatureTitle>Medición precisa</FeatureTitle>
+            <FeatureText>
+              Ajuste perfecto para que la caída sea impecable y el sistema
+              funcione suave.
+            </FeatureText>
+          </Feature>
+
+          <Feature>
+            <FeatureTitle>Instalación profesional</FeatureTitle>
+            <FeatureText>
+              Rieles, barras y estores instalados con acabado limpio y puesta a
+              punto final.
+            </FeatureText>
+          </Feature>
+        </FeaturesGrid>
+      </Features>
 
       {/* FABRICS & HANDMADE */}
       <FabricsSection>
@@ -404,8 +646,8 @@ export default function CortinasEstoresPremium() {
               </FabricImageWrapper>
               <FabricName>Lino</FabricName>
               <FabricDescription>
-                Natural, ligero y elegante. Ideal para crear ambientes
-                relajados, luminosos y atemporales.
+                Natural, ligero y elegante. Ideal para ambientes relajados,
+                luminosos y atemporales.
               </FabricDescription>
             </FabricItem>
 
@@ -415,19 +657,22 @@ export default function CortinasEstoresPremium() {
               </FabricImageWrapper>
               <FabricName>Visillos</FabricName>
               <FabricDescription>
-                Suavizan la luz sin bloquearla, aportando privacidad y una
-                sensación de amplitud en salones y zonas comunes.
+                Suavizan la luz sin bloquearla, aportando privacidad y amplitud
+                en zonas comunes.
               </FabricDescription>
             </FabricItem>
 
             <FabricItem>
               <FabricImageWrapper>
-                <FabricImage src={velvetImg} alt="Cortinas de terciopelo" />
+                <FabricImage
+                  src={velvetImg}
+                  alt="Cortinas de terciopelo a medida"
+                />
               </FabricImageWrapper>
               <FabricName>Terciopelo</FabricName>
               <FabricDescription>
-                Textura rica y sofisticada que aporta carácter y profundidad a
-                espacios como comedores o dormitorios.
+                Textura rica y sofisticada que aporta carácter y profundidad en
+                estancias principales.
               </FabricDescription>
             </FabricItem>
 
@@ -435,13 +680,13 @@ export default function CortinasEstoresPremium() {
               <FabricImageWrapper>
                 <FabricImage
                   src={blackoutImg}
-                  alt="Cortinas térmicas y blackout"
+                  alt="Cortinas térmicas y blackout a medida"
                 />
               </FabricImageWrapper>
-              <FabricName>Cortinas térmicas / blackout</FabricName>
+              <FabricName>Térmicas / blackout</FabricName>
               <FabricDescription>
-                Pensadas para mejorar el confort, reducir la entrada de luz y
-                ayudar a regular la temperatura del hogar.
+                Para mejorar el confort, reducir entrada de luz y ayudar a
+                regular temperatura.
               </FabricDescription>
             </FabricItem>
 
@@ -454,8 +699,8 @@ export default function CortinasEstoresPremium() {
               </FabricImageWrapper>
               <FabricName>Tejidos estampados</FabricName>
               <FabricDescription>
-                Diseños que aportan personalidad y estilo, adaptándose al
-                carácter de cada espacio.
+                Aportan personalidad y estilo, adaptándose al carácter de cada
+                espacio.
               </FabricDescription>
             </FabricItem>
 
@@ -466,10 +711,10 @@ export default function CortinasEstoresPremium() {
                   alt="Cortinas técnicas y chenille"
                 />
               </FabricImageWrapper>
-              <FabricName>Cortinas técnicas</FabricName>
+              <FabricName>Técnicas</FabricName>
               <FabricDescription>
-                Soluciones funcionales y discretas para grandes ventanales o
-                espacios donde el control de la luz es esencial.
+                Funcionales y discretas para grandes ventanales o necesidades de
+                control solar.
               </FabricDescription>
             </FabricItem>
           </FabricsGrid>
@@ -485,18 +730,49 @@ export default function CortinasEstoresPremium() {
         </FabricsInner>
       </FabricsSection>
 
+      {/* SISTEMAS + ENFOQUE */}
       <ComplementosVentana id="sistemas" />
       <EnfoqueSlider />
+
       {/* CAROUSEL */}
       <CarouselSection>
         <Slider {...sliderSettings}>
           {images.map((img, i) => (
             <CarouselImage key={i}>
-              <img src={img} alt={`Cortinas ${i + 1}`} />
+              <img
+                src={img}
+                alt={`Cortinas y estores instalados — ejemplo ${i + 1}`}
+                loading="lazy"
+              />
             </CarouselImage>
           ))}
         </Slider>
       </CarouselSection>
+
+      {/* FAQ (UI + schema ya incluido arriba) */}
+      <FAQSection>
+        <FAQInner>
+          <FAQTitle>Preguntas frecuentes</FAQTitle>
+          <FAQGrid>
+            {faqItems.map((f) => (
+              <FAQItem key={f.q}>
+                <FAQSummary>{f.q}</FAQSummary>
+                <FAQBody>{f.a}</FAQBody>
+              </FAQItem>
+            ))}
+          </FAQGrid>
+        </FAQInner>
+      </FAQSection>
+
+      {/* CTA FINAL */}
+      <CTA>
+        <CTATitle>¿Te preparamos una propuesta a medida?</CTATitle>
+        <CTAText>
+          Cuéntanos tu espacio y lo que quieres mejorar. Te aconsejamos tejidos,
+          sistema y una solución equilibrada para luz y privacidad.
+        </CTAText>
+        <CTAButton href="/contact">Solicitar asesoramiento</CTAButton>
+      </CTA>
     </Page>
   );
 }

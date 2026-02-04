@@ -1,7 +1,9 @@
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { CONTACT } from "../../config/contact";
 
-/* IMAGES (move these into your /assets and update paths if needed) */
+/* IMAGES */
 import bano1 from "../../assets/venecianas/bano1.png";
 import cocina1 from "../../assets/venecianas/cocina1.png";
 import oficina1 from "../../assets/venecianas/oficina1.png";
@@ -137,11 +139,12 @@ const Gallery = styled.div`
   }
 `;
 
-const ImageCard = styled.div`
+const ImageCard = styled.figure`
   position: relative;
   border-radius: 22px;
   overflow: hidden;
   background: #eae9e6;
+  margin: 0;
 `;
 
 const Img = styled.img`
@@ -157,7 +160,7 @@ const Img = styled.img`
   }
 `;
 
-const Label = styled.div`
+const Label = styled.figcaption`
   position: absolute;
   left: 14px;
   bottom: 14px;
@@ -232,8 +235,103 @@ const CTA = styled(Link)`
 ========================= */
 
 export default function Venecianas() {
+  const baseUrl = (
+    import.meta.env.VITE_SITE_URL || window.location.origin
+  ).replace(/\/$/, "");
+
+  const canonical = `${baseUrl}/venecianas`;
+  const siteName = CONTACT.siteName;
+
+  const title =
+    "Venecianas a medida | Traver Decoración Textil (Castellón y Valencia)";
+  const description =
+    "Venecianas a medida en Almassora: controla la luz con precisión y gana privacidad sin perder claridad. Opciones en aluminio y madera, medición e instalación profesional en Castellón y Valencia.";
+
+  const ogImage = `${baseUrl}/og.png`;
+  const ogImageAlt = "Venecianas a medida — Traver Decoración Textil";
+
+  const webPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${canonical}#webpage`,
+    url: canonical,
+    name: title,
+    description,
+    inLanguage: "es-ES",
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": `${baseUrl}/#website`,
+      url: `${baseUrl}/`,
+      name: siteName,
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: `${baseUrl}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Servicios",
+        item: `${baseUrl}/services`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Venecianas",
+        item: canonical,
+      },
+    ],
+  };
+
+  const jsonLd = [webPageJsonLd, breadcrumbJsonLd];
+
+  const images = [
+    {
+      src: venecianaMaderaOficina,
+      alt: "Veneciana de madera en oficina",
+      label: "Oficina",
+    },
+    { src: oficina1, alt: "Venecianas en despacho moderno", label: "Despacho" },
+    { src: oficina2, alt: "Venecianas en sala de trabajo", label: "Despacho" },
+    { src: cocina1, alt: "Venecianas en cocina luminosa", label: "Cocina" },
+    {
+      src: bano1,
+      alt: "Venecianas en baño (material resistente y fácil de limpiar)",
+      label: "Baño",
+    },
+  ];
+
   return (
     <Page>
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+
+        {/* Open Graph */}
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:alt" content={ogImageAlt} />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:image:alt" content={ogImageAlt} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
+
       {/* HERO */}
       <Hero>
         <HeroInner>
@@ -283,33 +381,12 @@ export default function Venecianas() {
       <Section>
         <SectionInner>
           <Gallery>
-            <ImageCard>
-              <Img
-                src={venecianaMaderaOficina}
-                alt="Veneciana de madera en oficina"
-              />
-              <Label>Oficina</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img src={oficina1} alt="Venecianas en despacho moderno" />
-              <Label>Despacho</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img src={oficina2} alt="Venecianas en sala de trabajo" />
-              <Label>Despacho</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img src={cocina1} alt="Venecianas en cocina luminosa" />
-              <Label>Cocina</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img src={bano1} alt="Venecianas en baño" />
-              <Label>Baño</Label>
-            </ImageCard>
+            {images.map((img) => (
+              <ImageCard key={img.alt}>
+                <Img src={img.src} alt={img.alt} loading="lazy" />
+                <Label>{img.label}</Label>
+              </ImageCard>
+            ))}
           </Gallery>
         </SectionInner>
       </Section>

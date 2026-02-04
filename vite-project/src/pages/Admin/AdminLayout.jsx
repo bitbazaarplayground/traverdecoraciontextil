@@ -1,9 +1,9 @@
 // src/pages/Admin/AdminLayout.jsx
 import React, { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import NoIndex from "../../components/NoIndex";
 import { supabase } from "../../lib/supabaseClient";
 import { Button } from "./adminStyles";
-
 // ------- Small helpers -------
 const navItemStyle = ({ isActive }) => ({
   display: "flex",
@@ -108,9 +108,10 @@ export default function AdminLayout() {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f1ebe6" }}>
-      {/* Small CSS (kept inside this file) */}
-      <style>{`
+    <NoIndex title="Admin Panel">
+      <div style={{ minHeight: "100vh", background: "#f1ebe6" }}>
+        {/* Small CSS (kept inside this file) */}
+        <style>{`
         .adminShell {
           min-height: 100vh;
           display: grid;
@@ -187,138 +188,140 @@ export default function AdminLayout() {
         }
       `}</style>
 
-      <div className="adminShell">
-        {/* Sidebar (desktop) */}
-        <aside className="adminSidebar">
-          {/* Brand */}
-          <div
-            style={{
-              display: "grid",
-              gap: "0.15rem",
-              marginBottom: "1.75rem",
-              paddingLeft: "0.25rem",
-            }}
-          >
+        <div className="adminShell">
+          {/* Sidebar (desktop) */}
+          <aside className="adminSidebar">
+            {/* Brand */}
             <div
               style={{
-                fontFamily:
-                  '"Playfair Display","Cormorant Garamond","Times New Roman",serif',
-                fontWeight: 700,
-                fontSize: "1.35rem",
-                letterSpacing: "0.08em",
-                color: "#a58048",
-                textTransform: "uppercase",
-                lineHeight: 1.1,
+                display: "grid",
+                gap: "0.15rem",
+                marginBottom: "1.75rem",
+                paddingLeft: "0.25rem",
               }}
             >
-              Traver
+              <div
+                style={{
+                  fontFamily:
+                    '"Playfair Display","Cormorant Garamond","Times New Roman",serif',
+                  fontWeight: 700,
+                  fontSize: "1.35rem",
+                  letterSpacing: "0.08em",
+                  color: "#a58048",
+                  textTransform: "uppercase",
+                  lineHeight: 1.1,
+                }}
+              >
+                Traver
+              </div>
+
+              <div
+                style={{
+                  fontFamily:
+                    '"Playfair Display","Cormorant Garamond","Times New Roman",serif',
+                  fontWeight: 500,
+                  fontSize: "0.72rem",
+                  letterSpacing: "0.22em",
+                  color: "#645345",
+                  textTransform: "uppercase",
+                  lineHeight: 1.1,
+                }}
+              >
+                Decoración Textil
+              </div>
             </div>
 
-            <div
-              style={{
-                fontFamily:
-                  '"Playfair Display","Cormorant Garamond","Times New Roman",serif',
-                fontWeight: 500,
-                fontSize: "0.72rem",
-                letterSpacing: "0.22em",
-                color: "#645345",
-                textTransform: "uppercase",
-                lineHeight: 1.1,
-              }}
-            >
-              Decoración Textil
+            {/* Nav */}
+            <nav style={{ display: "grid", margin: "0 -1rem" }}>
+              <NavLink
+                to="/admin"
+                end
+                style={navItemStyle}
+                className="adminNavLink"
+              >
+                <Icon>▦</Icon> Bandeja
+              </NavLink>
+
+              <NavLink
+                to="/admin/clientes"
+                style={navItemStyle}
+                className="adminNavLink"
+              >
+                <Icon>👥</Icon> Clientes
+              </NavLink>
+
+              <NavLink
+                to="/admin/calendario"
+                style={navItemStyle}
+                className="adminNavLink"
+              >
+                <Icon>📅</Icon> Calendario
+              </NavLink>
+
+              <NavLink
+                to="/admin/presupuestos"
+                style={navItemStyle}
+                className="adminNavLink"
+              >
+                <Icon>🧾</Icon> Presupuestos
+              </NavLink>
+
+              <NavLink
+                to="/admin/ajustes"
+                style={navItemStyle}
+                className="adminNavLink"
+              >
+                <Icon>⚙</Icon> Ajustes
+              </NavLink>
+            </nav>
+
+            <div style={{ height: "1rem" }} />
+
+            <div style={{ marginTop: "auto" }}>
+              <Button type="button" onClick={signOut} style={{ width: "100%" }}>
+                Cerrar sesión
+              </Button>
             </div>
+          </aside>
+
+          {/* Main */}
+          <div className="adminMain">
+            {/* Page content */}
+            <main className="adminContent">
+              <Outlet context={{ adminName, setAdminName }} />
+            </main>
           </div>
-
-          {/* Nav */}
-          <nav style={{ display: "grid", margin: "0 -1rem" }}>
-            <NavLink
-              to="/admin"
-              end
-              style={navItemStyle}
-              className="adminNavLink"
-            >
-              <Icon>▦</Icon> Bandeja
-            </NavLink>
-
-            <NavLink
-              to="/admin/clientes"
-              style={navItemStyle}
-              className="adminNavLink"
-            >
-              <Icon>👥</Icon> Clientes
-            </NavLink>
-
-            <NavLink
-              to="/admin/calendario"
-              style={navItemStyle}
-              className="adminNavLink"
-            >
-              <Icon>📅</Icon> Calendario
-            </NavLink>
-
-            <NavLink
-              to="/admin/presupuestos"
-              style={navItemStyle}
-              className="adminNavLink"
-            >
-              <Icon>🧾</Icon> Presupuestos
-            </NavLink>
-
-            <NavLink
-              to="/admin/ajustes"
-              style={navItemStyle}
-              className="adminNavLink"
-            >
-              <Icon>⚙</Icon> Ajustes
-            </NavLink>
-          </nav>
-
-          <div style={{ height: "1rem" }} />
-
-          <div style={{ marginTop: "auto" }}>
-            <Button type="button" onClick={signOut} style={{ width: "100%" }}>
-              Cerrar sesión
-            </Button>
-          </div>
-        </aside>
-
-        {/* Main */}
-        <div className="adminMain">
-          {/* Page content */}
-          <main className="adminContent">
-            <Outlet context={{ adminName, setAdminName }} />
-          </main>
         </div>
+
+        {/* Mobile bottom nav */}
+        <nav className="adminBottomNav">
+          <NavLink to="/admin" end style={bottomItemStyle}>
+            <span style={{ fontSize: 16 }}>▦</span>
+            <span>Dashboard</span>
+          </NavLink>
+
+          <NavLink to="/admin" style={bottomItemStyle}>
+            <span style={{ fontSize: 16 }}>🧾</span>
+            <span>Requests</span>
+          </NavLink>
+
+          <NavLink to="/admin/calendario" style={bottomItemStyle}>
+            <span style={{ fontSize: 16 }}>📅</span>
+            <span>Calendar</span>
+          </NavLink>
+
+          <NavLink to="/admin/presupuestos" style={bottomItemStyle}>
+            <span style={{ fontSize: 16 }}>💬</span>
+            <span>Quotes</span>
+          </NavLink>
+
+          <NavLink to="/admin/ajustes" style={bottomItemStyle}>
+            <span style={{ fontSize: 16 }}>⚙</span>
+            <span>More</span>
+          </NavLink>
+        </nav>
       </div>
-
-      {/* Mobile bottom nav */}
-      <nav className="adminBottomNav">
-        <NavLink to="/admin" end style={bottomItemStyle}>
-          <span style={{ fontSize: 16 }}>▦</span>
-          <span>Dashboard</span>
-        </NavLink>
-
-        <NavLink to="/admin" style={bottomItemStyle}>
-          <span style={{ fontSize: 16 }}>🧾</span>
-          <span>Requests</span>
-        </NavLink>
-
-        <NavLink to="/admin/calendario" style={bottomItemStyle}>
-          <span style={{ fontSize: 16 }}>📅</span>
-          <span>Calendar</span>
-        </NavLink>
-
-        <NavLink to="/admin/presupuestos" style={bottomItemStyle}>
-          <span style={{ fontSize: 16 }}>💬</span>
-          <span>Quotes</span>
-        </NavLink>
-
-        <NavLink to="/admin/ajustes" style={bottomItemStyle}>
-          <span style={{ fontSize: 16 }}>⚙</span>
-          <span>More</span>
-        </NavLink>
-      </nav>
-    </div>
+      <Outlet />
+    </NoIndex>
   );
 }

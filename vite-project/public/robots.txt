@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /admin/
+Disallow: /auth
+Disallow: /auth/
+
+Sitemap: https://traverdecoraciontextil.netlify.app/sitemap.xml

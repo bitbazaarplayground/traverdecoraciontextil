@@ -3,6 +3,8 @@ import { Helmet } from "react-helmet-async";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
+import { CONTACT } from "../../config/contact";
+
 // Images
 import mPuerta from "../../assets/servicios/mosquiteras/correderaPuerta.png";
 import mEnrollable from "../../assets/servicios/mosquiteras/enrollable.png";
@@ -12,12 +14,6 @@ import mFija from "../../assets/servicios/mosquiteras/fija.png";
 /* =========================
    SEO helpers
 ========================= */
-
-function useCanonicalUrl() {
-  const { pathname, search } = useLocation();
-  const base = import.meta?.env?.VITE_SITE_URL || window.location.origin;
-  return `${base}${pathname}${search}`;
-}
 
 function toSlug(str) {
   return String(str)
@@ -29,11 +25,22 @@ function toSlug(str) {
 }
 
 function readHashTabId(hash) {
-  // Accept "#enrollables" or "#correderas" etc.
   const clean = String(hash || "")
     .replace("#", "")
     .trim();
   return clean || null;
+}
+
+function getBaseUrl() {
+  return (import.meta.env.VITE_SITE_URL || window.location.origin).replace(
+    /\/$/,
+    ""
+  );
+}
+
+function getCanonical(baseUrl, pathname) {
+  // keep it clean: base + pathname (pathname already includes leading "/")
+  return `${baseUrl}${pathname}`;
 }
 
 /* =========================
@@ -324,7 +331,7 @@ const Secondary = styled(Link)`
   }
 `;
 
-// Help actions:
+/* Help actions */
 const HelpStrip = styled.aside`
   margin-top: 1.5rem;
   padding: 1.25rem 1.4rem;
@@ -392,33 +399,24 @@ const HelpButton = styled.a`
   }
 `;
 
-const SROnly = styled.span`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-`;
-
 /* =========================
    Component
 ========================= */
 
 export default function Mosquiteras() {
   const location = useLocation();
-  const canonical = useCanonicalUrl();
 
-  const siteName = "Traver Decoración Textil";
-  const baseUrl = import.meta?.env?.VITE_SITE_URL || window.location.origin;
+  const baseUrl = getBaseUrl();
+  const canonical = getCanonical(baseUrl, location.pathname);
 
-  // ✅ Better SEO title length + location keywords
-  const metaTitle = `Mosquiteras a medida en Castellón y Valencia | ${siteName}`;
-  const metaDescription =
+  const siteName = CONTACT.siteName;
+
+  const title = `Mosquiteras a medida en Castellón y Valencia | ${siteName}`;
+  const description =
     "Mosquiteras a medida para ventanas y puertas: enrollables, correderas, extensibles y fijas. Servicio en Castellón y Valencia. Asesoramiento e instalación profesional.";
+
+  const ogImage = `${baseUrl}/og.png`;
+  const ogImageAlt = "Mosquiteras a medida — Traver Decoración Textil";
 
   const tabs = useMemo(
     () => [
@@ -478,18 +476,18 @@ export default function Mosquiteras() {
     []
   );
 
-  // ✅ Initialize active tab from hash (deep links)
   const initialFromHash = readHashTabId(location.hash);
-  const [active, setActive] = useState(
-    initialFromHash &&
-      tabs.some((t) => toSlug(t.id) === toSlug(initialFromHash))
-      ? tabs.find((t) => toSlug(t.id) === toSlug(initialFromHash)).id
-      : tabs[0].id
-  );
+
+  const [active, setActive] = useState(() => {
+    const match =
+      initialFromHash &&
+      tabs.find((t) => toSlug(t.id) === toSlug(initialFromHash));
+    return match ? match.id : tabs[0].id;
+  });
 
   const current = tabs.find((t) => t.id === active) || tabs[0];
 
-  // ✅ Keep hash in sync when user switches tabs
+  // Keep hash in sync when user switches tabs
   useEffect(() => {
     const nextHash = `#${toSlug(current.id)}`;
     if (window.location.hash !== nextHash) {
@@ -497,64 +495,91 @@ export default function Mosquiteras() {
     }
   }, [current.id]);
 
-  // ✅ Better JSON-LD: Business + Service
-  const businessJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "HomeAndConstructionBusiness",
-    name: siteName,
-    url: baseUrl,
-    areaServed: [
-      { "@type": "AdministrativeArea", name: "Castellón" },
-      { "@type": "AdministrativeArea", name: "Valencia" },
-    ],
-  };
+  // If user lands on a hash directly, sync active tab
+  useEffect(() => {
+    const hash = readHashTabId(location.hash);
+    if (!hash) return;
+    const match = tabs.find((t) => toSlug(t.id) === toSlug(hash));
+    if (match) setActive(match.id);
+  }, [location.hash, tabs]);
 
-  const serviceJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    name: "Mosquiteras a medida",
-    serviceType: "Instalación de mosquiteras",
-    provider: {
-      "@type": "HomeAndConstructionBusiness",
-      name: siteName,
-      url: baseUrl,
+  const businessId = `${baseUrl}/#business`;
+
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${canonical}#webpage`,
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: "es-ES",
+      isPartOf: { "@id": `${baseUrl}/#website` },
+      about: { "@id": businessId },
+      primaryImageOfPage: { "@type": "ImageObject", url: ogImage },
     },
-    areaServed: [
-      { "@type": "AdministrativeArea", name: "Castellón" },
-      { "@type": "AdministrativeArea", name: "Valencia" },
-    ],
-    description: metaDescription,
-    url: canonical,
-  };
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": `${canonical}#service`,
+      name: "Mosquiteras a medida",
+      serviceType: "Instalación de mosquiteras",
+      provider: { "@id": businessId },
+      areaServed: [
+        { "@type": "AdministrativeArea", name: "Castellón" },
+        { "@type": "AdministrativeArea", name: "Valencia" },
+      ],
+      url: canonical,
+      description,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "@id": `${canonical}#breadcrumbs`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Inicio",
+          item: `${baseUrl}/`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Mosquiteras",
+          item: `${baseUrl}/mosquiteras`,
+        },
+      ],
+    },
+  ];
 
   return (
     <Page>
       <Helmet>
-        {/* Primary */}
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
+        <title>{title}</title>
+
+        <meta name="description" content={description} />
+        <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
 
-        {/* Open Graph */}
-        <meta property="og:title" content={metaTitle} />
-        <meta property="og:description" content={metaDescription} />
+        <meta property="og:site_name" content={siteName} />
         <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_ES" />
         <meta property="og:url" content={canonical} />
-        <meta property="og:image" content={mEnrollable} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:alt" content={ogImageAlt} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
 
-        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={metaTitle} />
-        <meta name="twitter:description" content={metaDescription} />
-        <meta name="twitter:image" content={mEnrollable} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:image:alt" content={ogImageAlt} />
 
-        {/* JSON-LD */}
-        <script type="application/ld+json">
-          {JSON.stringify(businessJsonLd)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(serviceJsonLd)}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
       <Hero>
@@ -592,14 +617,6 @@ export default function Mosquiteras() {
 
       <Section aria-label="Tipos de mosquiteras">
         <Container>
-          {/* Small SEO-friendly list of the options */}
-          <SROnly as="h2">Tipos de mosquiteras disponibles</SROnly>
-          <SROnly as="ul">
-            {tabs.map((t) => (
-              <li key={t.id}>{t.title}</li>
-            ))}
-          </SROnly>
-
           <Panel
             id={`panel-${current.id}`}
             role="tabpanel"
@@ -636,26 +653,25 @@ export default function Mosquiteras() {
 
           <HelpStrip aria-label="Ayuda y contacto">
             <HelpText>
-              <strong>¿No encuentras lo que buscas?</strong>
+              <strong>¿Quieres que te recomendemos el sistema ideal?</strong>
               <span>
-                Estamos aquí para ayudarte. Llámanos, escríbenos por WhatsApp o
-                envíanos un email y te orientamos sin compromiso.
+                Envíanos una foto y medidas aproximadas. Te orientamos con
+                honestidad y te preparamos una propuesta ajustada.
               </span>
             </HelpText>
 
             <HelpActions>
-              {/* TODO: replace with real contact data */}
-              <HelpButton href="tel:+34600000000">Llamar</HelpButton>
+              <HelpButton href={`tel:${CONTACT.phoneLandlineTel}`}>
+                Llamar
+              </HelpButton>
               <HelpButton
-                href="https://wa.me/34600000000"
+                href={CONTACT.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 WhatsApp
               </HelpButton>
-              <HelpButton href="mailto:info@traverdecoraciontextil.es">
-                Email
-              </HelpButton>
+              <HelpButton href={`mailto:${CONTACT.email}`}>Email</HelpButton>
             </HelpActions>
           </HelpStrip>
         </Container>

@@ -1,5 +1,7 @@
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { CONTACT } from "../config/contact";
 
 /* =========================
    ASSETS
@@ -177,7 +179,7 @@ const MicroLine = styled.p`
 `;
 
 /* =========================
-   PREMIUM SHEET (REWORKED)
+   PREMIUM SHEET
 ========================= */
 
 const Sheet = styled.section`
@@ -237,7 +239,7 @@ const Lead = styled.p`
 `;
 
 /* =========================
-   SECTION 2: CORE IDEA (FEELING)
+   SECTION 2: CORE IDEA
 ========================= */
 
 const FeelingGrid = styled.div`
@@ -623,26 +625,92 @@ const CTAButtonSecondary = styled.a`
 `;
 
 /* =========================
-   FULL BLEED WRAPPER (OPTIONAL)
-========================= */
-
-const FullBleed = styled.div`
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  margin-top: 1.6rem;
-`;
-
-/* =========================
    COMPONENT
 ========================= */
 
 export default function Automatizacion() {
+  const baseUrl = (
+    import.meta.env.VITE_SITE_URL || window.location.origin
+  ).replace(/\/$/, "");
+
+  const canonical = `${baseUrl}/automatizacion`;
+  const siteName = CONTACT.siteName || "Traver Decoración Textil";
+
+  const title =
+    "Automatización Somfy | Cortinas, estores y toldos motorizados en Castellón y Valencia";
+  const description =
+    "Automatiza cortinas, estores, persianas y toldos con Somfy: sensores, escenas y control por app. Instalación profesional en Castellón y Valencia. Asesoramiento y propuesta a medida.";
+
+  const ogImage = `${baseUrl}/og.png`;
+  const ogImageAlt = "Automatización Somfy para cortinas y toldos a medida";
+
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": `${canonical}#service`,
+      name: "Automatización Somfy",
+      serviceType: "Automatización de cortinas, estores, persianas y toldos",
+      provider: {
+        "@type": "HomeAndConstructionBusiness",
+        "@id": `${baseUrl}/#business`,
+        name: siteName,
+        url: `${baseUrl}/`,
+        telephone: CONTACT.phoneLandline,
+      },
+      areaServed: [
+        { "@type": "AdministrativeArea", name: "Castellón" },
+        { "@type": "AdministrativeArea", name: "Valencia" },
+      ],
+      url: canonical,
+      description,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${canonical}#webpage`,
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: "es-ES",
+      isPartOf: { "@id": `${baseUrl}/#website` },
+      about: { "@id": `${canonical}#service` },
+      primaryImageOfPage: { "@type": "ImageObject", url: ogImage },
+    },
+  ];
+
   return (
     <Page>
+      <Helmet>
+        <title>{title}</title>
+
+        <meta name="description" content={description} />
+        <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={canonical} />
+
+        {/* Open Graph */}
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:alt" content={ogImageAlt} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:image:alt" content={ogImageAlt} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
+
       {/* HERO */}
       <Hero>
         <HeroVideo src={heroVideo} autoPlay muted loop playsInline />
@@ -698,7 +766,7 @@ export default function Automatizacion() {
             </FeelingGrid>
           </Section>
 
-          {/* SECTION 3: FULL HOME PREVIEW (NO DETAILS) */}
+          {/* SECTION 3: FULL HOME PREVIEW */}
           <Section>
             <Kicker>Automatización integral</Kicker>
             <H2>Una solución completa, hecha a medida</H2>
@@ -882,9 +950,9 @@ export default function Automatizacion() {
                   Pedir asesoramiento
                 </CTAButtonPrimary>
                 <CTAButtonSecondary
-                  href="https://wa.me/34647856817"
+                  href={CONTACT.whatsappUrl}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   WhatsApp
                 </CTAButtonSecondary>
