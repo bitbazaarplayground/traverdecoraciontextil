@@ -13,7 +13,10 @@ export default function Footer() {
             <LogoRow to="/" aria-label={`${CONTACT.siteName} - Inicio`}>
               <LogoImg src="/logo.png" alt={CONTACT.siteName} loading="lazy" />
               <BrandText>
-                <BrandName>{CONTACT.siteName}</BrandName>
+                <BrandName>
+                  {CONTACT.siteName}
+                  <BrandDot aria-hidden="true" />
+                </BrandName>
                 <BrandTag>
                   Decoración textil · Protección solar · A medida
                 </BrandTag>
@@ -136,29 +139,33 @@ export default function Footer() {
             <Acc>
               <AccSummary>Servicios</AccSummary>
               <AccBody>
-                <ColLink to="/cortinas-estores">Cortinas & estores</ColLink>
-                <ColLink to="/toldos-proteccionsolar">Toldos</ColLink>
-                <ColLink to="/automatizacion">Automatización</ColLink>
-                <ColLink to="/mosquiteras">Mosquiteras</ColLink>
-                <ColLink to="/panel-japones">Panel japonés</ColLink>
-                <ColLink to="/venecianas">Venecianas</ColLink>
+                <MobileLink to="/cortinas-estores">
+                  Cortinas & estores
+                </MobileLink>
+                <MobileLink to="/toldos-proteccionsolar">Toldos</MobileLink>
+                <MobileLink to="/automatizacion">Automatización</MobileLink>
+                <MobileLink to="/mosquiteras">Mosquiteras</MobileLink>
+                <MobileLink to="/panel-japones">Panel japonés</MobileLink>
+                <MobileLink to="/venecianas">Venecianas</MobileLink>
               </AccBody>
             </Acc>
 
             <Acc>
               <AccSummary>Empresa</AccSummary>
               <AccBody>
-                <ColLink to="/propuestas">Propuestas</ColLink>
-                <ColLink to="/services">Servicios</ColLink>
-                <ColLink to="/contact">Contacto</ColLink>
+                <MobileLink to="/propuestas">Propuestas</MobileLink>
+                <MobileLink to="/services">Servicios</MobileLink>
+                <MobileLink to="/contact">Contacto</MobileLink>
 
                 <Divider />
 
-                <ColLink to="/aviso-legal">Aviso legal</ColLink>
-                <ColLink to="/politica-privacidad">
+                <MobileLink to="/aviso-legal">Aviso legal</MobileLink>
+                <MobileLink to="/politica-privacidad">
                   Política de privacidad
-                </ColLink>
-                <ColLink to="/politica-cookies">Política de cookies</ColLink>
+                </MobileLink>
+                <MobileLink to="/politica-cookies">
+                  Política de cookies
+                </MobileLink>
               </AccBody>
             </Acc>
 
@@ -166,42 +173,42 @@ export default function Footer() {
               <AccSummary>Contacto</AccSummary>
               <AccBody>
                 <ActionRow>
-                  <Action href={`tel:${CONTACT.phoneLandlineTel}`}>
+                  <MobileAction href={`tel:${CONTACT.phoneLandlineTel}`}>
                     Llamar: {CONTACT.phoneLandline}
-                  </Action>
+                  </MobileAction>
                 </ActionRow>
                 <ActionRow>
-                  <Action
+                  <MobileAction
                     href={CONTACT.whatsappUrl}
                     target="_blank"
                     rel="noreferrer"
                   >
                     WhatsApp: +34 {CONTACT.whatsappNumber}
-                  </Action>
+                  </MobileAction>
                 </ActionRow>
                 <ActionRow>
-                  <Action href={`mailto:${CONTACT.email}`}>
+                  <MobileAction href={`mailto:${CONTACT.email}`}>
                     Email: {CONTACT.email}
-                  </Action>
+                  </MobileAction>
                 </ActionRow>
                 <ActionRow>
-                  <Action
+                  <MobileAction
                     href={CONTACT.mapsUrl}
                     target="_blank"
                     rel="noreferrer"
                   >
                     {CONTACT.address.streetAddress},{" "}
                     {CONTACT.address.addressLocality}
-                  </Action>
+                  </MobileAction>
                 </ActionRow>
                 <ActionRow>
-                  <Action
+                  <MobileAction
                     href={CONTACT.facebookUrl}
                     target="_blank"
                     rel="noreferrer"
                   >
                     Facebook
-                  </Action>
+                  </MobileAction>
                 </ActionRow>
 
                 <FooterCTA>
@@ -273,10 +280,6 @@ const LogoRow = styled(Link)`
   gap: 0.9rem;
   text-decoration: none;
   color: inherit;
-
-  &:hover ${""} {
-    opacity: 0.98;
-  }
 `;
 
 const LogoImg = styled.img`
@@ -284,9 +287,13 @@ const LogoImg = styled.img`
   height: 44px;
   object-fit: contain;
   border-radius: 10px;
+
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(229, 0, 126, 0.35);
   padding: 6px;
+
+  box-shadow: 0 0 0 1px rgba(229, 0, 126, 0.12),
+    0 14px 34px rgba(229, 0, 126, 0.12);
 `;
 
 const BrandText = styled.div`
@@ -295,13 +302,20 @@ const BrandText = styled.div`
 `;
 
 const BrandName = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   font-weight: 900;
   letter-spacing: 0.01em;
+`;
 
-  /* pink accent */
-  span {
-    color: ${({ theme }) => theme.colors.primary};
-  }
+const BrandDot = styled.span`
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.primary};
+  box-shadow: 0 0 0 1px rgba(229, 0, 126, 0.22),
+    0 12px 28px rgba(229, 0, 126, 0.22);
 `;
 
 const BrandTag = styled.div`
@@ -368,23 +382,54 @@ const ColTitle = styled.div`
   font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(244, 244, 245, 0.72);
-  margin-bottom: 0.2rem;
+  color: rgba(244, 244, 245, 0.78);
+  margin-bottom: 0.35rem;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  &::after {
+    content: "";
+    width: 34px;
+    height: 2px;
+    border-radius: 999px;
+    background: ${({ theme }) => theme.colors.primary};
+    opacity: 0.75;
+  }
 `;
 
 const ColLink = styled(Link)`
+  position: relative;
   text-decoration: none;
   color: rgba(244, 244, 245, 0.86);
   line-height: 1.55;
+  width: fit-content;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0%;
+    height: 2px;
+    border-radius: 999px;
+    background: ${({ theme }) => theme.colors.primary};
+    opacity: 0.85;
+    transition: width 220ms ease;
+  }
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
   }
+  &:hover::after {
+    width: 100%;
+  }
 
   &:focus-visible {
-    outline: 3px solid rgba(255, 255, 255, 0.18);
+    outline: 3px solid rgba(229, 0, 126, 0.28);
     outline-offset: 3px;
-    border-radius: 8px;
+    border-radius: 10px;
   }
 `;
 
@@ -397,18 +442,36 @@ const Divider = styled.div`
 const ActionRow = styled.div``;
 
 const Action = styled.a`
+  position: relative;
   text-decoration: none;
   color: rgba(244, 244, 245, 0.86);
   line-height: 1.55;
+  width: fit-content;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0%;
+    height: 2px;
+    border-radius: 999px;
+    background: ${({ theme }) => theme.colors.primary};
+    opacity: 0.85;
+    transition: width 220ms ease;
+  }
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
   }
+  &:hover::after {
+    width: 100%;
+  }
 
   &:focus-visible {
-    outline: 3px solid rgba(255, 255, 255, 0.18);
+    outline: 3px solid rgba(229, 0, 126, 0.28);
     outline-offset: 3px;
-    border-radius: 8px;
+    border-radius: 10px;
   }
 `;
 
@@ -425,15 +488,27 @@ const CTAButton = styled(Link)`
   justify-content: center;
   padding: 0.72rem 1.05rem;
   border-radius: 999px;
+
   background: ${({ theme }) => theme.colors.primary};
   color: #0b0c0f;
   font-weight: 900;
   text-decoration: none;
-  letter-spacing: 0.02em;
+
+  box-shadow: 0 0 0 1px rgba(229, 0, 126, 0.22),
+    0 16px 40px rgba(229, 0, 126, 0.25);
+
+  transition: transform 220ms ease, opacity 220ms ease, box-shadow 220ms ease;
 
   &:hover {
-    opacity: 0.92;
+    opacity: 0.96;
     transform: translateY(-1px);
+    box-shadow: 0 0 0 1px rgba(229, 0, 126, 0.28),
+      0 22px 55px rgba(229, 0, 126, 0.32);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(229, 0, 126, 0.28);
+    outline-offset: 3px;
   }
 `;
 
@@ -449,10 +524,17 @@ const CTAButtonGhost = styled.a`
   font-weight: 800;
   text-decoration: none;
 
+  transition: transform 220ms ease, border-color 220ms ease, color 220ms ease;
+
   &:hover {
     border-color: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.primary};
     transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(229, 0, 126, 0.28);
+    outline-offset: 3px;
   }
 `;
 
@@ -472,8 +554,10 @@ const Acc = styled.details`
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
 
-  &[open] summary {
-    color: rgba(244, 244, 245, 0.95);
+  &[open] {
+    border-color: rgba(229, 0, 126, 0.28);
+    box-shadow: 0 0 0 1px rgba(229, 0, 126, 0.12),
+      0 20px 60px rgba(0, 0, 0, 0.35);
   }
 
   &[open] summary::after {
@@ -485,7 +569,7 @@ const Acc = styled.details`
 const AccSummary = styled.summary`
   list-style: none;
   cursor: pointer;
-  padding: 0.95rem 1rem;
+  padding: 1rem 1rem; /* a bit bigger tap target */
 
   display: flex;
   align-items: center;
@@ -496,10 +580,16 @@ const AccSummary = styled.summary`
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-size: 0.78rem;
-  color: rgba(244, 244, 245, 0.85);
+  color: rgba(244, 244, 245, 0.88);
 
   &::-webkit-details-marker {
     display: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(229, 0, 126, 0.28);
+    outline-offset: 3px;
+    border-radius: 12px;
   }
 
   &::after {
@@ -517,10 +607,26 @@ const AccBody = styled.div`
   gap: 0.6rem;
 `;
 
+const MobileLink = styled(ColLink)`
+  width: 100%;
+  padding: 0.15rem 0;
+  &::after {
+    bottom: -2px;
+  }
+`;
+
+const MobileAction = styled(Action)`
+  width: 100%;
+  padding: 0.15rem 0;
+  &::after {
+    bottom: -2px;
+  }
+`;
+
 const Bottom = styled.div`
   margin-top: 2.2rem;
   padding-top: 1.2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(229, 0, 126, 0.22);
 
   display: flex;
   gap: 0.8rem;
@@ -554,6 +660,383 @@ const Dot = styled.span`
   color: rgba(244, 244, 245, 0.35);
 `;
 
+// OPCION 2:
+// import { Link } from "react-router-dom";
+// import styled from "styled-components";
+// import { CONTACT } from "../config/contact";
+
+// export default function Footer() {
+//   const year = new Date().getFullYear();
+
+//   return (
+//     <Wrap>
+//       <Inner>
+//         <Top>
+//           <Brand>
+//             <LogoRow to="/" aria-label={`${CONTACT.siteName} - Inicio`}>
+//               <LogoImg src="/logo.png" alt={CONTACT.siteName} loading="lazy" />
+//               <BrandText>
+//                 <BrandName>{CONTACT.siteName}</BrandName>
+//                 <BrandTag>Decoración textil · Protección solar · A medida</BrandTag>
+//               </BrandText>
+//             </LogoRow>
+
+//             <Small>
+//               Servicio en <strong>Castellón</strong> y <strong>Valencia</strong>{" "}
+//               (provincia). Proyectos seleccionados fuera de zona según alcance.
+//             </Small>
+
+//             <Hours>
+//               <HoursTitle>Horario</HoursTitle>
+//               <HoursText>
+//                 Lunes – Viernes: <strong>9:30–14:00</strong> ·{" "}
+//                 <strong>17:00–19:00</strong>
+//               </HoursText>
+//             </Hours>
+
+//             <AccentLine aria-hidden="true" />
+//           </Brand>
+
+//           <Cols>
+//             <Col>
+//               <ColTitle>Servicios</ColTitle>
+//               <ColLink to="/cortinas-estores">Cortinas & estores</ColLink>
+//               <ColLink to="/toldos-proteccionsolar">Toldos</ColLink>
+//               <ColLink to="/automatizacion">Automatización</ColLink>
+//               <ColLink to="/mosquiteras">Mosquiteras</ColLink>
+//               <ColLink to="/panel-japones">Panel japonés</ColLink>
+//               <ColLink to="/venecianas">Venecianas</ColLink>
+//             </Col>
+
+//             <Col>
+//               <ColTitle>Empresa</ColTitle>
+//               <ColLink to="/propuestas">Propuestas</ColLink>
+//               <ColLink to="/services">Servicios</ColLink>
+//               <ColLink to="/contact">Contacto</ColLink>
+
+//               <Divider />
+
+//               <ColTitle style={{ marginTop: "0.35rem" }}>Legal</ColTitle>
+//               <ColLink to="/aviso-legal">Aviso legal</ColLink>
+//               <ColLink to="/politica-privacidad">Política de privacidad</ColLink>
+//               <ColLink to="/politica-cookies">Política de cookies</ColLink>
+//             </Col>
+
+//             <Col>
+//               <ColTitle>Contacto</ColTitle>
+
+//               <ActionRow>
+//                 <Action href={`tel:${CONTACT.phoneLandlineTel}`} aria-label="Llamar por teléfono">
+//                   <Pill>
+//                     <DotPink aria-hidden="true" />
+//                     Llamar: {CONTACT.phoneLandline}
+//                   </Pill>
+//                 </Action>
+//               </ActionRow>
+
+//               <ActionRow>
+//                 <Action
+//                   href={CONTACT.whatsappUrl}
+//                   target="_blank"
+//                   rel="noreferrer"
+//                   aria-label="Abrir WhatsApp"
+//                 >
+//                   <Pill>
+//                     <DotPink aria-hidden="true" />
+//                     WhatsApp: +34 {CONTACT.whatsappNumber}
+//                   </Pill>
+//                 </Action>
+//               </ActionRow>
+
+//               <ActionRow>
+//                 <Action href={`mailto:${CONTACT.email}`} aria-label="Enviar email">
+//                   <Pill>
+//                     <DotPink aria-hidden="true" />
+//                     Email: {CONTACT.email}
+//                   </Pill>
+//                 </Action>
+//               </ActionRow>
+
+//               <ActionRow>
+//                 <Action
+//                   href={CONTACT.mapsUrl}
+//                   target="_blank"
+//                   rel="noreferrer"
+//                   aria-label="Abrir ubicación en Google Maps"
+//                 >
+//                   <Pill>
+//                     <DotPink aria-hidden="true" />
+//                     {CONTACT.address.streetAddress}, {CONTACT.address.postalCode}{" "}
+//                     {CONTACT.address.addressLocality}, {CONTACT.address.addressRegion},{" "}
+//                     Spain
+//                   </Pill>
+//                 </Action>
+//               </ActionRow>
+
+//               <ActionRow>
+//                 <Action
+//                   href={CONTACT.facebookUrl}
+//                   target="_blank"
+//                   rel="noreferrer"
+//                   aria-label="Abrir Facebook"
+//                 >
+//                   <Pill>
+//                     <DotPink aria-hidden="true" />
+//                     Facebook
+//                   </Pill>
+//                 </Action>
+//               </ActionRow>
+//             </Col>
+//           </Cols>
+//         </Top>
+
+//         <Bottom>
+//           <Copy>
+//             © {year} {CONTACT.siteName}. Todos los derechos reservados.
+//           </Copy>
+
+//           <MiniLinks>
+//             <MiniLink to="/contact">Pedir asesoramiento</MiniLink>
+//             <Dot>·</Dot>
+//             <MiniLink to="/propuestas">Ver propuestas</MiniLink>
+//           </MiniLinks>
+//         </Bottom>
+//       </Inner>
+//     </Wrap>
+//   );
+// }
+
+// /* =========================
+//    styles
+// ========================= */
+
+// const Wrap = styled.footer`
+//   background: #0b0c0f;
+//   color: rgba(244, 244, 245, 0.92);
+//   border-top: 1px solid rgba(229, 0, 126, 0.22);
+// `;
+
+// const Inner = styled.div`
+//   width: min(1120px, calc(100% - 2.4rem));
+//   margin: 0 auto;
+//   padding: 3.2rem 0 1.6rem;
+
+//   @media (max-width: 768px) {
+//     width: calc(100% - 2rem);
+//     padding: 2.2rem 0 1.3rem;
+//   }
+// `;
+
+// const Top = styled.div`
+//   display: grid;
+//   gap: 2rem;
+
+//   @media (min-width: 980px) {
+//     grid-template-columns: 1.1fr 1.9fr;
+//     gap: 2.2rem;
+//   }
+// `;
+
+// const Brand = styled.div``;
+
+// const LogoRow = styled(Link)`
+//   display: inline-flex;
+//   align-items: center;
+//   gap: 0.9rem;
+//   text-decoration: none;
+//   color: inherit;
+// `;
+
+// const LogoImg = styled.img`
+//   width: 44px;
+//   height: 44px;
+//   object-fit: contain;
+//   border-radius: 10px;
+//   background: rgba(229, 0, 126, 0.08);
+//   border: 1px solid rgba(229, 0, 126, 0.22);
+//   padding: 6px;
+// `;
+
+// const BrandText = styled.div`
+//   display: grid;
+//   gap: 0.15rem;
+// `;
+
+// const BrandName = styled.div`
+//   font-weight: 900;
+//   letter-spacing: 0.01em;
+// `;
+
+// const BrandTag = styled.div`
+//   font-size: 0.95rem;
+//   color: rgba(244, 244, 245, 0.72);
+// `;
+
+// const Small = styled.p`
+//   margin: 1.1rem 0 0;
+//   line-height: 1.7;
+//   color: rgba(244, 244, 245, 0.72);
+
+//   strong {
+//     color: rgba(244, 244, 245, 0.92);
+//   }
+// `;
+
+// const Hours = styled.div`
+//   margin-top: 1rem;
+//   padding: 0.95rem 1rem;
+//   border-radius: 16px;
+//   background: rgba(255, 255, 255, 0.04);
+//   border: 1px solid rgba(255, 255, 255, 0.08);
+// `;
+
+// const HoursTitle = styled.div`
+//   font-size: 0.78rem;
+//   letter-spacing: 0.18em;
+//   text-transform: uppercase;
+//   color: rgba(229, 0, 126, 0.78);
+// `;
+
+// const HoursText = styled.div`
+//   margin-top: 0.35rem;
+//   color: rgba(244, 244, 245, 0.9);
+// `;
+
+// const AccentLine = styled.div`
+//   height: 2px;
+//   width: 78px;
+//   margin-top: 1.25rem;
+//   border-radius: 999px;
+//   background: ${({ theme }) => theme.colors.primary};
+//   opacity: 0.9;
+
+//   @media (max-width: 768px) {
+//     width: 64px;
+//   }
+// `;
+
+// const Cols = styled.div`
+//   display: grid;
+//   gap: 1.6rem;
+
+//   @media (min-width: 760px) {
+//     grid-template-columns: repeat(3, 1fr);
+//     gap: 1.2rem;
+//   }
+
+//   @media (max-width: 768px) {
+//     gap: 1.35rem;
+//   }
+// `;
+
+// const Col = styled.div`
+//   display: grid;
+//   align-content: start;
+//   gap: 0.6rem;
+// `;
+
+// const ColTitle = styled.div`
+//   font-size: 0.78rem;
+//   letter-spacing: 0.18em;
+//   text-transform: uppercase;
+//   color: rgba(229, 0, 126, 0.75);
+//   margin-bottom: 0.15rem;
+// `;
+
+// const ColLink = styled(Link)`
+//   text-decoration: none;
+//   color: rgba(244, 244, 245, 0.88);
+//   line-height: 1.55;
+
+//   &:hover {
+//     color: ${({ theme }) => theme.colors.primary};
+//   }
+// `;
+
+// const Divider = styled.div`
+//   height: 1px;
+//   background: rgba(255, 255, 255, 0.08);
+//   margin: 0.45rem 0;
+// `;
+
+// const ActionRow = styled.div``;
+
+// const Action = styled.a`
+//   text-decoration: none;
+//   color: rgba(244, 244, 245, 0.88);
+//   line-height: 1.55;
+
+//   &:hover {
+//     color: ${({ theme }) => theme.colors.primary};
+//   }
+// `;
+
+// const Pill = styled.span`
+//   display: inline-flex;
+//   align-items: center;
+//   gap: 0.55rem;
+//   padding: 0.55rem 0.75rem;
+//   border-radius: 999px;
+//   background: rgba(255, 255, 255, 0.04);
+//   border: 1px solid rgba(255, 255, 255, 0.08);
+
+//   @media (max-width: 768px) {
+//     width: 100%;
+//     justify-content: flex-start;
+//   }
+// `;
+
+// const DotPink = styled.span`
+//   width: 8px;
+//   height: 8px;
+//   border-radius: 999px;
+//   background: ${({ theme }) => theme.colors.primary};
+//   box-shadow: 0 0 0 4px rgba(229, 0, 126, 0.12);
+// `;
+
+// const Bottom = styled.div`
+//   margin-top: 2.2rem;
+//   padding-top: 1.2rem;
+//   border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+//   display: flex;
+//   gap: 0.8rem;
+//   align-items: center;
+//   justify-content: space-between;
+//   flex-wrap: wrap;
+
+//   @media (max-width: 768px) {
+//     margin-top: 1.7rem;
+//     padding-top: 1rem;
+//   }
+// `;
+
+// const Copy = styled.div`
+//   font-size: 0.95rem;
+//   color: rgba(244, 244, 245, 0.68);
+// `;
+
+// const MiniLinks = styled.div`
+//   display: inline-flex;
+//   align-items: center;
+//   gap: 0.55rem;
+//   flex-wrap: wrap;
+// `;
+
+// const MiniLink = styled(Link)`
+//   text-decoration: none;
+//   color: rgba(244, 244, 245, 0.8);
+
+//   &:hover {
+//     color: ${({ theme }) => theme.colors.primary};
+//   }
+// `;
+
+// const Dot = styled.span`
+//   color: rgba(244, 244, 245, 0.35);
+// `;
+
+// OPCION 3
 // import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 // import styled from "styled-components";
 

@@ -1,23 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://traverdecoraciontextil.netlify.app/</loc></url>
-  <url><loc>https://traverdecoraciontextil.netlify.app/propuestas</loc></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <url><loc>https://traverdecoraciontextil.netlify.app/automatizacion</loc></url>
-  <url><loc>https://traverdecoraciontextil.netlify.app/automatizacion/completa</loc></url>
-  <url><loc>https://traverdecoraciontextil.netlify.app/automatizacion/individual</loc></url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
 
-  <url><loc>https://traverdecoraciontextil.netlify.app/contact</loc></url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/propuestas</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
-  <url><loc>https://traverdecoraciontextil.netlify.app/panel-japones</loc></url>
-  <url><loc>https://traverdecoraciontextil.netlify.app/venecianas</loc></url>
-  <url><loc>https://traverdecoraciontextil.netlify.app/cortinas-estores</loc></url>
-  <url><loc>https://traverdecoraciontextil.netlify.app/toldos-proteccionsolar</loc></url>
-  <url><loc>https://traverdecoraciontextil.netlify.app/mosquiteras</loc></url>
-  <url><loc>https://traverdecoraciontextil.netlify.app/services</loc></url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/automatizacion</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/automatizacion/completa</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/automatizacion/individual</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 
-  <!-- Legales (cuando existan las páginas/rutas) -->
-  <url><loc>https://traverdecoraciontextil.netlify.app/aviso-legal</loc></url>
-  <url><loc>https://traverdecoraciontextil.netlify.app/politica-privacidad</loc></url>
-  <url><loc>https://traverdecoraciontextil.netlify.app/politica-cookies</loc></url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/panel-japones</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/venecianas</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/cortinas-estores</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/toldos-proteccionsolar</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/mosquiteras</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/services</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Legales -->
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/aviso-legal</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/politica-privacidad</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://traverdecoraciontextil.netlify.app/politica-cookies</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
 </urlset>

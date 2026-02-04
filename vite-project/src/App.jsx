@@ -20,9 +20,12 @@ import AdminResetPassword from "./pages/Admin/AdminResetPassword";
 import AdminSettings from "./pages/Admin/AdminSettings";
 import AuthCallback from "./pages/AuthCallback";
 import Automatizacion from "./pages/Automatizacion";
+import AvisoLegal from "./pages/AvisoLegal";
 import ContactPage from "./pages/ContactPage";
 import CortinasEstores from "./pages/CortinasEstores";
 import HomePage from "./pages/HomePage";
+import PoliticaCookies from "./pages/PoliticaCookies";
+import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
 import Propuestas from "./pages/Propuestas";
 import Servicios from "./pages/Servicios";
 import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
@@ -85,6 +88,11 @@ export default function App() {
         />
         <Route path="/mosquiteras" element={<Mosquiteras />} />
         <Route path="/services" element={<Servicios />} />
+        {/* LEGALES */}
+
+        <Route path="/aviso-legal" element={<AvisoLegal />} />
+        <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+        <Route path="/politica-cookies" element={<PoliticaCookies />} />
 
         {/* ADMIN */}
         <Route path="/admin" element={<AdminLayout />}>
