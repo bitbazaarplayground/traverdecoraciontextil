@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import NoIndex from "../../components/NoIndex";
 import { supabase } from "../../lib/supabaseClient";
 
 const Wrap = styled.div`
@@ -97,46 +98,50 @@ export default function AdminResetPassword() {
   }
 
   return (
-    <Wrap>
-      <Card>
-        <h2 style={{ margin: "0 0 0.35rem" }}>Restablecer contraseña</h2>
-        <p style={{ margin: "0 0 1rem", opacity: 0.75 }}>
-          Escribe tu nueva contraseña para acceder al panel.
-        </p>
+    <NoIndex title="Restablecer contraseña">
+      <Wrap>
+        <Card>
+          <h2 style={{ margin: "0 0 0.35rem" }}>Restablecer contraseña</h2>
+          <p style={{ margin: "0 0 1rem", opacity: 0.75 }}>
+            Escribe tu nueva contraseña para acceder al panel.
+          </p>
 
-        <form
-          onSubmit={handleReset}
-          style={{ display: "grid", gap: "0.75rem" }}
-        >
-          <Label>
-            <span>Nueva contraseña</span>
-            <Input
-              type="password"
-              value={pw1}
-              onChange={(e) => setPw1(e.target.value)}
-              required
-            />
-          </Label>
+          <form
+            onSubmit={handleReset}
+            style={{ display: "grid", gap: "0.75rem" }}
+          >
+            <Label>
+              <span>Nueva contraseña</span>
+              <Input
+                type="password"
+                value={pw1}
+                onChange={(e) => setPw1(e.target.value)}
+                required
+              />
+            </Label>
 
-          <Label>
-            <span>Repetir contraseña</span>
-            <Input
-              type="password"
-              value={pw2}
-              onChange={(e) => setPw2(e.target.value)}
-              required
-            />
-          </Label>
+            <Label>
+              <span>Repetir contraseña</span>
+              <Input
+                type="password"
+                value={pw2}
+                onChange={(e) => setPw2(e.target.value)}
+                required
+              />
+            </Label>
 
-          <Button type="submit" disabled={loading}>
-            {loading ? "Guardando..." : "Guardar contraseña"}
-          </Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Guardando..." : "Guardar contraseña"}
+            </Button>
 
-          {msg && (
-            <p style={{ margin: 0, color: "rgba(180, 30, 30, 0.85)" }}>{msg}</p>
-          )}
-        </form>
-      </Card>
-    </Wrap>
+            {msg && (
+              <p style={{ margin: 0, color: "rgba(180, 30, 30, 0.85)" }}>
+                {msg}
+              </p>
+            )}
+          </form>
+        </Card>
+      </Wrap>
+    </NoIndex>
   );
 }

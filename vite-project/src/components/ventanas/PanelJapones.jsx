@@ -1,5 +1,7 @@
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { CONTACT } from "../../config/contact";
 
 /* IMAGES */
 import bedroomDarkPanel from "../../assets/panelJapones/bedroomDarkPanel.png";
@@ -92,11 +94,12 @@ const Gallery = styled.div`
   }
 `;
 
-const ImageCard = styled.div`
+const ImageCard = styled.figure`
   position: relative;
   border-radius: 22px;
   overflow: hidden;
   background: #eae9e6;
+  margin: 0;
 `;
 
 const Img = styled.img`
@@ -112,7 +115,7 @@ const Img = styled.img`
   }
 `;
 
-const Label = styled.div`
+const Label = styled.figcaption`
   position: absolute;
   left: 14px;
   bottom: 14px;
@@ -185,8 +188,141 @@ const CTA = styled(Link)`
 ========================= */
 
 export default function PanelJapones() {
+  const baseUrl = (
+    import.meta.env.VITE_SITE_URL || window.location.origin
+  ).replace(/\/$/, "");
+
+  const canonical = `${baseUrl}/panel-japones`;
+  const siteName = CONTACT.siteName;
+
+  const title =
+    "Panel japonés a medida | Traver Decoración Textil (Castellón y Valencia)";
+  const description =
+    "Panel japonés a medida en Castellón y Valencia: ideal para grandes ventanales y espacios modernos. Tejidos seleccionados, medición e instalación profesional en Almassora.";
+
+  const ogImage = `${baseUrl}/og.png`;
+  const ogImageAlt = "Panel japonés a medida — Traver Decoración Textil";
+
+  // JSON-LD: WebPage + Breadcrumbs (ligero y útil)
+  const webPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${canonical}#webpage`,
+    url: canonical,
+    name: title,
+    description,
+    inLanguage: "es-ES",
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": `${baseUrl}/#website`,
+      url: `${baseUrl}/`,
+      name: siteName,
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inicio",
+        item: `${baseUrl}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Servicios",
+        item: `${baseUrl}/services`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Panel japonés",
+        item: canonical,
+      },
+    ],
+  };
+
+  const jsonLd = [webPageJsonLd, breadcrumbJsonLd];
+
+  const images = [
+    {
+      src: livingroom,
+      alt: "Panel japonés a medida en salón moderno (Castellón y Valencia)",
+      label: "Salón",
+    },
+    {
+      src: livingroom1,
+      alt: "Panel japonés en salón con caída limpia y luz suave",
+      label: "Salón",
+    },
+    {
+      src: livingroom2,
+      alt: "Panel japonés para ventanal con vistas exteriores",
+      label: "Salón",
+    },
+    {
+      src: kitchen1,
+      alt: "Panel japonés en cocina: control de luz y privacidad",
+      label: "Cocina",
+    },
+    {
+      src: kitchen2,
+      alt: "Panel japonés filtrando luz natural en cocina",
+      label: "Cocina",
+    },
+    {
+      src: bedroomStudyarea,
+      alt: "Panel japonés en dormitorio con zona de trabajo",
+      label: "Dormitorio",
+    },
+    {
+      src: bedroomDarkPanel,
+      alt: "Panel japonés oscuro en dormitorio: ambiente y descanso",
+      label: "Dormitorio",
+    },
+    {
+      src: office,
+      alt: "Panel japonés en despacho: líneas arquitectónicas y orden visual",
+      label: "Despacho",
+    },
+    {
+      src: waitingroom,
+      alt: "Panel japonés en espacio profesional: privacidad y estética",
+      label: "Espacio profesional",
+    },
+  ];
+
   return (
     <Page>
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+
+        {/* Open Graph */}
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:alt" content={ogImageAlt} />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:image:alt" content={ogImageAlt} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
+
       {/* HERO */}
       <Hero>
         <HeroInner>
@@ -204,59 +340,12 @@ export default function PanelJapones() {
       <Section>
         <SectionInner>
           <Gallery>
-            <ImageCard>
-              <Img src={livingroom} alt="Panel japonés en salón" />
-              <Label>Salón</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img src={livingroom1} alt="Panel japonés en salón moderno" />
-              <Label>Salón</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img
-                src={livingroom2}
-                alt="Panel japonés con vistas exteriores"
-              />
-              <Label>Salón</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img src={kitchen1} alt="Panel japonés en cocina" />
-              <Label>Cocina</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img src={kitchen2} alt="Panel japonés filtrando luz natural" />
-              <Label>Cocina</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img
-                src={bedroomStudyarea}
-                alt="Panel japonés en dormitorio con zona de trabajo"
-              />
-              <Label>Dormitorio</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img
-                src={bedroomDarkPanel}
-                alt="Panel japonés oscuro en dormitorio"
-              />
-              <Label>Dormitorio</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img src={office} alt="Panel japonés en despacho" />
-              <Label>Despacho</Label>
-            </ImageCard>
-
-            <ImageCard>
-              <Img src={waitingroom} alt="Panel japonés en sala de espera" />
-              <Label>Espacio profesional</Label>
-            </ImageCard>
+            {images.map((img) => (
+              <ImageCard key={img.alt}>
+                <Img src={img.src} alt={img.alt} loading="lazy" />
+                <Label>{img.label}</Label>
+              </ImageCard>
+            ))}
           </Gallery>
         </SectionInner>
       </Section>

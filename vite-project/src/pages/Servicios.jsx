@@ -1,5 +1,6 @@
 // Servicios.jsx
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -12,8 +13,6 @@ import venecianasImg from "../assets/servicios/venecianas.png";
 
 /* =========================
    Small scroll-reveal helper (no deps)
-   - Cards slide in from left/right
-   - Respects prefers-reduced-motion
 ========================= */
 
 function usePrefersReducedMotion() {
@@ -72,7 +71,7 @@ function Reveal({ children, from = "left", delay = 0 }) {
 }
 
 /* =========================
-   PAGE (matches ComplementosVentana.jsx vibe)
+   PAGE STYLES
 ========================= */
 
 const Page = styled.main`
@@ -96,10 +95,6 @@ const Container = styled.div`
     width: min(1120px, calc(100% - 2.2rem));
   }
 `;
-
-/* =========================
-   HERO (editorial)
-========================= */
 
 const Hero = styled.section`
   padding: clamp(3.8rem, 6.5vw, 6.1rem) 0 clamp(1.6rem, 3vw, 2.2rem);
@@ -142,10 +137,6 @@ const MicroTrust = styled.p`
   font-size: 0.92rem;
   line-height: 1.6;
 `;
-
-/* =========================
-   SERVICES (editorial grid, fewer borders)
-========================= */
 
 const Section = styled.section`
   padding: clamp(2.3rem, 5vw, 3.4rem) 0 clamp(3.2rem, 6vw, 5rem);
@@ -210,7 +201,6 @@ const MediaOverlay = styled.div`
   inset: 0;
   pointer-events: none;
 
-  /* Light editorial overlay, not “dark cinematic” */
   background: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0.04),
@@ -284,33 +274,6 @@ const Actions = styled.div`
   flex-wrap: wrap;
 `;
 
-// const PrimaryCTA = styled(Link)`
-//   display: inline-flex;
-//   align-items: center;
-//   justify-content: center;
-
-//   padding: 0.8rem 1.15rem;
-//   border-radius: 999px;
-
-//   background: rgba(0, 0, 0, 0.06);
-//   color: rgba(0, 0, 0, 0.86);
-
-//   border: 1px solid rgba(0, 0, 0, 0.1);
-
-//   font-weight: 750;
-//   letter-spacing: 0.08em;
-//   text-transform: uppercase;
-//   font-size: 0.78rem;
-
-//   text-decoration: none;
-//   transition: transform 240ms ease, background 240ms ease;
-
-//   &:hover {
-//     background: rgba(0, 0, 0, 0.09);
-//     transform: translateY(-1px);
-//   }
-// `;
-
 const PrimaryCTA = styled(Link)`
   display: inline-flex;
   align-items: center;
@@ -335,10 +298,6 @@ const PrimaryCTA = styled(Link)`
     filter: brightness(0.98);
   }
 `;
-
-/* =========================
-   TRUST STRIP (editorial, calmer)
-========================= */
 
 const TrustSection = styled.section`
   padding: 0 0 clamp(3.2rem, 6vw, 4.8rem);
@@ -436,10 +395,6 @@ const TrustCTA = styled(Link)`
   }
 `;
 
-/* =========================
-   CTA (clean, light)
-========================= */
-
 const CTA = styled.section`
   padding: clamp(3.4rem, 6vw, 5.1rem) 0;
   text-align: center;
@@ -490,10 +445,6 @@ const CTAButton = styled(Link)`
   }
 `;
 
-/* =========================
-   REVEAL WRAP
-========================= */
-
 const RevealWrap = styled.div`
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transform: ${(p) => {
@@ -510,6 +461,22 @@ const RevealWrap = styled.div`
 ========================= */
 
 export default function Servicios() {
+  // SEO base
+  const baseUrl = (
+    import.meta.env.VITE_SITE_URL || window.location.origin
+  ).replace(/\/$/, "");
+  const canonical = `${baseUrl}/services`;
+  const siteName = "Traver Decoración Textil";
+
+  const title =
+    "Servicios | Cortinas, toldos y soluciones a medida en Castellón y Valencia";
+  const description =
+    "Explora nuestros servicios: cortinas y estores, toldos y protección solar, venecianas, panel japonés, mosquiteras y automatización. Diseño, medición e instalación profesional.";
+
+  const ogImage = `${baseUrl}/og.png`;
+  const ogImageAlt =
+    "Servicios de Traver Decoración Textil en Castellón y Valencia";
+
   const services = useMemo(
     () => [
       {
@@ -518,10 +485,9 @@ export default function Servicios() {
         value: "La forma más elegante de controlar luz y privacidad.",
         text: "Proyectos a medida para definir la atmósfera de cada estancia: tejidos, caída, confección y sistemas seleccionados con criterio.",
         img: cortinasServicios,
-        alt: "Cortinas y estores",
+        alt: "Cortinas y estores a medida en interior",
         primaryTo: "/cortinas-estores",
         primaryLabel: "Ver detalles",
-        secondaryTo: "/contact",
       },
       {
         badge: "Exterior",
@@ -529,10 +495,9 @@ export default function Servicios() {
         value: "Sombra real, temperatura controlada, exterior utilizable.",
         text: "Soluciones sólidas y discretas para terrazas, jardines y fachadas: confort térmico, durabilidad y estética.",
         img: toldosProteccionSolar,
-        alt: "Toldos y protección solar",
+        alt: "Toldos y protección solar a medida",
         primaryTo: "/toldos-proteccionsolar",
         primaryLabel: "Ver detalles",
-        secondaryTo: "/contact",
       },
       {
         badge: "Smart Home",
@@ -540,10 +505,9 @@ export default function Servicios() {
         value: "El confort se anticipa. Tú mantienes el control.",
         text: "Motores, sensores y control inteligente para cortinas, estores y toldos. Integración cuidadosa y escenas que encajan con tu rutina.",
         img: somfyApp,
-        alt: "Automatización Somfy",
+        alt: "Automatización para cortinas, estores y toldos",
         primaryTo: "/automatizacion",
         primaryLabel: "Ver detalles",
-        secondaryTo: "/contact",
       },
       {
         badge: "Estudio",
@@ -551,10 +515,9 @@ export default function Servicios() {
         value: "Una visión coherente de principio a fin.",
         text: "Asesoramiento, medición, confección e instalación. Creamos una línea estética consistente para que todo encaje en tu espacio.",
         img: proyecto,
-        alt: "Proyectos a medida",
+        alt: "Proyectos a medida: asesoramiento, medición e instalación",
         primaryTo: "/propuestas",
         primaryLabel: "Ver propuestas",
-        secondaryTo: "/contact",
       },
       {
         badge: "Interior",
@@ -562,40 +525,103 @@ export default function Servicios() {
         value: "Líneas limpias, control preciso y estética arquitectónica.",
         text: "Soluciones ideales para ventanales amplios y espacios contemporáneos. Te ayudamos a elegir tejido, apertura y caída para un resultado impecable.",
         img: panelJaponesImg,
-        alt: "Panel japonés y cortinas verticales",
+        alt: "Panel japonés y cortinas verticales para ventanales",
         primaryTo: "/panel-japones",
         primaryLabel: "Ver detalles",
-        secondaryTo: "/contact",
       },
-
       {
         badge: "Interior",
         title: "Venecianas",
         value: "Luz a medida con un gesto. Privacidad sin perder claridad.",
         text: "Aluminio o madera (según colección) con regulación milimétrica de la entrada de luz. Instalación limpia y acabados premium.",
         img: venecianasImg,
-        alt: "Venecianas instaladas en ventana",
+        alt: "Venecianas instaladas en ventana con control de luz",
         primaryTo: "/venecianas",
         primaryLabel: "Ver detalles",
-        secondaryTo: "/contact",
       },
       {
         badge: "Exterior",
         title: "Mosquiteras",
         value: "Aire fresco sin visitas indeseadas.",
-        text: "Soluciones a medida para ventanas y puertas: discretas, resistentes y fáciles de usar. Mantén la ventilación sin renunciar a confort y tranquilidad.",
+        text: "Soluciones a medida para ventanas y puertas: discretas, resistentes y fáciles de usar.",
         img: venecianasImg,
-        alt: "Mosquiteras instaladas en ventana",
+        alt: "Mosquiteras a medida para ventanas y puertas",
         primaryTo: "/mosquiteras",
         primaryLabel: "Ver detalles",
-        secondaryTo: "/contact",
       },
     ],
     []
   );
 
+  // JSON-LD: CollectionPage + ItemList
+  const itemList = {
+    "@type": "ItemList",
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: services.length,
+    itemListElement: services.map((s, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      name: s.title,
+      url: `${baseUrl}${s.primaryTo}`,
+    })),
+  };
+
+  const collectionPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${canonical}#collectionpage`,
+    url: canonical,
+    name: title,
+    description,
+    inLanguage: "es-ES",
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": `${baseUrl}/#website`,
+      url: `${baseUrl}/`,
+      name: siteName,
+    },
+    about: { "@id": `${baseUrl}/#business` }, // links back to HomePage business id
+    mainEntity: itemList,
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      url: ogImage,
+    },
+  };
+
+  const jsonLd = [collectionPageJsonLd];
+
   return (
     <Page>
+      <Helmet>
+        <title>{title}</title>
+
+        <meta name="description" content={description} />
+        <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={canonical} />
+
+        {/* Open Graph */}
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:alt" content={ogImageAlt} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:image:alt" content={ogImageAlt} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
+
       {/* HERO */}
       <Hero>
         <Container>

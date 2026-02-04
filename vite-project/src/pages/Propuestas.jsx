@@ -1,13 +1,14 @@
 // src/pages/Propuestas.jsx
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AsesoramientoForm from "../components/AsesoramientoForm";
 import AsesoramientoModal from "../components/AsesoramientoModal";
+import { CONTACT } from "../config/contact";
 
 /* =========================
    QUICK ASSETS (placeholders)
-   Replace later with your real photography
 ========================= */
 import imgEssential from "../assets/propuestas/dormitorioMain.png";
 import imgBalance from "../assets/propuestas/salonComedor.png";
@@ -362,7 +363,7 @@ const PackCTA = styled(Link)`
 `;
 
 /* =========================
-   CATEGORY STRIP (3 tiles)
+   CATEGORY STRIP (tiles)
 ========================= */
 
 const DarkSection = styled.section`
@@ -433,18 +434,12 @@ const TileBg = styled.div`
   inset: 0;
   background-size: cover;
   background-position: center;
-
   transform: scale(1.02);
 `;
 
 const TileOverlay = styled.div`
   position: absolute;
   inset: 0;
-  // background: linear-gradient(
-  //   to bottom,
-  //   rgba(11, 12, 15, 0.1),
-  //   rgba(11, 12, 15, 0.1)
-  // );
 `;
 
 const TileBody = styled.div`
@@ -611,6 +606,21 @@ const ContextPill = styled.div`
 ========================= */
 
 export default function Propuestas() {
+  // SEO base
+  const baseUrl = (
+    import.meta.env.VITE_SITE_URL || window.location.origin
+  ).replace(/\/$/, "");
+  const canonical = `${baseUrl}/propuestas`;
+  const siteName = CONTACT.siteName || "Traver Decoración Textil";
+
+  const title =
+    "Propuestas a medida | Traver Decoración Textil en Castellón y Valencia";
+  const description =
+    "Elige una propuesta para empezar: dormitorio, salón/comedor o confort con automatización. Asesoramiento, medición e instalación profesional en Castellón y Valencia.";
+
+  const ogImage = `${baseUrl}/og.png`;
+  const ogImageAlt = "Propuestas a medida de Traver Decoración Textil";
+
   const [openPack, setOpenPack] = useState(null); // "dormitorio" | "salon" | "automatizacion" | null
   const [modalPack, setModalPack] = useState(null); // string | null
 
@@ -623,8 +633,93 @@ export default function Propuestas() {
       ? "Confort + Automatización"
       : null;
 
+  // JSON-LD: CollectionPage + ItemList (proposal options)
+  const packItems = useMemo(
+    () => [
+      {
+        name: "Descanso bien resuelto (Dormitorio)",
+        url: `${baseUrl}/propuestas#propuestas`,
+      },
+      {
+        name: "Espacio que se vive (Salón / Comedor)",
+        url: `${baseUrl}/propuestas#propuestas`,
+      },
+      {
+        name: "La casa funciona sola (Confort + Automatización)",
+        url: `${baseUrl}/propuestas#propuestas`,
+      },
+    ],
+    [baseUrl]
+  );
+
+  const itemList = {
+    "@type": "ItemList",
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: packItems.length,
+    itemListElement: packItems.map((p, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      name: p.name,
+      url: p.url,
+    })),
+  };
+
+  const collectionPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${canonical}#collectionpage`,
+    url: canonical,
+    name: title,
+    description,
+    inLanguage: "es-ES",
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": `${baseUrl}/#website`,
+      url: `${baseUrl}/`,
+      name: siteName,
+    },
+    about: { "@id": `${baseUrl}/#business` },
+    mainEntity: itemList,
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      url: ogImage,
+    },
+  };
+
+  const jsonLd = [collectionPageJsonLd];
+
   return (
     <Page>
+      <Helmet>
+        <title>{title}</title>
+
+        <meta name="description" content={description} />
+        <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={canonical} />
+
+        {/* Open Graph */}
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:alt" content={ogImageAlt} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:image:alt" content={ogImageAlt} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
+
       {/* HERO */}
       <Hero>
         <HeroBg />
@@ -960,6 +1055,7 @@ export default function Propuestas() {
           </FAQGrid>
         </LightInner>
       </LightSection>
+
       <AsesoramientoModal
         open={!!modalPack}
         packLabel={modalPack}

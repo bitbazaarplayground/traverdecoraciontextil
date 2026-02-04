@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://traverdecoraciontextil.netlify.app/</loc></url>
+  <url><loc>https://traverdecoraciontextil.netlify.app/propuestas</loc></url>
+
+  <url><loc>https://traverdecoraciontextil.netlify.app/automatizacion</loc></url>
+  <url><loc>https://traverdecoraciontextil.netlify.app/automatizacion/completa</loc></url>
+  <url><loc>https://traverdecoraciontextil.netlify.app/automatizacion/individual</loc></url>
+
+  <url><loc>https://traverdecoraciontextil.netlify.app/contact</loc></url>
+
+  <url><loc>https://traverdecoraciontextil.netlify.app/panel-japones</loc></url>
+  <url><loc>https://traverdecoraciontextil.netlify.app/venecianas</loc></url>
+  <url><loc>https://traverdecoraciontextil.netlify.app/cortinas-estores</loc></url>
+  <url><loc>https://traverdecoraciontextil.netlify.app/toldos-proteccionsolar</loc></url>
+  <url><loc>https://traverdecoraciontextil.netlify.app/mosquiteras</loc></url>
+  <url><loc>https://traverdecoraciontextil.netlify.app/services</loc></url>
+
+  <!-- Legales (cuando existan las páginas/rutas) -->
+  <url><loc>https://traverdecoraciontextil.netlify.app/aviso-legal</loc></url>
+  <url><loc>https://traverdecoraciontextil.netlify.app/politica-privacidad</loc></url>
+  <url><loc>https://traverdecoraciontextil.netlify.app/politica-cookies</loc></url>
+</urlset>

@@ -1,9 +1,12 @@
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { CONTACT } from "../config/contact";
+
 import AutomatizacionEstimate from "../components/automatizacion/AutomatizacionEstimate";
 
 /* =========================
-   ASSETS (reuse what you already have)
+   ASSETS
 ========================= */
 import domoticaControl from "../assets/Automatizacion/domotica1.png";
 import automatizacionPackImg from "../assets/Automatizacion/smartHom1.png";
@@ -383,8 +386,90 @@ const CTAButtonSecondary = styled.a`
 ========================= */
 
 export default function AutomatizacionCompleta() {
+  const baseUrl = (
+    import.meta.env.VITE_SITE_URL || window.location.origin
+  ).replace(/\/$/, "");
+
+  const canonical = `${baseUrl}/automatizacion/completa`;
+  const siteName = CONTACT.siteName || "Traver Decoración Textil";
+
+  const title =
+    "Automatización integral Somfy | Casa inteligente con cortinas y toldos en Castellón y Valencia";
+  const description =
+    "Automatización integral Somfy para vivienda: cortinas, estores, persianas y toldos con sensores, escenas y control por app. Instalación profesional en Castellón y Valencia. Presupuesto orientativo y asesoramiento.";
+
+  const ogImage = `${baseUrl}/og.png`;
+  const ogImageAlt =
+    "Automatización integral Somfy para cortinas, estores, persianas y toldos";
+
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": `${canonical}#service`,
+      name: "Automatización integral Somfy",
+      serviceType:
+        "Automatización integral de cortinas, estores, persianas y toldos",
+      provider: {
+        "@type": "HomeAndConstructionBusiness",
+        "@id": `${baseUrl}/#business`,
+        name: siteName,
+        url: `${baseUrl}/`,
+        telephone: CONTACT.phoneLandline, // 964562357
+      },
+      areaServed: [
+        { "@type": "AdministrativeArea", name: "Castellón" },
+        { "@type": "AdministrativeArea", name: "Valencia" },
+      ],
+      url: canonical,
+      description,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${canonical}#webpage`,
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: "es-ES",
+      isPartOf: { "@id": `${baseUrl}/#website` },
+      about: { "@id": `${canonical}#service` },
+      primaryImageOfPage: { "@type": "ImageObject", url: ogImage },
+    },
+  ];
+
   return (
     <Page>
+      <Helmet>
+        <title>{title}</title>
+
+        <meta name="description" content={description} />
+        <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={canonical} />
+
+        {/* Open Graph */}
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:alt" content={ogImageAlt} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:image:alt" content={ogImageAlt} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
+
       <Sheet>
         <SheetInner>
           {/* MINI HERO */}
@@ -459,7 +544,7 @@ export default function AutomatizacionCompleta() {
             </Pillars>
           </Section>
 
-          {/* ESTIMATE (RIGHT PLACE) */}
+          {/* ESTIMATE */}
           <Section id="incluye">
             <Kicker>Ejemplo orientativo</Kicker>
             <H2>Qué incluye una automatización completa</H2>
@@ -467,7 +552,9 @@ export default function AutomatizacionCompleta() {
               Un ejemplo realista para un hogar medio. Ajustamos motores,
               tejidos, sensores y control según medidas y uso.
             </SubLead>
+
             <PromoBanner />
+
             <EstimateWrap>
               <AutomatizacionEstimate
                 kicker="Orientativo"
@@ -475,9 +562,8 @@ export default function AutomatizacionCompleta() {
                 priceValue="~3.500€"
                 description="Un sistema completo para automatizar varios elementos (por ejemplo, cortinas + persianas + toldo) puede comenzar desde aproximadamente esa cifra, según medidas, tejidos y número de motores. Te aconsejamos la opción más equilibrada para tu hogar."
                 imageSrc={automatizacionPackImg}
-                imageAlt="Ejemplo de automatización completa: cortinas, persianas, toldo, luz y control"
+                imageAlt="Ejemplo de automatización completa: cortinas, persianas, toldo y control"
                 items={[
-                  // INTERIOR / EXTERIOR
                   {
                     icon: "toldo",
                     strong: "Toldo motorizado",
@@ -495,15 +581,13 @@ export default function AutomatizacionCompleta() {
                   },
                   {
                     icon: "luz",
-                    strong: "3 luces inteligentes",
+                    strong: "Luces inteligentes",
                     text: "Control por app, voz y escenas automáticas",
                   },
-
-                  // CONTROL & INTELIGENCIA
                   {
                     icon: "sensores",
                     strong: "Sensores de sol y viento",
-                    text: "Protección automática y regulación inteligente",
+                    text: "Protección automática y regulación",
                   },
                   {
                     icon: "app",
@@ -513,44 +597,25 @@ export default function AutomatizacionCompleta() {
                   {
                     icon: "luzControl",
                     strong: "Escenas inteligentes",
-                    text: "Amanecer, atardecer, calor y ausencia",
+                    text: "Amanecer, atardecer, ausencia, etc.",
                   },
-                  {
-                    icon: "extra",
-                    strong: "Control por voz",
-                    text: "Alexa incluida y configurada",
-                  },
-
-                  // SERVICIO PROFESIONAL
                   {
                     icon: "instalacion",
                     strong: "Instalación certificada",
                     text: "Montaje profesional y puesta en marcha",
                   },
                   {
-                    icon: "instalacion",
-                    strong: "Instalación eléctrica incluida",
-                    text: "Cableado, conexiones y pruebas completas",
-                  },
-                  {
                     icon: "mantenimiento",
                     strong: "Entrega guiada y soporte",
-                    text: "Te enseñamos a usar todo el sistema",
+                    text: "Te enseñamos a usar el sistema",
                   },
                   {
                     icon: "garantia",
-                    strong: "Garantía y mantenimiento",
-                    text: "Cobertura y revisión incluida",
-                  },
-
-                  // UPSELL CLARO
-                  {
-                    icon: "sensores",
-                    strong: "Sensor de temperatura (opcional)",
-                    text: "Optimiza escenas por calor o frío (+100€)",
+                    strong: "Garantía",
+                    text: "Cobertura y revisión según componentes",
                   },
                 ]}
-                finePrint="*El precio final depende de medidas, tejidos elegidos, número de motores y si se añaden sensores de sol/viento/temperatura."
+                finePrint="*El precio final depende de medidas, tejidos elegidos, número de motores y si se añaden sensores."
               />
             </EstimateWrap>
           </Section>
@@ -643,9 +708,9 @@ export default function AutomatizacionCompleta() {
                   Pedir asesoramiento
                 </CTAButtonPrimary>
                 <CTAButtonSecondary
-                  href="https://wa.me/34647856817"
+                  href={CONTACT.whatsappUrl} // uses 34614952856
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   WhatsApp
                 </CTAButtonSecondary>

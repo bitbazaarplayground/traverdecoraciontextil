@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import NoIndex from "../components/NoIndex";
 import { supabase } from "../lib/supabaseClient";
 
 export default function AuthCallback() {
@@ -51,18 +52,20 @@ export default function AuthCallback() {
   }, [navigate]);
 
   return (
-    <div
-      style={{
-        minHeight: "60vh",
-        display: "grid",
-        placeItems: "center",
-        padding: "2rem",
-      }}
-    >
-      <div style={{ textAlign: "center" }}>
-        <h2 style={{ margin: 0 }}>Accediendo…</h2>
-        <p style={{ marginTop: "0.75rem", opacity: 0.75 }}>{msg}</p>
+    <NoIndex title="Auth CallBack">
+      <div
+        style={{
+          minHeight: "60vh",
+          display: "grid",
+          placeItems: "center",
+          padding: "2rem",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <h2 style={{ margin: 0 }}>Accediendo…</h2>
+          <p style={{ marginTop: "0.75rem", opacity: 0.75 }}>{msg}</p>
+        </div>
       </div>
-    </div>
+    </NoIndex>
   );
 }

@@ -3,15 +3,9 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import AsesoramientoModal from "./components/AsesoramientoModal";
 import AutomatizacionCompleta from "./components/AutomatizacionCompleta";
-import BrandLogos from "./components/BrandLogos";
-import ContactCTA from "./components/ContactCTA";
 import Footer from "./components/Footer";
-import GalleryCarousel from "./components/GalleryCarousel";
-import Hero from "./components/Hero";
 import Navbar from "./components/Navbar";
-import Process from "./components/Process";
 import ScrollToTop from "./components/ScrollToTop";
-import ServicesSection from "./components/ServicesSection";
 import AutomatizacionIndividual from "./components/automatizacion/AutomatizacionIndividual";
 import Mosquiteras from "./components/ventanas/Mosquiteras";
 import PanelJapones from "./components/ventanas/PanelJapones";
@@ -28,6 +22,7 @@ import AuthCallback from "./pages/AuthCallback";
 import Automatizacion from "./pages/Automatizacion";
 import ContactPage from "./pages/ContactPage";
 import CortinasEstores from "./pages/CortinasEstores";
+import HomePage from "./pages/HomePage";
 import Propuestas from "./pages/Propuestas";
 import Servicios from "./pages/Servicios";
 import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
@@ -55,19 +50,9 @@ export default function App() {
       {!isAdminRoute && <Navbar />}
 
       <Routes>
-        {/* HOME */}
         <Route
           path="/"
-          element={
-            <>
-              <Hero onOpenAsesoramiento={openAsesoramiento} />
-              <ServicesSection />
-              <Process />
-              <ContactCTA />
-              <GalleryCarousel />
-              <BrandLogos />
-            </>
-          }
+          element={<HomePage onOpenAsesoramiento={openAsesoramiento} />}
         />
 
         {/* PROPUESTAS */}
@@ -109,7 +94,7 @@ export default function App() {
           <Route path="clientes" element={<AdminClients />} />
           <Route path="clientes/:customerKey" element={<AdminCustomer />} />
 
-          <Route path="/admin/ajustes" element={<AdminSettings />} />
+          <Route path="ajustes" element={<AdminSettings />} />
         </Route>
 
         {/* AUTH */}

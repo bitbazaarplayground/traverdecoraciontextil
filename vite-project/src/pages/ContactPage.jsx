@@ -8,9 +8,11 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import AsesoramientoForm from "../components/AsesoramientoForm";
+import { CONTACT } from "../config/contact";
 
 const Page = styled.main`
   width: 100%;
@@ -286,12 +288,6 @@ const InlineCollapse = styled.div`
 const InlineInner = styled.div`
   padding: 0.75rem 0.2rem 0.2rem;
 `;
-// Scroll scrollbars
-// const InlineInner = styled.div`
-//   padding: 0.75rem 0.2rem 0.2rem;
-//   max-height: 70vh;
-//   overflow: auto;
-// `;
 
 /* =========================
    MODAL (MOBILE)
@@ -365,6 +361,80 @@ export default function ContactPage() {
 
   const location = useLocation();
 
+  // SEO base
+  const baseUrl = (
+    import.meta.env.VITE_SITE_URL || window.location.origin
+  ).replace(/\/$/, "");
+  const canonical = `${baseUrl}/contact`;
+
+  const siteName = CONTACT.siteName;
+
+  const title = `Contacto | ${CONTACT.siteName} en ${CONTACT.address.addressLocality} (${CONTACT.address.addressRegion})`;
+  const description =
+    "Contacta con Traver Decoración Textil: asesoramiento, visita técnica y propuesta sin compromiso. Estamos en Almassora y trabajamos en Castellón y Valencia.";
+
+  const ogImage = `${baseUrl}/og.png`;
+  const ogImageAlt = `Contacto ${CONTACT.siteName} en ${CONTACT.address.addressLocality} (${CONTACT.address.addressRegion})`;
+
+  const telephone = CONTACT.phoneLandline;
+  const telephoneTel = CONTACT.phoneLandlineTel;
+  const whatsappNumber = CONTACT.whatsappNumber;
+  const whatsappUrl = CONTACT.whatsappUrl;
+
+  const mapUrl = CONTACT.mapsUrl;
+
+  const address = {
+    "@type": "PostalAddress",
+    ...CONTACT.address,
+  };
+
+  // JSON-LD: ContactPage (linked to your business entity from HomePage)
+  const contactPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "@id": `${canonical}#contactpage`,
+    url: canonical,
+    name: title,
+    description,
+    inLanguage: "es-ES",
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": `${baseUrl}/#website`,
+      url: `${baseUrl}/`,
+      name: siteName,
+    },
+    about: { "@id": `${baseUrl}/#business` },
+    mainEntity: {
+      "@type": "Organization",
+      "@id": `${baseUrl}/#business`,
+      name: siteName,
+      url: `${baseUrl}/`,
+      telephone,
+      address,
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          telephone,
+          contactType: "customer support",
+          availableLanguage: ["es"],
+        },
+        {
+          "@type": "ContactPoint",
+          telephone: `+${whatsappNumber.slice(0, 2)} ${whatsappNumber.slice(
+            2,
+            5
+          )} ${whatsappNumber.slice(5, 8)} ${whatsappNumber.slice(8)}`,
+          contactType: "customer support",
+          availableLanguage: ["es"],
+          url: whatsappUrl,
+        },
+      ],
+      sameAs: [CONTACT.facebookUrl],
+    },
+  };
+
+  const jsonLd = [contactPageJsonLd];
+
   const packLabel = (() => {
     const params = new URLSearchParams(location.search);
     const pack = params.get("pack");
@@ -414,6 +484,36 @@ export default function ContactPage() {
 
   return (
     <Page>
+      <Helmet>
+        <title>{title}</title>
+
+        <meta name="description" content={description} />
+        <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={canonical} />
+
+        {/* Open Graph */}
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:alt" content={ogImageAlt} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:image:alt" content={ogImageAlt} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
+
       <Wrap>
         <Header>
           <Eyebrow>Contacto · Asesoramiento</Eyebrow>
@@ -430,18 +530,14 @@ export default function ContactPage() {
           <MapCard>
             <MapTop>
               <MapTitle>Visítanos</MapTitle>
-              <MapLink
-                href="https://maps.app.goo.gl/nqxT2QX2NCbgYTDF9"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <MapLink href={mapUrl} target="_blank" rel="noopener noreferrer">
                 Abrir en Google Maps →
               </MapLink>
             </MapTop>
 
             <MapFrame>
               <iframe
-                title="Ubicación Traver Decoración Textil"
+                title={`Ubicación ${CONTACT.siteName}`}
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3111.073908292976!2d-0.07220452365018995!3d39.94384209087051!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1290fd3cf9e940c7%3A0x43a24bed1dfc3786!2sCarrer%20de%20Sant%20Felip%2C%2067%2C%2012550%20Almassora%2C%20Castell%C3%B3n%2C%20Spain!5e0!3m2!1sen!2ses!4v1700000000000!5m2!1sen!2ses"
                 loading="lazy"
                 allowFullScreen
@@ -464,7 +560,6 @@ export default function ContactPage() {
             </PanelTop>
 
             <List>
-              {/* ONE crisp “Formulario” row (desktop inline / mobile modal) */}
               <ItemButton
                 type="button"
                 onClick={openForm}
@@ -479,7 +574,6 @@ export default function ContactPage() {
                   </ItemText>
                 </ItemLeft>
 
-                {/* Desktop: chevron rotates, Mobile: show right arrow */}
                 {isMobile ? (
                   <RightArrow>→</RightArrow>
                 ) : (
@@ -500,19 +594,19 @@ export default function ContactPage() {
                 </InlineInner>
               </InlineCollapse>
 
-              <Item href="tel:+34964562357">
+              <Item href={`tel:${telephoneTel}`}>
                 <ItemLeft>
                   <Phone />
                   <ItemText>
                     <span>Teléfono</span>
-                    <small>+34 964 56 23 57</small>
+                    <small>{telephone}</small>
                   </ItemText>
                 </ItemLeft>
                 <RightArrow>→</RightArrow>
               </Item>
 
               <Item
-                href="https://wa.me/34647856817"
+                href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -537,23 +631,21 @@ export default function ContactPage() {
                 <RightArrow />
               </StaticItem>
 
-              <Item
-                href="https://maps.app.goo.gl/nqxT2QX2NCbgYTDF9"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <Item href={mapUrl} target="_blank" rel="noopener noreferrer">
                 <ItemLeft>
                   <MapPin />
                   <ItemText>
                     <span>Tienda</span>
-                    <small>Carrer de Sant Felip, 67 · Almassora</small>
+                    <small>
+                      {CONTACT.address.streetAddress} ·{" "}
+                      {CONTACT.address.addressLocality}
+                    </small>
                   </ItemText>
                 </ItemLeft>
                 <RightArrow>→</RightArrow>
               </Item>
             </List>
 
-            {/* Mobile modal */}
             {modalOpen && (
               <ModalOverlay
                 role="dialog"

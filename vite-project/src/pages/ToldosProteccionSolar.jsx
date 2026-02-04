@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -13,6 +14,7 @@ import toldoExtensibleImg from "../assets/toldos/toldo1.jpeg";
 import toldoVerticalImg from "../assets/toldos/toldos-verticales.jpg";
 import sailImg from "../assets/toldos/vela.webp";
 import AwningAccessories from "../components/toldos/AwningAccessories";
+
 /* =========================
    IMAGES EXTRAS TOLDOS
 ========================= */
@@ -21,6 +23,8 @@ import calentador from "../assets/toldos/extrasToldo/calentador.webp";
 import tahoma from "../assets/toldos/extrasToldo/tahoma.webp";
 import toldoLED from "../assets/toldos/extrasToldo/toldoLED.webp";
 import windSensor from "../assets/toldos/extrasToldo/windSensor.webp";
+
+import { CONTACT } from "../config/contact";
 
 /* =========================
    PAGE
@@ -38,13 +42,13 @@ const Page = styled.main`
 
 const Hero = styled.section`
   position: relative;
-  min-height: 45vh; /* matches your other pages */
+  min-height: 45vh;
   display: flex;
   margin-top: 3.5rem;
-  align-items: center; /* center like your original */
+  align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 5rem 2rem; /* matches your original */
+  padding: 5rem 2rem;
   color: #fff;
   overflow: hidden;
 
@@ -210,7 +214,7 @@ const SectionText = styled.p`
 `;
 
 /* =========================
-   BENEFITS STRIP (no icons)
+   BENEFITS STRIP
 ========================= */
 
 const BenefitsStrip = styled.div`
@@ -422,8 +426,113 @@ const CTAButton = styled(Link)`
 ========================= */
 
 export default function ToldosProteccionSolar() {
+  const baseUrl = (
+    import.meta.env.VITE_SITE_URL || window.location.origin
+  ).replace(/\/$/, "");
+
+  const canonical = `${baseUrl}/toldos-proteccionsolar`;
+  const siteName = CONTACT.siteName;
+
+  const title =
+    "Toldos y protección solar | Sombra a medida en Castellón y Valencia";
+  const description =
+    "Toldos a medida en Castellón y Valencia: extensibles, cofre, verticales/screen, hostelería, pérgolas y velas de sombra. Medición e instalación profesional.";
+
+  const ogImage = `${baseUrl}/og.png`;
+  const ogImageAlt =
+    "Toldos y protección solar a medida — Traver Decoración Textil";
+
+  const businessId = `${baseUrl}/#business`;
+
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${canonical}#webpage`,
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: "es-ES",
+      isPartOf: { "@id": `${baseUrl}/#website` },
+      about: { "@id": businessId },
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: ogImage,
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "@id": `${canonical}#breadcrumbs`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Inicio",
+          item: `${baseUrl}/`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Servicios",
+          item: `${baseUrl}/services`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: "Toldos y protección solar",
+          item: canonical,
+        },
+      ],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": `${canonical}#service`,
+      name: "Toldos y protección solar a medida",
+      serviceType: "Toldos, protección solar y sistemas de sombra",
+      provider: { "@id": businessId },
+      areaServed: [
+        { "@type": "AdministrativeArea", name: "Castellón" },
+        { "@type": "AdministrativeArea", name: "Valencia" },
+      ],
+      offers: {
+        "@type": "Offer",
+        availability: "https://schema.org/InStock",
+        url: canonical,
+      },
+    },
+  ];
+
   return (
     <Page>
+      <Helmet>
+        <title>{title}</title>
+
+        <meta name="description" content={description} />
+        <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={canonical} />
+
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:alt" content={ogImageAlt} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:image:alt" content={ogImageAlt} />
+
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
+
       {/* HERO */}
       <Hero>
         <HeroBg />
@@ -588,6 +697,7 @@ export default function ToldosProteccionSolar() {
           </Grid>
         </SectionInner>
       </Section>
+
       <AwningAccessories
         title="Accesorios premium para tu toldo"
         subtitle="Sensores, iluminación y confort para una terraza perfecta."

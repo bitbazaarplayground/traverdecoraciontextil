@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import assesoramiento from "../assets/process/InteriorPlanning.jpeg";
 import catalogo from "../assets/process/catalogoP.png";
+import final from "../assets/process/final.jpeg";
 import jose from "../assets/process/instalacionProfessional.png";
 
 /* =========================
@@ -142,7 +143,7 @@ const steps = [
     number: "Paso 4",
     title: "Resultado final",
     text: "Un espacio equilibrado, funcional y elegante, pensado para disfrutarlo cada día.",
-    image: "https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg",
+    image: final,
   },
 ];
 
