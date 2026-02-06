@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
 import styled from "styled-components";
 import Img4 from "../assets/img4.png";
 
@@ -22,12 +23,11 @@ const Section = styled.section`
     text-align: center;
   }
 
-  /* Dark overlay tint */
   &::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55); /* adjust tint here */
+    background: rgba(0, 0, 0, 0.55);
     z-index: 1;
   }
 `;
@@ -55,10 +55,38 @@ const HeadingLarge = styled.h2`
   font-size: 2.4rem;
   font-weight: 600;
   line-height: 1.25;
+  margin: 0;
 
   @media (max-width: 768px) {
     font-size: 1.8rem;
   }
+`;
+
+/* Stack container */
+const FillWrap = styled.span`
+  position: relative;
+  display: inline-block;
+`;
+
+/* Base (light) text */
+const LightText = styled.span`
+  display: block;
+  color: rgba(255, 255, 255, 0.22);
+`;
+
+/* Reveal viewport */
+const RevealViewport = styled.span`
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+`;
+
+/* Filled text that slides in */
+const FilledText = styled(motion.span)`
+  display: block;
+  color: #fff;
+  will-change: transform;
 `;
 
 const CTAButton = styled(motion.a)`
@@ -82,6 +110,11 @@ const CTAButton = styled(motion.a)`
 `;
 
 export default function ContactCTA() {
+  const reduceMotion = useReducedMotion();
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.65 });
+  const animate = reduceMotion ? true : inView;
+
   return (
     <Section>
       <Content>
@@ -89,9 +122,29 @@ export default function ContactCTA() {
           EQUIPO DE DISEÑO Y ATENCIÓN AL CLIENTE DE PRIMERA
         </HeadingSmall>
 
-        <HeadingLarge>
-          Nos encargamos de todo:
-          <br /> diseño, medición e instalación.
+        <HeadingLarge ref={ref}>
+          <FillWrap>
+            {/* Light base text */}
+            <LightText>
+              Nos encargamos de todo:
+              <br /> diseño, medición e instalación.
+            </LightText>
+
+            {/* Filled overlay – slides LEFT → RIGHT */}
+            <RevealViewport>
+              <FilledText
+                initial={{ x: "-100%" }}
+                animate={animate ? { x: "0%" } : { x: "-100%" }}
+                transition={{
+                  duration: 1.6,
+                  ease: [0.22, 1, 0.36, 1], // smooth, studio-grade
+                }}
+              >
+                Nos encargamos de todo:
+                <br /> diseño, medición e instalación.
+              </FilledText>
+            </RevealViewport>
+          </FillWrap>
         </HeadingLarge>
 
         <CTAButton

@@ -70,10 +70,10 @@ export default function GalleryCarousel() {
 
   return (
     <SectionWrapper id="gallery">
-      <Title>Inspiración & Proyectos</Title>
+      <Title>Inspírate</Title>
       <Subtitle>
-        Descubre algunos de nuestros trabajos en cortinas, toldos y soluciones
-        textiles. Calidad, diseño y confort para transformar cualquier espacio.
+        Descubre ideas y estilos que podemos adaptar a tu hogar, cuidando cada
+        detalle.
       </Subtitle>
 
       <Swiper

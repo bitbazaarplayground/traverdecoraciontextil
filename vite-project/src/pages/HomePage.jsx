@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import BrandLogos from "../components/BrandLogos";
-import ContactCTA from "../components/ContactCTA";
+import ContactCTAHome from "../components/ContactCTAHome";
 import GalleryCarousel from "../components/GalleryCarousel";
 import Hero from "../components/Hero";
 import Process from "../components/Process";
@@ -135,7 +135,8 @@ export default function HomePage({ onOpenAsesoramiento }) {
       <Hero onOpenAsesoramiento={onOpenAsesoramiento} />
       <ServicesSection />
       <Process />
-      <ContactCTA />
+      <ContactCTAHome onOpenAsesoramiento={onOpenAsesoramiento} />
+
       <GalleryCarousel />
       <BrandLogos />
     </>
