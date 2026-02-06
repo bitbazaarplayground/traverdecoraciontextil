@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { trackEvent } from "../lib/analytics";
 
 import cortina4 from "../assets/heroHome/1.png";
 import blackoutImg from "../assets/heroHome/2.png";
@@ -375,7 +376,13 @@ export default function Hero({ onOpenAsesoramiento }) {
         >
           <PrimaryAction
             type="button"
-            onClick={() => onOpenAsesoramiento?.("General")}
+            onClick={() => {
+              trackEvent("open_asesoramiento", {
+                source: "hero",
+                pack: "General",
+              });
+              onOpenAsesoramiento?.("General");
+            }}
           >
             Solicitar asesoramiento
           </PrimaryAction>
@@ -386,5 +393,3 @@ export default function Hero({ onOpenAsesoramiento }) {
     </HeroWrapper>
   );
 }
-
-// onClick={() => onOpenAsesoramiento?.("General")}
