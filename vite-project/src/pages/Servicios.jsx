@@ -3,13 +3,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-
 import cortinasServicios from "../assets/servicios/CortinasServicios.png";
 import proyecto from "../assets/servicios/ProyectoAMedida.png";
 import somfyApp from "../assets/servicios/app2.png";
 import panelJaponesImg from "../assets/servicios/panelJapones.png";
 import toldosProteccionSolar from "../assets/servicios/toldoServicios.png";
 import venecianasImg from "../assets/servicios/venecianas.png";
+import { CONTACT } from "../config/contact";
 
 /* =========================
    Small scroll-reveal helper (no deps)
@@ -194,18 +194,6 @@ const ServiceImg = styled.img`
   ${ServiceCard}:hover & {
     transform: scale(1.06);
   }
-`;
-
-const MediaOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.04),
-    rgba(0, 0, 0, 0.24)
-  );
 `;
 
 const Badge = styled.div`
@@ -455,6 +443,224 @@ const RevealWrap = styled.div`
   transition: opacity 520ms ease, transform 520ms ease;
   will-change: opacity, transform;
 `;
+const ConsultSection = styled.section`
+  background: #f6f3ea;
+  padding: clamp(3rem, 6vw, 5rem) 0;
+`;
+
+const ConsultGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(1.5rem, 3vw, 2.4rem);
+  align-items: center;
+
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const ConsultLeft = styled.div`
+  max-width: 62ch;
+`;
+
+const ConsultTitle = styled.h2`
+  margin: 0;
+  font-size: clamp(1.9rem, 3.2vw, 2.4rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #111;
+`;
+
+const ConsultSub = styled.p`
+  margin: 0.85rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: rgba(17, 17, 17, 0.72);
+`;
+
+const ConsultKicker = styled.h3`
+  margin: 1.55rem 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.88);
+`;
+
+const ConsultList = styled.ol`
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.6rem;
+  color: rgba(17, 17, 17, 0.78);
+  line-height: 1.65;
+
+  li {
+    padding-left: 0.2rem;
+  }
+`;
+
+const ConsultStrong = styled.div`
+  margin-top: 1.2rem;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.9);
+`;
+
+const ConsultActions = styled.div`
+  margin-top: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: center;
+`;
+
+const ConsultPrimary = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 1.15rem;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 800;
+  color: #111;
+  background: ${({ theme }) => theme.colors.primary};
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease, filter 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.02);
+  }
+`;
+
+const ConsultSecondary = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 1.15rem;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.86);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  transition: transform 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.92);
+  }
+`;
+
+const ConsultNote = styled.p`
+  margin: 0.9rem 0 0;
+  color: rgba(17, 17, 17, 0.62);
+  font-size: 0.95rem;
+`;
+
+/* Right media tile (premium) */
+const ConsultRight = styled.div`
+  @media (max-width: 980px) {
+    order: -1;
+  }
+`;
+
+const MediaTile = styled.div`
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: #fff;
+  box-shadow: 0 28px 85px rgba(0, 0, 0, 0.1);
+  min-height: 360px;
+
+  @media (max-width: 768px) {
+    min-height: 280px;
+  }
+`;
+
+const MediaImage = styled.div`
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.02);
+  transition: transform 0.65s ease;
+
+  ${MediaTile}:hover & {
+    transform: scale(1.06);
+  }
+`;
+
+const MediaOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.08) 0%,
+    rgba(0, 0, 0, 0.55) 78%,
+    rgba(0, 0, 0, 0.72) 100%
+  );
+`;
+
+const MediaBadge = styled.div`
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  padding: 0.48rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.92);
+  color: rgba(17, 17, 17, 0.75);
+`;
+
+const MediaCenter = styled.div`
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+`;
+
+const PlayButton = styled.div`
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: #111;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.2);
+  transform: translateY(-8px);
+`;
+
+const MediaBottom = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 1.25rem 1.25rem 1.15rem;
+  display: grid;
+  gap: 0.45rem;
+`;
+
+const MediaTitle = styled.h3`
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 850;
+  color: #fff;
+  letter-spacing: -0.02em;
+`;
+
+const MediaText = styled.p`
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.6;
+  max-width: 48ch;
+`;
 
 /* =========================
    COMPONENT
@@ -625,7 +831,9 @@ export default function Servicios() {
       {/* HERO */}
       <Hero>
         <Container>
-          <Eyebrow>Servicios · Decoración textil & protección solar</Eyebrow>
+          <Eyebrow>
+            Servicios · Instalaciones · Decoración textil & protección solar
+          </Eyebrow>
           <HeroTitle>
             Diseño, confort y <span>ejecución impecable</span>.
           </HeroTitle>
@@ -675,52 +883,82 @@ export default function Servicios() {
         </Container>
       </Section>
 
-      {/* TRUST STRIP */}
-      <TrustSection>
+      {/* CONSULT / TRUST (premium split) */}
+      <ConsultSection>
         <Container>
           <Reveal from="left">
-            <TrustCard>
-              <div>
-                <TrustTitle>Más de 30 años de oficio.</TrustTitle>
-                <TrustText>
+            <ConsultGrid>
+              <ConsultLeft>
+                <ConsultTitle>
+                  Asesoramiento profesional — sin compromiso
+                </ConsultTitle>
+                <ConsultSub>
                   Un buen resultado no depende solo del producto. Depende del
                   criterio, de la medición y de una instalación limpia. Te
                   orientamos con honestidad y ejecutamos con precisión.
-                </TrustText>
+                </ConsultSub>
 
-                <TrustBullets>
-                  <TrustBullet>
-                    Visita técnica y asesoramiento decorativo
-                  </TrustBullet>
-                  <TrustBullet>
-                    Instalación profesional, sin sorpresas
-                  </TrustBullet>
-                  <TrustBullet>
-                    Soluciones para Castellón y alrededores (Valencia según
-                    proyecto)
-                  </TrustBullet>
-                </TrustBullets>
-              </div>
+                <ConsultKicker>Qué puedes esperar</ConsultKicker>
 
-              <TrustCTA to="/contact">Solicitar asesoramiento</TrustCTA>
-            </TrustCard>
+                <ConsultList>
+                  <li>Visita técnica y asesoramiento decorativo</li>
+                  <li>
+                    Propuesta clara (tejidos, sistemas y opciones equilibradas)
+                  </li>
+                  <li>
+                    Medición precisa e instalación profesional, sin sorpresas
+                  </li>
+                  <li>Castellón y Valencia</li>
+                </ConsultList>
+
+                <ConsultStrong>Sin obligación. Sin presión.</ConsultStrong>
+
+                <ConsultActions>
+                  <ConsultPrimary to="/contact">
+                    Solicitar asesoramiento
+                  </ConsultPrimary>
+                  <ConsultSecondary
+                    href={CONTACT.whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    WhatsApp
+                  </ConsultSecondary>
+                </ConsultActions>
+
+                <ConsultNote>
+                  Respuesta rápida · Presupuesto orientativo · Opciones a medida
+                </ConsultNote>
+              </ConsultLeft>
+
+              <ConsultRight>
+                <MediaTile>
+                  {/* Use any “premium” image you already have imported in Servicios.jsx */}
+                  {/* Example: cortinasServicios / proyecto / somfyApp / etc */}
+                  <MediaImage
+                    style={{ backgroundImage: `url(${cortinasServicios})` }}
+                  />
+                  <MediaOverlay />
+
+                  <MediaBadge>Estudio</MediaBadge>
+
+                  <MediaCenter>
+                    <PlayButton aria-hidden="true">▶</PlayButton>
+                  </MediaCenter>
+
+                  <MediaBottom>
+                    <MediaTitle>Hablamos de tu espacio</MediaTitle>
+                    <MediaText>
+                      Luz, privacidad, caída, tejidos y sistemas — con criterio
+                      y una propuesta realista.
+                    </MediaText>
+                  </MediaBottom>
+                </MediaTile>
+              </ConsultRight>
+            </ConsultGrid>
           </Reveal>
         </Container>
-      </TrustSection>
-
-      {/* CTA */}
-      <CTA>
-        <Container>
-          <Reveal from="right">
-            <CTATitle>¿No sabes por dónde empezar?</CTATitle>
-            <CTAText>
-              Cuéntanos tu espacio y lo que quieres mejorar. Te diremos el mejor
-              punto de partida y te prepararemos una propuesta con criterio.
-            </CTAText>
-            <CTAButton to="/contact">Contactar</CTAButton>
-          </Reveal>
-        </Container>
-      </CTA>
+      </ConsultSection>
     </Page>
   );
 }

@@ -42,10 +42,18 @@ const DesktopSection = styled.section`
 
 const DesktopTitle = styled.h2`
   text-align: center;
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 2.5rem;
+  color: #222;
+  margin-bottom: 1rem;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.7rem;
+  }
 `;
 
 const DesktopGrid = styled.div`
@@ -128,7 +136,8 @@ export default function BrandLogos() {
       {/* 🖥 Desktop */}
       <DesktopSection>
         <DesktopTitle>
-          Trabajamos con marcas líderes en automatización y decoración
+          Trabajamos con marcas <span>líderes</span> en automatización y
+          decoración
         </DesktopTitle>
 
         <DesktopGrid>

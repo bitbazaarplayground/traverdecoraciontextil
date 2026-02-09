@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../config/contact";
+import { trackEvent } from "../lib/analytics";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -212,11 +213,24 @@ export default function Footer() {
                 </ActionRow>
 
                 <FooterCTA>
-                  <CTAButton to="/contact">Pedir asesoramiento</CTAButton>
+                  <CTAButton
+                    as="button"
+                    type="button"
+                    onClick={() => {
+                      trackEvent("open_asesoramiento", { source: "footer" });
+                      onOpenAsesoramiento?.("General");
+                    }}
+                  >
+                    Pedir asesoramiento
+                  </CTAButton>
+
                   <CTAButtonGhost
                     href={CONTACT.whatsappUrl}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() =>
+                      trackEvent("whatsapp_click", { source: "footer" })
+                    }
                   >
                     WhatsApp
                   </CTAButtonGhost>

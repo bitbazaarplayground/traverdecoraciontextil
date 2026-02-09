@@ -13,6 +13,7 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import AsesoramientoForm from "../components/AsesoramientoForm";
 import { CONTACT } from "../config/contact";
+import { trackEvent } from "../lib/analytics";
 
 const Page = styled.main`
   width: 100%;
@@ -530,7 +531,14 @@ export default function ContactPage() {
           <MapCard>
             <MapTop>
               <MapTitle>Visítanos</MapTitle>
-              <MapLink href={mapUrl} target="_blank" rel="noopener noreferrer">
+              <MapLink
+                href={CONTACT.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("maps_click", { source: "contact_page" })
+                }
+              >
                 Abrir en Google Maps →
               </MapLink>
             </MapTop>
@@ -552,6 +560,7 @@ export default function ContactPage() {
                 Si quieres una respuesta rápida, WhatsApp es lo más cómodo.
                 También puedes llamarnos o, si lo prefieres, usar el formulario.
               </PanelText>
+
               {packLabel && (
                 <ContextPill>
                   Solicitud: <strong>{packLabel}</strong>
@@ -562,7 +571,14 @@ export default function ContactPage() {
             <List>
               <ItemButton
                 type="button"
-                onClick={openForm}
+                onClick={() => {
+                  trackEvent("open_asesoramiento", {
+                    source: "contact_page",
+                    method: isMobile ? "modal" : "inline",
+                    pack: packLabel ?? "General",
+                  });
+                  openForm();
+                }}
                 aria-expanded={!isMobile ? inlineOpen : undefined}
                 aria-controls={!isMobile ? "asesoramiento-inline" : undefined}
               >
@@ -587,28 +603,44 @@ export default function ContactPage() {
                 <InlineInner>
                   <AsesoramientoForm
                     packLabel={packLabel}
-                    onSuccess={() =>
-                      setTimeout(() => setInlineOpen(false), 1200)
-                    }
+                    onSuccess={() => {
+                      trackEvent("form_submit_success", {
+                        source: "contact_page",
+                        method: "inline",
+                        pack: packLabel ?? "General",
+                      });
+                      setTimeout(() => setInlineOpen(false), 1200);
+                    }}
                   />
                 </InlineInner>
               </InlineCollapse>
 
-              <Item href={`tel:${telephoneTel}`}>
+              <Item
+                href={`tel:${CONTACT.phoneLandlineTel}`}
+                onClick={() =>
+                  trackEvent("phone_click", {
+                    source: "contact_page",
+                    number: CONTACT.phoneLandlineTel,
+                  })
+                }
+              >
                 <ItemLeft>
                   <Phone />
                   <ItemText>
                     <span>Teléfono</span>
-                    <small>{telephone}</small>
+                    <small>{CONTACT.phoneLandline}</small>
                   </ItemText>
                 </ItemLeft>
                 <RightArrow>→</RightArrow>
               </Item>
 
               <Item
-                href={whatsappUrl}
+                href={CONTACT.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("whatsapp_click", { source: "contact_page" })
+                }
               >
                 <ItemLeft>
                   <MessageCircle />
@@ -631,7 +663,14 @@ export default function ContactPage() {
                 <RightArrow />
               </StaticItem>
 
-              <Item href={mapUrl} target="_blank" rel="noopener noreferrer">
+              <Item
+                href={CONTACT.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("maps_click", { source: "contact_page" })
+                }
+              >
                 <ItemLeft>
                   <MapPin />
                   <ItemText>
@@ -670,9 +709,14 @@ export default function ContactPage() {
                   <ModalBody>
                     <AsesoramientoForm
                       packLabel={packLabel}
-                      onSuccess={() =>
-                        setTimeout(() => setModalOpen(false), 1200)
-                      }
+                      onSuccess={() => {
+                        trackEvent("form_submit_success", {
+                          source: "contact_page",
+                          method: "modal",
+                          pack: packLabel ?? "General",
+                        });
+                        setTimeout(() => setModalOpen(false), 1200);
+                      }}
                     />
                   </ModalBody>
                 </ModalCard>
