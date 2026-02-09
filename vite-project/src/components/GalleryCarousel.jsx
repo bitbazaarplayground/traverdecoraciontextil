@@ -27,11 +27,18 @@ const SectionWrapper = styled.section`
 
 const Title = styled.h2`
   text-align: center;
-  font-size: 2.4rem;
+  font-size: 2.2rem;
   font-weight: 600;
   color: #222;
-
   margin-bottom: 1rem;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.7rem;
+  }
 `;
 
 const Subtitle = styled.p`

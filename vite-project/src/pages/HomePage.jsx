@@ -3,9 +3,11 @@ import BrandLogos from "../components/BrandLogos";
 import ContactCTAHome from "../components/ContactCTAHome";
 import GalleryCarousel from "../components/GalleryCarousel";
 import Hero from "../components/Hero";
+import HomeFAQ from "../components/HomeFAQ";
 import Process from "../components/Process";
 import ServicesSection from "../components/ServicesSection";
 import { CONTACT } from "../config/contact";
+import { homeFaq } from "../content/homeFaq";
 
 export default function HomePage({ onOpenAsesoramiento }) {
   const baseUrl = (
@@ -98,7 +100,26 @@ export default function HomePage({ onOpenAsesoramiento }) {
     about: { "@id": `${canonical}#business` },
   };
 
-  const jsonLd = [localBusinessJsonLd, webSiteJsonLd, webPageJsonLd];
+  const faqPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${canonical}#faq`,
+    mainEntity: homeFaq.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: a,
+      },
+    })),
+  };
+
+  const jsonLd = [
+    localBusinessJsonLd,
+    webSiteJsonLd,
+    webPageJsonLd,
+    faqPageJsonLd,
+  ];
 
   return (
     <>
@@ -139,6 +160,7 @@ export default function HomePage({ onOpenAsesoramiento }) {
 
       <GalleryCarousel />
       <BrandLogos />
+      <HomeFAQ />
     </>
   );
 }
