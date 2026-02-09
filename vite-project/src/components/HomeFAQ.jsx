@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../config/contact";
 import { homeFaq } from "../content/homeFaq";
+import { trackEvent } from "../lib/analytics";
 
 export default function HomeFAQ({ onOpenAsesoramiento }) {
   const baseId = useId();
@@ -80,19 +81,20 @@ export default function HomeFAQ({ onOpenAsesoramiento }) {
               </AsideBullets>
 
               <AsideActions>
-                {onOpenAsesoramiento ? (
-                  <PrimaryBtn
-                    as="button"
-                    type="button"
-                    onClick={onOpenAsesoramiento}
-                  >
-                    Abrir asesoramiento
-                  </PrimaryBtn>
-                ) : (
-                  <PrimaryBtn as={Link} to="/contact">
-                    Solicitar asesoramiento
-                  </PrimaryBtn>
-                )}
+                <PrimaryBtn
+                  style={{ fontSize: "0.95rem" }}
+                  as="button"
+                  type="button"
+                  onClick={() => {
+                    trackEvent("open_asesoramiento", {
+                      source: "home_faq",
+                      pack: "General",
+                    });
+                    onOpenAsesoramiento?.("General");
+                  }}
+                >
+                  Solicitar asesoramiento
+                </PrimaryBtn>
 
                 <SecondaryBtn
                   as="a"
@@ -121,7 +123,7 @@ export default function HomeFAQ({ onOpenAsesoramiento }) {
 
 const Section = styled.section`
   background: #fff;
-  padding: clamp(3.2rem, 6vw, 5rem) 0;
+  padding: clamp(3rem, 5vw, 4.2rem) 0;
   border-top: 1px solid rgba(15, 23, 42, 0.08);
 `;
 
@@ -214,7 +216,7 @@ const QuestionBtn = styled.button`
   text-align: left;
   border: 0;
   background: transparent;
-  padding: 1.25rem 1.35rem; /* ⬅ was 1.1rem 1.15rem */
+  padding: 1.15rem 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -264,7 +266,7 @@ const Chevron = styled.span`
 `;
 
 const Answer = styled.div`
-  max-height: ${({ $open }) => ($open ? "220px" : "0px")};
+  max-height: ${({ $open }) => ($open ? "320px" : "0px")};
   overflow: hidden;
   transition: max-height 260ms ease;
 `;
@@ -337,7 +339,7 @@ const PrimaryBtn = styled(Link)`
   border-radius: 14px;
   text-decoration: none;
   font-weight: 850;
-  color: #111;
+  color: white;
   background: ${({ theme }) => theme.colors.primary};
   border: 0;
   cursor: pointer;

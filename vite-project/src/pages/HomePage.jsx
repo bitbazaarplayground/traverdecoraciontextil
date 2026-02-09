@@ -160,7 +160,7 @@ export default function HomePage({ onOpenAsesoramiento }) {
 
       <GalleryCarousel />
       <BrandLogos />
-      <HomeFAQ />
+      <HomeFAQ onOpenAsesoramiento={onOpenAsesoramiento} />
     </>
   );
 }

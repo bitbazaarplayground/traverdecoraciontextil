@@ -1,13 +1,44 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../config/contact";
 import { trackEvent } from "../lib/analytics";
 
-export default function Footer() {
+export default function Footer({ onOpenAsesoramiento }) {
   const year = new Date().getFullYear();
+  const wrapRef = useRef(null);
+
+  const setGlow = (e) => {
+    const el = wrapRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    el.style.setProperty("--mx", `${x}px`);
+    el.style.setProperty("--my", `${y}px`);
+    el.style.setProperty("--glow", "1");
+  };
+
+  const clearGlow = () => {
+    const el = wrapRef.current;
+    if (!el) return;
+    el.style.setProperty("--glow", "0");
+  };
 
   return (
-    <Wrap>
+    <Wrap
+      ref={wrapRef}
+      onMouseMove={setGlow}
+      onMouseEnter={() => {
+        // ensure it fades in smoothly when entering
+        wrapRef.current?.style.setProperty("--glow", "1");
+      }}
+      onMouseLeave={clearGlow}
+    >
+      <GlowLayer aria-hidden="true" />
+
       <Inner>
         <Top>
           <Brand>
@@ -263,12 +294,40 @@ const Wrap = styled.footer`
   background: #0b0c0f;
   color: rgba(244, 244, 245, 0.92);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+
+  --mx: 50%;
+  --my: 30%;
+  --glow: 0;
+`;
+const GlowLayer = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 420ms ease;
+  will-change: background, opacity;
+
+  @media (hover: hover) and (pointer: fine) {
+    opacity: calc(var(--glow) * 0.9);
+
+    background: radial-gradient(
+      520px 360px at var(--mx) var(--my),
+      rgba(229, 0, 126, 0.14),
+      rgba(229, 0, 126, 0.08) 30%,
+      rgba(229, 0, 126, 0) 60%
+    );
+  }
 `;
 
 const Inner = styled.div`
   width: min(1120px, calc(100% - 2.4rem));
   margin: 0 auto;
   padding: 3.2rem 0 1.6rem;
+  position: relative;
+  z-index: 1;
 
   @media (max-width: 768px) {
     width: calc(100% - 2rem);
@@ -673,620 +732,3 @@ const MiniLink = styled(Link)`
 const Dot = styled.span`
   color: rgba(244, 244, 245, 0.35);
 `;
-
-// OPCION 2:
-// import { Link } from "react-router-dom";
-// import styled from "styled-components";
-// import { CONTACT } from "../config/contact";
-
-// export default function Footer() {
-//   const year = new Date().getFullYear();
-
-//   return (
-//     <Wrap>
-//       <Inner>
-//         <Top>
-//           <Brand>
-//             <LogoRow to="/" aria-label={`${CONTACT.siteName} - Inicio`}>
-//               <LogoImg src="/logo.png" alt={CONTACT.siteName} loading="lazy" />
-//               <BrandText>
-//                 <BrandName>{CONTACT.siteName}</BrandName>
-//                 <BrandTag>Decoración textil · Protección solar · A medida</BrandTag>
-//               </BrandText>
-//             </LogoRow>
-
-//             <Small>
-//               Servicio en <strong>Castellón</strong> y <strong>Valencia</strong>{" "}
-//               (provincia). Proyectos seleccionados fuera de zona según alcance.
-//             </Small>
-
-//             <Hours>
-//               <HoursTitle>Horario</HoursTitle>
-//               <HoursText>
-//                 Lunes – Viernes: <strong>9:30–14:00</strong> ·{" "}
-//                 <strong>17:00–19:00</strong>
-//               </HoursText>
-//             </Hours>
-
-//             <AccentLine aria-hidden="true" />
-//           </Brand>
-
-//           <Cols>
-//             <Col>
-//               <ColTitle>Servicios</ColTitle>
-//               <ColLink to="/cortinas-estores">Cortinas & estores</ColLink>
-//               <ColLink to="/toldos-proteccionsolar">Toldos</ColLink>
-//               <ColLink to="/automatizacion">Automatización</ColLink>
-//               <ColLink to="/mosquiteras">Mosquiteras</ColLink>
-//               <ColLink to="/panel-japones">Panel japonés</ColLink>
-//               <ColLink to="/venecianas">Venecianas</ColLink>
-//             </Col>
-
-//             <Col>
-//               <ColTitle>Empresa</ColTitle>
-//               <ColLink to="/propuestas">Propuestas</ColLink>
-//               <ColLink to="/services">Servicios</ColLink>
-//               <ColLink to="/contact">Contacto</ColLink>
-
-//               <Divider />
-
-//               <ColTitle style={{ marginTop: "0.35rem" }}>Legal</ColTitle>
-//               <ColLink to="/aviso-legal">Aviso legal</ColLink>
-//               <ColLink to="/politica-privacidad">Política de privacidad</ColLink>
-//               <ColLink to="/politica-cookies">Política de cookies</ColLink>
-//             </Col>
-
-//             <Col>
-//               <ColTitle>Contacto</ColTitle>
-
-//               <ActionRow>
-//                 <Action href={`tel:${CONTACT.phoneLandlineTel}`} aria-label="Llamar por teléfono">
-//                   <Pill>
-//                     <DotPink aria-hidden="true" />
-//                     Llamar: {CONTACT.phoneLandline}
-//                   </Pill>
-//                 </Action>
-//               </ActionRow>
-
-//               <ActionRow>
-//                 <Action
-//                   href={CONTACT.whatsappUrl}
-//                   target="_blank"
-//                   rel="noreferrer"
-//                   aria-label="Abrir WhatsApp"
-//                 >
-//                   <Pill>
-//                     <DotPink aria-hidden="true" />
-//                     WhatsApp: +34 {CONTACT.whatsappNumber}
-//                   </Pill>
-//                 </Action>
-//               </ActionRow>
-
-//               <ActionRow>
-//                 <Action href={`mailto:${CONTACT.email}`} aria-label="Enviar email">
-//                   <Pill>
-//                     <DotPink aria-hidden="true" />
-//                     Email: {CONTACT.email}
-//                   </Pill>
-//                 </Action>
-//               </ActionRow>
-
-//               <ActionRow>
-//                 <Action
-//                   href={CONTACT.mapsUrl}
-//                   target="_blank"
-//                   rel="noreferrer"
-//                   aria-label="Abrir ubicación en Google Maps"
-//                 >
-//                   <Pill>
-//                     <DotPink aria-hidden="true" />
-//                     {CONTACT.address.streetAddress}, {CONTACT.address.postalCode}{" "}
-//                     {CONTACT.address.addressLocality}, {CONTACT.address.addressRegion},{" "}
-//                     Spain
-//                   </Pill>
-//                 </Action>
-//               </ActionRow>
-
-//               <ActionRow>
-//                 <Action
-//                   href={CONTACT.facebookUrl}
-//                   target="_blank"
-//                   rel="noreferrer"
-//                   aria-label="Abrir Facebook"
-//                 >
-//                   <Pill>
-//                     <DotPink aria-hidden="true" />
-//                     Facebook
-//                   </Pill>
-//                 </Action>
-//               </ActionRow>
-//             </Col>
-//           </Cols>
-//         </Top>
-
-//         <Bottom>
-//           <Copy>
-//             © {year} {CONTACT.siteName}. Todos los derechos reservados.
-//           </Copy>
-
-//           <MiniLinks>
-//             <MiniLink to="/contact">Pedir asesoramiento</MiniLink>
-//             <Dot>·</Dot>
-//             <MiniLink to="/propuestas">Ver propuestas</MiniLink>
-//           </MiniLinks>
-//         </Bottom>
-//       </Inner>
-//     </Wrap>
-//   );
-// }
-
-// /* =========================
-//    styles
-// ========================= */
-
-// const Wrap = styled.footer`
-//   background: #0b0c0f;
-//   color: rgba(244, 244, 245, 0.92);
-//   border-top: 1px solid rgba(229, 0, 126, 0.22);
-// `;
-
-// const Inner = styled.div`
-//   width: min(1120px, calc(100% - 2.4rem));
-//   margin: 0 auto;
-//   padding: 3.2rem 0 1.6rem;
-
-//   @media (max-width: 768px) {
-//     width: calc(100% - 2rem);
-//     padding: 2.2rem 0 1.3rem;
-//   }
-// `;
-
-// const Top = styled.div`
-//   display: grid;
-//   gap: 2rem;
-
-//   @media (min-width: 980px) {
-//     grid-template-columns: 1.1fr 1.9fr;
-//     gap: 2.2rem;
-//   }
-// `;
-
-// const Brand = styled.div``;
-
-// const LogoRow = styled(Link)`
-//   display: inline-flex;
-//   align-items: center;
-//   gap: 0.9rem;
-//   text-decoration: none;
-//   color: inherit;
-// `;
-
-// const LogoImg = styled.img`
-//   width: 44px;
-//   height: 44px;
-//   object-fit: contain;
-//   border-radius: 10px;
-//   background: rgba(229, 0, 126, 0.08);
-//   border: 1px solid rgba(229, 0, 126, 0.22);
-//   padding: 6px;
-// `;
-
-// const BrandText = styled.div`
-//   display: grid;
-//   gap: 0.15rem;
-// `;
-
-// const BrandName = styled.div`
-//   font-weight: 900;
-//   letter-spacing: 0.01em;
-// `;
-
-// const BrandTag = styled.div`
-//   font-size: 0.95rem;
-//   color: rgba(244, 244, 245, 0.72);
-// `;
-
-// const Small = styled.p`
-//   margin: 1.1rem 0 0;
-//   line-height: 1.7;
-//   color: rgba(244, 244, 245, 0.72);
-
-//   strong {
-//     color: rgba(244, 244, 245, 0.92);
-//   }
-// `;
-
-// const Hours = styled.div`
-//   margin-top: 1rem;
-//   padding: 0.95rem 1rem;
-//   border-radius: 16px;
-//   background: rgba(255, 255, 255, 0.04);
-//   border: 1px solid rgba(255, 255, 255, 0.08);
-// `;
-
-// const HoursTitle = styled.div`
-//   font-size: 0.78rem;
-//   letter-spacing: 0.18em;
-//   text-transform: uppercase;
-//   color: rgba(229, 0, 126, 0.78);
-// `;
-
-// const HoursText = styled.div`
-//   margin-top: 0.35rem;
-//   color: rgba(244, 244, 245, 0.9);
-// `;
-
-// const AccentLine = styled.div`
-//   height: 2px;
-//   width: 78px;
-//   margin-top: 1.25rem;
-//   border-radius: 999px;
-//   background: ${({ theme }) => theme.colors.primary};
-//   opacity: 0.9;
-
-//   @media (max-width: 768px) {
-//     width: 64px;
-//   }
-// `;
-
-// const Cols = styled.div`
-//   display: grid;
-//   gap: 1.6rem;
-
-//   @media (min-width: 760px) {
-//     grid-template-columns: repeat(3, 1fr);
-//     gap: 1.2rem;
-//   }
-
-//   @media (max-width: 768px) {
-//     gap: 1.35rem;
-//   }
-// `;
-
-// const Col = styled.div`
-//   display: grid;
-//   align-content: start;
-//   gap: 0.6rem;
-// `;
-
-// const ColTitle = styled.div`
-//   font-size: 0.78rem;
-//   letter-spacing: 0.18em;
-//   text-transform: uppercase;
-//   color: rgba(229, 0, 126, 0.75);
-//   margin-bottom: 0.15rem;
-// `;
-
-// const ColLink = styled(Link)`
-//   text-decoration: none;
-//   color: rgba(244, 244, 245, 0.88);
-//   line-height: 1.55;
-
-//   &:hover {
-//     color: ${({ theme }) => theme.colors.primary};
-//   }
-// `;
-
-// const Divider = styled.div`
-//   height: 1px;
-//   background: rgba(255, 255, 255, 0.08);
-//   margin: 0.45rem 0;
-// `;
-
-// const ActionRow = styled.div``;
-
-// const Action = styled.a`
-//   text-decoration: none;
-//   color: rgba(244, 244, 245, 0.88);
-//   line-height: 1.55;
-
-//   &:hover {
-//     color: ${({ theme }) => theme.colors.primary};
-//   }
-// `;
-
-// const Pill = styled.span`
-//   display: inline-flex;
-//   align-items: center;
-//   gap: 0.55rem;
-//   padding: 0.55rem 0.75rem;
-//   border-radius: 999px;
-//   background: rgba(255, 255, 255, 0.04);
-//   border: 1px solid rgba(255, 255, 255, 0.08);
-
-//   @media (max-width: 768px) {
-//     width: 100%;
-//     justify-content: flex-start;
-//   }
-// `;
-
-// const DotPink = styled.span`
-//   width: 8px;
-//   height: 8px;
-//   border-radius: 999px;
-//   background: ${({ theme }) => theme.colors.primary};
-//   box-shadow: 0 0 0 4px rgba(229, 0, 126, 0.12);
-// `;
-
-// const Bottom = styled.div`
-//   margin-top: 2.2rem;
-//   padding-top: 1.2rem;
-//   border-top: 1px solid rgba(255, 255, 255, 0.08);
-
-//   display: flex;
-//   gap: 0.8rem;
-//   align-items: center;
-//   justify-content: space-between;
-//   flex-wrap: wrap;
-
-//   @media (max-width: 768px) {
-//     margin-top: 1.7rem;
-//     padding-top: 1rem;
-//   }
-// `;
-
-// const Copy = styled.div`
-//   font-size: 0.95rem;
-//   color: rgba(244, 244, 245, 0.68);
-// `;
-
-// const MiniLinks = styled.div`
-//   display: inline-flex;
-//   align-items: center;
-//   gap: 0.55rem;
-//   flex-wrap: wrap;
-// `;
-
-// const MiniLink = styled(Link)`
-//   text-decoration: none;
-//   color: rgba(244, 244, 245, 0.8);
-
-//   &:hover {
-//     color: ${({ theme }) => theme.colors.primary};
-//   }
-// `;
-
-// const Dot = styled.span`
-//   color: rgba(244, 244, 245, 0.35);
-// `;
-
-// OPCION 3
-// import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-// import styled from "styled-components";
-
-// /* =========================
-//    FOOTER WRAPPER
-// ========================= */
-
-// const FooterWrapper = styled.footer`
-//   background: #0e0e0e;
-//   color: #d1d1d1;
-//   padding: 4rem 1.5rem 2rem;
-// `;
-
-// const FooterInner = styled.div`
-//   max-width: 1100px;
-//   margin: 0 auto;
-//   display: grid;
-//   grid-template-columns: 1.5fr 1fr 1fr;
-//   gap: 3rem;
-
-//   @media (max-width: 768px) {
-//     grid-template-columns: 1fr;
-//     gap: 2.5rem;
-//   }
-// `;
-
-// /* =========================
-//    BRAND
-// ========================= */
-
-// const Brand = styled.div``;
-
-// const BrandTitle = styled.h3`
-//   font-size: 1.7rem;
-//   font-weight: 600;
-//   color: #fff;
-//   margin-bottom: 0.75rem;
-// `;
-
-// const BrandText = styled.p`
-//   font-size: 0.95rem;
-//   line-height: 1.6;
-//   color: #b5b5b5;
-//   max-width: 420px;
-// `;
-
-// const TrustLine = styled.p`
-//   margin-top: 1.5rem;
-//   font-size: 0.9rem;
-//   color: #9a9a9a;
-//   font-style: italic;
-// `;
-
-// /* =========================
-//    COLUMN
-// ========================= */
-
-// const Column = styled.div``;
-
-// const ColumnTitle = styled.h4`
-//   font-size: 0.95rem;
-//   font-weight: 600;
-//   letter-spacing: 0.08em;
-//   text-transform: uppercase;
-//   color: #fff;
-//   margin-bottom: 1.2rem;
-// `;
-
-// /* =========================
-//    CONTACT ITEMS
-// ========================= */
-
-// const ContactItem = styled.a`
-//   display: flex;
-//   align-items: flex-start;
-//   gap: 0.75rem;
-//   margin-bottom: 1rem;
-//   color: #b5b5b5;
-//   text-decoration: none;
-//   font-size: 0.95rem;
-
-//   &:hover {
-//     color: ${({ theme }) => theme.colors.primary};
-//   }
-// `;
-
-// const ContactItemStatic = styled.div`
-//   display: flex;
-//   align-items: flex-start;
-//   gap: 0.75rem;
-//   margin-bottom: 1rem;
-//   color: #b5b5b5;
-//   font-size: 0.95rem;
-// `;
-
-// const IconCircle = styled.div`
-//   width: 34px;
-//   height: 34px;
-//   border-radius: 50%;
-//   background: rgba(255, 255, 255, 0.06);
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   color: ${({ theme }) => theme.colors.primary};
-//   flex-shrink: 0;
-// `;
-
-// const ContactText = styled.div`
-//   span {
-//     display: block;
-//     font-size: 0.75rem;
-//     text-transform: uppercase;
-//     letter-spacing: 0.08em;
-//     color: #888;
-//   }
-
-//   small {
-//     font-size: 0.95rem;
-//     color: #d1d1d1;
-//   }
-// `;
-
-// /* =========================
-//    BOTTOM
-// ========================= */
-
-// const Bottom = styled.div`
-//   max-width: 1100px;
-//   margin: 3rem auto 0;
-//   padding-top: 1.5rem;
-//   border-top: 1px solid rgba(255, 255, 255, 0.08);
-//   text-align: center;
-//   font-size: 0.8rem;
-//   color: #888;
-// `;
-
-// /* =========================
-//    COMPONENT
-// ========================= */
-
-// export default function Footer() {
-//   return (
-//     <FooterWrapper>
-//       <FooterInner>
-//         {/* BRAND */}
-//         <Brand>
-//           <BrandTitle>Traver Decoración Textil</BrandTitle>
-//           <BrandText>
-//             Especialistas en decoración textil, cortinas, estores, toldos y
-//             papel pintado. Proyectos a medida con un enfoque profesional y
-//             cuidado por el detalle.
-//           </BrandText>
-
-//           <TrustLine>
-//             Clientes en Castellón y provincia confían en nuestro trabajo desde
-//             hace más de 32 años.
-//           </TrustLine>
-//         </Brand>
-
-//         {/* CONTACT */}
-//         <Column>
-//           <ColumnTitle>Contacto</ColumnTitle>
-
-//           <ContactItem
-//             href="https://wa.me/34647856817"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//           >
-//             <IconCircle>
-//               <MessageCircle size={18} />
-//             </IconCircle>
-//             <ContactText>
-//               <span>WhatsApp</span>
-//               <small>647 856 817</small>
-//             </ContactText>
-//           </ContactItem>
-
-//           <ContactItem href="tel:+34964562357">
-//             <IconCircle>
-//               <Phone size={18} />
-//             </IconCircle>
-//             <ContactText>
-//               <span>Teléfono</span>
-//               <small>+34 964 56 23 57</small>
-//             </ContactText>
-//           </ContactItem>
-
-//           <ContactItem href="mailto:info@traverdecoracion.com">
-//             <IconCircle>
-//               <Mail size={18} />
-//             </IconCircle>
-//             <ContactText>
-//               <span>Email</span>
-//               <small>info@traverdecoracion.com</small>
-//             </ContactText>
-//           </ContactItem>
-//         </Column>
-
-//         {/* LOCATION */}
-//         <Column>
-//           <ColumnTitle>Visítanos</ColumnTitle>
-
-//           <ContactItemStatic>
-//             <IconCircle>
-//               <Clock size={18} />
-//             </IconCircle>
-//             <ContactText>
-//               <span>Horario</span>
-//               <small>L–V: 9:30–14:00 · 17:00–19:00</small>
-//             </ContactText>
-//           </ContactItemStatic>
-
-//           <ContactItem
-//             href="https://maps.app.goo.gl/nqxT2QX2NCbgYTDF9"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//           >
-//             <IconCircle>
-//               <MapPin size={18} />
-//             </IconCircle>
-//             <ContactText>
-//               <span>Tienda</span>
-//               <small>
-//                 Carrer de Sant Felip, 67
-//                 <br />
-//                 12550 Almassora
-//               </small>
-//             </ContactText>
-//           </ContactItem>
-//         </Column>
-//       </FooterInner>
-
-//       <Bottom>
-//         © {new Date().getFullYear()} Traver Decoración Textil · Todos los
-//         derechos reservados
-//       </Bottom>
-//     </FooterWrapper>
-//   );
-// }

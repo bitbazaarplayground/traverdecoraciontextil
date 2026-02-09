@@ -10,17 +10,19 @@ import jose from "../assets/process/instalacionProfessional.png";
 
 const Section = styled.section`
   width: 100%;
-  padding: 4rem 1.5rem;
+  padding: 3.4rem 1.5rem;
+
   background: #fafafa;
 
   @media (max-width: 768px) {
-    padding: 3rem 1rem;
+    padding: 2.8rem 1rem;
   }
 `;
 
 const Header = styled.div`
   max-width: 900px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2.1rem;
+
   text-align: center;
 `;
 
@@ -55,11 +57,11 @@ const StepsGrid = styled.div`
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2.5rem;
+  gap: 2rem;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.7rem;
   }
 `;
 
@@ -81,17 +83,17 @@ const StepCard = styled.div`
 
 const StepImage = styled.div`
   width: 100%;
-  height: 220px;
+  height: 195px;
   background-size: cover;
   background-position: center;
 
   @media (max-width: 768px) {
-    height: 190px;
+    height: 175px;
   }
 `;
 
 const StepContent = styled.div`
-  padding: 1.5rem 1.75rem;
+  padding: 1.25rem 1.5rem;
 `;
 
 const StepNumber = styled.span`

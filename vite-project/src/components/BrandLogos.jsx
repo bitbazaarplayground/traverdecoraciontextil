@@ -32,7 +32,7 @@ const logos = [
 
 const DesktopSection = styled.section`
   width: 100%;
-  padding: 3.5rem 1.5rem 4rem;
+  padding: 3rem 1.5rem 3.2rem;
   background: #fff;
 
   @media (max-width: 768px) {
@@ -60,7 +60,7 @@ const DesktopGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   place-items: center;
-  gap: 2.5rem;
+  gap: 2.1rem;
   max-width: 1100px;
   margin: 0 auto;
 `;
@@ -71,6 +71,15 @@ const DesktopLogoItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 18px;
+  background: rgba(17, 17, 17, 0.02);
+  border: 1px solid rgba(17, 17, 17, 0.06);
+  transition: transform 0.25s ease, background 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    background: rgba(17, 17, 17, 0.03);
+  }
 `;
 
 const DesktopLogo = styled.img`
@@ -84,7 +93,7 @@ const DesktopLogo = styled.img`
   ${DesktopLogoItem}:hover & {
     filter: grayscale(0%);
     opacity: 1;
-    transform: scale(1.06);
+    transform: scale(1.04);
   }
 `;
 
@@ -94,8 +103,8 @@ const DesktopLogo = styled.img`
 
 const MobileSection = styled.section`
   width: 100%;
-  padding: 1.5rem 1rem;
-  background: #fafafa;
+  padding: 1.25rem 1rem;
+  background: #fff;
 
   @media (min-width: 769px) {
     display: none;
@@ -113,13 +122,13 @@ const MobileTitle = styled.p`
 
 const MobileGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   align-items: center;
 `;
 
 const MobileLogo = styled.img`
-  max-height: 28px;
+  max-height: 32px;
   max-width: 100%;
   object-fit: contain;
   filter: grayscale(100%);

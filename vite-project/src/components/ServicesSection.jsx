@@ -13,13 +13,13 @@ import zebraBg from "../assets/zebra_pattern.png";
 
 const Section = styled.section`
   width: 100%;
-  padding: 5.2rem 2rem;
+  padding: 4.4rem 2rem;
   background: #ffffff;
   position: relative;
   overflow: hidden;
 
   @media (max-width: 768px) {
-    padding: 4rem 1.5rem;
+    padding: 3.6rem 1.5rem;
   }
 
   /* Ultra-subtle brand texture (optional) */
@@ -60,7 +60,7 @@ const Inner = styled.div`
 
 const Header = styled.div`
   max-width: 820px;
-  margin: 0 auto 2.4rem;
+  margin: 0 auto 1.9rem;
   text-align: center;
 `;
 
@@ -130,7 +130,7 @@ const Card = styled(motion.article)`
 
 const Media = styled.div`
   position: relative;
-  height: 310px;
+  height: 285px;
   overflow: hidden;
 
   @media (max-width: 768px) {
@@ -239,6 +239,60 @@ const MediaLink = styled(Link)`
     outline: 3px solid rgba(0, 0, 0, 0.2);
     outline-offset: 4px;
     border-radius: 24px;
+  }
+`;
+const FooterRow = styled.div`
+  margin-top: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+  }
+`;
+
+const FooterHint = styled.p`
+  margin: 0;
+  color: rgba(17, 17, 17, 0.62);
+  font-size: 0.98rem;
+`;
+
+const AllServicesLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 750;
+  color: rgba(17, 17, 17, 0.88);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  transition: transform 180ms ease, background 180ms ease;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+    font-weight: 900;
+    transition: transform 180ms ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  &:hover span {
+    transform: translateX(2px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(0, 0, 0, 0.2);
+    outline-offset: 4px;
   }
 `;
 
@@ -364,6 +418,14 @@ export default function ServiceSection() {
             </MediaLink>
           </Card>
         </Grid>
+        <FooterRow>
+          <FooterHint>
+            Más soluciones a medida para interior y exterior.
+          </FooterHint>
+          <AllServicesLink to="/servicios" aria-label="Ver todos los servicios">
+            Ver todos los servicios <span>→</span>
+          </AllServicesLink>
+        </FooterRow>
       </Inner>
     </Section>
   );

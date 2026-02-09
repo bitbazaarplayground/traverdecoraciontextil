@@ -17,11 +17,31 @@ import Img7 from "../assets/Home/interior/solar-shades-kitchen-newscast-5-percen
 import Img8 from "../assets/Home/interior/solar-shades-seattle-commercial-real-estate-office-shoreview-3-percent-charcoal-185-view-1.webp";
 
 const SectionWrapper = styled.section`
-  padding: 4rem 1.5rem;
+  padding: 3.4rem 1.5rem;
   background: #fff;
 
   @media (max-width: 768px) {
-    padding: 3rem 1rem;
+    padding: 2.8rem 1rem;
+  }
+
+  /* Swiper pagination – premium */
+  .swiper-pagination {
+    position: relative;
+    margin-top: 1.25rem;
+  }
+
+  .swiper-pagination-bullet {
+    width: 7px;
+    height: 7px;
+    opacity: 0.35;
+    background: rgba(17, 17, 17, 0.55);
+    transition: transform 180ms ease, opacity 180ms ease;
+  }
+
+  .swiper-pagination-bullet-active {
+    opacity: 0.95;
+    transform: scale(1.15);
+    background: ${({ theme }) => theme.colors.primary};
   }
 `;
 
@@ -47,6 +67,7 @@ const Subtitle = styled.p`
   margin: 0 auto 2.5rem auto;
   font-size: 1.1rem;
   color: #555;
+  line-height: 1.75;
 `;
 
 const ImageWrapper = styled.div`
@@ -86,7 +107,7 @@ export default function GalleryCarousel() {
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         spaceBetween={20}
-        navigation
+        navigation={false}
         pagination={{ clickable: true }}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
         loop={true}
