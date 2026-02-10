@@ -1,7 +1,7 @@
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 import styled from "styled-components";
-import CTAHome from "../assets/CTAHome.png";
+import CTAHome from "../assets/CTAHome.webp";
 import { trackEvent } from "../lib/analytics";
 
 const Section = styled.section`

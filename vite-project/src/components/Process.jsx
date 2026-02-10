@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import assesoramiento from "../assets/process/InteriorPlanning.jpeg";
-import catalogo from "../assets/process/catalogoP.png";
-import final from "../assets/process/final.jpeg";
-import jose from "../assets/process/instalacionProfessional.png";
+import assesoramiento from "../assets/process/InteriorPlanning.webp";
+import catalogo from "../assets/process/catalogoP.webp";
+import final from "../assets/process/final.webp";
+import jose from "../assets/process/instalacionProfessional.webp";
 
 /* =========================
    SECTION

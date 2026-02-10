@@ -5,7 +5,7 @@ import { CONTACT } from "../config/contact";
 
 // Assets
 import heroImg from "../assets/CortinasEstores/carousel/cortinas1.jpeg";
-import zebraBg from "../assets/zebra_pattern.png";
+import zebraBg from "../assets/zebra_pattern.webp";
 
 import cortina2 from "../assets/CortinasEstores/carousel/cortinas2.jpeg";
 import cortina3 from "../assets/CortinasEstores/carousel/cortinas3.jpeg";

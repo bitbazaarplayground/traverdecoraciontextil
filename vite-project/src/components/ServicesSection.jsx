@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Img2 from "../assets/Home/HeroImg/img2.webp";
 import Img3 from "../assets/Home/HeroImg/img3.webp";
 import restaurante1 from "../assets/Home/HeroImg/restaurante1.AVIF";
-import zebraBg from "../assets/zebra_pattern.png";
+import zebraBg from "../assets/zebra_pattern.webp";
 
 /* =========================
    SECTION
