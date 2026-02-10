@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { trackEvent } from "../lib/analytics";
 
@@ -31,16 +30,11 @@ const HeroWrapper = styled.section`
 const Slide = styled(motion.div)`
   position: absolute;
   inset: 0;
-
   background-size: cover;
   background-position: center;
   background-color: #0b0c0f;
-
-  /* “premium” mood control (we’ll tune later per image set) */
   filter: brightness(0.9) contrast(0.98) saturate(0.95);
-
   transform: scale(1.03);
-
   will-change: opacity, transform;
 `;
 
@@ -104,18 +98,13 @@ const Content = styled.div`
 
 const MicroLine = styled(motion.p)`
   margin: 0 0 1.25rem;
-
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
     "Helvetica Neue", sans-serif;
   font-weight: 500;
   text-transform: uppercase;
-
-  /* editorial spacing */
   letter-spacing: 0.28em;
-
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.82);
-
   text-shadow: 0 12px 36px rgba(0, 0, 0, 0.38);
 
   @media (max-width: 768px) {
@@ -129,7 +118,7 @@ const MicroLine = styled(motion.p)`
    HEADLINE (CORMORANT)
 ========================= */
 
-const Title = styled(motion.h1)`
+const Title = styled.h1`
   margin: 0;
   font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
   font-weight: 300;
@@ -207,35 +196,6 @@ const Actions = styled(motion.div)`
   }
 `;
 
-const PrimaryButton = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0.9rem 2.05rem;
-  border-radius: 999px;
-
-  /* premium: quiet, not neon */
-  background: rgba(255, 255, 255, 0.9);
-  color: #0b0c0f;
-
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
-    "Helvetica Neue", sans-serif;
-  font-weight: 600;
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-
-  text-decoration: none;
-
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
-  transition: transform 0.25s ease, background 0.25s ease, opacity 0.25s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    background: rgba(255, 255, 255, 0.96);
-  }
-`;
 const PrimaryAction = styled.button`
   display: inline-flex;
   align-items: center;
@@ -267,25 +227,6 @@ const PrimaryAction = styled.button`
     background: rgba(255, 255, 255, 0.96);
   }
 `;
-
-/* Optional subtle hint (replaces paragraph) */
-// const SubtleNote = styled(motion.p)`
-//   margin: 1.15rem 0 0;
-//   max-width: 70ch;
-
-//   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
-//     "Helvetica Neue", sans-serif;
-//   font-size: 0.92rem;
-//   line-height: 1.6;
-
-//   color: rgba(255, 255, 255, 0.72);
-//   text-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-
-//   @media (max-width: 768px) {
-//     font-size: 0.9rem;
-//     max-width: 40ch;
-//   }
-// `;
 
 /* =========================
    SIMPLE SCROLL INDICATOR
@@ -328,6 +269,24 @@ export default function Hero({ onOpenAsesoramiento }) {
     return () => clearInterval(id);
   }, [slides.length]);
 
+  // Warm the rest of the hero images (avoid competing with first paint)
+  useEffect(() => {
+    const rest = slides.slice(1);
+
+    const preload = () => {
+      rest.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+    };
+
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(preload, { timeout: 1500 });
+    } else {
+      setTimeout(preload, 800);
+    }
+  }, [slides]);
+
   return (
     <HeroWrapper>
       {/* Crossfade (no grey flash) */}
@@ -353,19 +312,9 @@ export default function Hero({ onOpenAsesoramiento }) {
           Decoración textil · Protección solar · Domótica
         </MicroLine>
 
-        <Title
-          initial={{ opacity: 0, y: 26 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.15, ease: "easeOut" }}
-        >
-          Diseñamos&nbsp;espacios
-        </Title>
-        {/* Diseñamos&nbsp;espacios */}
-        <ScriptLine
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.12, ease: "easeOut" }}
-        >
+        <Title>Diseñamos&nbsp;espacios</Title>
+
+        <ScriptLine>
           que se <em>sienten</em>
         </ScriptLine>
 

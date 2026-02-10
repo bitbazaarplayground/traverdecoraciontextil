@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import heroFirst from "../assets/heroHome/1.webp";
 import BrandLogos from "../components/BrandLogos";
 import ContactCTAHome from "../components/ContactCTAHome";
 import GalleryCarousel from "../components/GalleryCarousel";
@@ -125,6 +126,13 @@ export default function HomePage({ onOpenAsesoramiento }) {
     <>
       <Helmet>
         <title>{title}</title>
+        <link
+          rel="preload"
+          as="image"
+          href={heroFirst}
+          type="image/webp"
+          fetchpriority="high"
+        />
 
         <meta name="description" content={description} />
         <meta name="robots" content="index,follow" />
