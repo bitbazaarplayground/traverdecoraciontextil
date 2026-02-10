@@ -26,16 +26,14 @@ const HeroWrapper = styled.section`
   display: grid;
   place-items: stretch;
 `;
-
-const Slide = styled(motion.div)`
+const HeroImg = styled(motion.img)`
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
-  background-color: #0b0c0f;
-  filter: brightness(0.9) contrast(0.98) saturate(0.95);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   transform: scale(1.03);
-  will-change: opacity, transform;
+  filter: brightness(0.9) contrast(0.98) saturate(0.95);
 `;
 
 const Overlay = styled.div`
@@ -260,6 +258,7 @@ export default function Hero({ onOpenAsesoramiento }) {
   );
 
   const [index, setIndex] = useState(0);
+  const [displaySrc, setDisplaySrc] = useState(slides[0]);
 
   // Auto-rotate (same concept as theirs, slightly calmer pacing)
   useEffect(() => {
@@ -271,6 +270,8 @@ export default function Hero({ onOpenAsesoramiento }) {
 
   // Warm the rest of the hero images (avoid competing with first paint)
   useEffect(() => {
+    if (window.matchMedia("(max-width: 768px)").matches) return;
+
     const rest = slides.slice(1);
 
     const preload = () => {
@@ -287,13 +288,23 @@ export default function Hero({ onOpenAsesoramiento }) {
     }
   }, [slides]);
 
+  useEffect(() => {
+    const nextSrc = slides[index];
+    const img = new Image();
+    img.src = nextSrc;
+    img.onload = () => setDisplaySrc(nextSrc);
+  }, [index, slides]);
+
   return (
     <HeroWrapper>
-      {/* Crossfade (no grey flash) */}
-      <AnimatePresence>
-        <Slide
-          key={slides[index]}
-          style={{ backgroundImage: `url(${slides[index]})` }}
+      <AnimatePresence initial={false}>
+        <HeroImg
+          key={displaySrc}
+          src={displaySrc}
+          alt=""
+          fetchPriority={displaySrc === slides[0] ? "high" : "auto"}
+          loading={displaySrc === slides[0] ? "eager" : "lazy"}
+          decoding="async"
           initial={{ opacity: 0, scale: 1.04 }}
           animate={{ opacity: 1, scale: 1.03 }}
           exit={{ opacity: 0, scale: 1.02 }}
