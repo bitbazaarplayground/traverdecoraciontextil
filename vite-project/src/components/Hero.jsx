@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { trackEvent } from "../lib/analytics";
 
-import cortina4 from "../assets/heroHome/1.png";
-import blackoutImg from "../assets/heroHome/2.png";
-import chenilleImg from "../assets/heroHome/3.png";
-import Img2 from "../assets/heroHome/4.png";
-import Img3 from "../assets/heroHome/5.png";
-import wallpaper from "../assets/heroHome/6.png";
+import cortina4 from "../assets/heroHome/1.webp";
+import blackoutImg from "../assets/heroHome/2.webp";
+import chenilleImg from "../assets/heroHome/3.webp";
+import Img2 from "../assets/heroHome/4.webp";
+import Img3 from "../assets/heroHome/5.webp";
+import wallpaper from "../assets/heroHome/6.webp";
 
 /* =========================
    HERO LAYOUT (EDITORIAL)
