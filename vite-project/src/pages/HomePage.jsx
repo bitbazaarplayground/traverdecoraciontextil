@@ -1,15 +1,16 @@
+import { lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import heroFirst from "../assets/heroHome/1.webp";
-import BrandLogos from "../components/BrandLogos";
 import ContactCTAHome from "../components/ContactCTAHome";
-import GalleryCarousel from "../components/GalleryCarousel";
 import Hero from "../components/Hero";
-import HomeFAQ from "../components/HomeFAQ";
 import Process from "../components/Process";
 import ServicesSection from "../components/ServicesSection";
 import { CONTACT } from "../config/contact";
 import { homeFaq } from "../content/homeFaq";
 
+const GalleryCarousel = lazy(() => import("../components/GalleryCarousel"));
+const BrandLogos = lazy(() => import("../components/BrandLogos"));
+const HomeFAQ = lazy(() => import("../components/HomeFAQ"));
 export default function HomePage({ onOpenAsesoramiento }) {
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
@@ -166,9 +167,11 @@ export default function HomePage({ onOpenAsesoramiento }) {
       <Process />
       <ContactCTAHome onOpenAsesoramiento={onOpenAsesoramiento} />
 
-      <GalleryCarousel />
-      <BrandLogos />
-      <HomeFAQ onOpenAsesoramiento={onOpenAsesoramiento} />
+      <Suspense fallback={null}>
+        <GalleryCarousel />
+        <BrandLogos />
+        <HomeFAQ onOpenAsesoramiento={onOpenAsesoramiento} />
+      </Suspense>
     </>
   );
 }
