@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-
 import Img2 from "../assets/Home/HeroImg/img2.webp";
 import Img3 from "../assets/Home/HeroImg/img3.webp";
 import restaurante1 from "../assets/Home/HeroImg/restaurante1.AVIF";
@@ -262,7 +262,7 @@ const FooterHint = styled.p`
   font-size: 0.98rem;
 `;
 
-const AllServicesLink = styled(Link)`
+const AllServicesLink = styled(motion(Link))`
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
@@ -274,6 +274,7 @@ const AllServicesLink = styled(Link)`
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(17, 17, 17, 0.12);
   transition: transform 180ms ease, background 180ms ease;
+  will-change: transform;
 
   span {
     color: ${({ theme }) => theme.colors.primary};
@@ -282,7 +283,6 @@ const AllServicesLink = styled(Link)`
   }
 
   &:hover {
-    transform: translateY(-2px);
     background: rgba(255, 255, 255, 0.92);
   }
 
@@ -301,6 +301,45 @@ const AllServicesLink = styled(Link)`
 ========================= */
 
 export default function ServiceSection() {
+  const magnetRef = useRef(null);
+
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const setMagnet = (e) => {
+    if (prefersReducedMotion) return;
+    if (!magnetRef.current) return;
+
+    // desktop only: hover + fine pointer
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) {
+      return;
+    }
+
+    const rect = magnetRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    // subtle pull (premium)
+    const strength = 0.18; // lower = calmer
+    const tx = Math.max(-10, Math.min(10, x * strength));
+    const ty = Math.max(-8, Math.min(8, y * strength));
+
+    magnetRef.current.style.setProperty("--mx", `${tx}px`);
+    magnetRef.current.style.setProperty("--my", `${ty}px`);
+  };
+
+  const resetMagnet = () => {
+    if (!magnetRef.current) return;
+    magnetRef.current.style.setProperty("--mx", `0px`);
+    magnetRef.current.style.setProperty("--my", `0px`);
+  };
+
   const cardVariants = {
     hidden: { opacity: 0, y: 26 },
     visible: { opacity: 1, y: 0 },
@@ -422,7 +461,25 @@ export default function ServiceSection() {
           <FooterHint>
             Más soluciones a medida para interior y exterior.
           </FooterHint>
-          <AllServicesLink to="/servicios" aria-label="Ver todos los servicios">
+          <AllServicesLink
+            ref={magnetRef}
+            to="/servicios"
+            aria-label="Ver todos los servicios"
+            onMouseMove={setMagnet}
+            onMouseLeave={resetMagnet}
+            onBlur={resetMagnet}
+            style={{
+              transform:
+                "translate3d(var(--mx, 0px), calc(var(--my, 0px) - 2px), 0)",
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 220,
+              damping: 18,
+              mass: 0.5,
+            }}
+            whileHover={{ scale: 1.02 }}
+          >
             Ver todos los servicios <span>→</span>
           </AllServicesLink>
         </FooterRow>

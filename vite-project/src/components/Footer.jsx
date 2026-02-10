@@ -152,17 +152,6 @@ export default function Footer({ onOpenAsesoramiento }) {
                   Facebook
                 </Action>
               </ActionRow>
-
-              <FooterCTA>
-                <CTAButton to="/contact">Pedir asesoramiento</CTAButton>
-                <CTAButtonGhost
-                  href={CONTACT.whatsappUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  WhatsApp
-                </CTAButtonGhost>
-              </FooterCTA>
             </Col>
           </Cols>
 
