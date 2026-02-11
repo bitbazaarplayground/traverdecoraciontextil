@@ -36,11 +36,38 @@ const HeroImg = styled(motion.img)`
   filter: brightness(0.9) contrast(0.98) saturate(0.95);
 `;
 
+// const Overlay = styled.div`
+//   position: absolute;
+//   inset: 0;
+
+//   /* Light editorial overlay — not cinematic */
+//   background: linear-gradient(
+//       to bottom,
+//       rgba(0, 0, 0, 0.28),
+//       rgba(0, 0, 0, 0.18) 40%,
+//       rgba(0, 0, 0, 0.32)
+//     ),
+//     radial-gradient(
+//       900px 520px at 50% 55%,
+//       rgba(255, 255, 255, 0.04),
+//       rgba(0, 0, 0, 0.22)
+//     );
+//   backdrop-filter: saturate(1.02);
+//   -webkit-backdrop-filter: saturate(1.02);
+
+//   @media (max-width: 768px) {
+//     backdrop-filter: saturate(1.01);
+//     background: linear-gradient(
+//       to bottom,
+//       rgba(0, 0, 0, 0.22),
+//       rgba(0, 0, 0, 0.14) 45%,
+//       rgba(0, 0, 0, 0.28)
+//     );
+//   }
+// `;
 const Overlay = styled.div`
   position: absolute;
   inset: 0;
-
-  /* Light editorial overlay — not cinematic */
   background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.28),
@@ -52,11 +79,14 @@ const Overlay = styled.div`
       rgba(255, 255, 255, 0.04),
       rgba(0, 0, 0, 0.22)
     );
+
   backdrop-filter: saturate(1.02);
   -webkit-backdrop-filter: saturate(1.02);
 
   @media (max-width: 768px) {
-    backdrop-filter: saturate(1.01);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+
     background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.22),
