@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
-import heroFirst from "../assets/heroHome/1.webp";
+import heroMobile from "../assets/heroHome/1-mobile.webp";
+import heroDesktop from "../assets/heroHome/1.webp";
 import ContactCTAHome from "../components/ContactCTAHome";
 import Hero from "../components/Hero";
 import Process from "../components/Process";
@@ -127,11 +128,22 @@ export default function HomePage({ onOpenAsesoramiento }) {
     <>
       <Helmet>
         <title>{title}</title>
+        {/* Mobile */}
         <link
           rel="preload"
           as="image"
-          href={heroFirst}
+          href={heroMobile}
           type="image/webp"
+          media="(max-width: 768px)"
+          fetchpriority="high"
+        />
+        {/* Desktop */}
+        <link
+          rel="preload"
+          as="image"
+          href={heroDesktop}
+          type="image/webp"
+          media="(min-width: 769px)"
           fetchpriority="high"
         />
 
