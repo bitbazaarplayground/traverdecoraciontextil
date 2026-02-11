@@ -172,7 +172,13 @@ export default function Navbar({ hidden }) {
                 $isHome={isHome}
                 aria-label="Volver a inicio"
               >
-                <img src="/logo.png" alt="Traver logo" />
+                <img
+                  src="/logo.webp"
+                  alt="Traver logo"
+                  width="200"
+                  height="60"
+                  decoding="async"
+                />
               </Logo>
             )}
           </LeftWrapper>
