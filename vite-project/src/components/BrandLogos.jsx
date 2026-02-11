@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import Bandalux from "../assets/Home/brands/bandalux.jpeg";
@@ -11,7 +12,7 @@ import RobertoCavalli from "../assets/Home/brands/robertocavalli.png";
 import Somfy from "../assets/Home/brands/somfy.png";
 
 /* =========================
-   SHARED
+   DATA
 ========================= */
 
 const logos = [
@@ -27,6 +28,33 @@ const logos = [
 ];
 
 /* =========================
+   HOOK
+========================= */
+
+function useIsDesktop(minWidth = 769) {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    if (!window?.matchMedia) return;
+
+    const mq = window.matchMedia(`(min-width: ${minWidth}px)`);
+    const update = () => setIsDesktop(mq.matches);
+
+    update();
+    // Safari compatibility: addListener/removeListener fallback
+    if (mq.addEventListener) mq.addEventListener("change", update);
+    else mq.addListener(update);
+
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", update);
+      else mq.removeListener(update);
+    };
+  }, [minWidth]);
+
+  return isDesktop;
+}
+
+/* =========================
    DESKTOP VERSION
 ========================= */
 
@@ -34,10 +62,6 @@ const DesktopSection = styled.section`
   width: 100%;
   padding: 3rem 1.5rem 3.2rem;
   background: #fff;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
 `;
 
 const DesktopTitle = styled.h2`
@@ -80,6 +104,12 @@ const DesktopLogoItem = styled.div`
     transform: translateY(-2px);
     background: rgba(17, 17, 17, 0.03);
   }
+
+  @media (hover: none) {
+    &:hover {
+      transform: none;
+    }
+  }
 `;
 
 const DesktopLogo = styled.img`
@@ -105,10 +135,6 @@ const MobileSection = styled.section`
   width: 100%;
   padding: 1.25rem 1rem;
   background: #fff;
-
-  @media (min-width: 769px) {
-    display: none;
-  }
 `;
 
 const MobileTitle = styled.p`
@@ -140,9 +166,10 @@ const MobileLogo = styled.img`
 ========================= */
 
 export default function BrandLogos() {
-  return (
-    <>
-      {/* 🖥 Desktop */}
+  const isDesktop = useIsDesktop(769);
+
+  if (isDesktop) {
+    return (
       <DesktopSection>
         <DesktopTitle>
           Trabajamos con marcas <span>líderes</span> en automatización y
@@ -152,22 +179,38 @@ export default function BrandLogos() {
         <DesktopGrid>
           {logos.map((logo) => (
             <DesktopLogoItem key={logo.alt}>
-              <DesktopLogo src={logo.src} alt={logo.alt} />
+              <DesktopLogo
+                src={logo.src}
+                alt={logo.alt}
+                width="150"
+                height="55"
+                loading="lazy"
+                decoding="async"
+              />
             </DesktopLogoItem>
           ))}
         </DesktopGrid>
       </DesktopSection>
+    );
+  }
 
-      {/* 📱 Mobile */}
-      <MobileSection>
-        <MobileTitle>Marcas con las que trabajamos</MobileTitle>
+  return (
+    <MobileSection>
+      <MobileTitle>Marcas con las que trabajamos</MobileTitle>
 
-        <MobileGrid>
-          {logos.slice(0, 8).map((logo) => (
-            <MobileLogo key={logo.alt} src={logo.src} alt={logo.alt} />
-          ))}
-        </MobileGrid>
-      </MobileSection>
-    </>
+      <MobileGrid>
+        {logos.slice(0, 8).map((logo) => (
+          <MobileLogo
+            key={logo.alt}
+            src={logo.src}
+            alt={logo.alt}
+            width="120"
+            height="32"
+            loading="lazy"
+            decoding="async"
+          />
+        ))}
+      </MobileGrid>
+    </MobileSection>
   );
 }

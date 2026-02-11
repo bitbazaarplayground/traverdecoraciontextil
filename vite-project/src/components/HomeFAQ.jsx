@@ -8,7 +8,7 @@ import { trackEvent } from "../lib/analytics";
 
 export default function HomeFAQ({ onOpenAsesoramiento }) {
   const baseId = useId();
-  const [openIndex, setOpenIndex] = useState(0);
+  const [openIndex, setOpenIndex] = useState(-1);
 
   const items = useMemo(() => homeFaq, []);
 
@@ -56,6 +56,7 @@ export default function HomeFAQ({ onOpenAsesoramiento }) {
                     id={panelId}
                     role="region"
                     aria-labelledby={buttonId}
+                    aria-hidden={!isOpen}
                     $open={isOpen}
                   >
                     <AnswerInner>{item.a}</AnswerInner>

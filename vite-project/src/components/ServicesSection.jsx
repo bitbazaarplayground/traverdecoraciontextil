@@ -138,11 +138,13 @@ const Media = styled.div`
   }
 `;
 
-const Image = styled.div`
+const CardImg = styled.img`
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
   transform: scale(1.02);
   transition: transform 0.65s ease;
 
@@ -373,7 +375,15 @@ export default function ServiceSection() {
               aria-label="Ver Cortinas y Estores"
             >
               <Media>
-                <Image style={{ backgroundImage: `url(${Img2})` }} />
+                <CardImg
+                  src={Img2}
+                  alt="Cortinas y estores a medida"
+                  width="1200"
+                  height="800"
+                  loading="lazy"
+                  decoding="async"
+                />
+
                 <Overlay />
                 <Badge>Interior</Badge>
 
@@ -405,7 +415,15 @@ export default function ServiceSection() {
               aria-label="Ir a Toldos y Protección Solar"
             >
               <Media>
-                <Image style={{ backgroundImage: `url(${restaurante1})` }} />
+                <CardImg
+                  src={restaurante1}
+                  alt="Toldos y protección solar"
+                  width="1200"
+                  height="800"
+                  loading="lazy"
+                  decoding="async"
+                />
+
                 <Overlay />
                 <Badge>Exterior</Badge>
 
@@ -437,7 +455,15 @@ export default function ServiceSection() {
               aria-label="Ir a Automatización del Hogar"
             >
               <Media>
-                <Image style={{ backgroundImage: `url(${Img3})` }} />
+                <CardImg
+                  src={Img3}
+                  alt="Automatización del hogar"
+                  width="1200"
+                  height="800"
+                  loading="lazy"
+                  decoding="async"
+                />
+
                 <Overlay />
                 <Badge>Smart Home</Badge>
 

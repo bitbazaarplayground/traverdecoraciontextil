@@ -1,22 +1,29 @@
+// src/pages/HomePage.jsx
 import { lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
+
 import heroMobile from "../assets/heroHome/1-mobile.webp";
 import heroDesktop from "../assets/heroHome/1.webp";
-import ContactCTAHome from "../components/ContactCTAHome";
+
 import Hero from "../components/Hero";
-import Process from "../components/Process";
-import ServicesSection from "../components/ServicesSection";
+import LazyOnVisible from "../components/LazyOnVisible";
+
 import { CONTACT } from "../config/contact";
 import { homeFaq } from "../content/homeFaq";
+
+// Lazy sections (below the hero)
+const ServicesSection = lazy(() => import("../components/ServicesSection"));
+const Process = lazy(() => import("../components/Process"));
+const ContactCTAHome = lazy(() => import("../components/ContactCTAHome"));
 
 const GalleryCarousel = lazy(() => import("../components/GalleryCarousel"));
 const BrandLogos = lazy(() => import("../components/BrandLogos"));
 const HomeFAQ = lazy(() => import("../components/HomeFAQ"));
+
 export default function HomePage({ onOpenAsesoramiento }) {
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
-
   const canonical = `${baseUrl}/`;
 
   // Prefer centralized contact + brand data
@@ -39,19 +46,16 @@ export default function HomePage({ onOpenAsesoramiento }) {
     description,
     image: ogImage,
     logo,
-
     email: CONTACT.email,
     telephone: CONTACT.phoneLandline, // display format
     address: {
       "@type": "PostalAddress",
       ...CONTACT.address,
     },
-
     areaServed: [
       { "@type": "AdministrativeArea", name: "Castellón" },
       { "@type": "AdministrativeArea", name: "Valencia" },
     ],
-
     contactPoint: [
       {
         "@type": "ContactPoint",
@@ -67,7 +71,6 @@ export default function HomePage({ onOpenAsesoramiento }) {
         availableLanguage: ["es"],
       },
     ],
-
     sameAs: [CONTACT.facebookUrl],
   };
 
@@ -79,7 +82,6 @@ export default function HomePage({ onOpenAsesoramiento }) {
     name: siteName,
     inLanguage: "es-ES",
     publisher: { "@id": `${canonical}#business` },
-    // Optional: harmless even if you don't have a search UI
     potentialAction: {
       "@type": "SearchAction",
       target: `${baseUrl}/?q={search_term_string}`,
@@ -110,10 +112,7 @@ export default function HomePage({ onOpenAsesoramiento }) {
     mainEntity: homeFaq.map(({ q, a }) => ({
       "@type": "Question",
       name: q,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: a,
-      },
+      acceptedAnswer: { "@type": "Answer", text: a },
     })),
   };
 
@@ -128,23 +127,23 @@ export default function HomePage({ onOpenAsesoramiento }) {
     <>
       <Helmet>
         <title>{title}</title>
-        {/* Mobile */}
+
+        {/* Preload hero image (mobile/desktop) */}
         <link
           rel="preload"
           as="image"
           href={heroMobile}
           type="image/webp"
           media="(max-width: 768px)"
-          fetchpriority="high"
+          fetchPriority="high"
         />
-        {/* Desktop */}
         <link
           rel="preload"
           as="image"
           href={heroDesktop}
           type="image/webp"
           media="(min-width: 769px)"
-          fetchpriority="high"
+          fetchPriority="high"
         />
 
         <meta name="description" content={description} />
@@ -175,15 +174,32 @@ export default function HomePage({ onOpenAsesoramiento }) {
       </Helmet>
 
       <Hero onOpenAsesoramiento={onOpenAsesoramiento} />
-      <ServicesSection />
-      <Process />
-      <ContactCTAHome onOpenAsesoramiento={onOpenAsesoramiento} />
 
-      <Suspense fallback={null}>
-        <GalleryCarousel />
-        <BrandLogos />
-        <HomeFAQ onOpenAsesoramiento={onOpenAsesoramiento} />
-      </Suspense>
+      <LazyOnVisible rootMargin="800px 0px" minHeight={600}>
+        <Suspense fallback={null}>
+          <ServicesSection />
+        </Suspense>
+      </LazyOnVisible>
+
+      <LazyOnVisible rootMargin="800px 0px" minHeight={500}>
+        <Suspense fallback={null}>
+          <Process />
+        </Suspense>
+      </LazyOnVisible>
+
+      <LazyOnVisible rootMargin="900px 0px" minHeight={420}>
+        <Suspense fallback={null}>
+          <ContactCTAHome onOpenAsesoramiento={onOpenAsesoramiento} />
+        </Suspense>
+      </LazyOnVisible>
+
+      <LazyOnVisible rootMargin="900px 0px" minHeight={520}>
+        <Suspense fallback={null}>
+          <GalleryCarousel />
+          <BrandLogos />
+          <HomeFAQ onOpenAsesoramiento={onOpenAsesoramiento} />
+        </Suspense>
+      </LazyOnVisible>
     </>
   );
 }

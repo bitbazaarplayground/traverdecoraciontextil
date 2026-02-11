@@ -6,15 +6,17 @@ import "swiper/css/pagination";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-// Import images
-import Img1 from "../assets/Home/interior/cellular-shades-bedroom-pala-old-lace-three-quarter-inch-cell-vertical-cells.webp";
-import Img2 from "../assets/Home/interior/roller-shades-dining-room-luminescence-sterling-large-statement-lamp.webp";
-import Img3 from "../assets/Home/interior/roller-shades-living-room-artesian-antiquity-026-feather-vase.webp";
-import Img4 from "../assets/Home/interior/roller-shades-living-room-hombre-flax-340-concrete-accent-furniture.webp";
-import Img5 from "../assets/Home/interior/roller-shades-living-room-watson-dove-grey-380-textured-floral-walls.webp";
-import Img6 from "../assets/Home/interior/solar-shades-dallas-coppell-commercial-church-sundance-1-percent-ebony-318-view-3.webp";
-import Img7 from "../assets/Home/interior/solar-shades-kitchen-newscast-5-percent-white-white-202-sliding-glass-doors.webp";
-import Img8 from "../assets/Home/interior/solar-shades-seattle-commercial-real-estate-office-shoreview-3-percent-charcoal-185-view-1.webp";
+// Public images (served from /public/gallery)
+const images = [
+  "/gallery/cellular-shades-bedroom-pala-old-lace-three-quarter-inch-cell-vertical-cells.webp",
+  "/gallery/roller-shades-dining-room-luminescence-sterling-large-statement-lamp.webp",
+  "/gallery/roller-shades-living-room-artesian-antiquity-026-feather-vase.webp",
+  "/gallery/roller-shades-living-room-hombre-flax-340-concrete-accent-furniture.webp",
+  "/gallery/roller-shades-living-room-watson-dove-grey-380-textured-floral-walls.webp",
+  "/gallery/solar-shades-dallas-coppell-commercial-church-sundance-1-percent-ebony-318-view-3.webp",
+  "/gallery/solar-shades-kitchen-newscast-5-percent-white-white-202-sliding-glass-doors.webp",
+  "/gallery/solar-shades-seattle-commercial-real-estate-office-shoreview-3-percent-charcoal-185-view-1.webp",
+];
 
 const SectionWrapper = styled.section`
   padding: 3.4rem 1.5rem;
@@ -51,10 +53,6 @@ const Title = styled.h2`
   font-weight: 600;
   color: #222;
   margin-bottom: 1rem;
-
-  span {
-    color: ${({ theme }) => theme.colors.primary};
-  }
 
   @media (max-width: 768px) {
     font-size: 1.7rem;
@@ -94,7 +92,11 @@ const Img = styled.img`
 
 export default function GalleryCarousel() {
   const swiperRef = useRef(null);
-  const images = [Img1, Img2, Img3, Img4, Img5, Img6, Img7, Img8];
+
+  const isMobile =
+    typeof window !== "undefined" &&
+    window.matchMedia &&
+    window.matchMedia("(max-width: 768px)").matches;
 
   return (
     <SectionWrapper id="gallery">
@@ -109,7 +111,9 @@ export default function GalleryCarousel() {
         spaceBetween={20}
         navigation={false}
         pagination={{ clickable: true }}
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        autoplay={
+          isMobile ? false : { delay: 3000, disableOnInteraction: false }
+        }
         loop={true}
         onSwiper={(swiperInstance) => {
           swiperRef.current = swiperInstance;
@@ -121,12 +125,19 @@ export default function GalleryCarousel() {
         }}
       >
         {images.map((src, i) => (
-          <SwiperSlide key={i}>
+          <SwiperSlide key={src}>
             <ImageWrapper
-              onMouseEnter={() => swiperRef.current?.autoplay.stop()}
-              onMouseLeave={() => swiperRef.current?.autoplay.start()}
+              onMouseEnter={() => swiperRef.current?.autoplay?.stop?.()}
+              onMouseLeave={() => swiperRef.current?.autoplay?.start?.()}
             >
-              <Img src={src} alt={`gallery-${i}`} />
+              <Img
+                src={src}
+                alt={`Inspiración ${i + 1}`}
+                width="1200"
+                height="900"
+                loading={!isMobile && i === 0 ? "eager" : "lazy"}
+                decoding="async"
+              />
             </ImageWrapper>
           </SwiperSlide>
         ))}

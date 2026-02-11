@@ -79,17 +79,31 @@ const StepCard = styled.div`
   &:hover {
     transform: translateY(-4px);
   }
+  @media (hover: none) {
+    &:hover {
+      transform: none;
+    }
+  }
 `;
 
-const StepImage = styled.div`
+const StepImageWrap = styled.div`
+  position: relative;
   width: 100%;
   height: 195px;
-  background-size: cover;
-  background-position: center;
+  overflow: hidden;
 
   @media (max-width: 768px) {
     height: 175px;
   }
+`;
+
+const StepImg = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 `;
 
 const StepContent = styled.div`
@@ -170,7 +184,16 @@ export default function Process() {
       <StepsGrid>
         {steps.map((step) => (
           <StepCard key={step.number}>
-            <StepImage style={{ backgroundImage: `url(${step.image})` }} />
+            <StepImageWrap>
+              <StepImg
+                src={step.image}
+                alt={step.title}
+                width="1200"
+                height="800"
+                loading="lazy"
+                decoding="async"
+              />
+            </StepImageWrap>
 
             <StepContent>
               <StepNumber>{step.number}</StepNumber>

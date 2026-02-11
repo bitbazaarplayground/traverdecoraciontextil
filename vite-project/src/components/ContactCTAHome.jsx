@@ -14,11 +14,6 @@ const Section = styled.section`
   text-align: center;
   overflow: hidden;
 
-  background-image: url(${CTAHome});
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
   @media (max-width: 768px) {
     padding: 3.1rem 1.5rem;
     text-align: center;
@@ -31,6 +26,20 @@ const Section = styled.section`
     background: rgba(0, 0, 0, 0.35);
     z-index: 1;
   }
+`;
+
+const CTAImageWrap = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+`;
+
+const CTAImg = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 `;
 
 const Content = styled.div`
@@ -151,6 +160,17 @@ export default function ContactCTAHome({ onOpenAsesoramiento }) {
 
   return (
     <Section>
+      <CTAImageWrap>
+        <CTAImg
+          src={CTAHome}
+          alt=""
+          width="1920"
+          height="1080"
+          loading="lazy"
+          decoding="async"
+        />
+      </CTAImageWrap>
+
       <Content ref={ref}>
         <HeadingLarge>
           ¿Preparado para sacarle todo el potencial a tu casa?
