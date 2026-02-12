@@ -2,10 +2,15 @@ import { motion } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Img2 from "../assets/Home/HeroImg/img2.webp";
-import Img3 from "../assets/Home/HeroImg/img3.webp";
-import restaurante1 from "../assets/Home/HeroImg/restaurante1.AVIF";
+import Img2_850 from "../assets/Home/HeroImg/img2-mobile.webp";
+import Img2_1100 from "../assets/Home/HeroImg/img2.webp";
+import Img3_850 from "../assets/Home/HeroImg/img3-mobile.webp";
+import Img3_1100 from "../assets/Home/HeroImg/img3.webp";
+import restaurante1_850 from "../assets/Home/HeroImg/restaurante1-mobile.webp";
+import restaurante1_1100 from "../assets/Home/HeroImg/restaurante1.webp";
 import zebraBg from "../assets/zebra_pattern.webp";
+
+const CARD_SIZES = "(max-width: 768px) 92vw, (max-width: 1100px) 30vw, 360px";
 
 /* =========================
    SECTION
@@ -125,6 +130,13 @@ const Card = styled(motion.article)`
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 40px 110px rgba(0, 0, 0, 0.12);
+  }
+
+  @media (hover: none) {
+    &:hover {
+      transform: translateY(0);
+      box-shadow: 0 28px 85px rgba(0, 0, 0, 0.08);
+    }
   }
 `;
 
@@ -376,10 +388,12 @@ export default function ServiceSection() {
             >
               <Media>
                 <CardImg
-                  src={Img2}
+                  src={Img2_1100}
+                  srcSet={`${Img2_850} 850w, ${Img2_1100} 1100w`}
+                  sizes={CARD_SIZES}
                   alt="Cortinas y estores a medida"
-                  width="1200"
-                  height="800"
+                  width="1100"
+                  height="733"
                   loading="lazy"
                   decoding="async"
                 />
@@ -416,10 +430,12 @@ export default function ServiceSection() {
             >
               <Media>
                 <CardImg
-                  src={restaurante1}
+                  src={restaurante1_1100}
+                  srcSet={`${restaurante1_850} 850w, ${restaurante1_1100} 1100w`}
+                  sizes={CARD_SIZES}
                   alt="Toldos y protección solar"
-                  width="1200"
-                  height="800"
+                  width="1100"
+                  height="733"
                   loading="lazy"
                   decoding="async"
                 />
@@ -456,10 +472,12 @@ export default function ServiceSection() {
             >
               <Media>
                 <CardImg
-                  src={Img3}
+                  src={Img3_1100}
+                  srcSet={`${Img3_850} 850w, ${Img3_1100} 1100w`}
+                  sizes={CARD_SIZES}
                   alt="Automatización del hogar"
-                  width="1200"
-                  height="800"
+                  width="1100"
+                  height="733"
                   loading="lazy"
                   decoding="async"
                 />
@@ -483,10 +501,12 @@ export default function ServiceSection() {
             </MediaLink>
           </Card>
         </Grid>
+
         <FooterRow>
           <FooterHint>
             Más soluciones a medida para interior y exterior.
           </FooterHint>
+
           <AllServicesLink
             ref={magnetRef}
             to="/servicios"
@@ -497,12 +517,6 @@ export default function ServiceSection() {
             style={{
               transform:
                 "translate3d(var(--mx, 0px), calc(var(--my, 0px) - 2px), 0)",
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 220,
-              damping: 18,
-              mass: 0.5,
             }}
             whileHover={{ scale: 1.02 }}
           >

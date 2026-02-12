@@ -1,9 +1,18 @@
 import styled from "styled-components";
-import assesoramiento from "../assets/process/InteriorPlanning.webp";
-import catalogo from "../assets/process/catalogoP.webp";
+import assesoramiento840 from "../assets/process/InteriorPlanning-mobile.webp";
+import assesoramiento1100 from "../assets/process/InteriorPlanning.webp";
+import catalogo840 from "../assets/process/catalogoP-mobile.webp";
+import catalogo1100 from "../assets/process/catalogoP.webp";
 import final840 from "../assets/process/final-mobile.webp";
 import final1100 from "../assets/process/final.webp";
-import jose from "../assets/process/instalacionProfessional.webp";
+import jose840 from "../assets/process/instalacionProfessional-mobile.webp";
+import jose1100 from "../assets/process/instalacionProfessional.webp";
+
+/* =========================
+   RESPONSIVE IMAGE SIZES
+========================= */
+
+const CARD_SIZES = "(max-width: 768px) 92vw, (max-width: 1100px) 45vw, 520px";
 
 /* =========================
    SECTION
@@ -142,19 +151,26 @@ const steps = [
     number: "Paso 1",
     title: "Asesoramiento personalizado",
     text: "Escuchamos tus ideas, necesidades y estilo para ofrecerte soluciones a medida.",
-    image: assesoramiento,
+    image: assesoramiento1100,
+    imageSrcSet: `${assesoramiento840} 840w, ${assesoramiento1100} 1100w`,
+    imageSizes: CARD_SIZES,
   },
   {
     number: "Paso 2",
     title: "Selección de materiales",
     text: "Te ayudamos a elegir tejidos, papeles y sistemas que encajen con tu espacio y tu forma de vivir.",
-    image: catalogo,
+    image: catalogo1100,
+    imageSrcSet: `${catalogo840} 840w, ${catalogo1100} 1100w`,
+    imageSizes: CARD_SIZES,
   },
   {
     number: "Paso 3",
     title: "Instalación profesional",
     text: "Nuestro equipo se encarga de la instalación con precisión y cuidado, respetando tu hogar.",
     image: jose,
+    image: jose1100,
+    imageSrcSet: `${jose840} 840w, ${jose1100} 1100w`,
+    imageSizes: CARD_SIZES,
   },
   {
     number: "Paso 4",
@@ -162,7 +178,7 @@ const steps = [
     text: "Un espacio equilibrado, funcional y elegante, pensado para disfrutarlo cada día.",
     image: final1100,
     imageSrcSet: `${final840} 840w, ${final1100} 1100w`,
-    imageSizes: "(max-width: 768px) 92vw, (max-width: 1100px) 45vw, 520px",
+    imageSizes: CARD_SIZES,
   },
 ];
 
