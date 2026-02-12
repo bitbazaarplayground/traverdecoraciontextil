@@ -1,34 +1,46 @@
-import { useState } from "react";
+// src/App.jsx
+import { lazy, Suspense, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
+
 import AsesoramientoModal from "./components/AsesoramientoModal";
-import AutomatizacionCompleta from "./components/AutomatizacionCompleta";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
-import AutomatizacionIndividual from "./components/automatizacion/AutomatizacionIndividual";
-import Mosquiteras from "./components/ventanas/Mosquiteras";
-import PanelJapones from "./components/ventanas/PanelJapones";
-import Venecianas from "./components/ventanas/Venecianas";
-import AdminBookings from "./pages/Admin/AdminBookings";
-import AdminCalendar from "./pages/Admin/AdminCalendar";
-import AdminClients from "./pages/Admin/AdminClientes";
-import AdminCustomer from "./pages/Admin/AdminCustomer";
-import AdminDashboard from "./pages/Admin/AdminDashboard";
-import AdminLayout from "./pages/Admin/AdminLayout";
-import AdminResetPassword from "./pages/Admin/AdminResetPassword";
-import AdminSettings from "./pages/Admin/AdminSettings";
-import AuthCallback from "./pages/AuthCallback";
-import Automatizacion from "./pages/Automatizacion";
-import AvisoLegal from "./pages/AvisoLegal";
-import ContactPage from "./pages/ContactPage";
-import CortinasEstores from "./pages/CortinasEstores";
-import HomePage from "./pages/HomePage";
-import PoliticaCookies from "./pages/PoliticaCookies";
-import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
-import Propuestas from "./pages/Propuestas";
-import Servicios from "./pages/Servicios";
-import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
+
+// Pages (lazy)
+const HomePage = lazy(() => import("./pages/HomePage"));
+const Propuestas = lazy(() => import("./pages/Propuestas"));
+const Automatizacion = lazy(() => import("./pages/Automatizacion"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const CortinasEstores = lazy(() => import("./pages/CortinasEstores"));
+const ToldosProteccionSolar = lazy(() =>
+  import("./pages/ToldosProteccionSolar")
+);
+const Servicios = lazy(() => import("./pages/Servicios"));
+const AvisoLegal = lazy(() => import("./pages/AvisoLegal"));
+const PoliticaPrivacidad = lazy(() => import("./pages/PoliticaPrivacidad"));
+const PoliticaCookies = lazy(() => import("./pages/PoliticaCookies"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
+const AdminResetPassword = lazy(() =>
+  import("./pages/Admin/AdminResetPassword")
+);
+
+// Components/pages used by routes (lazy)
+const AutomatizacionCompleta = lazy(() =>
+  import("./components/AutomatizacionCompleta")
+);
+const AutomatizacionIndividual = lazy(() =>
+  import("./components/automatizacion/AutomatizacionIndividual")
+);
+
+// Ventanas (lazy)
+const Mosquiteras = lazy(() => import("./components/ventanas/Mosquiteras"));
+const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
+const Venecianas = lazy(() => import("./components/ventanas/Venecianas"));
+
+// ✅ Admin area as ONE lazy-loaded app
+const AdminApp = lazy(() => import("./pages/Admin/AdminApp"));
 
 export default function App() {
   const [isAsesoramientoOpen, setIsAsesoramientoOpen] = useState(false);
@@ -52,65 +64,59 @@ export default function App() {
       <ScrollToTop />
       {!isAdminRoute && <Navbar />}
 
-      <Routes>
-        <Route
-          path="/"
-          element={<HomePage onOpenAsesoramiento={openAsesoramiento} />}
-        />
+      <Suspense fallback={null}>
+        <Routes>
+          <Route
+            path="/"
+            element={<HomePage onOpenAsesoramiento={openAsesoramiento} />}
+          />
 
-        {/* PROPUESTAS */}
-        <Route
-          path="/propuestas"
-          element={<Propuestas onOpenAsesoramiento={openAsesoramiento} />}
-        />
+          <Route
+            path="/propuestas"
+            element={<Propuestas onOpenAsesoramiento={openAsesoramiento} />}
+          />
 
-        {/* AUTOMATIZACION */}
-        <Route path="/automatizacion" element={<Automatizacion />} />
-        <Route
-          path="/automatizacion/completa"
-          element={<AutomatizacionCompleta />}
-        />
-        <Route
-          path="/automatizacion/individual"
-          element={<AutomatizacionIndividual />}
-        />
+          <Route path="/automatizacion" element={<Automatizacion />} />
+          <Route
+            path="/automatizacion/completa"
+            element={<AutomatizacionCompleta />}
+          />
+          <Route
+            path="/automatizacion/individual"
+            element={<AutomatizacionIndividual />}
+          />
 
-        {/* CONTACTO */}
-        <Route path="/contact" element={<ContactPage />} />
+          <Route path="/contact" element={<ContactPage />} />
 
-        {/* SERVICIOS / CATEGORIAS */}
-        <Route path="/panel-japones" element={<PanelJapones />} />
-        <Route path="/venecianas" element={<Venecianas />} />
-        <Route path="/cortinas-estores" element={<CortinasEstores />} />
-        <Route
-          path="/toldos-proteccionsolar"
-          element={<ToldosProteccionSolar />}
-        />
-        <Route path="/mosquiteras" element={<Mosquiteras />} />
-        <Route path="/services" element={<Servicios />} />
-        {/* LEGALES */}
+          {/* Servicios / categorías */}
+          <Route path="/panel-japones" element={<PanelJapones />} />
+          <Route path="/venecianas" element={<Venecianas />} />
+          <Route path="/cortinas-estores" element={<CortinasEstores />} />
+          <Route
+            path="/toldos-proteccionsolar"
+            element={<ToldosProteccionSolar />}
+          />
+          <Route path="/mosquiteras" element={<Mosquiteras />} />
+          <Route path="/services" element={<Servicios />} />
 
-        <Route path="/aviso-legal" element={<AvisoLegal />} />
-        <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
-        <Route path="/politica-cookies" element={<PoliticaCookies />} />
+          {/* Legales */}
+          <Route path="/aviso-legal" element={<AvisoLegal />} />
+          <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+          <Route path="/politica-cookies" element={<PoliticaCookies />} />
 
-        {/* ADMIN */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="requests" element={<AdminBookings />} />
-          <Route path="calendario" element={<AdminCalendar />} />
-          <Route path="clientes" element={<AdminClients />} />
-          <Route path="clientes/:customerKey" element={<AdminCustomer />} />
+          {/* Auth */}
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route
+            path="/admin/reset-password"
+            element={<AdminResetPassword />}
+          />
 
-          <Route path="ajustes" element={<AdminSettings />} />
-        </Route>
+          {/* ✅ Admin (everything inside AdminApp, chunked away from homepage) */}
+          <Route path="/admin/*" element={<AdminApp />} />
+        </Routes>
+      </Suspense>
 
-        {/* AUTH */}
-        <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/admin/reset-password" element={<AdminResetPassword />} />
-      </Routes>
-
-      {/* ✅ Global modal (outside Routes) */}
+      {/* Global modal */}
       <AsesoramientoModal
         open={isAsesoramientoOpen}
         packLabel={modalPack}

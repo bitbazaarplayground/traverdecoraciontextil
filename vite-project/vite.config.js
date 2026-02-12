@@ -1,11 +1,21 @@
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig, splitVendorChunkPlugin } from "vite";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), splitVendorChunkPlugin()],
   server: {
     host: true,
     port: 5173,
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          supabase: ["@supabase/supabase-js"],
+          swiper: ["swiper", "swiper/react", "swiper/modules"],
+          motion: ["framer-motion"],
+        },
+      },
+    },
   },
 });
