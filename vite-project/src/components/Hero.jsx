@@ -3,7 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { trackEvent } from "../lib/analytics";
 
-import cortina4 from "../assets/heroHome/1.webp";
+import heroMobile from "../assets/heroHome/1-mobile.webp";
+import heroDesktop from "../assets/heroHome/1.webp";
+
 import blackoutImg from "../assets/heroHome/2.webp";
 import chenilleImg from "../assets/heroHome/3.webp";
 import Img2 from "../assets/heroHome/4.webp";
@@ -254,7 +256,7 @@ const ScrollHint = styled.div`
 
 export default function Hero({ onOpenAsesoramiento }) {
   const slides = useMemo(
-    () => [cortina4, Img2, blackoutImg, chenilleImg, Img3, wallpaper],
+    () => [heroDesktop, Img2, blackoutImg, chenilleImg, Img3, wallpaper],
     []
   );
 
@@ -299,20 +301,53 @@ export default function Hero({ onOpenAsesoramiento }) {
   return (
     <HeroWrapper>
       <AnimatePresence initial={false}>
-        <HeroImg
-          key={displaySrc}
-          src={displaySrc}
-          alt=""
-          width="1920"
-          height="1080"
-          fetchPriority={displaySrc === slides[0] ? "high" : "auto"}
-          loading={displaySrc === slides[0] ? "eager" : "lazy"}
-          decoding="async"
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1.03 }}
-          exit={{ opacity: 0, scale: 1.02 }}
-          transition={{ duration: 1.05, ease: "easeOut" }}
-        />
+        {displaySrc === slides[0] ? (
+          <motion.picture
+            key="hero-lcp"
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1.03 }}
+            exit={{ opacity: 0, scale: 1.02 }}
+            transition={{ duration: 1.05, ease: "easeOut" }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <source media="(max-width: 768px)" srcSet={heroMobile} />
+            <img
+              src={heroDesktop}
+              alt=""
+              width="1100"
+              height="733"
+              fetchPriority="high"
+              loading="eager"
+              decoding="async"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                transform: "scale(1.03)",
+                filter: "brightness(0.9) contrast(0.98) saturate(0.95)",
+                display: "block",
+              }}
+            />
+          </motion.picture>
+        ) : (
+          <HeroImg
+            key={displaySrc}
+            src={displaySrc}
+            alt=""
+            fetchPriority="auto"
+            loading="lazy"
+            decoding="async"
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1.03 }}
+            exit={{ opacity: 0, scale: 1.02 }}
+            transition={{ duration: 1.05, ease: "easeOut" }}
+          />
+        )}
       </AnimatePresence>
 
       <Overlay />

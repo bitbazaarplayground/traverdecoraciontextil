@@ -2,9 +2,6 @@
 import { lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 
-import heroMobile from "../assets/heroHome/1-mobile.webp";
-import heroDesktop from "../assets/heroHome/1.webp";
-
 import Hero from "../components/Hero";
 import LazyOnVisible from "../components/LazyOnVisible";
 
@@ -127,24 +124,6 @@ export default function HomePage({ onOpenAsesoramiento }) {
     <>
       <Helmet>
         <title>{title}</title>
-
-        {/* Preload hero image (mobile/desktop) */}
-        <link
-          rel="preload"
-          as="image"
-          href={heroMobile}
-          type="image/webp"
-          media="(max-width: 768px)"
-          fetchPriority="high"
-        />
-        <link
-          rel="preload"
-          as="image"
-          href={heroDesktop}
-          type="image/webp"
-          media="(min-width: 769px)"
-          fetchPriority="high"
-        />
 
         <meta name="description" content={description} />
         <meta name="robots" content="index,follow" />
