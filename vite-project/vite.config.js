@@ -11,9 +11,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          // ✅ admin-only (once we lazy-load admin, this stays out of homepage)
           supabase: ["@supabase/supabase-js"],
+
+          // ✅ only used when GalleryCarousel loads
           swiper: ["swiper", "swiper/react", "swiper/modules"],
-          motion: ["framer-motion"],
         },
       },
     },
