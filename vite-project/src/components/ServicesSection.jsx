@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+
 import Img2_850 from "../assets/Home/HeroImg/img2-mobile.webp";
 import Img2_1100 from "../assets/Home/HeroImg/img2.webp";
 import Img3_850 from "../assets/Home/HeroImg/img3-mobile.webp";
@@ -27,21 +28,22 @@ const Section = styled.section`
     padding: 3.6rem 1.5rem;
   }
 
-  /* Ultra-subtle brand texture (optional) */
-  &::before {
-    content: "";
-    position: absolute;
-    inset: -10%;
-    background-image: url(${zebraBg});
-    background-size: cover;
-    background-position: center;
-    opacity: 0.045; /* keep it luxury: barely visible */
-    filter: grayscale(1) contrast(0.9);
-    pointer-events: none;
-    z-index: 0;
+  /* ✅ Only show zebra texture on desktop-like devices (avoid loading on mobile) */
+  @media (hover: hover) and (pointer: fine) and (min-width: 900px) {
+    &::before {
+      content: "";
+      position: absolute;
+      inset: -10%;
+      background-image: url(${zebraBg});
+      background-size: cover;
+      background-position: center;
+      opacity: 0.045;
+      filter: grayscale(1) contrast(0.9);
+      pointer-events: none;
+      z-index: 0;
+    }
   }
 
-  /* Soft wash to keep everything clean */
   &::after {
     content: "";
     position: absolute;
@@ -83,6 +85,7 @@ const Title = styled.h2`
   font-weight: 600;
   text-align: center;
   color: #111;
+
   span {
     color: ${({ theme }) => theme.colors.primary};
   }
@@ -100,10 +103,6 @@ const Intro = styled.p`
   color: rgba(17, 17, 17, 0.68);
 `;
 
-/* =========================
-   GRID
-========================= */
-
 const Grid = styled.div`
   display: grid;
   gap: 1.15rem;
@@ -113,10 +112,6 @@ const Grid = styled.div`
     gap: 1.15rem;
   }
 `;
-
-/* =========================
-   CARD (premium tile)
-========================= */
 
 const Card = styled(motion.article)`
   border-radius: 24px;
@@ -156,12 +151,15 @@ const CardImg = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-
   transform: scale(1.02);
   transition: transform 0.65s ease;
 
   ${Card}:hover & {
     transform: scale(1.06);
+  }
+
+  @media (hover: none) {
+    transition: none;
   }
 `;
 
@@ -235,14 +233,18 @@ const AccentDot = styled.div`
   place-items: center;
   color: rgba(255, 255, 255, 0.9);
   font-weight: 900;
-
   transition: transform 0.25s ease, background 0.25s ease;
 
   ${Card}:hover & {
     transform: translateX(2px);
     background: rgba(255, 255, 255, 0.16);
   }
+
+  @media (hover: none) {
+    transition: none;
+  }
 `;
+
 const MediaLink = styled(Link)`
   display: block;
   position: relative;
@@ -255,6 +257,7 @@ const MediaLink = styled(Link)`
     border-radius: 24px;
   }
 `;
+
 const FooterRow = styled.div`
   margin-top: 1.2rem;
   display: flex;
@@ -310,10 +313,6 @@ const AllServicesLink = styled(motion(Link))`
   }
 `;
 
-/* =========================
-   COMPONENT
-========================= */
-
 export default function ServiceSection() {
   const magnetRef = useRef(null);
 
@@ -326,7 +325,6 @@ export default function ServiceSection() {
     if (prefersReducedMotion) return;
     if (!magnetRef.current) return;
 
-    // desktop only: hover + fine pointer
     if (
       typeof window !== "undefined" &&
       window.matchMedia &&
@@ -339,8 +337,7 @@ export default function ServiceSection() {
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
 
-    // subtle pull (premium)
-    const strength = 0.18; // lower = calmer
+    const strength = 0.18;
     const tx = Math.max(-10, Math.min(10, x * strength));
     const ty = Math.max(-8, Math.min(8, y * strength));
 
@@ -359,6 +356,9 @@ export default function ServiceSection() {
     visible: { opacity: 1, y: 0 },
   };
 
+  // ✅ Because this component is mounted via LazyOnVisible, it's already near viewport
+  const isNearViewport = true;
+
   return (
     <Section>
       <Inner>
@@ -374,7 +374,7 @@ export default function ServiceSection() {
         </Header>
 
         <Grid>
-          {/* CARD 1 */}
+          {/* CARD 1 (first image gets priority once mounted) */}
           <Card
             variants={cardVariants}
             initial="hidden"
@@ -394,19 +394,17 @@ export default function ServiceSection() {
                   alt="Cortinas y estores a medida"
                   width="1100"
                   height="733"
-                  loading="lazy"
+                  loading={isNearViewport ? "eager" : "lazy"}
+                  fetchPriority={isNearViewport ? "high" : "auto"}
                   decoding="async"
                 />
-
                 <Overlay />
                 <Badge>Interior</Badge>
-
                 <Content>
                   <CardTitle>Cortinas & Estores</CardTitle>
                   <CardText>
                     Control de luz y privacidad con tejidos y caída perfectos.
                   </CardText>
-
                   <CardFooter>
                     <div />
                     <AccentDot>→</AccentDot>
@@ -439,16 +437,13 @@ export default function ServiceSection() {
                   loading="lazy"
                   decoding="async"
                 />
-
                 <Overlay />
                 <Badge>Exterior</Badge>
-
                 <Content>
                   <CardTitle>Toldos & Protección Solar</CardTitle>
                   <CardText>
                     Sombra útil, temperatura controlada y estética duradera.
                   </CardText>
-
                   <CardFooter>
                     <div />
                     <AccentDot>→</AccentDot>
@@ -481,17 +476,14 @@ export default function ServiceSection() {
                   loading="lazy"
                   decoding="async"
                 />
-
                 <Overlay />
                 <Badge>Smart Home</Badge>
-
                 <Content>
                   <CardTitle>Automatización del Hogar</CardTitle>
                   <CardText>
                     Somfy, app y voz. El sistema se anticipa, tú mantienes el
                     control.
                   </CardText>
-
                   <CardFooter>
                     <div />
                     <AccentDot>→</AccentDot>
