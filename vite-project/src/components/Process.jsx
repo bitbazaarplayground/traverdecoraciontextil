@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import assesoramiento from "../assets/process/InteriorPlanning.webp";
 import catalogo from "../assets/process/catalogoP.webp";
-import final from "../assets/process/final.webp";
+import final840 from "../assets/process/final-mobile.webp";
+import final1100 from "../assets/process/final.webp";
 import jose from "../assets/process/instalacionProfessional.webp";
 
 /* =========================
@@ -160,6 +161,8 @@ const steps = [
     title: "Resultado final",
     text: "Un espacio equilibrado, funcional y elegante, pensado para disfrutarlo cada día.",
     image: final,
+    imageSrcSet: `${final840} 840w, ${final1100} 1100w`,
+    imageSizes: "(max-width: 768px) 92vw, (max-width: 1100px) 45vw, 520px",
   },
 ];
 
@@ -187,9 +190,11 @@ export default function Process() {
             <StepImageWrap>
               <StepImg
                 src={step.image}
+                srcSet={step.imageSrcSet}
+                sizes={step.imageSizes}
                 alt={step.title}
-                width="1200"
-                height="800"
+                width="1100"
+                height="700"
                 loading="lazy"
                 decoding="async"
               />

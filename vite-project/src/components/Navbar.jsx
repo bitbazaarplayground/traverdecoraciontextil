@@ -175,8 +175,8 @@ export default function Navbar({ hidden }) {
                 <img
                   src="/logo.webp"
                   alt="Traver logo"
-                  width="200"
-                  height="60"
+                  width="1514"
+                  height="422"
                   decoding="async"
                 />
               </Logo>
