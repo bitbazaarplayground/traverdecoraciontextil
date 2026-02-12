@@ -1,9 +1,7 @@
-import { useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+
+import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Public images (served from /public/gallery)
@@ -93,6 +91,11 @@ const Img = styled.img`
 export default function GalleryCarousel() {
   const swiperRef = useRef(null);
 
+  useLayoutEffect(() => {
+    import("swiper/css");
+    import("swiper/css/pagination");
+  }, []);
+
   const isMobile =
     typeof window !== "undefined" &&
     window.matchMedia &&
@@ -107,9 +110,8 @@ export default function GalleryCarousel() {
       </Subtitle>
 
       <Swiper
-        modules={[Navigation, Pagination, Autoplay]}
+        modules={[Pagination, Autoplay]}
         spaceBetween={20}
-        navigation={false}
         pagination={{ clickable: true }}
         autoplay={
           isMobile ? false : { delay: 3000, disableOnInteraction: false }
