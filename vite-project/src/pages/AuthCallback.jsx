@@ -1,7 +1,7 @@
+// src/pages/AuthCallback.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NoIndex from "../components/NoIndex";
-import { supabase } from "../lib/supabaseClient";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -12,13 +12,17 @@ export default function AuthCallback() {
 
     async function run() {
       try {
-        // Supabase will parse tokens from the URL automatically (hash/query depending on flow)
+        // ✅ Load Supabase only when this route is visited
+        const { supabase } = await import("../lib/supabaseClient");
+
+        // Supabase parses tokens from URL automatically
         const { data, error } = await supabase.auth.getSession();
         if (error) throw error;
 
-        // If it’s a recovery flow, Supabase sets a recovery session
         const params = new URLSearchParams(window.location.search);
         const type = params.get("type");
+
+        if (!alive) return;
 
         if (type === "recovery") {
           navigate("/admin/reset-password", { replace: true });
@@ -27,13 +31,6 @@ export default function AuthCallback() {
 
         if (!data?.session) {
           setMsg("No se encontró una sesión válida.");
-          return;
-        }
-
-        if (!alive) return;
-
-        if (type === "recovery") {
-          navigate("/admin/reset-password", { replace: true });
           return;
         }
 

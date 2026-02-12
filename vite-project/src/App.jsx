@@ -7,8 +7,6 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
 
-import AdminResetPassword from "./pages/Admin/AdminResetPassword";
-import AuthCallback from "./pages/AuthCallback";
 import Automatizacion from "./pages/Automatizacion";
 import AvisoLegal from "./pages/AvisoLegal";
 import ContactPage from "./pages/ContactPage";
@@ -33,6 +31,10 @@ const AdminCalendar = lazy(() => import("./pages/Admin/AdminCalendar"));
 const AdminClients = lazy(() => import("./pages/Admin/AdminClientes"));
 const AdminCustomer = lazy(() => import("./pages/Admin/AdminCustomer"));
 const AdminSettings = lazy(() => import("./pages/Admin/AdminSettings"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
+const AdminResetPassword = lazy(() =>
+  import("./pages/Admin/AdminResetPassword")
+);
 
 export default function App() {
   const [isAsesoramientoOpen, setIsAsesoramientoOpen] = useState(false);

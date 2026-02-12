@@ -1,8 +1,8 @@
+// src/pages/Admin/AdminResetPassword.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import NoIndex from "../../components/NoIndex";
-import { supabase } from "../../lib/supabaseClient";
 
 const Wrap = styled.div`
   max-width: 520px;
@@ -66,8 +66,21 @@ export default function AdminResetPassword() {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    // Ensures Supabase parses any tokens present in the URL/hash on first load
-    supabase.auth.getSession().catch(() => {});
+    let alive = true;
+
+    (async () => {
+      try {
+        // ✅ Load Supabase only when this route is visited
+        const { supabase } = await import("../../lib/supabaseClient");
+        await supabase.auth.getSession(); // parse tokens
+      } catch {
+        // ignore
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
   }, []);
 
   async function handleReset(e) {
@@ -84,17 +97,22 @@ export default function AdminResetPassword() {
     }
 
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password: pw1 });
-    setLoading(false);
 
-    if (error) {
-      setMsg(error.message);
-      return;
+    try {
+      const { supabase } = await import("../../lib/supabaseClient");
+
+      const { error } = await supabase.auth.updateUser({ password: pw1 });
+      if (error) throw error;
+
+      // Optional: sign out after reset (clean + secure)
+      await supabase.auth.signOut();
+
+      navigate("/admin", { replace: true });
+    } catch (err) {
+      setMsg(err?.message || "Error al actualizar la contraseña.");
+    } finally {
+      setLoading(false);
     }
-
-    // Optional: sign out after reset (clean + secure)
-    await supabase.auth.signOut();
-    navigate("/admin", { replace: true });
   }
 
   return (
