@@ -160,7 +160,7 @@ const steps = [
     number: "Paso 4",
     title: "Resultado final",
     text: "Un espacio equilibrado, funcional y elegante, pensado para disfrutarlo cada día.",
-    image: final,
+    image: final1100,
     imageSrcSet: `${final840} 840w, ${final1100} 1100w`,
     imageSizes: "(max-width: 768px) 92vw, (max-width: 1100px) 45vw, 520px",
   },
@@ -190,11 +190,12 @@ export default function Process() {
             <StepImageWrap>
               <StepImg
                 src={step.image}
-                srcSet={step.imageSrcSet}
-                sizes={step.imageSizes}
+                {...(step.imageSrcSet
+                  ? { srcSet: step.imageSrcSet, sizes: step.imageSizes }
+                  : {})}
                 alt={step.title}
                 width="1100"
-                height="700"
+                height="718"
                 loading="lazy"
                 decoding="async"
               />
