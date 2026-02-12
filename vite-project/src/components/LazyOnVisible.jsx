@@ -1,9 +1,11 @@
+// src/components/LazyOnVisible.jsx
 import { useEffect, useRef, useState } from "react";
 
 export default function LazyOnVisible({
   children,
   rootMargin = "600px 0px",
   minHeight = 1,
+  deferMs = 0, // ✅ optional: delay mounting even after it becomes visible
 }) {
   const ref = useRef(null);
   const [show, setShow] = useState(false);
@@ -13,19 +15,32 @@ export default function LazyOnVisible({
     const el = ref.current;
     if (!el) return;
 
+    let timeoutId;
+
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting) {
+        const hit = entries[0]?.isIntersecting;
+        if (!hit) return;
+
+        // Stop observing as soon as we decide to show it
+        io.disconnect();
+
+        if (deferMs > 0) {
+          timeoutId = window.setTimeout(() => setShow(true), deferMs);
+        } else {
           setShow(true);
-          io.disconnect();
         }
       },
       { rootMargin }
     );
 
     io.observe(el);
-    return () => io.disconnect();
-  }, [show, rootMargin]);
+
+    return () => {
+      io.disconnect();
+      if (timeoutId) window.clearTimeout(timeoutId);
+    };
+  }, [show, rootMargin, deferMs]);
 
   return (
     <div ref={ref} style={{ minHeight }}>

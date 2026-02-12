@@ -154,25 +154,26 @@ export default function HomePage({ onOpenAsesoramiento }) {
 
       <Hero onOpenAsesoramiento={onOpenAsesoramiento} />
 
-      <LazyOnVisible rootMargin="200px 0px" minHeight={600}>
+      {/* Keep these *tight* so they don't load during LCP */}
+      <LazyOnVisible rootMargin="0px 0px" minHeight={600} deferMs={1400}>
         <Suspense fallback={null}>
           <ServicesSection />
         </Suspense>
       </LazyOnVisible>
 
-      <LazyOnVisible rootMargin="200px 0px" minHeight={500}>
+      <LazyOnVisible rootMargin="0px 0px" minHeight={500} deferMs={1400}>
         <Suspense fallback={null}>
           <Process />
         </Suspense>
       </LazyOnVisible>
 
-      <LazyOnVisible rootMargin="200px 0px" minHeight={420}>
+      <LazyOnVisible rootMargin="100px 0px" minHeight={420} deferMs={1600}>
         <Suspense fallback={null}>
           <ContactCTAHome onOpenAsesoramiento={onOpenAsesoramiento} />
         </Suspense>
       </LazyOnVisible>
 
-      <LazyOnVisible rootMargin="200px 0px" minHeight={520}>
+      <LazyOnVisible rootMargin="200px 0px" minHeight={520} deferMs={1800}>
         <Suspense fallback={null}>
           <GalleryCarousel />
           <BrandLogos />
