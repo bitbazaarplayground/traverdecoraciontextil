@@ -167,7 +167,6 @@ const steps = [
     number: "Paso 3",
     title: "Instalación profesional",
     text: "Nuestro equipo se encarga de la instalación con precisión y cuidado, respetando tu hogar.",
-    image: jose,
     image: jose1100,
     imageSrcSet: `${jose840} 840w, ${jose1100} 1100w`,
     imageSizes: CARD_SIZES,
