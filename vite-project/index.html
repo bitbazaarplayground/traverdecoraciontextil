@@ -122,53 +122,50 @@
       }
     </script>
 
-    <!-- Google tag (gtag.js) -->
     <!-- Google tag (gtag.js) – delayed load -->
     <script>
-      (function () {
+      window.__gaLoad = function () {
+        if (window.__gaLoaded) return;
+        window.__gaLoaded = true;
+
         var GA_ID = "G-LD3K2K63QX";
-        var loaded = false;
+        var s = document.createElement("script");
+        s.async = true;
+        s.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
+        document.head.appendChild(s);
 
-        function loadGA() {
-          if (loaded) return;
-          loaded = true;
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        window.gtag = gtag;
 
-          var s = document.createElement("script");
-          s.async = true;
-          s.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
-          document.head.appendChild(s);
+        gtag("js", new Date());
+        gtag("config", GA_ID, { send_page_view: true });
+      };
+    </script>
 
-          window.dataLayer = window.dataLayer || [];
-          function gtag() {
-            dataLayer.push(arguments);
+    <script>
+      // schedule load after first paint-ish
+      window.addEventListener(
+        "load",
+        function () {
+          if ("requestIdleCallback" in window) {
+            requestIdleCallback(window.__gaLoad, { timeout: 2500 });
+          } else {
+            setTimeout(window.__gaLoad, 2000);
           }
-          window.gtag = gtag;
+        },
+        { once: true }
+      );
 
-          gtag("js", new Date());
-          gtag("config", GA_ID, { send_page_view: true });
-        }
-
-        // load after page is stable-ish
-        if ("requestIdleCallback" in window) {
-          requestIdleCallback(loadGA, { timeout: 2500 });
-        } else {
-          setTimeout(loadGA, 2000);
-        }
-
-        // also load on first interaction (covers users who bounce fast)
-        window.addEventListener("pointerdown", loadGA, {
+      // or load on first interaction
+      ["pointerdown", "keydown", "scroll"].forEach(function (evt) {
+        window.addEventListener(evt, window.__gaLoad, {
           once: true,
           passive: true,
         });
-        window.addEventListener("keydown", loadGA, {
-          once: true,
-          passive: true,
-        });
-        window.addEventListener("scroll", loadGA, {
-          once: true,
-          passive: true,
-        });
-      })();
+      });
     </script>
 
     <!-- Performance: Fonts -->

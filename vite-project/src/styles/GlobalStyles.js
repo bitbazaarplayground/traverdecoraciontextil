@@ -34,7 +34,6 @@ const GlobalStyles = createGlobalStyle`
 
   p { line-height: 1.6; }
 
- 
 `;
 
 export default GlobalStyles;
