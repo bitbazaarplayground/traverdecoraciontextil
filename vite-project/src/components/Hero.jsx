@@ -3,9 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { trackEvent } from "../lib/analytics";
 
-import heroMobile from "../assets/heroHome/1-mobile.webp";
-import heroDesktop from "../assets/heroHome/1.webp";
-
+import cortina4 from "../assets/heroHome/1.webp";
 import blackoutImg from "../assets/heroHome/2.webp";
 import chenilleImg from "../assets/heroHome/3.webp";
 import Img2 from "../assets/heroHome/4.webp";
@@ -28,7 +26,7 @@ const HeroWrapper = styled.section`
   display: grid;
   place-items: stretch;
 `;
-const HeroImg = styled(motion.img)`
+const HeroImg = styled.img`
   position: absolute;
   inset: 0;
   width: 100%;
@@ -38,9 +36,22 @@ const HeroImg = styled(motion.img)`
   filter: brightness(0.9) contrast(0.98) saturate(0.95);
 `;
 
+const Slide = styled(motion.div)`
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-color: #0b0c0f;
+  filter: brightness(0.9) contrast(0.98) saturate(0.95);
+  transform: scale(1.03);
+  will-change: opacity, transform;
+`;
+
 const Overlay = styled.div`
   position: absolute;
   inset: 0;
+
+  /* Light editorial overlay — not cinematic */
   background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.28),
@@ -52,14 +63,11 @@ const Overlay = styled.div`
       rgba(255, 255, 255, 0.04),
       rgba(0, 0, 0, 0.22)
     );
-
   backdrop-filter: saturate(1.02);
   -webkit-backdrop-filter: saturate(1.02);
 
   @media (max-width: 768px) {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-
+    backdrop-filter: saturate(1.01);
     background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.22),
@@ -256,12 +264,11 @@ const ScrollHint = styled.div`
 
 export default function Hero({ onOpenAsesoramiento }) {
   const slides = useMemo(
-    () => [heroDesktop, Img2, blackoutImg, chenilleImg, Img3, wallpaper],
+    () => [cortina4, Img2, blackoutImg, chenilleImg, Img3, wallpaper],
     []
   );
 
   const [index, setIndex] = useState(0);
-  const [displaySrc, setDisplaySrc] = useState(slides[0]);
 
   // Auto-rotate (same concept as theirs, slightly calmer pacing)
   useEffect(() => {
@@ -273,8 +280,6 @@ export default function Hero({ onOpenAsesoramiento }) {
 
   // Warm the rest of the hero images (avoid competing with first paint)
   useEffect(() => {
-    if (window.matchMedia("(max-width: 768px)").matches) return;
-
     const rest = slides.slice(1);
 
     const preload = () => {
@@ -291,64 +296,28 @@ export default function Hero({ onOpenAsesoramiento }) {
     }
   }, [slides]);
 
-  useEffect(() => {
-    const nextSrc = slides[index];
-    const img = new Image();
-    img.src = nextSrc;
-    img.onload = () => setDisplaySrc(nextSrc);
-  }, [index, slides]);
-
   return (
     <HeroWrapper>
-      <AnimatePresence initial={false}>
-        {displaySrc === slides[0] ? (
-          <motion.picture
-            key="hero-lcp"
-            initial={{ opacity: 0, scale: 1.04 }}
-            animate={{ opacity: 1, scale: 1.03 }}
-            exit={{ opacity: 0, scale: 1.02 }}
-            transition={{ duration: 1.05, ease: "easeOut" }}
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            <source media="(max-width: 768px)" srcSet={heroMobile} />
-            <img
-              src={heroDesktop}
-              alt=""
-              width="1100"
-              height="733"
-              fetchPriority="high"
-              loading="eager"
-              decoding="async"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                transform: "scale(1.03)",
-                filter: "brightness(0.9) contrast(0.98) saturate(0.95)",
-                display: "block",
-              }}
-            />
-          </motion.picture>
-        ) : (
-          <HeroImg
-            key={displaySrc}
-            src={displaySrc}
-            alt=""
-            fetchPriority="auto"
-            loading="lazy"
-            decoding="async"
+      {index === 0 ? (
+        <HeroImg
+          src={slides[0]}
+          alt=""
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+        />
+      ) : (
+        <AnimatePresence>
+          <Slide
+            key={slides[index]}
+            style={{ backgroundImage: `url(${slides[index]})` }}
             initial={{ opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1.03 }}
             exit={{ opacity: 0, scale: 1.02 }}
             transition={{ duration: 1.05, ease: "easeOut" }}
           />
-        )}
-      </AnimatePresence>
+        </AnimatePresence>
+      )}
 
       <Overlay />
 

@@ -17,6 +17,9 @@
     <!-- Indexing -->
     <meta name="robots" content="index,follow,max-image-preview:large" />
 
+    <!-- Canonical fallback -->
+    <link rel="canonical" href="https://www.traverdecoraciontextil.es/" />
+
     <!-- Theme -->
     <meta name="theme-color" content="#f5f4f2" />
 
@@ -44,7 +47,7 @@
     <meta property="og:site_name" content="Traver Decoración Textil" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_ES" />
-
+    <meta property="og:url" content="https://www.traverdecoraciontextil.es/" />
     <meta
       property="og:title"
       content="Traver Decoración Textil | Castellón y Valencia"
@@ -122,67 +125,32 @@
       }
     </script>
 
-    <!-- Google tag (gtag.js) – delayed load -->
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-LD3K2K63QX"
+    ></script>
     <script>
-      window.__gaLoad = function () {
-        if (window.__gaLoaded) return;
-        window.__gaLoaded = true;
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-        var GA_ID = "G-LD3K2K63QX";
-        var s = document.createElement("script");
-        s.async = true;
-        s.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
-        document.head.appendChild(s);
-
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-          dataLayer.push(arguments);
-        }
-        window.gtag = gtag;
-
-        gtag("js", new Date());
-        gtag("config", GA_ID, { send_page_view: true });
-      };
-    </script>
-
-    <script>
-      // schedule load after first paint-ish
-      window.addEventListener(
-        "load",
-        function () {
-          if ("requestIdleCallback" in window) {
-            requestIdleCallback(window.__gaLoad, { timeout: 2500 });
-          } else {
-            setTimeout(window.__gaLoad, 2000);
-          }
-        },
-        { once: true }
-      );
-
-      // or load on first interaction
-      ["pointerdown", "keydown", "scroll"].forEach(function (evt) {
-        window.addEventListener(evt, window.__gaLoad, {
-          once: true,
-          passive: true,
-        });
-      });
+      gtag("config", "G-LD3K2K63QX");
     </script>
 
     <!-- Performance: Fonts -->
-    <link
-      rel="preload"
-      href="/fonts/CormorantGaramond-300.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <link
-      rel="preload"
-      href="/fonts/PlayfairDisplay.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap"
+      rel="stylesheet"
     />
   </head>
 
