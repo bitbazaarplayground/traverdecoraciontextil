@@ -20,20 +20,29 @@ const GlobalStyles = createGlobalStyle`
   
   @font-face {
     font-family: "Playfair Display";
-    src: url("/fonts/PlayfairDisplay.woff2") format("woff2");
-    font-weight: 400 600; /* matches what you used from Google */
+    src: url("/fonts/Playfair-VariableFont_opsz,wdth,wght.woff2") format("woff2");
+    font-weight: 1 1000;
     font-style: normal;
     font-display: swap;
-    font-optical-sizing: auto;
+  
+    /* reduce layout shift when swapping from fallback */
+    ascent-override: 92%;
+    descent-override: 22%;
+    line-gap-override: 0%;
+    size-adjust: 102%;
   }
+  
+  
+  
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body { font-family: 'Helvetica Neue', Arial, sans-serif; }
 
   h1, h2, h3, h4 {
-    font-family: 'Playfair Display', serif;
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
     line-height: 1.12;
   }
+  
   
 
   p { line-height: 1.6; }
