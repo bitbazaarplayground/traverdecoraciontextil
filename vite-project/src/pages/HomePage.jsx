@@ -155,13 +155,21 @@ export default function HomePage({ onOpenAsesoramiento }) {
       <Hero onOpenAsesoramiento={onOpenAsesoramiento} />
 
       {/* Keep these *tight* so they don't load during LCP */}
-      <LazyOnVisible rootMargin="0px 0px" minHeight={600} deferMs={1400}>
+      <LazyOnVisible
+        rootMargin="0px 0px -35px 0px"
+        minHeight={600}
+        deferMs={1400}
+      >
         <Suspense fallback={null}>
           <ServicesSection />
         </Suspense>
       </LazyOnVisible>
 
-      <LazyOnVisible rootMargin="0px 0px" minHeight={500} deferMs={1400}>
+      <LazyOnVisible
+        rootMargin="0px 0px -35px 0px"
+        minHeight={500}
+        deferMs={1400}
+      >
         <Suspense fallback={null}>
           <Process />
         </Suspense>
