@@ -123,19 +123,53 @@
     </script>
 
     <!-- Google tag (gtag.js) -->
-    <!-- <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-LD3K2K63QX"
-    ></script>
+    <!-- Google tag (gtag.js) – delayed load -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
+      (function () {
+        var GA_ID = "G-LD3K2K63QX";
+        var loaded = false;
 
-      gtag("config", "G-LD3K2K63QX");
-    </script> -->
+        function loadGA() {
+          if (loaded) return;
+          loaded = true;
+
+          var s = document.createElement("script");
+          s.async = true;
+          s.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
+          document.head.appendChild(s);
+
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          window.gtag = gtag;
+
+          gtag("js", new Date());
+          gtag("config", GA_ID, { send_page_view: true });
+        }
+
+        // load after page is stable-ish
+        if ("requestIdleCallback" in window) {
+          requestIdleCallback(loadGA, { timeout: 2500 });
+        } else {
+          setTimeout(loadGA, 2000);
+        }
+
+        // also load on first interaction (covers users who bounce fast)
+        window.addEventListener("pointerdown", loadGA, {
+          once: true,
+          passive: true,
+        });
+        window.addEventListener("keydown", loadGA, {
+          once: true,
+          passive: true,
+        });
+        window.addEventListener("scroll", loadGA, {
+          once: true,
+          passive: true,
+        });
+      })();
+    </script>
 
     <!-- Performance: Fonts -->
     <link
@@ -146,7 +180,7 @@
       crossorigin
     />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <link
@@ -161,7 +195,7 @@
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap"
       />
-    </noscript>
+    </noscript> -->
   </head>
 
   <body>

@@ -7,21 +7,37 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
 
-import Automatizacion from "./pages/Automatizacion";
-import AvisoLegal from "./pages/AvisoLegal";
-import ContactPage from "./pages/ContactPage";
-import CortinasEstores from "./pages/CortinasEstores";
-import HomePage from "./pages/HomePage";
-import PoliticaCookies from "./pages/PoliticaCookies";
-import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
-import Propuestas from "./pages/Propuestas";
-import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
+// ✅ PUBLIC ROUTES (lazy)
+const HomePage = lazy(() => import("./pages/HomePage"));
+const Propuestas = lazy(() => import("./pages/Propuestas"));
+const Automatizacion = lazy(() => import("./pages/Automatizacion"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const CortinasEstores = lazy(() => import("./pages/CortinasEstores"));
+const ToldosProteccionSolar = lazy(() =>
+  import("./pages/ToldosProteccionSolar")
+);
+const AvisoLegal = lazy(() => import("./pages/AvisoLegal"));
+const PoliticaPrivacidad = lazy(() => import("./pages/PoliticaPrivacidad"));
+const PoliticaCookies = lazy(() => import("./pages/PoliticaCookies"));
 
-import AutomatizacionIndividual from "./components/automatizacion/AutomatizacionIndividual";
-import AutomatizacionCompleta from "./components/AutomatizacionCompleta";
-import Mosquiteras from "./components/ventanas/Mosquiteras";
-import PanelJapones from "./components/ventanas/PanelJapones";
-import Venecianas from "./components/ventanas/Venecianas";
+// ✅ “Ventanas” (lazy)
+const Mosquiteras = lazy(() => import("./components/ventanas/Mosquiteras"));
+const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
+const Venecianas = lazy(() => import("./components/ventanas/Venecianas"));
+
+// ✅ Automatización subroutes (lazy)
+const AutomatizacionCompleta = lazy(() =>
+  import("./components/AutomatizacionCompleta")
+);
+const AutomatizacionIndividual = lazy(() =>
+  import("./components/automatizacion/AutomatizacionIndividual")
+);
+
+// ✅ AUTH (lazy)
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
+const AdminResetPassword = lazy(() =>
+  import("./pages/Admin/AdminResetPassword")
+);
 
 // ✅ ADMIN (lazy)
 const AdminLayout = lazy(() => import("./pages/Admin/AdminLayout"));
@@ -31,10 +47,6 @@ const AdminCalendar = lazy(() => import("./pages/Admin/AdminCalendar"));
 const AdminClients = lazy(() => import("./pages/Admin/AdminClientes"));
 const AdminCustomer = lazy(() => import("./pages/Admin/AdminCustomer"));
 const AdminSettings = lazy(() => import("./pages/Admin/AdminSettings"));
-const AuthCallback = lazy(() => import("./pages/AuthCallback"));
-const AdminResetPassword = lazy(() =>
-  import("./pages/Admin/AdminResetPassword")
-);
 
 export default function App() {
   const [isAsesoramientoOpen, setIsAsesoramientoOpen] = useState(false);
@@ -90,8 +102,8 @@ export default function App() {
             element={<ToldosProteccionSolar />}
           />
           <Route path="/mosquiteras" element={<Mosquiteras />} />
-          <Route path="/services" element={<Propuestas /* or Servicios */ />} />
 
+          {/* LEGALES */}
           <Route path="/aviso-legal" element={<AvisoLegal />} />
           <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
           <Route path="/politica-cookies" element={<PoliticaCookies />} />
@@ -103,7 +115,7 @@ export default function App() {
             element={<AdminResetPassword />}
           />
 
-          {/* ✅ ADMIN (lazy loaded) */}
+          {/* ADMIN */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="requests" element={<AdminBookings />} />
