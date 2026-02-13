@@ -30,7 +30,11 @@ const GlobalStyles = createGlobalStyle`
 
   body { font-family: 'Helvetica Neue', Arial, sans-serif; }
 
-  h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
+  h1, h2, h3, h4 {
+    font-family: 'Playfair Display', serif;
+    line-height: 1.12;
+  }
+  
 
   p { line-height: 1.6; }
 

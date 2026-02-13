@@ -1,3 +1,4 @@
+// src/components/LazyOnVisible.jsx
 import { useEffect, useRef, useState } from "react";
 
 export default function LazyOnVisible({
@@ -11,21 +12,27 @@ export default function LazyOnVisible({
 
   useEffect(() => {
     if (show) return;
-    const el = ref.current;
-    if (!el) return;
 
-    let timer = null;
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      // Fallback: just render (older browsers / very rare cases)
+      setShow(true);
+      return;
+    }
+
+    let timerId = null;
 
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting) {
-          io.disconnect();
+        const entry = entries[0];
+        if (!entry?.isIntersecting) return;
 
-          if (deferMs > 0) {
-            timer = window.setTimeout(() => setShow(true), deferMs);
-          } else {
-            setShow(true);
-          }
+        io.disconnect();
+
+        if (deferMs > 0) {
+          timerId = window.setTimeout(() => setShow(true), deferMs);
+        } else {
+          setShow(true);
         }
       },
       { rootMargin }
@@ -35,12 +42,20 @@ export default function LazyOnVisible({
 
     return () => {
       io.disconnect();
-      if (timer) window.clearTimeout(timer);
+      if (timerId) window.clearTimeout(timerId);
     };
   }, [show, rootMargin, deferMs]);
 
   return (
-    <div ref={ref} style={{ minHeight }}>
+    <div
+      ref={ref}
+      style={{
+        minHeight,
+        // ✅ helps reduce CLS when sections mount (especially desktop)
+        contentVisibility: "auto",
+        containIntrinsicSize: `${Math.max(1, Number(minHeight) || 1)}px`,
+      }}
+    >
       {show ? children : null}
     </div>
   );
