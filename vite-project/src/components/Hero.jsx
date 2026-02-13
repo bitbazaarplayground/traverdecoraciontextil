@@ -19,6 +19,7 @@ import wallpaper from "../assets/heroHome/6.webp";
 const HeroWrapper = styled.section`
   width: 100%;
   min-height: 100svh;
+  height: 100svh;
   position: relative;
   overflow: hidden;
 
@@ -85,6 +86,7 @@ const Content = styled.div`
   justify-content: flex-end;
 
   min-height: 100svh;
+  height: 100%;
   text-align: center;
   color: #fff;
 
@@ -158,7 +160,8 @@ const ScriptLine = styled(motion.div)`
   font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
   font-weight: 300;
   font-style: italic;
-
+  line-height: 1.05em;
+  min-height: 1.05em;
   font-size: clamp(1.6rem, 3.8vw, 4.2rem);
   line-height: 1em;
 
@@ -339,7 +342,6 @@ export default function Hero({ onOpenAsesoramiento }) {
             key={displaySrc}
             src={displaySrc}
             alt=""
-            fetchPriority="auto"
             loading="lazy"
             decoding="async"
             initial={{ opacity: 0, scale: 1.04 }}
