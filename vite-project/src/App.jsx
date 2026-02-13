@@ -6,6 +6,7 @@ import AsesoramientoModal from "./components/AsesoramientoModal";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
+import Servicios from "./pages/Servicios";
 
 // ✅ PUBLIC ROUTES (lazy)
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -81,7 +82,7 @@ export default function App() {
             path="/propuestas"
             element={<Propuestas onOpenAsesoramiento={openAsesoramiento} />}
           />
-
+          <Route path="/services" element={<Servicios />} />
           <Route path="/automatizacion" element={<Automatizacion />} />
           <Route
             path="/automatizacion/completa"

@@ -43,7 +43,7 @@ export default function Footer({ onOpenAsesoramiento }) {
         <Top>
           <Brand>
             <LogoRow to="/" aria-label={`${CONTACT.siteName} - Inicio`}>
-              <LogoImg src="/logo.png" alt={CONTACT.siteName} loading="lazy" />
+              <LogoImg src="/logo.webp" alt={CONTACT.siteName} loading="lazy" />
               <BrandText>
                 <BrandName>
                   {CONTACT.siteName}
@@ -137,7 +137,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                   rel="noreferrer"
                   aria-label="Abrir ubicación en Google Maps"
                 >
-                  {CONTACT.address.streetAddress},{" "}
+                  {CONTACT.address.streetAddress}, {CONTACT.address.postalCode}{" "}
                   {CONTACT.address.addressLocality}
                 </Action>
               </ActionRow>
