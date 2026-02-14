@@ -363,7 +363,7 @@ export default function Hero({ onOpenAsesoramiento }) {
           Decoración textil · Protección solar · Domótica
         </MicroLine>
 
-        <Title>Diseñamos&nbsp;espacios TEST</Title>
+        <Title>Diseñamos&nbsp;espacios</Title>
 
         <ScriptLine>
           que se <em>sienten</em>

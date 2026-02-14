@@ -20,6 +20,14 @@ const GlobalStyles = createGlobalStyle`
   
   @font-face {
     font-family: "Playfair Display";
+    src: url("/fonts/PlayfairDisplay-VariableFont_wght.woff2") format("woff2");
+    font-weight: 400 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  
+
     src: url("/fonts/Playfair-VariableFont_opsz,wdth,wght.woff2") format("woff2");
     font-weight: 1 1000;
     font-style: normal;
@@ -31,7 +39,6 @@ const GlobalStyles = createGlobalStyle`
     line-gap-override: 0%;
     size-adjust: 102%;
   }
-  
   
   
   * { margin: 0; padding: 0; box-sizing: border-box; }
