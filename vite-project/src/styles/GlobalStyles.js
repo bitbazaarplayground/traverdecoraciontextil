@@ -20,12 +20,13 @@ const GlobalStyles = createGlobalStyle`
   
   @font-face {
     font-family: "Playfair Display";
-    src: url("/fonts/PlayfairDisplay.woff2") format("woff2");
-    font-weight: 400 600; /* matches what you used from Google */
+    src: url("/fonts/PlayfairDisplay-VariableFont_wght.woff2") format("woff2");
+    font-weight: 400 900;
     font-style: normal;
     font-display: swap;
-    font-optical-sizing: auto;
   }
+  
+  
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body { font-family: 'Helvetica Neue', Arial, sans-serif; }
