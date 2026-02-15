@@ -19,7 +19,7 @@ function deferViteCssPlugin() {
 }
 
 export default defineConfig({
-  plugins: [react(), deferViteCssPlugin()],
+  plugins: [react() /*deferViteCssPlugin()*/],
   server: {
     host: true,
     port: 5173,
