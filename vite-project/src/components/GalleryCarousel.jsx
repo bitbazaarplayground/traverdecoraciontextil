@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { Autoplay, Pagination } from "swiper/modules";
@@ -88,18 +88,56 @@ const Img = styled.img`
   transition: transform 0.35s ease;
 `;
 
+function useIsMobile(breakpointPx = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+
+    const mq = window.matchMedia(`(max-width: ${breakpointPx}px)`);
+    const apply = () => setIsMobile(!!mq.matches);
+
+    apply();
+
+    // Safari <14 uses addListener/removeListener
+    if (mq.addEventListener) mq.addEventListener("change", apply);
+    else mq.addListener(apply);
+
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", apply);
+      else mq.removeListener(apply);
+    };
+  }, [breakpointPx]);
+
+  return isMobile;
+}
+
 export default function GalleryCarousel() {
   const swiperRef = useRef(null);
+  const isMobile = useIsMobile(768);
 
-  useLayoutEffect(() => {
-    import("swiper/css");
-    import("swiper/css/pagination");
+  // ✅ Load Swiper CSS only when this component mounts (non-blocking)
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        await import("swiper/css");
+        await import("swiper/css/pagination");
+      } catch {
+        // If CSS chunk fails, we still want a functional carousel.
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
   }, []);
 
-  const isMobile =
-    typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(max-width: 768px)").matches;
+  // ✅ Only include Autoplay module when we actually use it
+  const modules = useMemo(
+    () => (isMobile ? [Pagination] : [Pagination, Autoplay]),
+    [isMobile]
+  );
 
   return (
     <SectionWrapper id="gallery">
@@ -110,13 +148,15 @@ export default function GalleryCarousel() {
       </Subtitle>
 
       <Swiper
-        modules={[Pagination, Autoplay]}
+        modules={modules}
         spaceBetween={20}
         pagination={{ clickable: true }}
         autoplay={
           isMobile ? false : { delay: 3000, disableOnInteraction: false }
         }
         loop={true}
+        // ✅ Swiping is on by default in Swiper; keep it enabled on mobile
+        // allowTouchMove={true} // (optional; default is true)
         onSwiper={(swiperInstance) => {
           swiperRef.current = swiperInstance;
         }}
@@ -137,7 +177,7 @@ export default function GalleryCarousel() {
                 alt={`Inspiración ${i + 1}`}
                 width="1200"
                 height="900"
-                loading={!isMobile && i === 0 ? "eager" : "lazy"}
+                loading="lazy"
                 decoding="async"
               />
             </ImageWrapper>

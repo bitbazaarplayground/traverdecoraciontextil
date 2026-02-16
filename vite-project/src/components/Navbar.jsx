@@ -1,9 +1,12 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+// src/components/Navbar.jsx
+import { useEffect, useMemo, useState } from "react";
 import { Link, Link as RouterLink, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-// NAV CONTAINER
+/* =========================
+   NAV CONTAINER
+========================= */
+
 const Nav = styled.nav`
   position: fixed;
   top: 0;
@@ -15,7 +18,6 @@ const Nav = styled.nav`
   justify-content: space-between;
   align-items: center;
 
-  /* ⭐ NEW: Background depends on page */
   background: ${({ $scrolled, $isHome }) =>
     $isHome
       ? $scrolled
@@ -28,7 +30,7 @@ const Nav = styled.nav`
 
   transition: background 0.3s ease, box-shadow 0.3s ease;
 `;
-// rgba(245, 244, 242, 0.9)
+
 const LeftWrapper = styled.div`
   flex: 1;
 `;
@@ -60,7 +62,6 @@ const NavWrap = styled.header`
   width: 100%;
   z-index: 1000;
 
-  /* One source of truth */
   --header-h: ${({ $isHome }) => ($isHome ? "84px" : "72px")};
 
   transition: transform 240ms ease, opacity 240ms ease;
@@ -70,7 +71,10 @@ const NavWrap = styled.header`
   pointer-events: ${({ $hidden }) => ($hidden ? "none" : "auto")};
 `;
 
-// DESKTOP LINKS
+/* =========================
+   LINKS
+========================= */
+
 const DesktopLinks = styled.div`
   display: none;
 
@@ -80,7 +84,6 @@ const DesktopLinks = styled.div`
   }
 `;
 
-// ⭐ UPDATED LINK LOGIC
 const StyledLink = styled(RouterLink)`
   color: ${({ $scrolled, $isHome }) =>
     !$isHome || $scrolled ? "#111" : "#fff"};
@@ -112,14 +115,28 @@ const MenuButton = styled.button`
   }
 `;
 
-const Backdrop = styled(motion.div)`
+/* =========================
+   MOBILE MENU (BASE STYLES)
+   - We render these always (no framer needed)
+========================= */
+
+const BackdropBase = styled.div`
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.3);
   z-index: 1500;
+
+  opacity: 0;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+
+  &[data-open="true"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
 `;
 
-const MobileMenu = styled(motion.div)`
+const MobileMenuBase = styled.aside`
   position: fixed;
   top: 0;
   right: 0;
@@ -129,6 +146,14 @@ const MobileMenu = styled(motion.div)`
   padding: 2rem;
   z-index: 2000;
   box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+
+  transform: translateX(100%);
+  transition: transform 280ms ease;
+  will-change: transform;
+
+  &[data-open="true"] {
+    transform: translateX(0);
+  }
 `;
 
 const MobileLink = styled(RouterLink)`
@@ -144,20 +169,45 @@ const MobileLink = styled(RouterLink)`
   }
 `;
 
+/* =========================
+   COMPONENT
+========================= */
+
 export default function Navbar({ hidden }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [fm, setFm] = useState(null); // framer-motion module when loaded
   const location = useLocation();
 
   const isHome = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => setMenuOpen(false), [location.pathname]);
+
+  // ✅ Load framer-motion ONLY when menu opens (mobile interaction)
+  useEffect(() => {
+    if (!menuOpen) return;
+    let alive = true;
+
+    (async () => {
+      const mod = await import("framer-motion");
+      if (alive) setFm(mod);
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [menuOpen]);
+
+  const Motion = useMemo(() => {
+    if (!fm) return null;
+    return { AnimatePresence: fm.AnimatePresence, motion: fm.motion };
+  }, [fm]);
 
   return (
     <>
@@ -207,6 +257,7 @@ export default function Navbar({ hidden }) {
               $scrolled={scrolled}
               $isHome={isHome}
               onClick={() => setMenuOpen(true)}
+              aria-label="Abrir menú"
             >
               ☰
             </MenuButton>
@@ -214,30 +265,67 @@ export default function Navbar({ hidden }) {
         </Nav>
       </NavWrap>
 
-      <AnimatePresence>
-        {menuOpen && (
-          <>
-            <Backdrop
-              onClick={() => setMenuOpen(false)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            />
+      {/* ======= MOBILE MENU =======
+          Base CSS menu works instantly.
+          If Framer is loaded, we use it for nicer enter/exit.
+      */}
 
-            <MobileMenu
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ duration: 0.35 }}
-            >
-              <MobileLink to="/services">Servicios</MobileLink>
-              <MobileLink to="/propuestas">Propuestas</MobileLink>
-              <MobileLink to="/about">Nosotros</MobileLink>
-              <MobileLink to="/contact">Contacto</MobileLink>
-            </MobileMenu>
-          </>
-        )}
-      </AnimatePresence>
+      {Motion ? (
+        <Motion.AnimatePresence>
+          {menuOpen && (
+            <>
+              <Motion.motion.div
+                onClick={() => setMenuOpen(false)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                style={{
+                  position: "fixed",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.3)",
+                  zIndex: 1500,
+                }}
+              />
+
+              <Motion.motion.aside
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ duration: 0.35 }}
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  right: 0,
+                  width: "70%",
+                  height: "100vh",
+                  background: "#fff",
+                  padding: "2rem",
+                  zIndex: 2000,
+                  boxShadow: "-4px 0 12px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <MobileLink to="/services">Servicios</MobileLink>
+                <MobileLink to="/propuestas">Propuestas</MobileLink>
+                <MobileLink to="/about">Nosotros</MobileLink>
+                <MobileLink to="/contact">Contacto</MobileLink>
+              </Motion.motion.aside>
+            </>
+          )}
+        </Motion.AnimatePresence>
+      ) : (
+        <>
+          <BackdropBase
+            data-open={menuOpen ? "true" : "false"}
+            onClick={() => setMenuOpen(false)}
+          />
+          <MobileMenuBase data-open={menuOpen ? "true" : "false"}>
+            <MobileLink to="/services">Servicios</MobileLink>
+            <MobileLink to="/propuestas">Propuestas</MobileLink>
+            <MobileLink to="/about">Nosotros</MobileLink>
+            <MobileLink to="/contact">Contacto</MobileLink>
+          </MobileMenuBase>
+        </>
+      )}
     </>
   );
 }
