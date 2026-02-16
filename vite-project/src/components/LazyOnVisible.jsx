@@ -1,11 +1,25 @@
 // src/components/LazyOnVisible.jsx
 import { useEffect, useRef, useState } from "react";
 
+function runIdle(cb, timeout = 900) {
+  if ("requestIdleCallback" in window) {
+    return window.requestIdleCallback(cb, { timeout });
+  }
+  return window.setTimeout(cb, 1);
+}
+
+function cancelIdle(id) {
+  if ("cancelIdleCallback" in window) window.cancelIdleCallback(id);
+  else window.clearTimeout(id);
+}
+
 export default function LazyOnVisible({
   children,
-  rootMargin = "600px 0px",
+  rootMargin = "200px 0px", // preload slightly before it appears
   minHeight = 1,
-  deferMs = 0, // ✅ optional: delay mounting even after it becomes visible
+  once = true,
+  idle = false, // ✅ if true: mount during idle once visible
+  idleTimeout = 900,
 }) {
   const ref = useRef(null);
   const [show, setShow] = useState(false);
@@ -15,18 +29,22 @@ export default function LazyOnVisible({
     const el = ref.current;
     if (!el) return;
 
-    let timeoutId;
+    // If IO isn't supported, just render (better than blank content)
+    if (!("IntersectionObserver" in window)) {
+      setShow(true);
+      return;
+    }
 
+    let idleId = null;
     const io = new IntersectionObserver(
       (entries) => {
         const hit = entries[0]?.isIntersecting;
         if (!hit) return;
 
-        // Stop observing as soon as we decide to show it
-        io.disconnect();
+        if (once) io.disconnect();
 
-        if (deferMs > 0) {
-          timeoutId = window.setTimeout(() => setShow(true), deferMs);
+        if (idle) {
+          idleId = runIdle(() => setShow(true), idleTimeout);
         } else {
           setShow(true);
         }
@@ -38,9 +56,9 @@ export default function LazyOnVisible({
 
     return () => {
       io.disconnect();
-      if (timeoutId) window.clearTimeout(timeoutId);
+      if (idleId) cancelIdle(idleId);
     };
-  }, [show, rootMargin, deferMs]);
+  }, [show, rootMargin, once, idle, idleTimeout]);
 
   return (
     <div ref={ref} style={{ minHeight }}>
