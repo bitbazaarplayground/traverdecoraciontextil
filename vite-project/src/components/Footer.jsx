@@ -43,7 +43,18 @@ export default function Footer({ onOpenAsesoramiento }) {
         <Top>
           <Brand>
             <LogoRow to="/" aria-label={`${CONTACT.siteName} - Inicio`}>
-              <LogoImg src="/logo.webp" alt={CONTACT.siteName} loading="lazy" />
+              <LogoImg
+                src="/logo-320.webp"
+                srcSet="/logo160.webp 160w, /logo320.webp 320w, /logo640.webp 640w"
+                sizes="44px"
+                alt={CONTACT.siteName}
+                width="44"
+                height="44"
+                loading="lazy"
+                decoding="async"
+                fetchPriority="low"
+              />
+
               <BrandText>
                 <BrandName>
                   {CONTACT.siteName}
