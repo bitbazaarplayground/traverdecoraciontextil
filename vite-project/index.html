@@ -123,18 +123,64 @@
     </script>
 
     <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-LD3K2K63QX"
-    ></script>
+    <!-- Google Analytics (delayed for performance) -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
+      (function () {
+        var GA_ID = "G-LD3K2K63QX";
+        var loaded = false;
 
-      gtag("config", "G-LD3K2K63QX");
+        function loadGA() {
+          if (loaded) return;
+          loaded = true;
+
+          window.dataLayer = window.dataLayer || [];
+          window.gtag =
+            window.gtag ||
+            function () {
+              window.dataLayer.push(arguments);
+            };
+
+          window.gtag("js", new Date());
+          window.gtag("config", GA_ID, { anonymize_ip: true });
+
+          var s = document.createElement("script");
+          s.async = true;
+          s.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
+          document.head.appendChild(s);
+        }
+
+        // Desktop: load after idle (fast enough, low impact)
+        // Mobile: wait for first interaction OR 4s timeout (whichever first)
+        var isMobile =
+          window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+
+        if (!isMobile) {
+          if ("requestIdleCallback" in window) {
+            requestIdleCallback(loadGA, { timeout: 2000 });
+          } else {
+            setTimeout(loadGA, 1200);
+          }
+          return;
+        }
+
+        var onFirstInput = function () {
+          window.removeEventListener("pointerdown", onFirstInput, {
+            passive: true,
+          });
+          window.removeEventListener("keydown", onFirstInput);
+          window.removeEventListener("touchstart", onFirstInput, {
+            passive: true,
+          });
+          loadGA();
+        };
+
+        window.addEventListener("pointerdown", onFirstInput, { passive: true });
+        window.addEventListener("touchstart", onFirstInput, { passive: true });
+        window.addEventListener("keydown", onFirstInput);
+
+        // Safety net: still load GA eventually
+        setTimeout(loadGA, 4000);
+      })();
     </script>
 
     <!-- Performance: Fonts -->
