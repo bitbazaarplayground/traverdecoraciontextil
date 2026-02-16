@@ -1,5 +1,6 @@
+// src/components/ServicesSection.jsx
 import { motion } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -113,7 +114,11 @@ const Grid = styled.div`
   }
 `;
 
-const Card = styled(motion.article)`
+/* =========================
+   Cards: base styles shared
+========================= */
+
+const CardBase = styled.article`
   border-radius: 24px;
   overflow: hidden;
   border: 1px solid rgba(17, 17, 17, 0.08);
@@ -154,7 +159,7 @@ const CardImg = styled.img`
   transform: scale(1.02);
   transition: transform 0.65s ease;
 
-  ${Card}:hover & {
+  ${CardBase}:hover & {
     transform: scale(1.06);
   }
 
@@ -235,7 +240,7 @@ const AccentDot = styled.div`
   font-weight: 900;
   transition: transform 0.25s ease, background 0.25s ease;
 
-  ${Card}:hover & {
+  ${CardBase}:hover & {
     transform: translateX(2px);
     background: rgba(255, 255, 255, 0.16);
   }
@@ -279,7 +284,7 @@ const FooterHint = styled.p`
   font-size: 0.98rem;
 `;
 
-const AllServicesLink = styled(motion(Link))`
+const AllServicesLinkBase = styled(Link)`
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
@@ -313,25 +318,31 @@ const AllServicesLink = styled(motion(Link))`
   }
 `;
 
+/* =========================
+   COMPONENT
+========================= */
+
 export default function ServiceSection() {
   const magnetRef = useRef(null);
+  const [allowMotion, setAllowMotion] = useState(false);
 
-  const prefersReducedMotion =
-    typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // ✅ Decide motion on client (avoid doing work on mobile)
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    const desktopLike = window.matchMedia(
+      "(hover: hover) and (pointer: fine) and (min-width: 900px)"
+    ).matches;
+
+    setAllowMotion(!reduced && desktopLike);
+  }, []);
 
   const setMagnet = (e) => {
-    if (prefersReducedMotion) return;
+    if (!allowMotion) return;
     if (!magnetRef.current) return;
-
-    if (
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
-    ) {
-      return;
-    }
 
     const rect = magnetRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
@@ -351,13 +362,21 @@ export default function ServiceSection() {
     magnetRef.current.style.setProperty("--my", `0px`);
   };
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 26 },
-    visible: { opacity: 1, y: 0 },
-  };
+  const cardVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0, y: 26 },
+      visible: { opacity: 1, y: 0 },
+    }),
+    []
+  );
 
-  // ✅ Because this component is mounted via LazyOnVisible, it's already near viewport
-  const isNearViewport = true;
+  // ✅ Card wrapper: motion on desktop-like devices only
+  const Card = allowMotion ? motion(CardBase) : CardBase;
+
+  // ✅ CTA link: motion hover only on desktop-like devices
+  const AllServicesLink = allowMotion
+    ? motion(AllServicesLinkBase)
+    : AllServicesLinkBase;
 
   return (
     <Section>
@@ -374,13 +393,17 @@ export default function ServiceSection() {
         </Header>
 
         <Grid>
-          {/* CARD 1 (first image gets priority once mounted) */}
+          {/* CARD 1 */}
           <Card
-            variants={cardVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.55, ease: "easeOut" }}
+            {...(allowMotion
+              ? {
+                  variants: cardVariants,
+                  initial: "hidden",
+                  whileInView: "visible",
+                  viewport: { once: true },
+                  transition: { duration: 0.55, ease: "easeOut" },
+                }
+              : {})}
           >
             <MediaLink
               to="/cortinas-estores"
@@ -394,8 +417,7 @@ export default function ServiceSection() {
                   alt="Cortinas y estores a medida"
                   width="1100"
                   height="733"
-                  loading={isNearViewport ? "eager" : "lazy"}
-                  fetchPriority={isNearViewport ? "high" : "auto"}
+                  loading="lazy"
                   decoding="async"
                 />
                 <Overlay />
@@ -416,11 +438,15 @@ export default function ServiceSection() {
 
           {/* CARD 2 */}
           <Card
-            variants={cardVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            {...(allowMotion
+              ? {
+                  variants: cardVariants,
+                  initial: "hidden",
+                  whileInView: "visible",
+                  viewport: { once: true },
+                  transition: { duration: 0.7, ease: "easeOut" },
+                }
+              : {})}
           >
             <MediaLink
               to="/toldos-proteccionsolar"
@@ -455,11 +481,15 @@ export default function ServiceSection() {
 
           {/* CARD 3 */}
           <Card
-            variants={cardVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.85, ease: "easeOut" }}
+            {...(allowMotion
+              ? {
+                  variants: cardVariants,
+                  initial: "hidden",
+                  whileInView: "visible",
+                  viewport: { once: true },
+                  transition: { duration: 0.85, ease: "easeOut" },
+                }
+              : {})}
           >
             <MediaLink
               to="/automatizacion"
@@ -510,7 +540,7 @@ export default function ServiceSection() {
               transform:
                 "translate3d(var(--mx, 0px), calc(var(--my, 0px) - 2px), 0)",
             }}
-            whileHover={{ scale: 1.02 }}
+            {...(allowMotion ? { whileHover: { scale: 1.02 } } : {})}
           >
             Ver todos los servicios <span>→</span>
           </AllServicesLink>
