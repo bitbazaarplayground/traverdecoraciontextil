@@ -1,8 +1,11 @@
 // src/lib/analytics.js
 export function trackEvent(eventName, params = {}) {
-  if (typeof window === "undefined") return;
+  try {
+    if (typeof window === "undefined") return;
+    if (typeof window.gtag !== "function") return;
 
-  if (typeof window.gtag === "function") {
     window.gtag("event", eventName, params);
+  } catch {
+    // never break UX if analytics fails/blocked
   }
 }

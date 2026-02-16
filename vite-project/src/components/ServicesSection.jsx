@@ -29,8 +29,8 @@ const Section = styled.section`
     padding: 3.6rem 1.5rem;
   }
 
-  /* ✅ Only show zebra texture on desktop-like devices (avoid loading on mobile) */
-  @media (hover: hover) and (pointer: fine) and (min-width: 900px) {
+  /* Zebra texture — desktop only (width-based, Lighthouse-safe) */
+  @media (min-width: 900px) {
     &::before {
       content: "";
       position: absolute;
@@ -45,6 +45,7 @@ const Section = styled.section`
     }
   }
 
+  /* Subtle radial overlay (cheap, OK on all devices) */
   &::after {
     content: "";
     position: absolute;
@@ -322,7 +323,7 @@ const AllServicesLinkBase = styled(Link)`
    COMPONENT
 ========================= */
 
-export default function ServiceSection() {
+export default function ServicesSection() {
   const magnetRef = useRef(null);
   const [allowMotion, setAllowMotion] = useState(false);
 

@@ -5,7 +5,6 @@ import { CONTACT } from "../config/contact";
 
 // Assets
 import heroImg from "../assets/CortinasEstores/carousel/cortinas1.jpeg";
-import zebraBg from "../assets/zebra_pattern.webp";
 
 import cortina2 from "../assets/CortinasEstores/carousel/cortinas2.jpeg";
 import cortina3 from "../assets/CortinasEstores/carousel/cortinas3.jpeg";
@@ -171,54 +170,6 @@ const FeatureText = styled.p`
   font-size: 1rem;
   line-height: 1.65;
   color: #555;
-`;
-
-/* =========================
-   CTA
-========================= */
-
-const CTA = styled.section`
-  padding: 5.5rem 2rem;
-  text-align: center;
-
-  background: linear-gradient(
-      rgba(255, 255, 255, 0.88),
-      rgba(255, 255, 255, 0.88)
-    ),
-    url(${zebraBg});
-
-  background-size: cover;
-  background-position: center;
-`;
-
-const CTATitle = styled.h2`
-  font-size: 2.2rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: #121212;
-`;
-
-const CTAText = styled.p`
-  max-width: 620px;
-  margin: 0 auto;
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: #555;
-`;
-
-const CTAButton = styled.a`
-  display: inline-block;
-  margin-top: 2.2rem;
-  padding: 0.9rem 2.4rem;
-  border-radius: 40px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: white;
-  font-weight: 600;
-  text-decoration: none;
-
-  &:hover {
-    opacity: 0.85;
-  }
 `;
 
 /* =========================
@@ -763,16 +714,6 @@ export default function CortinasEstoresPremium() {
           </FAQGrid>
         </FAQInner>
       </FAQSection>
-
-      {/* CTA FINAL */}
-      <CTA>
-        <CTATitle>¿Te preparamos una propuesta a medida?</CTATitle>
-        <CTAText>
-          Cuéntanos tu espacio y lo que quieres mejorar. Te aconsejamos tejidos,
-          sistema y una solución equilibrada para luz y privacidad.
-        </CTAText>
-        <CTAButton href="/contact">Solicitar asesoramiento</CTAButton>
-      </CTA>
     </Page>
   );
 }

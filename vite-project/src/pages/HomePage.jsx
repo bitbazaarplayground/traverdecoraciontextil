@@ -122,16 +122,10 @@ export default function HomePage({ onOpenAsesoramiento }) {
 
   // Warm up the first below-the-fold chunks after initial paint (idle if possible)
   useEffect(() => {
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (typeof window === "undefined" || !window.matchMedia) return;
 
-    const conn = navigator.connection;
-    const isSlow =
-      conn?.saveData ||
-      /2g/.test(conn?.effectiveType || "") ||
-      /3g/.test(conn?.effectiveType || "");
-
-    // ✅ Mobile performance first: don't warm chunks on mobile/slow connections
-    if (isMobile || isSlow) return;
+    // don't warm on mobile
+    if (window.matchMedia("(max-width: 768px)").matches) return;
 
     const warm = () => {
       import("../components/ServicesSection");
@@ -141,11 +135,11 @@ export default function HomePage({ onOpenAsesoramiento }) {
 
     let id;
     if ("requestIdleCallback" in window) {
-      id = window.requestIdleCallback(warm, { timeout: 2000 });
+      id = window.requestIdleCallback(warm, { timeout: 1500 });
       return () => window.cancelIdleCallback(id);
     }
 
-    id = window.setTimeout(warm, 1200);
+    id = window.setTimeout(warm, 800);
     return () => window.clearTimeout(id);
   }, []);
 
@@ -183,7 +177,12 @@ export default function HomePage({ onOpenAsesoramiento }) {
 
       <Hero onOpenAsesoramiento={onOpenAsesoramiento} />
 
-      <LazyOnVisible rootMargin="0px 0px" minHeight={600} idle>
+      <LazyOnVisible
+        rootMargin="0px 0px"
+        minHeight={600}
+        idle
+        idleTimeout={1200}
+      >
         <Suspense fallback={null}>
           <ServicesSection />
         </Suspense>
