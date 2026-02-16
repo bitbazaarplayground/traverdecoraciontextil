@@ -1,28 +1,27 @@
+import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
-import Slider from "react-slick";
 import styled from "styled-components";
+
+import ContactCTA from "../components/ContactCTA";
+import SlickCarouselLazy from "../components/SlickCarouselLazy";
 import { CONTACT } from "../config/contact";
 
 // Assets
-import heroImg from "../assets/CortinasEstores/carousel/cortinas1.jpeg";
+import heroImg from "../assets/CortinasEstores/carousel/cortinas1.webp";
 
-import cortina2 from "../assets/CortinasEstores/carousel/cortinas2.jpeg";
-import cortina3 from "../assets/CortinasEstores/carousel/cortinas3.jpeg";
-import cortina4 from "../assets/CortinasEstores/carousel/cortinas4.jpeg";
-import cortina5 from "../assets/CortinasEstores/carousel/cortinas5.jpeg";
+import cortina2 from "../assets/CortinasEstores/carousel/cortinas2.webp";
+import cortina3 from "../assets/CortinasEstores/carousel/cortinas3.webp";
+import cortina4 from "../assets/CortinasEstores/carousel/cortinas4.webp";
+import cortina5 from "../assets/CortinasEstores/carousel/cortinas5.webp";
 import cortina6 from "../assets/CortinasEstores/carousel/cortinas6.webp";
 
 // Inspiracion
-import blackoutImg from "../assets/CortinasEstores/inspiracion/blackout.jpeg";
-import chenilleImg from "../assets/CortinasEstores/inspiracion/chenille.jpeg";
-import linenImg from "../assets/CortinasEstores/inspiracion/linen.jpeg";
-import patternedImg from "../assets/CortinasEstores/inspiracion/patterned.jpeg";
-import sheerImg from "../assets/CortinasEstores/inspiracion/sheer.jpg";
-import velvetImg from "../assets/CortinasEstores/inspiracion/velvet.jpeg";
-
-// Slick styles
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
+import blackoutImg from "../assets/CortinasEstores/inspiracion/blackout.webp";
+import chenilleImg from "../assets/CortinasEstores/inspiracion/chenille.webp";
+import linenImg from "../assets/CortinasEstores/inspiracion/linen.webp";
+import patternedImg from "../assets/CortinasEstores/inspiracion/patterned.webp";
+import sheerImg from "../assets/CortinasEstores/inspiracion/sheer.webp";
+import velvetImg from "../assets/CortinasEstores/inspiracion/velvet.webp";
 
 import EnfoqueSlider from "../components/EnfoqueSlider";
 import ComplementosVentana from "../components/ventanas/ComplementosVentana";
@@ -178,23 +177,51 @@ const FeatureText = styled.p`
 
 const CarouselSection = styled.section`
   padding: 4rem 2rem;
-`;
 
-const CarouselImage = styled.div`
-  height: 420px;
-  border-radius: 20px;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  /* Slick dots – match homepage (primary color) */
+  .slick-dots {
+    position: relative;
+    margin-top: 1.25rem;
   }
 
+  .slick-dots li {
+    margin: 0 4px;
+  }
+
+  .slick-dots li button:before {
+    font-size: 8px; /* controls bullet size */
+    opacity: 0.35;
+    color: rgba(17, 17, 17, 0.55);
+    transition: transform 180ms ease, opacity 180ms ease, color 180ms ease;
+  }
+
+  .slick-dots li.slick-active button:before {
+    opacity: 0.95;
+    transform: scale(1.15);
+    color: ${({ theme }) => theme.colors.primary};
+  }
   @media (max-width: 768px) {
-    height: 260px;
+    .slick-dots li button:before {
+      font-size: 7px;
+    }
   }
 `;
+
+// const CarouselImage = styled.div`
+//   height: 420px;
+//   border-radius: 20px;
+//   overflow: hidden;
+
+//   img {
+//     width: 100%;
+//     height: 100%;
+//     object-fit: cover;
+//   }
+
+//   @media (max-width: 768px) {
+//     height: 260px;
+//   }
+// `;
 
 /* =========================
    FABRICS / HANDMADE SECTION
@@ -373,6 +400,33 @@ const FAQBody = styled.p`
 `;
 
 /* =========================
+   STATIC DATA (avoid rebuild every render)
+========================= */
+
+const FAQ_ITEMS = [
+  {
+    q: "¿Qué diferencia hay entre cortinas y estores?",
+    a: "Las cortinas aportan más presencia textil y caída decorativa; los estores son más minimalistas y prácticos para controlar luz en ventanas con poco espacio. Te recomendamos según uso, estilo y orientación.",
+  },
+  {
+    q: "¿Hacéis visita y medición en casa?",
+    a: "Sí. La medición precisa es clave para que el resultado quede perfecto. Te asesoramos sobre tejido, confección y sistema antes de fabricar.",
+  },
+  {
+    q: "¿Tenéis opciones térmicas o blackout?",
+    a: "Sí. Hay tejidos térmicos y blackout para reducir entrada de luz y mejorar confort. En dormitorios solemos proponer combinaciones (visillo + blackout) para flexibilidad.",
+  },
+  {
+    q: "¿Cuánto tarda el proceso?",
+    a: "Depende del tejido y la confección. Tras la visita y la elección, te confirmamos plazos reales de fabricación e instalación.",
+  },
+  {
+    q: "¿Instaláis también rieles y sistemas?",
+    a: "Sí. Instalamos rieles, barras y sistemas de estor con una puesta a punto final para que el movimiento sea suave y limpio.",
+  },
+];
+
+/* =========================
    COMPONENT
 ========================= */
 
@@ -392,112 +446,121 @@ export default function CortinasEstoresPremium() {
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt = "Cortinas y estores a medida — Traver Decoración Textil";
 
-  const faqItems = [
-    {
-      q: "¿Qué diferencia hay entre cortinas y estores?",
-      a: "Las cortinas aportan más presencia textil y caída decorativa; los estores son más minimalistas y prácticos para controlar luz en ventanas con poco espacio. Te recomendamos según uso, estilo y orientación.",
-    },
-    {
-      q: "¿Hacéis visita y medición en casa?",
-      a: "Sí. La medición precisa es clave para que el resultado quede perfecto. Te asesoramos sobre tejido, confección y sistema antes de fabricar.",
-    },
-    {
-      q: "¿Tenéis opciones térmicas o blackout?",
-      a: "Sí. Hay tejidos térmicos y blackout para reducir entrada de luz y mejorar confort. En dormitorios solemos proponer combinaciones (visillo + blackout) para flexibilidad.",
-    },
-    {
-      q: "¿Cuánto tarda el proceso?",
-      a: "Depende del tejido y la confección. Tras la visita y la elección, te confirmamos plazos reales de fabricación e instalación.",
-    },
-    {
-      q: "¿Instaláis también rieles y sistemas?",
-      a: "Sí. Instalamos rieles, barras y sistemas de estor con una puesta a punto final para que el movimiento sea suave y limpio.",
-    },
-  ];
+  const breadcrumbJsonLd = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Inicio",
+          item: `${baseUrl}/`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Servicios",
+          item: `${baseUrl}/services`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: "Cortinas y Estores",
+          item: canonical,
+        },
+      ],
+    }),
+    [baseUrl, canonical]
+  );
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Inicio", item: `${baseUrl}/` },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Servicios",
-        item: `${baseUrl}/services`,
+  const webPageJsonLd = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${canonical}#webpage`,
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: "es-ES",
+      isPartOf: { "@id": `${baseUrl}/#website` },
+    }),
+    [baseUrl, canonical, title, description]
+  );
+
+  const serviceJsonLd = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": `${canonical}#service`,
+      name: "Cortinas y estores a medida",
+      description,
+      areaServed: [
+        { "@type": "AdministrativeArea", name: "Castellón" },
+        { "@type": "AdministrativeArea", name: "Valencia" },
+      ],
+      provider: {
+        "@type": "LocalBusiness",
+        name: siteName,
+        url: `${baseUrl}/`,
+        telephone: CONTACT.phoneLandline,
+        email: CONTACT.email,
+        address: {
+          "@type": "PostalAddress",
+          ...CONTACT.address,
+        },
       },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Cortinas y Estores",
-        item: canonical,
-      },
-    ],
-  };
+    }),
+    [baseUrl, canonical, siteName, description]
+  );
 
-  const webPageJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": `${canonical}#webpage`,
-    url: canonical,
-    name: title,
-    description,
-    inLanguage: "es-ES",
-    isPartOf: { "@id": `${baseUrl}/#website` },
-  };
+  const faqJsonLd = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: FAQ_ITEMS.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    }),
+    []
+  );
 
-  const serviceJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "@id": `${canonical}#service`,
-    name: "Cortinas y estores a medida",
-    description,
-    areaServed: [
-      { "@type": "AdministrativeArea", name: "Castellón" },
-      { "@type": "AdministrativeArea", name: "Valencia" },
-    ],
-    provider: {
-      "@type": "LocalBusiness",
-      name: siteName,
-      url: `${baseUrl}/`,
-      telephone: CONTACT.phoneLandline,
-      email: CONTACT.email,
-      address: {
-        "@type": "PostalAddress",
-        ...CONTACT.address,
-      },
-    },
-  };
+  const jsonLd = useMemo(
+    () => [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd, faqJsonLd],
+    [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd, faqJsonLd]
+  );
 
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqItems.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-  };
+  // ✅ memoized settings (so SlickCarouselLazy can stay stable)
+  const sliderSettings = useMemo(
+    () => ({
+      dots: true,
+      arrows: false,
+      infinite: true,
+      speed: 600,
+      autoplay: true,
+      autoplaySpeed: 3500,
+    }),
+    []
+  );
 
-  const jsonLd = [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd, faqJsonLd];
-
-  const sliderSettings = {
-    dots: true,
-    arrows: false,
-    infinite: true,
-    speed: 600,
-    autoplay: true,
-    autoplaySpeed: 3500,
-  };
-
-  const images = [cortina2, cortina3, cortina4, cortina5, cortina6];
+  // ✅ memoized images list
+  const images = useMemo(
+    () => [cortina2, cortina3, cortina4, cortina5, cortina6],
+    []
+  );
 
   return (
     <Page>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
+        <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
+
+        {/* ✅ Preload hero bg (no visual change, helps LCP) */}
+        <link rel="preload" as="image" href={heroImg} fetchpriority="high" />
 
         {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
@@ -534,47 +597,6 @@ export default function CortinasEstoresPremium() {
         </HeroInner>
       </Hero>
 
-      {/* EDITORIAL (añade contexto semántico útil) */}
-      <Editorial>
-        <EditorialInner>
-          <EditorialTitle>Caída, luz y proporción</EditorialTitle>
-          <EditorialText>
-            Un buen resultado depende del tejido, la confección y la medición.
-            Te orientamos para elegir la combinación adecuada (visillo, lino,
-            terciopelo o blackout) y el sistema más limpio para tu ventana.
-          </EditorialText>
-        </EditorialInner>
-      </Editorial>
-
-      {/* FEATURES */}
-      <Features>
-        <FeaturesGrid>
-          <Feature>
-            <FeatureTitle>Asesoramiento real</FeatureTitle>
-            <FeatureText>
-              Te recomendamos tejido y confección según orientación, privacidad
-              y estilo del espacio.
-            </FeatureText>
-          </Feature>
-
-          <Feature>
-            <FeatureTitle>Medición precisa</FeatureTitle>
-            <FeatureText>
-              Ajuste perfecto para que la caída sea impecable y el sistema
-              funcione suave.
-            </FeatureText>
-          </Feature>
-
-          <Feature>
-            <FeatureTitle>Instalación profesional</FeatureTitle>
-            <FeatureText>
-              Rieles, barras y estores instalados con acabado limpio y puesta a
-              punto final.
-            </FeatureText>
-          </Feature>
-        </FeaturesGrid>
-      </Features>
-
       {/* FABRICS & HANDMADE */}
       <FabricsSection>
         <FabricsInner>
@@ -593,7 +615,12 @@ export default function CortinasEstoresPremium() {
           <FabricsGrid>
             <FabricItem>
               <FabricImageWrapper>
-                <FabricImage src={linenImg} alt="Cortinas de lino a medida" />
+                <FabricImage
+                  src={linenImg}
+                  alt="Cortinas de lino a medida"
+                  loading="lazy"
+                  decoding="async"
+                />
               </FabricImageWrapper>
               <FabricName>Lino</FabricName>
               <FabricDescription>
@@ -604,7 +631,12 @@ export default function CortinasEstoresPremium() {
 
             <FabricItem>
               <FabricImageWrapper>
-                <FabricImage src={sheerImg} alt="Visillos a medida" />
+                <FabricImage
+                  src={sheerImg}
+                  alt="Visillos a medida"
+                  loading="lazy"
+                  decoding="async"
+                />
               </FabricImageWrapper>
               <FabricName>Visillos</FabricName>
               <FabricDescription>
@@ -618,6 +650,8 @@ export default function CortinasEstoresPremium() {
                 <FabricImage
                   src={velvetImg}
                   alt="Cortinas de terciopelo a medida"
+                  loading="lazy"
+                  decoding="async"
                 />
               </FabricImageWrapper>
               <FabricName>Terciopelo</FabricName>
@@ -632,6 +666,8 @@ export default function CortinasEstoresPremium() {
                 <FabricImage
                   src={blackoutImg}
                   alt="Cortinas térmicas y blackout a medida"
+                  loading="lazy"
+                  decoding="async"
                 />
               </FabricImageWrapper>
               <FabricName>Térmicas / blackout</FabricName>
@@ -646,6 +682,8 @@ export default function CortinasEstoresPremium() {
                 <FabricImage
                   src={patternedImg}
                   alt="Cortinas con tejidos estampados"
+                  loading="lazy"
+                  decoding="async"
                 />
               </FabricImageWrapper>
               <FabricName>Tejidos estampados</FabricName>
@@ -660,6 +698,8 @@ export default function CortinasEstoresPremium() {
                 <FabricImage
                   src={chenilleImg}
                   alt="Cortinas técnicas y chenille"
+                  loading="lazy"
+                  decoding="async"
                 />
               </FabricImageWrapper>
               <FabricName>Técnicas</FabricName>
@@ -681,23 +721,15 @@ export default function CortinasEstoresPremium() {
         </FabricsInner>
       </FabricsSection>
 
+      <ContactCTA />
+
       {/* SISTEMAS + ENFOQUE */}
       <ComplementosVentana id="sistemas" />
       <EnfoqueSlider />
 
-      {/* CAROUSEL */}
+      {/* ✅ CAROUSEL (Lazy-loaded Slick wrapper) */}
       <CarouselSection>
-        <Slider {...sliderSettings}>
-          {images.map((img, i) => (
-            <CarouselImage key={i}>
-              <img
-                src={img}
-                alt={`Cortinas y estores instalados — ejemplo ${i + 1}`}
-                loading="lazy"
-              />
-            </CarouselImage>
-          ))}
-        </Slider>
+        <SlickCarouselLazy images={images} settings={sliderSettings} />
       </CarouselSection>
 
       {/* FAQ (UI + schema ya incluido arriba) */}
@@ -705,7 +737,7 @@ export default function CortinasEstoresPremium() {
         <FAQInner>
           <FAQTitle>Preguntas frecuentes</FAQTitle>
           <FAQGrid>
-            {faqItems.map((f) => (
+            {FAQ_ITEMS.map((f) => (
               <FAQItem key={f.q}>
                 <FAQSummary>{f.q}</FAQSummary>
                 <FAQBody>{f.a}</FAQBody>

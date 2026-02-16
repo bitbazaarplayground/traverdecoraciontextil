@@ -4,6 +4,9 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
+import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanel.png";
+import venecianasImg from "../../assets/venecianas/oficina2.png";
+
 /* =========================
    EDITORIAL / SHOWROOM MODULE
    Panel japonés · Verticales · Barras · Rieles
@@ -353,10 +356,9 @@ const SecondaryBtn = styled.a`
    Replace these with your real assets later.
    (Use your own imports if you prefer.)
 =================================== */
-const placeholder1 =
-  "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=2000&q=70";
-const placeholder2 =
-  "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=2000&q=70";
+const placeholder1 = panelJaponesImg;
+const placeholder2 = venecianasImg;
+
 const placeholder3 =
   "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=2000&q=70";
 const placeholder4 =
