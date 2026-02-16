@@ -1,5 +1,5 @@
 // src/pages/HomePage.jsx
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 
 import Hero from "../components/Hero";
@@ -120,6 +120,25 @@ export default function HomePage({ onOpenAsesoramiento }) {
     faqPageJsonLd,
   ];
 
+  // Warm up the first below-the-fold chunks after initial paint (idle if possible)
+  useEffect(() => {
+    const warm = () => {
+      import("../components/ServicesSection");
+      import("../components/Process");
+      import("../components/ContactCTAHome");
+    };
+
+    let id;
+
+    if ("requestIdleCallback" in window) {
+      id = window.requestIdleCallback(warm, { timeout: 1200 });
+      return () => window.cancelIdleCallback(id);
+    }
+
+    id = window.setTimeout(warm, 400);
+    return () => window.clearTimeout(id);
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -154,26 +173,26 @@ export default function HomePage({ onOpenAsesoramiento }) {
 
       <Hero onOpenAsesoramiento={onOpenAsesoramiento} />
 
-      {/* Keep these *tight* so they don't load during LCP */}
-      <LazyOnVisible rootMargin="0px 0px" minHeight={600} deferMs={1400}>
+      {/* Below-the-fold: fast reveal for first section, idle-mount for the rest */}
+      <LazyOnVisible rootMargin="300px 0px" minHeight={600}>
         <Suspense fallback={null}>
           <ServicesSection />
         </Suspense>
       </LazyOnVisible>
 
-      <LazyOnVisible rootMargin="0px 0px" minHeight={500} deferMs={1400}>
+      <LazyOnVisible rootMargin="250px 0px" minHeight={500} idle>
         <Suspense fallback={null}>
           <Process />
         </Suspense>
       </LazyOnVisible>
 
-      <LazyOnVisible rootMargin="100px 0px" minHeight={420} deferMs={1600}>
+      <LazyOnVisible rootMargin="250px 0px" minHeight={420} idle>
         <Suspense fallback={null}>
           <ContactCTAHome onOpenAsesoramiento={onOpenAsesoramiento} />
         </Suspense>
       </LazyOnVisible>
 
-      <LazyOnVisible rootMargin="200px 0px" minHeight={520} deferMs={1800}>
+      <LazyOnVisible rootMargin="350px 0px" minHeight={520} idle>
         <Suspense fallback={null}>
           <GalleryCarousel />
           <BrandLogos />

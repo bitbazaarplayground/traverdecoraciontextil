@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { trackEvent } from "../lib/analytics";
 
@@ -28,6 +28,7 @@ const HeroWrapper = styled.section`
   display: grid;
   place-items: stretch;
 `;
+
 const HeroImg = styled(motion.img)`
   position: absolute;
   inset: 0;
@@ -263,6 +264,16 @@ export default function Hero({ onOpenAsesoramiento }) {
   const [index, setIndex] = useState(0);
   const [displaySrc, setDisplaySrc] = useState(slides[0]);
 
+  // LCP image ref (for fetchpriority without React warnings)
+  const lcpImgRef = useRef(null);
+
+  // Set browser-native fetchpriority on the LCP <img>
+  useEffect(() => {
+    if (lcpImgRef.current) {
+      lcpImgRef.current.setAttribute("fetchpriority", "high");
+    }
+  }, []);
+
   // Auto-rotate (same concept as theirs, slightly calmer pacing)
   useEffect(() => {
     const id = setInterval(() => {
@@ -291,11 +302,24 @@ export default function Hero({ onOpenAsesoramiento }) {
     }
   }, [slides]);
 
+  // Swap slides smoothly (decode when possible to avoid jank)
   useEffect(() => {
     const nextSrc = slides[index];
     const img = new Image();
     img.src = nextSrc;
-    img.onload = () => setDisplaySrc(nextSrc);
+
+    const apply = () => setDisplaySrc(nextSrc);
+
+    if (img.decode) {
+      img
+        .decode()
+        .then(apply)
+        .catch(() => {
+          img.onload = apply;
+        });
+    } else {
+      img.onload = apply;
+    }
   }, [index, slides]);
 
   return (
@@ -317,11 +341,11 @@ export default function Hero({ onOpenAsesoramiento }) {
           >
             <source media="(max-width: 768px)" srcSet={heroMobile} />
             <img
+              ref={lcpImgRef}
               src={heroDesktop}
               alt=""
               width="1100"
               height="733"
-              fetchPriority="high"
               loading="eager"
               decoding="async"
               style={{
@@ -339,7 +363,6 @@ export default function Hero({ onOpenAsesoramiento }) {
             key={displaySrc}
             src={displaySrc}
             alt=""
-            fetchPriority="auto"
             loading="lazy"
             decoding="async"
             initial={{ opacity: 0, scale: 1.04 }}
