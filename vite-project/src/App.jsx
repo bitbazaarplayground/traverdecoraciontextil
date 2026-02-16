@@ -1,41 +1,67 @@
-import { useState } from "react";
+// src/App.jsx
+import { lazy, Suspense, useMemo, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
-import AsesoramientoModal from "./components/AsesoramientoModal";
-import AutomatizacionCompleta from "./components/AutomatizacionCompleta";
+
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
-import AutomatizacionIndividual from "./components/automatizacion/AutomatizacionIndividual";
-import Mosquiteras from "./components/ventanas/Mosquiteras";
-import PanelJapones from "./components/ventanas/PanelJapones";
-import Venecianas from "./components/ventanas/Venecianas";
-import AdminBookings from "./pages/Admin/AdminBookings";
-import AdminCalendar from "./pages/Admin/AdminCalendar";
-import AdminClients from "./pages/Admin/AdminClientes";
-import AdminCustomer from "./pages/Admin/AdminCustomer";
-import AdminDashboard from "./pages/Admin/AdminDashboard";
-import AdminLayout from "./pages/Admin/AdminLayout";
-import AdminResetPassword from "./pages/Admin/AdminResetPassword";
-import AdminSettings from "./pages/Admin/AdminSettings";
-import AuthCallback from "./pages/AuthCallback";
-import Automatizacion from "./pages/Automatizacion";
-import AvisoLegal from "./pages/AvisoLegal";
-import ContactPage from "./pages/ContactPage";
-import CortinasEstores from "./pages/CortinasEstores";
-import HomePage from "./pages/HomePage";
-import PoliticaCookies from "./pages/PoliticaCookies";
-import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
-import Propuestas from "./pages/Propuestas";
-import Servicios from "./pages/Servicios";
-import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
+import HomePage from "./pages/HomePage"; // ✅ keep eager for best LCP
+
+// ✅ Lazy load modal (only when opened)
+const AsesoramientoModal = lazy(() =>
+  import("./components/AsesoramientoModal")
+);
+
+// ✅ Public pages (lazy)
+const Propuestas = lazy(() => import("./pages/Propuestas"));
+const Automatizacion = lazy(() => import("./pages/Automatizacion"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const CortinasEstores = lazy(() => import("./pages/CortinasEstores"));
+const Servicios = lazy(() => import("./pages/Servicios"));
+const ToldosProteccionSolar = lazy(() =>
+  import("./pages/ToldosProteccionSolar")
+);
+
+const AvisoLegal = lazy(() => import("./pages/AvisoLegal"));
+const PoliticaPrivacidad = lazy(() => import("./pages/PoliticaPrivacidad"));
+const PoliticaCookies = lazy(() => import("./pages/PoliticaCookies"));
+
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
+const AdminResetPassword = lazy(() =>
+  import("./pages/Admin/AdminResetPassword")
+);
+
+// ✅ Components used as routes (lazy)
+const AutomatizacionCompleta = lazy(() =>
+  import("./components/AutomatizacionCompleta")
+);
+const AutomatizacionIndividual = lazy(() =>
+  import("./components/automatizacion/AutomatizacionIndividual")
+);
+
+const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
+const Venecianas = lazy(() => import("./components/ventanas/Venecianas"));
+const Mosquiteras = lazy(() => import("./components/ventanas/Mosquiteras"));
+
+// ✅ ADMIN (lazy) — this is where Supabase weight gets removed from main bundle
+const AdminLayout = lazy(() => import("./pages/Admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("./pages/Admin/AdminDashboard"));
+const AdminBookings = lazy(() => import("./pages/Admin/AdminBookings"));
+const AdminCalendar = lazy(() => import("./pages/Admin/AdminCalendar"));
+const AdminClients = lazy(() => import("./pages/Admin/AdminClientes"));
+const AdminCustomer = lazy(() => import("./pages/Admin/AdminCustomer"));
+const AdminSettings = lazy(() => import("./pages/Admin/AdminSettings"));
 
 export default function App() {
   const [isAsesoramientoOpen, setIsAsesoramientoOpen] = useState(false);
   const [modalPack, setModalPack] = useState(null);
 
   const { pathname } = useLocation();
-  const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
+  const isAdminRoute = useMemo(
+    () => pathname === "/admin" || pathname.startsWith("/admin/"),
+    [pathname]
+  );
 
   const openAsesoramiento = (pack = "General") => {
     setModalPack(pack);
@@ -52,70 +78,79 @@ export default function App() {
       <ScrollToTop />
       {!isAdminRoute && <Navbar />}
 
-      <Routes>
-        <Route
-          path="/"
-          element={<HomePage onOpenAsesoramiento={openAsesoramiento} />}
-        />
+      {/* ✅ One Suspense boundary for all lazy routes */}
+      <Suspense fallback={null}>
+        <Routes>
+          <Route
+            path="/"
+            element={<HomePage onOpenAsesoramiento={openAsesoramiento} />}
+          />
 
-        {/* PROPUESTAS */}
-        <Route
-          path="/propuestas"
-          element={<Propuestas onOpenAsesoramiento={openAsesoramiento} />}
-        />
+          {/* PROPUESTAS */}
+          <Route
+            path="/propuestas"
+            element={<Propuestas onOpenAsesoramiento={openAsesoramiento} />}
+          />
 
-        {/* AUTOMATIZACION */}
-        <Route path="/automatizacion" element={<Automatizacion />} />
-        <Route
-          path="/automatizacion/completa"
-          element={<AutomatizacionCompleta />}
-        />
-        <Route
-          path="/automatizacion/individual"
-          element={<AutomatizacionIndividual />}
-        />
+          {/* AUTOMATIZACION */}
+          <Route path="/automatizacion" element={<Automatizacion />} />
+          <Route
+            path="/automatizacion/completa"
+            element={<AutomatizacionCompleta />}
+          />
+          <Route
+            path="/automatizacion/individual"
+            element={<AutomatizacionIndividual />}
+          />
 
-        {/* CONTACTO */}
-        <Route path="/contact" element={<ContactPage />} />
+          {/* CONTACTO */}
+          <Route path="/contact" element={<ContactPage />} />
 
-        {/* SERVICIOS / CATEGORIAS */}
-        <Route path="/panel-japones" element={<PanelJapones />} />
-        <Route path="/venecianas" element={<Venecianas />} />
-        <Route path="/cortinas-estores" element={<CortinasEstores />} />
-        <Route
-          path="/toldos-proteccionsolar"
-          element={<ToldosProteccionSolar />}
-        />
-        <Route path="/mosquiteras" element={<Mosquiteras />} />
-        <Route path="/services" element={<Servicios />} />
-        {/* LEGALES */}
+          {/* SERVICIOS / CATEGORIAS */}
+          <Route path="/panel-japones" element={<PanelJapones />} />
+          <Route path="/venecianas" element={<Venecianas />} />
+          <Route path="/cortinas-estores" element={<CortinasEstores />} />
+          <Route
+            path="/toldos-proteccionsolar"
+            element={<ToldosProteccionSolar />}
+          />
+          <Route path="/mosquiteras" element={<Mosquiteras />} />
+          <Route path="/services" element={<Servicios />} />
 
-        <Route path="/aviso-legal" element={<AvisoLegal />} />
-        <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
-        <Route path="/politica-cookies" element={<PoliticaCookies />} />
+          {/* LEGALES */}
+          <Route path="/aviso-legal" element={<AvisoLegal />} />
+          <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+          <Route path="/politica-cookies" element={<PoliticaCookies />} />
 
-        {/* ADMIN */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="requests" element={<AdminBookings />} />
-          <Route path="calendario" element={<AdminCalendar />} />
-          <Route path="clientes" element={<AdminClients />} />
-          <Route path="clientes/:customerKey" element={<AdminCustomer />} />
+          {/* ADMIN */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="requests" element={<AdminBookings />} />
+            <Route path="calendario" element={<AdminCalendar />} />
+            <Route path="clientes" element={<AdminClients />} />
+            <Route path="clientes/:customerKey" element={<AdminCustomer />} />
+            <Route path="ajustes" element={<AdminSettings />} />
+          </Route>
 
-          <Route path="ajustes" element={<AdminSettings />} />
-        </Route>
+          {/* AUTH */}
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route
+            path="/admin/reset-password"
+            element={<AdminResetPassword />}
+          />
+        </Routes>
+      </Suspense>
 
-        {/* AUTH */}
-        <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/admin/reset-password" element={<AdminResetPassword />} />
-      </Routes>
-
-      {/* ✅ Global modal (outside Routes) */}
-      <AsesoramientoModal
-        open={isAsesoramientoOpen}
-        packLabel={modalPack}
-        onClose={closeAsesoramiento}
-      />
+      {/* ✅ Modal only loads when needed */}
+      {isAsesoramientoOpen && (
+        <Suspense fallback={null}>
+          <AsesoramientoModal
+            open={isAsesoramientoOpen}
+            packLabel={modalPack}
+            onClose={closeAsesoramiento}
+          />
+        </Suspense>
+      )}
 
       {!isAdminRoute && <Footer />}
     </>
