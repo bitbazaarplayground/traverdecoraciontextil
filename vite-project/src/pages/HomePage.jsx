@@ -122,6 +122,17 @@ export default function HomePage({ onOpenAsesoramiento }) {
 
   // Warm up the first below-the-fold chunks after initial paint (idle if possible)
   useEffect(() => {
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+    const conn = navigator.connection;
+    const isSlow =
+      conn?.saveData ||
+      /2g/.test(conn?.effectiveType || "") ||
+      /3g/.test(conn?.effectiveType || "");
+
+    // ✅ Mobile performance first: don't warm chunks on mobile/slow connections
+    if (isMobile || isSlow) return;
+
     const warm = () => {
       import("../components/ServicesSection");
       import("../components/Process");
@@ -129,13 +140,12 @@ export default function HomePage({ onOpenAsesoramiento }) {
     };
 
     let id;
-
     if ("requestIdleCallback" in window) {
-      id = window.requestIdleCallback(warm, { timeout: 1200 });
+      id = window.requestIdleCallback(warm, { timeout: 2000 });
       return () => window.cancelIdleCallback(id);
     }
 
-    id = window.setTimeout(warm, 400);
+    id = window.setTimeout(warm, 1200);
     return () => window.clearTimeout(id);
   }, []);
 
@@ -173,26 +183,25 @@ export default function HomePage({ onOpenAsesoramiento }) {
 
       <Hero onOpenAsesoramiento={onOpenAsesoramiento} />
 
-      {/* Below-the-fold: fast reveal for first section, idle-mount for the rest */}
-      <LazyOnVisible rootMargin="300px 0px" minHeight={600}>
+      <LazyOnVisible rootMargin="0px 0px" minHeight={600} idle>
         <Suspense fallback={null}>
           <ServicesSection />
         </Suspense>
       </LazyOnVisible>
 
-      <LazyOnVisible rootMargin="250px 0px" minHeight={500} idle>
+      <LazyOnVisible rootMargin="0px 0px" minHeight={500} idle>
         <Suspense fallback={null}>
           <Process />
         </Suspense>
       </LazyOnVisible>
 
-      <LazyOnVisible rootMargin="250px 0px" minHeight={420} idle>
+      <LazyOnVisible rootMargin="0px 0px" minHeight={420} idle>
         <Suspense fallback={null}>
           <ContactCTAHome onOpenAsesoramiento={onOpenAsesoramiento} />
         </Suspense>
       </LazyOnVisible>
 
-      <LazyOnVisible rootMargin="350px 0px" minHeight={520} idle>
+      <LazyOnVisible rootMargin="100px 0px" minHeight={520} idle>
         <Suspense fallback={null}>
           <GalleryCarousel />
           <BrandLogos />
