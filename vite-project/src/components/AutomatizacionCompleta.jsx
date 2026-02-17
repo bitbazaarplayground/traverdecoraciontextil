@@ -8,8 +8,8 @@ import AutomatizacionEstimate from "../components/automatizacion/AutomatizacionE
 /* =========================
    ASSETS
 ========================= */
-import domoticaControl from "../assets/Automatizacion/domotica1.png";
-import automatizacionPackImg from "../assets/Automatizacion/smartHom1.png";
+import domoticaControl from "../assets/Automatizacion/domotica1.webp";
+import automatizacionPackImg from "../assets/Automatizacion/smartHom1.webp";
 import PromoBanner from "./pricing/PromoBanner";
 
 /* =========================
