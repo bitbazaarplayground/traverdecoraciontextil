@@ -7,9 +7,9 @@ import styled from "styled-components";
 import { CONTACT } from "../../config/contact";
 
 // IMAGES
-import persianasImg from "../../assets/Automatizacion/benefit1.png";
-import cortinasImg from "../../assets/Automatizacion/domotica1.png";
-import toldosImg from "../../assets/Automatizacion/smartHom2.png";
+import persianasImg from "../../assets/Automatizacion/benefit1.webp";
+import cortinasImg from "../../assets/Automatizacion/domotica1.webp";
+import toldosImg from "../../assets/Automatizacion/smartHom2.webp";
 
 /* =========================
    STYLES — LIGHT EDITORIAL (moved to top)
