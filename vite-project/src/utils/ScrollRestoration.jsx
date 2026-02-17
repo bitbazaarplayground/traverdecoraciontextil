@@ -20,85 +20,50 @@ function writeStore(store) {
 export default function ScrollRestoration() {
   const location = useLocation();
   const navType = useNavigationType(); // POP / PUSH / REPLACE
+  const key = getKey(location);
 
   const storeRef = useRef(readStore());
-  const key = getKey(location);
-  const prevKeyRef = useRef(key);
 
-  // Manual browser scroll restoration
+  // Tell browser not to do its own restoration
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
   }, []);
 
-  // Keep store updated while user scrolls (optional but nice)
-  useEffect(() => {
-    let ticking = false;
-
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        ticking = false;
-        storeRef.current[key] = window.scrollY;
-        writeStore(storeRef.current);
-      });
+  // ✅ SAVE: on route change (cleanup runs while still on the old page)
+  useLayoutEffect(() => {
+    return () => {
+      storeRef.current[key] = window.scrollY;
+      writeStore(storeRef.current);
     };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
   }, [key]);
 
-  // Core: save previous route BEFORE scrolling, then restore/top depending on nav type.
+  // ✅ RESTORE: on new route
   useLayoutEffect(() => {
-    const prevKey = prevKeyRef.current;
+    // Always refresh from storage (in case anything wrote to it)
+    storeRef.current = readStore();
 
-    // 1) Save scroll for the page we're leaving (prevKey)
-    if (prevKey && prevKey !== key) {
-      storeRef.current[prevKey] = window.scrollY;
-      writeStore(storeRef.current);
-    }
-
-    // 2) Restore or top
-    const savedY = storeRef.current[key];
-
-    if (navType === "POP") {
-      if (typeof savedY === "number") {
-        // fight layout shifts for a moment
-        const start = performance.now();
-        const maxMs = 1200;
-
-        const apply = () => window.scrollTo(0, savedY);
-
-        requestAnimationFrame(() => requestAnimationFrame(apply));
-
-        const ro = new ResizeObserver(() => {
-          if (performance.now() - start > maxMs) return;
-          apply();
-        });
-        ro.observe(document.body);
-
-        const t1 = setTimeout(apply, 120);
-        const t2 = setTimeout(apply, 350);
-        const t3 = setTimeout(apply, 800);
-
-        // cleanup observers/timeouts for this restore cycle
-        return () => {
-          ro.disconnect();
-          clearTimeout(t1);
-          clearTimeout(t2);
-          clearTimeout(t3);
-        };
-      }
-      // if no saved, do nothing
-    } else {
-      // PUSH/REPLACE (normal link navigation) -> top
+    if (navType !== "POP") {
       window.scrollTo(0, 0);
+      return;
     }
 
-    // 3) Update prev key after we’ve handled this navigation
-    prevKeyRef.current = key;
+    const savedY = storeRef.current[key];
+    if (typeof savedY !== "number") return;
+
+    // Apply a few times to beat image/layout shifts
+    const apply = () => window.scrollTo(0, savedY);
+    requestAnimationFrame(() => requestAnimationFrame(apply));
+    const t1 = setTimeout(apply, 120);
+    const t2 = setTimeout(apply, 350);
+    const t3 = setTimeout(apply, 800);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
   }, [key, navType]);
 
   return null;

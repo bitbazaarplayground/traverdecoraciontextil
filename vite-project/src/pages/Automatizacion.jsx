@@ -6,13 +6,13 @@ import { CONTACT } from "../config/contact";
 /* =========================
    ASSETS
 ========================= */
-import benefit1 from "../assets/Automatizacion/benefit1.png";
-import automatizacionPackImg from "../assets/Automatizacion/domoticaInd.png";
-import programaHorarios from "../assets/Automatizacion/programa.png";
-import vacaciones from "../assets/Automatizacion/vacaciones.png";
+import benefit1 from "../assets/Automatizacion/benefit1.webp";
+import automatizacionPackImg from "../assets/Automatizacion/domoticaInd.webp";
+import programaHorarios from "../assets/Automatizacion/programa.webp";
+import vacaciones from "../assets/Automatizacion/vacaciones.webp";
 import cortinasEstores from "../assets/Home/HeroImg/img2.webp";
 import Img3 from "../assets/Home/HeroImg/img3.webp";
-import toldosProteccionSolar from "../assets/servicios/toldoServicios.png";
+import toldosProteccionSolar from "../assets/servicios/toldoServicios.webp";
 import heroVideo from "../assets/video1.mp4";
 
 export default function Automatizacion() {

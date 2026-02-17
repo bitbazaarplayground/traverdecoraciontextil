@@ -3,12 +3,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import cortinasServicios from "../assets/servicios/CortinasServicios.png";
-import proyecto from "../assets/servicios/ProyectoAMedida.png";
-import somfyApp from "../assets/servicios/app2.png";
-import panelJaponesImg from "../assets/servicios/panelJapones.png";
-import toldosProteccionSolar from "../assets/servicios/toldoServicios.png";
-import venecianasImg from "../assets/servicios/venecianas.png";
+import cortinasServicios from "../assets/servicios/CortinasServicios.webp";
+import proyecto from "../assets/servicios/ProyectoAMedida.webp";
+import somfyApp from "../assets/servicios/app2.webp";
+import panelJaponesImg from "../assets/servicios/panelJapones.webp";
+import toldosProteccionSolar from "../assets/servicios/toldoServicios.webp";
+import venecianasImg from "../assets/servicios/venecianas.webp";
 import { CONTACT } from "../config/contact";
 
 /* =========================
