@@ -4,8 +4,9 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanel.png";
-import venecianasImg from "../../assets/venecianas/oficina2.png";
+import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanel.webp";
+import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
+import venecianasImg from "../../assets/venecianas/oficina2.webp";
 
 /* =========================
    EDITORIAL / SHOWROOM MODULE
@@ -361,8 +362,6 @@ const placeholder2 = venecianasImg;
 
 const placeholder3 =
   "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=2000&q=70";
-const placeholder4 =
-  "https://images.unsplash.com/photo-1549187774-b4e9b0445b41?auto=format&fit=crop&w=2000&q=70";
 
 export default function ComplementosVentana({
   id = "sistemas",
@@ -400,12 +399,12 @@ export default function ComplementosVentana({
       alt: "Barra de cortina premium con acabado elegante",
     },
     {
-      label: "Precisión",
+      label: "Mosquitera",
       title: "Rieles",
       text: "El detalle que cambia el resultado: deslizamiento suave, caída correcta y un conjunto impecable. Discretos, silenciosos y duraderos.",
       tags: ["Silencio", "Deslizamiento", "Instalación limpia"],
       note: "La elección cuando quieres que todo se vea perfecto… y se sienta aún mejor.",
-      img: placeholder4,
+      img: mosquiteraPatio,
       alt: "Riel de cortina instalado con acabado discreto",
       reverse: true,
     },

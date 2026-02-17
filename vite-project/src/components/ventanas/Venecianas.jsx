@@ -4,11 +4,11 @@ import styled from "styled-components";
 import { CONTACT } from "../../config/contact";
 
 /* IMAGES */
-import bano1 from "../../assets/venecianas/bano1.png";
-import cocina1 from "../../assets/venecianas/cocina1.png";
-import oficina1 from "../../assets/venecianas/oficina1.png";
-import oficina2 from "../../assets/venecianas/oficina2.png";
-import venecianaMaderaOficina from "../../assets/venecianas/venecianaMaderaOficina.png";
+import bano1 from "../../assets/venecianas/bano1.webp";
+import cocina1 from "../../assets/venecianas/cocina1.webp";
+import oficina1 from "../../assets/venecianas/oficina1.webp";
+import oficina2 from "../../assets/venecianas/oficina2.webp";
+import venecianaMaderaOficina from "../../assets/venecianas/venecianaMaderaOficina.webp";
 
 /* =========================
    PAGE
