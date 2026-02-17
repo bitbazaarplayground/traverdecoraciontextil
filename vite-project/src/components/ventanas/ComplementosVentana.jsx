@@ -8,119 +8,250 @@ import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanel.webp";
 import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
 import venecianasImg from "../../assets/venecianas/oficina2.webp";
 
-/* =========================
-   EDITORIAL / SHOWROOM MODULE
-   Panel japonés · Verticales · Barras · Rieles
-========================= */
+// If you don't have a real "barras/rieles" image yet, keep this placeholder for now.
+const barrasRielesPlaceholder =
+  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=2000&q=70";
 
-/* Subtle, premium motion */
-const fade = {
-  hidden: { opacity: 0, y: 10 },
-  show: {
+const fadeUp = {
+  hidden: { opacity: 0, y: 14 },
+  show: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-  },
+    transition: { duration: 0.45, delay: i * 0.06, ease: "easeOut" },
+  }),
+};
+const STORAGE_KEY = "scroll-positions:v4";
+
+const saveScrollNow = () => {
+  try {
+    const store = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "{}");
+    const k =
+      window.location.pathname + window.location.search + window.location.hash;
+
+    store[k] = window.scrollY;
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+  } catch {}
 };
 
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } },
-};
+export default function ComplementosVentana({ id = "sistemas" }) {
+  const items = [
+    {
+      title: "Panel japonés",
+      desc: "Ideal para puertas correderas y grandes ventanales.",
+      img: panelJaponesImg,
+      to: "/panel-japones",
+    },
+    {
+      title: "Venecianas",
+      desc: "Control solar preciso con privacidad regulable.",
+      img: venecianasImg,
+      to: "/venecianas",
+    },
+    {
+      title: "Barras · Rieles",
+      desc: "Acabados premium que elevan el conjunto.",
+      img: barrasRielesPlaceholder,
+      to: "/barras-rieles",
+    },
+    {
+      title: "Mosquiteras",
+      desc: "Ventila sin insectos. Discretas y resistentes.",
+      img: mosquiteraPatio,
+      to: "/mosquiteras",
+    },
+  ];
 
-const PageSection = styled.section`
-  margin-top: 3.8rem;
-  padding: 0 0 0;
-`;
+  return (
+    <Section id={id} aria-label="Accesos rápidos a otros productos">
+      <Container>
+        <Top>
+          <Heading>
+            <Kicker>Accesos rápidos</Kicker>
+            <Title>Otros productos para tu ventana</Title>
+          </Heading>
 
-/* Header */
-const Header = styled(motion.div)`
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 0 1.25rem 1.8rem;
+          <Hint>
+            Desliza en móvil <span aria-hidden="true">→</span>
+          </Hint>
+        </Top>
+
+        <Cards
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.35 }}
+        >
+          {items.map((it, i) => (
+            <Card key={it.title} as={motion.div} variants={fadeUp} custom={i}>
+              <CardLink
+                to={it.to}
+                aria-label={`Ver ${it.title}`}
+                onClick={saveScrollNow}
+              >
+                <Media>
+                  <Img src={it.img} alt={it.title} loading="lazy" />
+                  <Overlay />
+                </Media>
+
+                <Body>
+                  <CardTitle>{it.title}</CardTitle>
+                  <CardDesc>{it.desc}</CardDesc>
+
+                  <More>
+                    Ver más <ArrowRight size={16} />
+                  </More>
+                </Body>
+
+                {/* Fancy micro-interaction layer */}
+                <Sheen aria-hidden="true" />
+              </CardLink>
+            </Card>
+          ))}
+        </Cards>
+      </Container>
+    </Section>
+  );
+}
+
+/* =========================
+   STYLES
+========================= */
+
+const Section = styled.section`
+  padding: 2.75rem 1.25rem;
+  background: #fff;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
 
   @media (max-width: 768px) {
-    padding: 0 1.1rem 1.35rem;
+    padding: 2.25rem 1.1rem;
   }
 `;
 
+const Container = styled.div`
+  max-width: 1120px;
+  margin: 0 auto;
+`;
+
+const Top = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.15rem;
+
+  @media (max-width: 768px) {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-bottom: 0.95rem;
+  }
+`;
+
+const Heading = styled.div``;
+
 const Kicker = styled.p`
-  margin: 0 0 0.6rem 0;
-  letter-spacing: 0.18em;
+  margin: 0 0 0.45rem 0;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  font-size: 0.78rem;
-  color: rgba(17, 17, 17, 0.55);
+  font-size: 0.82rem;
+  color: rgba(17, 17, 17, 0.6);
 `;
 
 const Title = styled.h2`
-  margin: 0 0 0.85rem 0;
-
-  /* requested editorial scale */
-  font-size: 2.3rem;
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-
-  color: #121212;
-
-  @media (max-width: 768px) {
-    font-size: 1.85rem;
-  }
-`;
-
-const Lead = styled.p`
   margin: 0;
-  max-width: 72ch;
-  font-size: 1.05rem;
-  line-height: 1.75;
-  color: #121212;
-`;
-
-/* Grid of features (full-width feel but aligned with your site) */
-const Rail = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.25rem;
-
-  display: grid;
-  gap: 1.4rem;
+  font-size: 1.55rem;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: rgba(17, 17, 17, 0.95);
 
   @media (max-width: 768px) {
-    padding: 0 1.1rem;
-    gap: 1.1rem;
+    font-size: 1.35rem;
   }
 `;
 
-const Feature = styled(motion.article)`
-  border-radius: 26px;
-  overflow: hidden;
+const Hint = styled.p`
+  margin: 0;
+  font-size: 0.92rem;
+  color: rgba(17, 17, 17, 0.55);
 
-  background: rgba(255, 255, 255, 0.035);
-  outline: 1px solid rgba(255, 255, 255, 0.085);
-  outline-offset: -1px;
+  span {
+    display: inline-block;
+    transform: translateY(1px);
+  }
 
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+  @media (min-width: 769px) {
+    display: none;
+  }
 `;
 
-const FeatureInner = styled.div`
+const Cards = styled(motion.div)`
   display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.9rem;
 
-  @media (min-width: 980px) {
-    grid-template-columns: 1.05fr 0.95fr;
-    align-items: stretch;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-    /* alternate layout */
-    direction: ${({ $reverse }) => ($reverse ? "rtl" : "ltr")};
+  /* Mobile: swipeable row */
+  @media (max-width: 768px) {
+    grid-template-columns: unset;
+    display: flex;
+    gap: 0.85rem;
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+
+    /* hide scrollbar (best effort) */
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+`;
+
+const Card = styled.div`
+  @media (max-width: 768px) {
+    min-width: 78%;
+    scroll-snap-align: start;
+  }
+`;
+
+const CardLink = styled(Link)`
+  position: relative;
+  display: block;
+  border-radius: 18px;
+  overflow: hidden;
+  text-decoration: none;
+
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(17, 17, 17, 0.06);
+
+  transition: transform 220ms ease, box-shadow 220ms ease,
+    border-color 220ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 44px rgba(17, 17, 17, 0.09);
+    border-color: rgba(17, 17, 17, 0.14);
+  }
+
+  &:active {
+    transform: translateY(0px);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1), 0 12px 30px rgba(17, 17, 17, 0.06);
   }
 `;
 
 const Media = styled.div`
   position: relative;
-  min-height: 320px;
-  background: #0b0c0f;
+  height: 130px;
 
-  @media (min-width: 980px) {
-    min-height: 420px;
+  @media (max-width: 768px) {
+    height: 150px;
   }
 `;
 
@@ -129,374 +260,101 @@ const Img = styled.img`
   height: 100%;
   display: block;
   object-fit: cover;
+  transform: scale(1.01);
+  transition: transform 700ms ease;
 
-  transform: scale(1.02);
-  filter: saturate(1.02) contrast(1.04);
+  ${CardLink}:hover & {
+    transform: scale(1.06);
+  }
 `;
 
-const MediaOverlay = styled.div`
+const Overlay = styled.div`
   position: absolute;
   inset: 0;
-  pointer-events: none;
-
-  background: radial-gradient(
-      700px 420px at 18% 20%,
-      rgba(229, 0, 126, 0.12),
-      transparent 55%
-    ),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.52));
+  background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.22));
 `;
 
-const Copy = styled.div`
-  direction: ltr;
-  padding: 1.35rem 1.35rem 1.25rem;
+const Badge = styled.span`
+  position: absolute;
+  top: 10px;
+  left: 10px;
 
-  @media (min-width: 980px) {
-    padding: 1.65rem 1.7rem;
-  }
-`;
-
-const Label = styled.p`
-  margin: 0 0 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-  color: rgba(17, 17, 17, 0.8);
-`;
-
-const H3 = styled.h3`
-  margin: 0 0 0.7rem;
-  font-size: clamp(1.35rem, 2vw, 1.75rem);
-  font-weight: 650;
-  letter-spacing: -0.01em;
-  color: #121212;
-`;
-
-const Text = styled.p`
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.75;
-  color: #121212;
-  max-width: 62ch;
-`;
-
-/* Premium “use cases” row */
-const UseCases = styled.div`
-  margin-top: 1.1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-`;
-
-const Tag = styled.span`
-  display: inline-flex;
-  align-items: center;
-  padding: 0.55rem 0.75rem;
+  padding: 0.35rem 0.6rem;
   border-radius: 999px;
 
-  background: rgba(255, 255, 255, 0.06);
-  outline: 1px solid rgba(255, 255, 255, 0.1);
-  outline-offset: -1px;
-
-  color: #121212;
-  font-weight: 600;
-  font-size: 0.9rem;
-`;
-
-/* Small “luxury” line at bottom of each feature */
-const Note = styled.p`
-  margin: 1rem 0 0;
-  color: #121212;
-  font-size: 0.92rem;
-  line-height: 1.6;
-`;
-const MoreLink = styled(Link)`
-  margin-top: 0.95rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  font-weight: 800;
-  text-decoration: none;
-
-  /* feels premium */
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(17, 17, 17, 0.1);
   color: rgba(17, 17, 17, 0.78);
-
-  opacity: 0.9;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-
-  svg {
-    width: 16px;
-    height: 16px;
-    opacity: 0.85;
-  }
-
-  &:hover {
-    opacity: 1;
-    transform: translateY(-1px);
-  }
+  font-size: 0.78rem;
+  font-weight: 750;
 `;
 
-/* CTA (keep your copy) */
-const BottomCTA = styled.div`
-  max-width: 1200px;
-  margin: 1.6rem auto 0;
-  padding: 0 1.25rem;
-
-  @media (max-width: 768px) {
-    padding: 0 1.1rem;
-  }
-`;
-
-const CTACard = styled(motion.div)`
-  border-radius: 26px;
-  overflow: hidden;
-
-  background: radial-gradient(
-      1100px 520px at 15% 0%,
-      rgba(229, 0, 126, 0.14),
-      transparent 55%
-    ),
-    rgba(255, 255, 255, 0.04);
-
-  outline: 1px solid rgba(255, 255, 255, 0.09);
-  outline-offset: -1px;
-
-  padding: 1.2rem 1.2rem;
+const Body = styled.div`
+  padding: 0.95rem 0.95rem 1.05rem;
 
   display: grid;
-  gap: 0.9rem;
-
-  @media (min-width: 900px) {
-    grid-template-columns: 1.15fr 0.85fr;
-    align-items: center;
-    padding: 1.3rem 1.35rem;
-  }
+  gap: 0.35rem;
 `;
 
-const CTAContent = styled.div``;
-
-const CTATitle = styled.p`
+const CardTitle = styled.h3`
   margin: 0;
-  font-weight: 700;
-  color: #0b0c0f;
-  letter-spacing: -0.01em;
   font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: rgba(17, 17, 17, 0.95);
 `;
 
-const CTAText = styled.p`
-  margin: 0.4rem 0 0;
-  color: gray;
-  line-height: 1.7;
-  font-size: 0.96rem;
+const CardDesc = styled.p`
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: rgba(17, 17, 17, 0.62);
 `;
 
-const CTAButtons = styled.div`
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-
-  @media (min-width: 900px) {
-    justify-content: flex-end;
-  }
-`;
-
-const CTAButton = styled(Link)`
+const More = styled.div`
+  margin-top: 0.25rem;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-
-  padding: 0.9rem 1.35rem;
-  border-radius: 999px;
-
-  background: ${({ theme }) => theme.colors.primary};
-  color: #0b0c0f;
+  gap: 0.4rem;
 
   font-weight: 800;
-  text-decoration: none;
-  letter-spacing: 0.04em;
+  font-size: 0.92rem;
+  color: rgba(17, 17, 17, 0.9);
 
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  svg {
+    transition: transform 200ms ease;
+  }
 
-  &:hover {
-    transform: translateY(-1px);
-    opacity: 0.95;
+  ${CardLink}:hover & svg {
+    transform: translateX(3px);
   }
 `;
 
-const SecondaryBtn = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0.9rem 1.25rem;
-  border-radius: 999px;
-
-  background: rgba(255, 255, 255, 0.06);
-  outline: 1px solid rgba(255, 255, 255, 0.12);
-  outline-offset: -1px;
-
-  color: rgba(244, 244, 245, 0.92);
-  font-weight: 700;
-  text-decoration: none;
-
-  transition: transform 0.2s ease, background 0.2s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    background: rgba(255, 255, 255, 0.09);
-  }
-`;
-
-/* ======= PLACEHOLDER IMAGES =======
-   Replace these with your real assets later.
-   (Use your own imports if you prefer.)
-=================================== */
-const placeholder1 = panelJaponesImg;
-const placeholder2 = venecianasImg;
-
-const placeholder3 =
-  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=2000&q=70";
-
-export default function ComplementosVentana({
-  id = "sistemas",
-  whatsapp = "https://wa.me/34647856817",
-}) {
-  const features = [
-    {
-      label: "Sistema",
-      title: "Panel japonés · Verticales",
-      text: "Paneles deslizantes con estética editorial. Ideal para puertas correderas, grandes ventanales y espacios donde la arquitectura manda.",
-      tags: ["Ventanales", "Puertas correderas", "Separador de ambientes"],
-      note: "Recomendado cuando buscas un acabado de revista con líneas rectas y presencia.",
-      img: placeholder1,
-      alt: "Panel japonés en ventanal moderno",
-      moreTo: "/panel-japones",
-    },
-    {
-      label: "Sistema",
-      title: "Venecianas",
-      text: "Control solar preciso y privacidad regulable. Un look contemporáneo que funciona especialmente bien en oficinas, estudios y salones luminosos.",
-      tags: ["Control de luz", "Privacidad", "Grandes superficies"],
-      note: "Perfectas si necesitas ajustar luz y vistas con mucha precisión a lo largo del día.",
-      img: placeholder2,
-      alt: "Cortinas venecianas en salón contemporáneo",
-      reverse: true,
-      moreTo: "/venecianas",
-    },
-    {
-      label: "Acabados",
-      title: "Barras · Rieles",
-      text: "La opción más decorativa. Selección de acabados premium (negro mate, latón, acero o madera) con soportes discretos y proporción perfecta.",
-      tags: ["Decoración", "Acabados premium", "Look editorial"],
-      note: "Cuando el herraje también forma parte del diseño (y se nota).",
-      img: placeholder3,
-      alt: "Barra de cortina premium con acabado elegante",
-    },
-    {
-      label: "Mosquitera",
-      title: "Rieles",
-      text: "El detalle que cambia el resultado: deslizamiento suave, caída correcta y un conjunto impecable. Discretos, silenciosos y duraderos.",
-      tags: ["Silencio", "Deslizamiento", "Instalación limpia"],
-      note: "La elección cuando quieres que todo se vea perfecto… y se sienta aún mejor.",
-      img: mosquiteraPatio,
-      alt: "Riel de cortina instalado con acabado discreto",
-      reverse: true,
-    },
-  ];
-
-  return (
-    <PageSection
-      id={id}
-      aria-label="Venecianas, panel japonés, barras y rieles"
-    >
-      <Header
-        variants={stagger}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.35 }}
-      >
-        <motion.div variants={fade}>
-          <Kicker>Otros Sistemas</Kicker>
-          <Title>Venecianas, paneles japoneses, rieles y barras</Title>
-          <Lead>
-            No es “un accesorio”. Es el sistema que define la caída, la luz y la
-            sensación final. Te ayudamos a elegir el formato correcto para tu
-            espacio — con criterio de interiorismo.
-          </Lead>
-        </motion.div>
-      </Header>
-
-      <Rail>
-        {features.map((f) => (
-          <Feature
-            key={f.title}
-            variants={fade}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.28 }}
-          >
-            <FeatureInner $reverse={f.reverse}>
-              <Media>
-                <Img src={f.img} alt={f.alt} loading="lazy" />
-                <MediaOverlay />
-              </Media>
-
-              <Copy>
-                <Label>{f.label}</Label>
-                <H3>{f.title}</H3>
-                <Text>{f.text}</Text>
-
-                <UseCases>
-                  {f.tags.map((t) => (
-                    <Tag key={t}>{t}</Tag>
-                  ))}
-                </UseCases>
-
-                <Note>{f.note}</Note>
-                {f.moreTo ? (
-                  <MoreLink to={f.moreTo}>
-                    Ver más <ArrowRight />
-                  </MoreLink>
-                ) : null}
-              </Copy>
-            </FeatureInner>
-          </Feature>
-        ))}
-      </Rail>
-
-      <BottomCTA>
-        <CTACard
-          variants={fade}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.35 }}
-        >
-          <CTAContent>
-            <CTATitle>
-              ¿Te aconsejamos el sistema ideal para tu ventana?
-            </CTATitle>
-            <CTAText>
-              Medimos, proponemos y lo dejamos instalado con acabado impecable.
-              Sin compromiso.
-            </CTAText>
-          </CTAContent>
-
-          <CTAButtons>
-            <CTAButton to="/contact">
-              Solicitar asesoramiento <ArrowRight size={18} />
-            </CTAButton>
-            <SecondaryBtn href={whatsapp} target="_blank" rel="noreferrer">
-              WhatsApp
-            </SecondaryBtn>
-          </CTAButtons>
-        </CTACard>
-      </BottomCTA>
-    </PageSection>
+/* Fancy micro-interaction: subtle moving sheen */
+const Sheen = styled.div`
+  position: absolute;
+  inset: -40% -60%;
+  background: linear-gradient(
+    120deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.32) 45%,
+    transparent 55%
   );
-}
+  transform: translateX(-30%) rotate(10deg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+
+  ${CardLink}:hover & {
+    opacity: 1;
+    animation: sheenMove 900ms ease forwards;
+  }
+
+  @keyframes sheenMove {
+    from {
+      transform: translateX(-30%) rotate(10deg);
+    }
+    to {
+      transform: translateX(30%) rotate(10deg);
+    }
+  }
+`;
