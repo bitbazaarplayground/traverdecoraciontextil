@@ -532,7 +532,7 @@ export default function ServicesSection() {
 
           <AllServicesLink
             ref={magnetRef}
-            to="/servicios"
+            to="/services"
             aria-label="Ver todos los servicios"
             onMouseMove={setMagnet}
             onMouseLeave={resetMagnet}

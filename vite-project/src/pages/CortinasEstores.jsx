@@ -100,75 +100,80 @@ const HeroText = styled.p`
   line-height: 1.7;
   opacity: 0.9;
 `;
-
 /* =========================
-   EDITORIAL SECTION
-========================= */
-
-const Editorial = styled.section`
-  padding: 6rem 2rem;
-
-  @media (max-width: 768px) {
-    padding: 4rem 1.5rem;
-  }
-`;
-
-const EditorialInner = styled.div`
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-`;
-
-const EditorialTitle = styled.h2`
-  font-size: 2.3rem;
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 1.8rem;
-`;
-
-const EditorialText = styled.p`
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: #555;
-`;
-
-/* =========================
-   FEATURE STRIP
+   FEATURE STRIP (MATCH SCREENSHOT)
 ========================= */
 
 const Features = styled.section`
-  padding: 4.5rem 2rem;
-  background: #fafafa;
+  background: #fff;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
 `;
 
 const FeaturesGrid = styled.div`
   max-width: 1100px;
   margin: 0 auto;
+  padding: 1.7rem 1.25rem;
+
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    padding: 1.25rem 1.1rem;
   }
 `;
 
-const Feature = styled.div`
+const Feature = styled.article`
   text-align: center;
+  padding: 1.1rem 0.9rem;
+
+  /* vertical dividers */
+  border-right: 1px solid rgba(17, 17, 17, 0.08);
+
+  &:last-child {
+    border-right: none;
+  }
+
+  @media (max-width: 900px) {
+    border-right: none;
+    border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+`;
+
+const FeatureIcon = styled.div`
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 0.65rem;
+
+  display: grid;
+  place-items: center;
+
+  color: #111; /* icon stroke */
+
+  svg {
+    width: 42px;
+    height: 42px;
+    display: block;
+  }
 `;
 
 const FeatureTitle = styled.h3`
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 0.6rem;
-  color: #222;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: rgba(17, 17, 17, 0.92);
 `;
 
 const FeatureText = styled.p`
-  font-size: 1rem;
-  line-height: 1.65;
-  color: #555;
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: rgba(17, 17, 17, 0.62);
 `;
 
 /* =========================
@@ -206,22 +211,6 @@ const CarouselSection = styled.section`
     }
   }
 `;
-
-// const CarouselImage = styled.div`
-//   height: 420px;
-//   border-radius: 20px;
-//   overflow: hidden;
-
-//   img {
-//     width: 100%;
-//     height: 100%;
-//     object-fit: cover;
-//   }
-
-//   @media (max-width: 768px) {
-//     height: 260px;
-//   }
-// `;
 
 /* =========================
    FABRICS / HANDMADE SECTION
@@ -596,6 +585,74 @@ export default function CortinasEstoresPremium() {
           </HeroText>
         </HeroInner>
       </Hero>
+      <Features>
+        <FeaturesGrid>
+          <Feature>
+            <FeatureIcon aria-hidden="true">
+              <svg viewBox="0 0 64 64">
+                <path
+                  d="M10 10h44v44H10z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M20 10v44M32 10v44M44 10v44"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
+            </FeatureIcon>
+            <FeatureTitle>Cortinas a Medida</FeatureTitle>
+            <FeatureText>
+              Diseños personalizados y tejidos de calidad
+            </FeatureText>
+          </Feature>
+
+          <Feature>
+            <FeatureIcon aria-hidden="true">
+              <svg viewBox="0 0 64 64">
+                <path
+                  d="M12 16h40M12 26h40M12 36h40M12 46h40"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M20 16v30"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
+            </FeatureIcon>
+            <FeatureTitle>Estores Motorizados</FeatureTitle>
+            <FeatureText>Estores eléctricos y automatizados</FeatureText>
+          </Feature>
+
+          <Feature>
+            <FeatureIcon aria-hidden="true">
+              <svg viewBox="0 0 64 64">
+                <path
+                  d="M32 34c7 0 12-5 12-12S39 10 32 10 20 15 20 22s5 12 12 12z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M14 54c3-9 11-14 18-14s15 5 18 14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
+            </FeatureIcon>
+            <FeatureTitle>Asesoramiento Profesional</FeatureTitle>
+            <FeatureText>Expertos en decoración de interiores</FeatureText>
+          </Feature>
+        </FeaturesGrid>
+      </Features>
 
       {/* FABRICS & HANDMADE */}
       <FabricsSection>

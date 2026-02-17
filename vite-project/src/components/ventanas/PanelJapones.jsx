@@ -4,15 +4,15 @@ import styled from "styled-components";
 import { CONTACT } from "../../config/contact";
 
 /* IMAGES */
-import bedroomDarkPanel from "../../assets/panelJapones/bedroomDarkPanel.png";
-import bedroomStudyarea from "../../assets/panelJapones/bedroomStudyarea.png";
-import kitchen1 from "../../assets/panelJapones/kitchen1.png";
-import kitchen2 from "../../assets/panelJapones/kitchen2.png";
-import livingroom from "../../assets/panelJapones/livingroom.png";
-import livingroom1 from "../../assets/panelJapones/livingroom1.png";
-import livingroom2 from "../../assets/panelJapones/livingroom2.png";
-import office from "../../assets/panelJapones/office1.png";
-import waitingroom from "../../assets/panelJapones/waitingroom1.png";
+import bedroomDarkPanel from "../../assets/panelJapones/bedroomDarkPanel.webp";
+import bedroomStudyarea from "../../assets/panelJapones/bedroomStudyarea.webp";
+import kitchen1 from "../../assets/panelJapones/kitchen1.webp";
+import kitchen2 from "../../assets/panelJapones/kitchen2.webp";
+import livingroom from "../../assets/panelJapones/livingroom.webp";
+import livingroom1 from "../../assets/panelJapones/livingroom1.webp";
+import livingroom2 from "../../assets/panelJapones/livingroom2.webp";
+import office from "../../assets/panelJapones/office1.webp";
+import waitingroom from "../../assets/panelJapones/waitingroom1.webp";
 
 /* =========================
    PAGE
