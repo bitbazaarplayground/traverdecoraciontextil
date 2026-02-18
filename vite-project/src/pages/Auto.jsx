@@ -493,8 +493,10 @@ export default function Automatizacion() {
                   />
                   <SceneOverlay />
                   <SceneSpec>
-                    <strong>{activeScene.specTitle}</strong>
-                    <span>{activeScene.specText}</span>
+                    <SceneSpecSwap key={activeScene.id}>
+                      <strong>{activeScene.specTitle}</strong>
+                      <span>{activeScene.specText}</span>
+                    </SceneSpecSwap>
                   </SceneSpec>
                 </SceneVisual>
 
@@ -1738,6 +1740,19 @@ const SceneOverlay = styled.div`
     linear-gradient(to bottom, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.48));
 `;
 
+const specFade = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+    filter: blur(1px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+`;
+
 const SceneSpec = styled.div`
   position: absolute;
   left: 14px;
@@ -1758,6 +1773,15 @@ const SceneSpec = styled.div`
     display: block;
     margin-top: 0.15rem;
     color: rgba(255, 255, 255, 0.78);
+  }
+`;
+
+// NEW: animated swap wrapper
+const SceneSpecSwap = styled.div`
+  animation: ${specFade} 260ms ease-out both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 `;
 

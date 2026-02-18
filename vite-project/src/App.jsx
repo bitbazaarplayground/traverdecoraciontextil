@@ -6,6 +6,7 @@ import "./App.css";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
+import Auto from "./pages/Auto";
 import HomePage from "./pages/HomePage"; // ✅ keep eager for best LCP
 
 // ✅ Lazy load modal (only when opened)
@@ -102,6 +103,7 @@ export default function App() {
             path="/automatizacion/individual"
             element={<AutomatizacionIndividual />}
           />
+          <Route path="/auto" element={<Auto />} />
 
           {/* CONTACTO */}
           <Route path="/contact" element={<ContactPage />} />
