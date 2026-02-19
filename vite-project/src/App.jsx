@@ -7,7 +7,9 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
 import Auto from "./pages/Auto";
+import Auto2 from "./pages/Automatizacion2";
 import HomePage from "./pages/HomePage"; // ✅ keep eager for best LCP
+import Auto3 from "./pages/opcionB";
 
 // ✅ Lazy load modal (only when opened)
 const AsesoramientoModal = lazy(() =>
@@ -104,7 +106,8 @@ export default function App() {
             element={<AutomatizacionIndividual />}
           />
           <Route path="/auto" element={<Auto />} />
-
+          <Route path="/auto2" element={<Auto2 />} />
+          <Route path="/auto3" element={<Auto3 />} />
           {/* CONTACTO */}
           <Route path="/contact" element={<ContactPage />} />
 
