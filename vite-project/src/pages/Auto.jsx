@@ -1,192 +1,420 @@
-import { ArrowRight } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowRight,
+  Check,
+  ChevronRight,
+  Lightbulb,
+  Mic,
+  Shield,
+  Sparkles,
+  Sun,
+  Thermometer,
+  Wind,
+} from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import styled, { css, keyframes } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { CONTACT } from "../config/contact";
+
+import AutomatizacionEstimate from "../components/automatizacion/AutomatizacionEstimate";
+import PromoBanner from "../components/pricing/PromoBanner";
 
 /* =========================
    ASSETS
 ========================= */
-import benefit1 from "../assets/Automatizacion/benefit1.webp";
-import automatizacionPackImg from "../assets/Automatizacion/domoticaInd.webp";
-import programaHorarios from "../assets/Automatizacion/programa.webp";
-import vacaciones from "../assets/Automatizacion/vacaciones.webp";
-import Img3 from "../assets/Home/HeroImg/img3.webp";
-import heroVideo from "../assets/video1.mp4";
+import domoticaControl from "../assets/Automatizacion/domotica1.webp";
+import automatizacionPackImg from "../assets/Automatizacion/smartHom1.webp";
 
 /* =========================
-   PAGE
+   UTIL
 ========================= */
-export default function Automatizacion() {
+const formatEUR = (n) =>
+  new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(
+    Math.round(n)
+  );
+
+/* =========================
+   COMPONENT
+========================= */
+
+export default function Auto() {
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
 
-  const canonical = `${baseUrl}/automatizacion`;
+  const canonical = `${baseUrl}/automatizacion/completa`;
   const siteName = CONTACT.siteName || "Traver Decoración Textil";
 
   const title =
-    "Automatización Somfy | Cortinas, estores y toldos motorizados en Castellón y Valencia";
+    "Automatización integral Somfy | Casa inteligente con cortinas y toldos en Castellón y Valencia";
   const description =
-    "Automatiza cortinas, estores, persianas y toldos con Somfy: sensores, escenas y control por app. Instalación profesional en Castellón y Valencia. Asesoramiento y propuesta a medida.";
+    "Automatización integral Somfy para vivienda: cortinas, estores, persianas y toldos con sensores, escenas y control por app. Instalación profesional en Castellón y Valencia. Presupuesto orientativo y asesoramiento.";
 
   const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt = "Automatización Somfy para cortinas y toldos a medida";
+  const ogImageAlt =
+    "Automatización integral Somfy para cortinas, estores, persianas y toldos";
 
-  const jsonLd = useMemo(
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": `${canonical}#service`,
+      name: "Automatización integral Somfy",
+      serviceType:
+        "Automatización integral de cortinas, estores, persianas y toldos",
+      provider: {
+        "@type": "HomeAndConstructionBusiness",
+        "@id": `${baseUrl}/#business`,
+        name: siteName,
+        url: `${baseUrl}/`,
+        telephone: CONTACT.phoneLandline,
+      },
+      areaServed: [
+        { "@type": "AdministrativeArea", name: "Castellón" },
+        { "@type": "AdministrativeArea", name: "Valencia" },
+      ],
+      url: canonical,
+      description,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${canonical}#webpage`,
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: "es-ES",
+      isPartOf: { "@id": `${baseUrl}/#website` },
+      about: { "@id": `${canonical}#service` },
+      primaryImageOfPage: { "@type": "ImageObject", url: ogImage },
+    },
+  ];
+
+  // ──────────────────────────────────────────────────────────────
+  // WOW: Bundles + a “cockpit” configurator (prices are orientative)
+  // ──────────────────────────────────────────────────────────────
+  const bundles = useMemo(
     () => [
       {
-        "@context": "https://schema.org",
-        "@type": "Service",
-        "@id": `${canonical}#service`,
-        name: "Automatización Somfy",
-        serviceType: "Automatización de cortinas, estores, persianas y toldos",
-        provider: {
-          "@type": "HomeAndConstructionBusiness",
-          "@id": `${baseUrl}/#business`,
-          name: siteName,
-          url: `${baseUrl}/`,
-          telephone: CONTACT.phoneLandline,
-        },
-        areaServed: [
-          { "@type": "AdministrativeArea", name: "Castellón" },
-          { "@type": "AdministrativeArea", name: "Valencia" },
+        id: "core",
+        tag: "Más vendido",
+        title: "CORE Residence",
+        sub: "Interior premium + escenas listas. Lo que más se nota, primero.",
+        baseFrom: 5900,
+        baseTo: 8900,
+        signature: "Silencio + calibración fina",
+        why: [
+          "Control solar (sin deslumbrar)",
+          "Privacidad automática noche",
+          "Escenas entregadas funcionando",
         ],
-        url: canonical,
-        description,
+        estimateItems: [
+          {
+            icon: "cortina",
+            strong: "3–6 estores / cortinas motorizados",
+            text: "Movimiento silencioso + ajuste fino",
+            group: "interior",
+          },
+          {
+            icon: "app",
+            strong: "Control central (app + mando)",
+            text: "Escenas por estancias",
+            group: "control",
+          },
+          {
+            icon: "sensores",
+            strong: "Sensor luz/temperatura (interior)",
+            text: "Confort térmico y visual",
+            group: "interior",
+          },
+          {
+            icon: "instalacion",
+            strong: "Instalación + puesta en marcha",
+            text: "Calibración y entrega guiada",
+            group: "control",
+          },
+          {
+            icon: "garantia",
+            strong: "Garantía (según componentes)",
+            text: "Cobertura y soporte",
+            group: "control",
+          },
+        ],
       },
       {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "@id": `${canonical}#webpage`,
-        url: canonical,
-        name: title,
-        description,
-        inLanguage: "es-ES",
-        isPartOf: { "@id": `${baseUrl}/#website` },
-        about: { "@id": `${canonical}#service` },
-        primaryImageOfPage: { "@type": "ImageObject", url: ogImage },
+        id: "shield",
+        tag: "Terraza & toldo",
+        title: "WEATHER Shield",
+        sub: "Protección climática real. El toldo se salva solo.",
+        baseFrom: 8900,
+        baseTo: 13900,
+        signature: "Sensor viento/sol calibrado",
+        why: [
+          "Retracción por viento",
+          "Sombra inteligente",
+          "Exterior + interior",
+        ],
+        estimateItems: [
+          {
+            icon: "toldo",
+            strong: "1–2 toldos motorizados",
+            text: "Protección automática por viento",
+            group: "exterior",
+          },
+          {
+            icon: "sensores",
+            strong: "Sensor viento/sol exterior",
+            text: "Sensibilidad ajustada a tu zona",
+            group: "exterior",
+          },
+          {
+            icon: "persiana",
+            strong: "2–5 estores screen motorizados",
+            text: "Control solar + privacidad",
+            group: "interior",
+          },
+          {
+            icon: "app",
+            strong: "Escenas clima (sol fuerte / viento)",
+            text: "Actúa antes de que moleste",
+            group: "control",
+          },
+          {
+            icon: "instalacion",
+            strong: "Instalación certificada",
+            text: "Calibración completa",
+            group: "control",
+          },
+        ],
+      },
+      {
+        id: "signature",
+        tag: "Firma Traver",
+        title: "SIGNATURE Home",
+        sub: "Automatización integral: interior + exterior + iluminación + voz.",
+        baseFrom: 14900,
+        baseTo: 24900,
+        signature: "Entrega “listo para vivir”",
+        why: ["Escenas por hábitos", "Clima + seguridad", "Luces + presencia"],
+        estimateItems: [
+          {
+            icon: "cortina",
+            strong: "6–12 cortinas / estores motorizados",
+            text: "Zonas clave del hogar",
+            group: "interior",
+          },
+          {
+            icon: "persiana",
+            strong: "4–10 persianas / screen",
+            text: "Por orientación solar",
+            group: "interior",
+          },
+          {
+            icon: "toldo",
+            strong: "1–3 toldos motorizados",
+            text: "Exterior protegido",
+            group: "exterior",
+          },
+          {
+            icon: "sensores",
+            strong: "Pack sensores (luz/temp/viento/sol)",
+            text: "Automatismos reales",
+            group: "exterior",
+          },
+          {
+            icon: "luz",
+            strong: "Luces inteligentes (varias zonas)",
+            text: "Escenas y ambientación",
+            group: "interior",
+          },
+          {
+            icon: "app",
+            strong: "Control central + voz",
+            text: "Preparado para Alexa/Google",
+            group: "control",
+          },
+          {
+            icon: "instalacion",
+            strong: "Instalación + calibración total",
+            text: "Sin “ajustes pendientes”",
+            group: "control",
+          },
+          {
+            icon: "garantia",
+            strong: "Garantía + soporte premium",
+            text: "Plan de revisión",
+            group: "control",
+          },
+        ],
       },
     ],
-    [baseUrl, canonical, description, siteName, title]
+    []
   );
 
-  // Premium: cursor spotlight + subtle parallax tilt (no libs)
+  const addOns = useMemo(
+    () => [
+      {
+        id: "lightsPlus",
+        icon: Lightbulb,
+        label: "Iluminación avanzada",
+        desc: "Escenas (día/noche/ambiente) + zonas extra",
+        price: 850,
+      },
+      {
+        id: "climatePlus",
+        icon: Thermometer,
+        label: "Clima & confort",
+        desc: "Sensor extra + automatismos por temperatura",
+        price: 420,
+      },
+      {
+        id: "windRainPlus",
+        icon: Wind,
+        label: "Viento / protección exterior",
+        desc: "Ajuste fino de sensibilidad + perfiles clima",
+        price: 520,
+      },
+      {
+        id: "sunPlus",
+        icon: Sun,
+        label: "Control solar por orientación",
+        desc: "Reglas por horas/estación (sin deslumbrar)",
+        price: 390,
+      },
+      {
+        id: "voice",
+        icon: Mic,
+        label: "Voz / asistente",
+        desc: "Configuración + 1 altavoz compatible*",
+        price: 0, // “gratis” como gancho (se comunica como promo)
+        badge: "Incluido",
+      },
+      {
+        id: "care",
+        icon: Shield,
+        label: "Care+ (12 meses)",
+        desc: "Ajustes de escenas + revisión post-uso",
+        price: 290,
+      },
+    ],
+    []
+  );
+
+  const [activeBundle, setActiveBundle] = useState(bundles[0]);
+  const [selectedAddOns, setSelectedAddOns] = useState(
+    () => new Set(["voice"])
+  );
+
+  // Mobile bottom sheet
+  const [sheetOpen, setSheetOpen] = useState(false);
+
   useEffect(() => {
-    const root = document.documentElement;
-
-    let raf = 0;
-    const onMove = (e) => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-        root.style.setProperty("--mx", `${x * 100}%`);
-        root.style.setProperty("--my", `${y * 100}%`);
-      });
+    const onKey = (e) => {
+      if (e.key === "Escape") setSheetOpen(false);
     };
-
-    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+  //   Prevent background scroll when sheet is open
+  useEffect(() => {
+    if (!sheetOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("pointermove", onMove);
+      document.body.style.overflow = prev;
     };
-  }, []);
+  }, [sheetOpen]);
 
-  // Premium: intersection reveal (adds data-reveal="in")
+  //   auto-focus close button when sheet opens (accessibility)
+  const closeBtnRef = useRef(null);
+
   useEffect(() => {
-    const els = Array.from(document.querySelectorAll("[data-reveal]"));
-    if (!els.length) return;
+    if (sheetOpen) closeBtnRef.current?.focus();
+  }, [sheetOpen]);
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting)
-            entry.target.setAttribute("data-reveal", "in");
-        });
-      },
-      { threshold: 0.14, rootMargin: "0px 0px -10% 0px" }
-    );
+  const totals = useMemo(() => {
+    const sumAddOns = [...selectedAddOns].reduce((acc, id) => {
+      const found = addOns.find((a) => a.id === id);
+      return acc + (found?.price || 0);
+    }, 0);
 
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
+    const from = activeBundle.baseFrom + sumAddOns;
+    const to = activeBundle.baseTo + sumAddOns;
 
-  // Premium: “scene” selector (feels bespoke)
-  const scenes = useMemo(
-    () => [
-      {
-        id: "dia",
-        title: "Día",
-        sub: "Luz exacta · menos calor · más confort",
-        bullets: [
-          "Control de deslumbramiento",
-          "Menos carga de aire acondicionado",
-          "Privacidad sin oscurecer",
-        ],
-        accent: "warm",
-        img: benefit1,
-        specTitle: "Control solar",
-        specText: "Ajuste automático según luz natural · confort térmico",
-      },
-      {
-        id: "noche",
-        title: "Noche",
-        sub: "Privacidad total · descanso real",
-        bullets: [
-          "Cierre al anochecer automático",
-          "Oscuridad cuando lo necesitas",
-          "Sensación de hogar protegido",
-        ],
-        accent: "neutral",
-        img: vacaciones,
-        specTitle: "Privacidad inteligente",
-        specText: "Cierre programado · sensación de seguridad",
-      },
-      {
-        id: "clima",
-        title: "Viento & lluvia",
-        sub: "Toldos protegidos · respuesta automática",
-        bullets: [
-          "Sensores que retraen el toldo a tiempo",
-          "Evita golpes y tensiones por viento",
-          "Tu terraza lista sin estar pendiente",
-        ],
-        accent: "cool",
-        img: programaHorarios,
-        specTitle: "Protección climática",
-        specText: "Sensor de viento · retracción automática del toldo",
-      },
-    ],
-    []
-  );
+    // “savings” theatrical but plausible: show value of “voice”
+    const voiceValue = 79; // typical entry assistant (illustrative)
+    const savings = selectedAddOns.has("voice") ? voiceValue : 0;
 
-  const [activeScene, setActiveScene] = useState(scenes[0]);
+    return { from, to, savings };
+  }, [activeBundle, selectedAddOns, addOns]);
 
-  // Premium: FAQ accordion (editorial + clean)
-  const faqs = useMemo(
-    () => [
-      {
-        q: "¿Se puede empezar por una zona y ampliar después?",
-        a: "Sí. Diseñamos una base sólida (motores + control) para que puedas añadir estancias o productos sin rehacerlo todo.",
-      },
-      {
-        q: "¿La instalación se nota? (cajas, cableado, estética)",
-        a: "Nuestro enfoque es “estética primero”: solución discreta, remates limpios y configuración final para que solo se vea el resultado.",
-      },
-      {
-        q: "¿Necesito domótica completa para usar Somfy?",
-        a: "No. Puedes empezar con app, mando o escenas simples. Si quieres integrar más adelante, lo dejamos preparado.",
-      },
-      {
-        q: "¿Qué gana el día a día (más allá del móvil)?",
-        a: "Confort real: luz y privacidad en el punto justo, escenas que se activan solas y un hogar que responde con calma.",
-      },
-    ],
-    []
-  );
-  const [openFaq, setOpenFaq] = useState(0);
+  // Tilt effect for bundle cards
+  const onTilt = (e) => {
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    const rx = (y / r.height - 0.5) * -7; // rotateX
+    const ry = (x / r.width - 0.5) * 10; // rotateY
+    el.style.setProperty("--rx", `${rx}deg`);
+    el.style.setProperty("--ry", `${ry}deg`);
+    el.style.setProperty("--mx", `${(x / r.width) * 100}%`);
+    el.style.setProperty("--my", `${(y / r.height) * 100}%`);
+  };
+
+  const offTilt = (e) => {
+    const el = e.currentTarget;
+    el.style.setProperty("--rx", `0deg`);
+    el.style.setProperty("--ry", `0deg`);
+  };
+
+  const toggleAddOn = (id) => {
+    setSelectedAddOns((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      // keep voice always selected by default? (optional)
+      return next;
+    });
+  };
+
+  const estimateProps = useMemo(() => {
+    return {
+      priceText: "Desde",
+      priceValue: `${formatEUR(totals.from)} – ${formatEUR(totals.to)}`,
+      description:
+        "Rango orientativo: depende de medidas, tejidos, número de motores y complejidad de integración. Te proponemos la opción más equilibrada para tu casa.",
+      items: [
+        ...activeBundle.estimateItems,
+        ...[...selectedAddOns]
+          .map((id) => addOns.find((a) => a.id === id))
+          .filter(Boolean)
+          .map((a) => ({
+            icon:
+              a.id === "lightsPlus"
+                ? "luz"
+                : a.id === "voice"
+                ? "extra"
+                : a.id === "care"
+                ? "mantenimiento"
+                : "sensores",
+            strong: a.label,
+            text:
+              a.price === 0
+                ? `${a.desc} (incluido)`
+                : `${a.desc} (+${formatEUR(a.price)})`,
+            group:
+              a.id === "lightsPlus"
+                ? "interior"
+                : a.id === "windRainPlus" || a.id === "sunPlus"
+                ? "exterior"
+                : "control",
+          })),
+      ],
+      finePrint:
+        "*Los paquetes y precios son orientativos. Los asistentes de voz dependen de compatibilidad y disponibilidad. Se confirma en la propuesta.",
+    };
+  }, [activeBundle, selectedAddOns, addOns, totals]);
 
   return (
     <Page>
@@ -197,7 +425,6 @@ export default function Automatizacion() {
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
 
-        {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="es_ES" />
@@ -209,509 +436,392 @@ export default function Automatizacion() {
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
 
-        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:image:alt" content={ogImageAlt} />
 
-        {/* JSON-LD */}
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
-      {/* HERO (DO NOT CHANGE) */}
+      {/* FUTURISTIC HERO */}
       <Hero>
-        <HeroVideo src={heroVideo} autoPlay muted loop playsInline />
-        <HeroOverlay />
-        <HeroContent>
-          <Eyebrow>Automatización residencial · Somfy</Eyebrow>
-          <HeroTitle>
-            El lujo no se <span>controla</span>. <br />
-            Se anticipa.
-          </HeroTitle>
-          <HeroSubtitle>
-            Cortinas, estores y toldos que responden con precisión silenciosa a
-            la luz, al clima y a tu rutina. Sin esfuerzo. Sin interrupciones.
-            Como debe ser.
-          </HeroSubtitle>
+        <HeroBg>
+          <HeroImg src={domoticaControl} alt="" aria-hidden="true" />
+          <HeroOverlay />
+          <HeroGrid />
+          <HeroScan />
+          <HeroGlow />
+        </HeroBg>
 
-          <HeroActions>
-            <PrimaryButton href="/contact">Asesoramiento privado</PrimaryButton>
-            <SecondaryButton href="#experiencia">
-              Descubrir la experiencia
-            </SecondaryButton>
-          </HeroActions>
+        <HeroInner>
+          <HeroTop>
+            <KickerDark>AUTOMATIZACIÓN INTEGRAL DEL HOGAR</KickerDark>
+            <HeroTitle>
+              No es domótica.
+              <br />
+              Es <span>control invisible</span>.
+            </HeroTitle>
+            <HeroLead>
+              Cortinas, estores, persianas y toldos coordinados con sensores y
+              escenas reales. Protege el exterior, regula el calor y convierte
+              rutinas en tranquilidad.
+            </HeroLead>
 
-          <MicroLine>
-            Proyectos a medida para hogares exigentes. Integración discreta,
-            acabado impecable y una sensación que solo se entiende al vivirla.
-          </MicroLine>
-        </HeroContent>
+            <HeroActions>
+              <PrimaryLink href="/contact">
+                Asesoramiento privado <ArrowRight size={16} />
+              </PrimaryLink>
+              <SecondaryLink href="#paquetes">Ver paquetes</SecondaryLink>
+            </HeroActions>
+
+            <HeroMicro>
+              <Sparkles size={16} />
+              <span>
+                Confort sin esfuerzo. Integración discreta de luz, privacidad y
+                rutina, para que tu hogar se adapte a ti.
+              </span>
+            </HeroMicro>
+
+            <BackRow>
+              <BackLink to="/automatizacion">
+                ← Volver a Automatización
+              </BackLink>
+            </BackRow>
+          </HeroTop>
+
+          <HeroSide>
+            <HeroStatCard>
+              <StatLabel>Modo de uso</StatLabel>
+              <StatValue>Automático</StatValue>
+              <StatSub>sol · viento · horarios · presencia</StatSub>
+              <StatRow>
+                <StatPill>
+                  <Wind size={14} /> Viento
+                </StatPill>
+                <StatPill>
+                  <Sun size={14} /> Sol
+                </StatPill>
+                <StatPill>
+                  <Thermometer size={14} /> Temperatura
+                </StatPill>
+                <StatPill>
+                  <Shield size={14} /> Seguridad
+                </StatPill>
+              </StatRow>
+            </HeroStatCard>
+          </HeroSide>
+        </HeroInner>
       </Hero>
 
-      {/* PREMIUM CONTENT */}
-      <Surface>
-        <Ambient aria-hidden="true" />
-        <Noise aria-hidden="true" />
-        <SurfaceInner>
-          {/* SECTION: INTRO / ESSENCE */}
-          <Section data-reveal="out">
-            <SectionTop>
-              <Kicker>Esencia</Kicker>
-              <Title>
-                La casa funciona <span>sola</span>
-              </Title>
-              <Lead>
-                Automatización elegante y discreta para que luz, privacidad y
-                confort respondan con calma a tu día. Sin ruido visual. Sin
-                fricción.
-              </Lead>
-            </SectionTop>
+      <Sheet>
+        <SheetInner>
+          {/* VALUE */}
+          <Section>
+            <Kicker>Qué cambia</Kicker>
+            <H2>Los motivos reales para automatizar</H2>
+            <SubLead>
+              No vendemos “moverlo desde el móvil”. Vendemos:
+              <b> confort térmico</b>, <b>protección del toldo</b>,{" "}
+              <b>privacidad automática</b> y <b>escenas listas</b>.
+            </SubLead>
 
-            <EditorialGrid>
-              <EditorialCard>
-                <CardTop>
-                  <Chip>Diseño + tecnología</Chip>
-                  <CardTitle>Menos “domótica”. Más sensación.</CardTitle>
-                  <CardText>
-                    Escenas, sensores y horarios — con un objetivo: que tu hogar
-                    se sienta mejor sin que “se note” el sistema. Una ejecución
-                    limpia, una respuesta silenciosa.
-                  </CardText>
-                </CardTop>
+            <ValueGrid>
+              <ValueCard>
+                <ValueIcon>
+                  <Sun />
+                </ValueIcon>
+                <ValueTitle>Menos calor · menos reflejos</ValueTitle>
+                <ValueText>
+                  Ajuste por luz natural para evitar deslumbramientos y reducir
+                  carga de aire acondicionado.
+                </ValueText>
+                <ValueProof>
+                  <Check size={16} /> Reglas por orientación y estación
+                </ValueProof>
+              </ValueCard>
 
-                <Rule />
+              <ValueCard>
+                <ValueIcon>
+                  <Wind />
+                </ValueIcon>
+                <ValueTitle>Protección exterior (toldos)</ValueTitle>
+                <ValueText>
+                  Con viento, el sistema retrae el toldo antes de que sufra.
+                  Tranquilidad real, no “estar pendiente”.
+                </ValueText>
+                <ValueProof>
+                  <Check size={16} /> Sensibilidad calibrada a tu zona
+                </ValueProof>
+              </ValueCard>
 
-                <BulletGrid>
-                  <Bullet>
-                    <Dot />
-                    <span>Silencio y precisión en cada movimiento</span>
-                  </Bullet>
-                  <Bullet>
-                    <Dot />
-                    <span>Escenas reales: día, noche, cine, verano</span>
-                  </Bullet>
-                  <Bullet>
-                    <Dot />
-                    <span>Integración discreta: estética primero</span>
-                  </Bullet>
-                </BulletGrid>
+              <ValueCard>
+                <ValueIcon>
+                  <Shield />
+                </ValueIcon>
+                <ValueTitle>Privacidad y presencia</ValueTitle>
+                <ValueText>
+                  Cierres nocturnos automáticos y simulación de presencia cuando
+                  no estás.
+                </ValueText>
+                <ValueProof>
+                  <Check size={16} /> Escenas entregadas funcionando
+                </ValueProof>
+              </ValueCard>
+            </ValueGrid>
 
-                <CardActions>
-                  <MiniPrimary to="/contact">
-                    Solicitar propuesta <ArrowRight size={16} />
-                  </MiniPrimary>
-                  <MiniGhost href="#escenas">Ver escenas</MiniGhost>
-                </CardActions>
-              </EditorialCard>
-
-              <MediaCard aria-label="Automatización residencial discreta y elegante">
-                <MediaImage
-                  src={automatizacionPackImg}
-                  alt="Automatización residencial discreta y elegante"
-                  loading="lazy"
-                />
-                <MediaTint />
-                <MediaLabel>
-                  <strong>Somfy</strong>
-                  <span>motores · sensores · escenas</span>
-                </MediaLabel>
-              </MediaCard>
-            </EditorialGrid>
-
-            <StatsRow>
-              <Stat>
-                <StatKicker>Instalación</StatKicker>
-                <StatValue>Impecable</StatValue>
-                <StatText>Remates limpios, estética respetada.</StatText>
-              </Stat>
-              <Stat>
-                <StatKicker>Movimiento</StatKicker>
-                <StatValue>Silencioso</StatValue>
-                <StatText>Precisión suave, sin tirones.</StatText>
-              </Stat>
-              <Stat>
-                <StatKicker>Control</StatKicker>
-                <StatValue>Simple</StatValue>
-                <StatText>App, mando y escenas coordinadas.</StatText>
-              </Stat>
-            </StatsRow>
+            <ProofLine>
+              <strong>Detalle Traver:</strong> límites calibrados, escenas
+              configuradas y ajuste de sensores (sol/viento) antes de la entrega
+              — no solo “instalado”.
+            </ProofLine>
           </Section>
 
-          {/* SECTION: PATHS */}
-          <Section
-            id="enfoque"
-            aria-label="Elige tu enfoque de automatización"
-            data-reveal="out"
-          >
-            <SectionTop>
-              <Kicker>Elige tu enfoque</Kicker>
-              <Title>
-                Dos formas de empezar a <span>automatizar</span>
-              </Title>
-              <Lead>
-                Puedes integrar todo el hogar desde el principio o comenzar por
-                una zona concreta y ampliar cuando lo disfrutes.
-              </Lead>
-            </SectionTop>
+          {/* PACKAGES + COCKPIT */}
+          <Section id="paquetes">
+            <Kicker>Paquetes</Kicker>
+            <H2>Elige tu nivel. Personaliza el resultado.</H2>
+            <SubLead>
+              Selecciona un bundle y activa extras. Verás un rango orientativo
+              instantáneo. Esto es lo que hace que el sistema se sienta
+              “premium”.
+            </SubLead>
 
-            <PathGrid>
-              <PathCard
-                to="/automatizacion/completa"
-                aria-label="Automatización integral del hogar"
-              >
-                <PathMedia>
-                  <PathImg
-                    style={{ backgroundImage: `url(${automatizacionPackImg})` }}
-                  />
-                  <PathOverlay />
-                  <PathBadge>Integral</PathBadge>
-                </PathMedia>
+            <PromoBanner />
 
-                <PathBody>
-                  <PathTitle>Automatización completa</PathTitle>
-                  <PathText>
-                    Un sistema coordinado que integra cortinas, persianas,
-                    toldos, sensores y escenas para que todo funcione en
-                    armonía.
-                  </PathText>
-
-                  <PathCta>
-                    Ver solución integral <ArrowRight size={16} />
-                  </PathCta>
-                </PathBody>
-
-                <Sheen aria-hidden="true" />
-              </PathCard>
-
-              <PathCard
-                to="/automatizacion/individual"
-                aria-label="Automatización por zonas"
-              >
-                <PathMedia>
-                  <PathImg style={{ backgroundImage: `url(${Img3})` }} />
-                  <PathOverlay />
-                  <PathBadge>Por zonas</PathBadge>
-                </PathMedia>
-
-                <PathBody>
-                  <PathTitle>Automatización individual</PathTitle>
-                  <PathText>
-                    Empieza por cortinas, persianas o toldos. Diseñamos la base
-                    perfecta para que puedas ampliar cuando quieras.
-                  </PathText>
-
-                  <PathCta>
-                    Ver opciones por zona <ArrowRight size={16} />
-                  </PathCta>
-                </PathBody>
-
-                <Sheen aria-hidden="true" />
-              </PathCard>
-            </PathGrid>
-
-            <Quote data-reveal="out">
-              <QuoteMark aria-hidden="true">“</QuoteMark>
-              <QuoteText>
-                El lujo aquí es invisible: todo está pensado para que la casa se
-                anticipe sin que tú tengas que pensar.
-              </QuoteText>
-              <QuoteMeta>
-                <span>Traver</span> · Instalación profesional en Castellón y
-                Valencia
-              </QuoteMeta>
-            </Quote>
-          </Section>
-
-          {/* SECTION: SCENES (interactive, “premium”) */}
-          <Section id="escenas" data-reveal="out">
-            <SectionTop>
-              <Kicker>Escenas</Kicker>
-              <Title>
-                Automatización con <span>sentido</span>
-              </Title>
-              <Lead>
-                Lo importante no es la app. Es lo que evita: calor,
-                deslumbramientos, daños por viento y la sensación de “estar
-                pendiente”. La casa responde sola, en el momento justo.
-              </Lead>
-            </SectionTop>
-
-            <Scenes>
-              <ScenesLeft>
-                <SceneTabs role="tablist" aria-label="Seleccionar escena">
-                  {scenes.map((s) => {
-                    const active = s.id === activeScene.id;
+            <Cockpit>
+              {/* Left: bundle cards */}
+              <CockpitLeft>
+                <BundleGrid>
+                  {bundles.map((b) => {
+                    const active = b.id === activeBundle.id;
                     return (
-                      <SceneTab
-                        key={s.id}
-                        role="tab"
-                        aria-selected={active}
-                        $active={active}
-                        onClick={() => setActiveScene(s)}
+                      <BundleCard
+                        key={b.id}
                         type="button"
+                        $active={active}
+                        onClick={() => setActiveBundle(b)}
+                        onMouseMove={onTilt}
+                        onMouseLeave={offTilt}
+                        aria-pressed={active}
                       >
-                        <span>{s.title}</span>
-                        <small>{s.sub}</small>
-                      </SceneTab>
+                        <BundleTop>
+                          <BundleTag $active={active}>{b.tag}</BundleTag>
+                          <BundleHint>
+                            {formatEUR(b.baseFrom)} – {formatEUR(b.baseTo)}
+                          </BundleHint>
+                        </BundleTop>
+
+                        <BundleTitle>{b.title}</BundleTitle>
+                        <BundleSub>{b.sub}</BundleSub>
+
+                        <BundleSignature>
+                          <Sparkles size={16} />
+                          <span>{b.signature}</span>
+                        </BundleSignature>
+
+                        <BundleWhy>
+                          {b.why.map((w) => (
+                            <BundleWhyItem key={w}>
+                              <ChevronRight size={16} />
+                              <span>{w}</span>
+                            </BundleWhyItem>
+                          ))}
+                        </BundleWhy>
+
+                        <BundleFooter>
+                          <BundleCta>
+                            Seleccionar <ArrowRight size={16} />
+                          </BundleCta>
+                        </BundleFooter>
+                      </BundleCard>
                     );
                   })}
-                </SceneTabs>
+                </BundleGrid>
 
-                <SceneCard $accent={activeScene.accent}>
-                  <SceneCardTop>
-                    <SceneChip>Escena activa</SceneChip>
-                    <SceneH3>{activeScene.title}</SceneH3>
-                    <SceneP>{activeScene.sub}</SceneP>
-                  </SceneCardTop>
+                <AddOns>
+                  <AddOnsTitle>Extras (mejoran el “wow”)</AddOnsTitle>
+                  <AddOnsGrid>
+                    {addOns.map((a) => {
+                      const Icon = a.icon;
+                      const on = selectedAddOns.has(a.id);
+                      return (
+                        <AddOn
+                          key={a.id}
+                          $on={on}
+                          onClick={() => toggleAddOn(a.id)}
+                          type="button"
+                        >
+                          <AddOnIcon $on={on}>
+                            <Icon size={18} />
+                          </AddOnIcon>
+                          <AddOnText>
+                            <strong>
+                              {a.label}{" "}
+                              {a.badge ? <Badge>{a.badge}</Badge> : null}
+                            </strong>
+                            <span>{a.desc}</span>
+                          </AddOnText>
+                          <AddOnPrice>
+                            {a.price === 0
+                              ? "Gratis"
+                              : `+${formatEUR(a.price)}`}
+                          </AddOnPrice>
+                        </AddOn>
+                      );
+                    })}
+                  </AddOnsGrid>
+                </AddOns>
+              </CockpitLeft>
 
-                  <SceneList>
-                    {activeScene.bullets.map((b) => (
-                      <SceneLi key={b}>
-                        <Dot />
-                        <span>{b}</span>
-                      </SceneLi>
-                    ))}
-                  </SceneList>
+              {/* Right: sticky pricing + spec sheet */}
+              <CockpitRight>
+                <StickyCard>
+                  <StickyTop>
+                    <StickyKicker>Inversión orientativa</StickyKicker>
+                    <StickyPrice>
+                      <span>{formatEUR(totals.from)}</span>
+                      <i>–</i>
+                      <span>{formatEUR(totals.to)}</span>
+                    </StickyPrice>
+                    <StickySub>
+                      Rango estimado · ajustamos según medidas, tejidos y nº de
+                      motores.
+                    </StickySub>
 
-                  <SceneCtas>
-                    <ScenePrimary to="/contact">
-                      Quiero esto en mi casa <ArrowRight size={16} />
-                    </ScenePrimary>
-                    <SceneGhost href="#experiencia">Ver beneficios</SceneGhost>
-                  </SceneCtas>
-                </SceneCard>
-              </ScenesLeft>
+                    {totals.savings > 0 ? (
+                      <Savings>
+                        <Sparkles size={16} />
+                        <span>
+                          Bonus incluido: asistente de voz (valor{" "}
+                          {formatEUR(totals.savings)})
+                        </span>
+                      </Savings>
+                    ) : null}
 
-              <ScenesRight>
-                <SceneVisual>
-                  <SceneImg
-                    src={activeScene.img}
-                    alt={`Escena ${activeScene.title}`}
-                    loading="lazy"
+                    <StickyButtons>
+                      <StickyPrimary href="/contact">
+                        Quiero una propuesta <ArrowRight size={16} />
+                      </StickyPrimary>
+                      <StickyGhost
+                        href={CONTACT.whatsappUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        WhatsApp
+                      </StickyGhost>
+                    </StickyButtons>
+
+                    <StickyProof>
+                      <strong>Entrega Traver:</strong> escenas configuradas,
+                      sensibilidad ajustada y puesta en marcha guiada.
+                    </StickyProof>
+                  </StickyTop>
+
+                  <Divider />
+
+                  {/* Desktop (sticky) stays */}
+                  <DesktopOnly>
+                    <AutomatizacionEstimate
+                      kicker="Configuración seleccionada"
+                      priceText={estimateProps.priceText}
+                      priceValue={estimateProps.priceValue}
+                      description={estimateProps.description}
+                      imageSrc={automatizacionPackImg}
+                      imageAlt="Paquete de automatización integral"
+                      items={estimateProps.items}
+                      finePrint={estimateProps.finePrint}
+                      perks={[
+                        { icon: "garantia", label: "Escenas configuradas" },
+                        {
+                          icon: "mantenimiento",
+                          label: "Calibración + entrega guiada",
+                        },
+                      ]}
+                    />
+                  </DesktopOnly>
+                </StickyCard>
+              </CockpitRight>
+            </Cockpit>
+            {/* Mobile: open in bottom sheet */}
+            <MobileOnly>
+              <BottomSheetOverlay
+                $open={sheetOpen}
+                onClick={() => setSheetOpen(false)}
+                aria-hidden={!sheetOpen}
+              />
+              <BottomSheet
+                $open={sheetOpen}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Detalle de estimación"
+              >
+                <SheetHandle />
+                <SheetHeader>
+                  <SheetTitle>Tu configuración</SheetTitle>
+                  <SheetClose
+                    aria-label="Cerrar detalles"
+                    onClick={() => setSheetOpen(false)}
+                    type="button"
+                    ref={closeBtnRef}
+                  >
+                    Cerrar
+                  </SheetClose>
+                </SheetHeader>
+
+                <SheetBody>
+                  <AutomatizacionEstimate
+                    kicker="Configuración seleccionada"
+                    priceText={estimateProps.priceText}
+                    priceValue={estimateProps.priceValue}
+                    description={estimateProps.description}
+                    imageSrc={automatizacionPackImg}
+                    imageAlt="Paquete de automatización integral"
+                    items={estimateProps.items}
+                    finePrint={estimateProps.finePrint}
+                    perks={[
+                      { icon: "garantia", label: "Escenas configuradas" },
+                      {
+                        icon: "mantenimiento",
+                        label: "Calibración + entrega guiada",
+                      },
+                    ]}
                   />
-                  <SceneOverlay />
-                  <SceneSpec>
-                    <SceneSpecSwap key={activeScene.id}>
-                      <strong>{activeScene.specTitle}</strong>
-                      <span>{activeScene.specText}</span>
-                    </SceneSpecSwap>
-                  </SceneSpec>
-                </SceneVisual>
+                </SheetBody>
+              </BottomSheet>
+            </MobileOnly>
+            <MobileOnly>
+              <StickyBar>
+                <StickyBarLeft>
+                  <StickyBarLabel>Estimación</StickyBarLabel>
+                  <StickyBarValue>
+                    {formatEUR(totals.from)} – {formatEUR(totals.to)}
+                  </StickyBarValue>
+                  <StickyBarHint>orientativo</StickyBarHint>
+                </StickyBarLeft>
 
-                <Marquee aria-hidden="true">
-                  <MarqueeTrack>
-                    <MarqueeItem>Somfy</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Escenas</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Sensores</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Rutinas</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Control por app</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Instalación limpia</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Somfy</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Escenas</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Sensores</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Rutinas</MarqueeItem>
-                    <MarqueeDot />
-                  </MarqueeTrack>
-                </Marquee>
-              </ScenesRight>
-            </Scenes>
-          </Section>
-
-          {/* SECTION: BENEFITS */}
-          <Section id="experiencia" data-reveal="out">
-            <SectionTop>
-              <Kicker>Experiencia</Kicker>
-              <Title>
-                Automatización que se <span>siente</span>
-              </Title>
-              <Lead>
-                Luz a medida, tranquilidad real y rutinas que se adaptan. La
-                diferencia está en el ajuste fino.
-              </Lead>
-            </SectionTop>
-
-            <BenefitsGrid>
-              <BenefitCard>
-                <BenefitMedia>
-                  <BenefitImg
-                    src={benefit1}
-                    alt="Luz natural regulada"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <BenefitOverlay />
-                </BenefitMedia>
-
-                <BenefitBody>
-                  <BenefitTitle>Luz que acompaña el día</BenefitTitle>
-                  <BenefitParagraph>
-                    Persianas, toldos y cortinas se ajustan para dejar pasar la
-                    cantidad justa de luz. Confort visual, sin deslumbramientos.
-                  </BenefitParagraph>
-
-                  <BenefitHint>
-                    Ajuste automático <Dot /> Sin esfuerzo
-                  </BenefitHint>
-                </BenefitBody>
-
-                <Sheen aria-hidden="true" />
-              </BenefitCard>
-
-              <BenefitCard>
-                <BenefitMedia>
-                  <BenefitImg
-                    src={vacaciones}
-                    alt="Control del hogar durante vacaciones"
-                    loading="lazy"
-                  />
-                  <BenefitOverlay />
-                </BenefitMedia>
-
-                <BenefitBody>
-                  <BenefitTitle>Tranquilidad estés donde estés</BenefitTitle>
-                  <BenefitParagraph>
-                    Control desde el móvil y simulación de presencia cuando no
-                    estás en casa. Una sensación de calma, incluso de viaje.
-                  </BenefitParagraph>
-
-                  <BenefitHint>
-                    Presencia real <Dot /> Más seguridad
-                  </BenefitHint>
-                </BenefitBody>
-
-                <Sheen aria-hidden="true" />
-              </BenefitCard>
-
-              <BenefitCard>
-                <BenefitMedia>
-                  <BenefitImg
-                    src={programaHorarios}
-                    alt="Programación de horarios"
-                    loading="lazy"
-                  />
-                  <BenefitOverlay />
-                </BenefitMedia>
-
-                <BenefitBody>
-                  <BenefitTitle>Rutinas que se adaptan a ti</BenefitTitle>
-                  <BenefitParagraph>
-                    Horarios por estación o por tu día a día. La casa se ajusta
-                    sola. Tú solo lo disfrutas.
-                  </BenefitParagraph>
-
-                  <BenefitHint>
-                    Rutinas inteligentes <Dot /> A tu ritmo
-                  </BenefitHint>
-                </BenefitBody>
-
-                <Sheen aria-hidden="true" />
-              </BenefitCard>
-            </BenefitsGrid>
-
-            <MicroProof>
-              <strong>Consejo Traver:</strong> empezamos por lo que más se nota
-              (luz + privacidad) y escalamos cuando lo disfrutas.
-            </MicroProof>
-          </Section>
-
-          {/* SECTION: PROCESS */}
-          <Section data-reveal="out">
-            <SectionTop>
-              <Kicker>Proceso</Kicker>
-              <Title>
-                Cómo <span>trabajamos</span>
-              </Title>
-              <Lead>
-                Una experiencia sencilla, cuidada y sin sorpresas: desde la
-                medición hasta la puesta en marcha.
-              </Lead>
-            </SectionTop>
-
-            <Steps>
-              <Step>
-                <StepIndex>01</StepIndex>
-                <StepTitle>Escuchamos tu espacio</StepTitle>
-                <StepText>
-                  Medimos, analizamos y entendemos cómo vives tu hogar para
-                  proponer lo que tiene sentido.
-                </StepText>
-              </Step>
-
-              <Step>
-                <StepIndex>02</StepIndex>
-                <StepTitle>Diseñamos la solución</StepTitle>
-                <StepText>
-                  Propuesta clara y realista, con opciones equilibradas según
-                  tejidos, medidas y uso.
-                </StepText>
-              </Step>
-
-              <Step>
-                <StepIndex>03</StepIndex>
-                <StepTitle>Instalamos y ajustamos</StepTitle>
-                <StepText>
-                  Instalación certificada, ajuste fino y entrega final para que
-                  todo funcione con precisión.
-                </StepText>
-              </Step>
-            </Steps>
-          </Section>
-
-          {/* SECTION: FAQ */}
-          <Section data-reveal="out" aria-label="Preguntas frecuentes">
-            <SectionTop>
-              <Kicker>FAQ</Kicker>
-              <Title>
-                Respuestas claras, <span>sin humo</span>
-              </Title>
-              <Lead>
-                Si lo estás considerando, esto es lo que más nos preguntan.
-              </Lead>
-            </SectionTop>
-
-            <FaqWrap>
-              {faqs.map((f, idx) => {
-                const open = idx === openFaq;
-                return (
-                  <FaqItem key={f.q} $open={open}>
-                    <FaqButton
-                      type="button"
-                      aria-expanded={open}
-                      onClick={() => setOpenFaq(open ? -1 : idx)}
-                    >
-                      <span>{f.q}</span>
-                      <FaqIcon $open={open} aria-hidden="true">
-                        +
-                      </FaqIcon>
-                    </FaqButton>
-                    <FaqPanel $open={open} role="region">
-                      <p>{f.a}</p>
-                    </FaqPanel>
-                  </FaqItem>
-                );
-              })}
-            </FaqWrap>
+                <StickyBarButtons>
+                  <StickyBarBtn
+                    type="button"
+                    onClick={() => setSheetOpen(true)}
+                  >
+                    Ver detalle
+                  </StickyBarBtn>
+                  <StickyBarCta href="/contact">Pedir propuesta</StickyBarCta>
+                </StickyBarButtons>
+              </StickyBar>
+            </MobileOnly>
           </Section>
 
           {/* FINAL CTA */}
-          <Section data-reveal="out">
+          <Section>
             <CTA>
               <div>
                 <CTATitle>¿Lo vemos en tu casa?</CTATitle>
                 <CTAText>
-                  Te proponemos una solución clara y realista según tu espacio.
-                  Medición, propuesta y presupuesto sin compromiso.
+                  Medición, propuesta y presupuesto sin compromiso. Te
+                  recomendaremos el bundle más equilibrado (no el más caro).
                 </CTAText>
               </div>
 
@@ -729,119 +839,134 @@ export default function Automatizacion() {
               </CTAButtons>
             </CTA>
           </Section>
-        </SurfaceInner>
-      </Surface>
+        </SheetInner>
+      </Sheet>
     </Page>
   );
 }
-
-/* =========================
-   REQUIRED TITLE (DO NOT EDIT)
-========================= */
-const Title = styled.h2`
-  margin: 0;
-  font-size: 2.15rem;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  color: rgba(17, 17, 17, 0.96);
-
-  span {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.7rem;
-  }
-`;
-
-/* =========================
-   PAGE
-========================= */
-
 const Page = styled.main`
   width: 100%;
   background: #0b0c0f;
   color: #f4f4f5;
-
-  /* Spotlight follows cursor */
-  --mx: 50%;
-  --my: 35%;
 `;
 
 /* =========================
-   HERO (KEEP AS IS)
+   HERO (FUTURISTIC)
 ========================= */
 
 const Hero = styled.section`
   position: relative;
-  min-height: 45vh;
-  min-height: 45svh;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 6rem 2rem 4.5rem;
+  padding: 5.25rem 2rem 2.75rem;
   overflow: hidden;
-  margin-top: 0rem;
 
   @media (max-width: 768px) {
-    margin-top: 0rem;
-    min-height: 42vh;
-    min-height: 42svh;
-    padding: 4rem 1.5rem 3rem;
+    padding: 4.25rem 1.5rem 2.25rem;
   }
 `;
 
-const HeroVideo = styled.video`
+const HeroBg = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+`;
+
+const HeroImg = styled.img`
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 22%;
+  filter: saturate(0.95) contrast(1.06);
   transform: scale(1.06);
-  filter: saturate(0.95) contrast(1.05);
-  z-index: 0;
-
-  @media (min-width: 1320px) {
-    transform: scale(1.12);
-  }
-  @media (min-width: 1400px) {
-    transform: scale(1.15);
-  }
-  @media (min-width: 1600px) {
-    transform: scale(1.18);
-  }
-  @media (min-width: 1800px) {
-    transform: scale(1.22);
-  }
 `;
 
 const HeroOverlay = styled.div`
   position: absolute;
   inset: 0;
   background: radial-gradient(
-      1200px 700px at 50% 35%,
+      900px 520px at 50% 18%,
       rgba(0, 0, 0, 0.15),
-      rgba(0, 0, 0, 0.68)
+      rgba(0, 0, 0, 0.74)
     ),
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.35) 0%,
-      rgba(0, 0, 0, 0.88) 70%,
-      rgba(11, 12, 15, 1) 100%
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(11, 12, 15, 0.92));
+`;
+
+const gridMove = keyframes`
+  from { transform: translateY(0); }
+  to { transform: translateY(22px); }
+`;
+
+const HeroGrid = styled.div`
+  position: absolute;
+  inset: -20%;
+  opacity: 0.22;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 64px 64px;
+  animation: ${gridMove} 5.2s ease-in-out infinite alternate;
+  mask-image: radial-gradient(circle at 50% 30%, black 40%, transparent 72%);
+`;
+
+const scan = keyframes`
+  from { transform: translateY(-80%); opacity: 0; }
+  30% { opacity: .25; }
+  to { transform: translateY(120%); opacity: 0; }
+`;
+
+const HeroScan = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 220px;
+  top: 0;
+  opacity: 0.25;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(196, 151, 98, 0.22),
+    transparent
+  );
+  animation: ${scan} 4.8s ease-in-out infinite;
+  pointer-events: none;
+`;
+
+const HeroGlow = styled.div`
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      900px 520px at 18% 10%,
+      rgba(196, 151, 98, 0.18),
+      transparent 55%
+    ),
+    radial-gradient(
+      900px 520px at 82% 20%,
+      rgba(229, 0, 126, 0.12),
+      transparent 60%
     );
-  z-index: 1;
+  pointer-events: none;
 `;
 
-const HeroContent = styled.div`
+const HeroInner = styled.div`
   position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 1100px;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1.6rem;
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: start;
+  }
 `;
 
-const Eyebrow = styled.p`
-  letter-spacing: 0.18em;
+const HeroTop = styled.div``;
+
+const KickerDark = styled.p`
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   font-size: 0.8rem;
   color: rgba(244, 244, 245, 0.72);
@@ -849,48 +974,47 @@ const Eyebrow = styled.p`
 `;
 
 const HeroTitle = styled.h1`
-  font-size: 3.45rem;
-  font-weight: 600;
-  line-height: 1.04;
-  margin: 0 0 1.2rem 0;
+  margin: 0;
+  font-size: clamp(2.3rem, 4.5vw, 3.7rem);
+  font-weight: 760;
+  line-height: 1.03;
+  letter-spacing: -0.03em;
+  color: rgba(244, 244, 245, 0.98);
 
   span {
     color: ${({ theme }) => theme.colors.primary};
-  }
-
-  @media (max-width: 768px) {
-    font-size: 2.55rem;
-    line-height: 1.08;
+    text-shadow: 0 0 26px rgba(229, 0, 126, 0.35);
   }
 `;
 
-const HeroSubtitle = styled.p`
-  max-width: 58ch;
-  font-size: 1.15rem;
+const HeroLead = styled.p`
+  margin: 1.1rem 0 0;
+  max-width: 66ch;
+  font-size: 1.12rem;
   line-height: 1.75;
   color: rgba(244, 244, 245, 0.78);
-  margin: 0;
 `;
 
 const HeroActions = styled.div`
-  margin-top: 2rem;
+  margin-top: 1.7rem;
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  gap: 0.9rem;
   flex-wrap: wrap;
+  align-items: center;
 `;
 
-const PrimaryButton = styled.a`
+const PrimaryLink = styled.a`
   display: inline-flex;
   align-items: center;
+  gap: 0.55rem;
   justify-content: center;
-  padding: 0.95rem 2.25rem;
+  padding: 0.95rem 1.7rem;
   border-radius: 999px;
   background: ${({ theme }) => theme.colors.primary};
   color: #0b0c0f;
-  font-weight: 700;
+  font-weight: 860;
   text-decoration: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition: transform 180ms ease, opacity 180ms ease;
 
   &:hover {
     opacity: 0.92;
@@ -898,1281 +1022,725 @@ const PrimaryButton = styled.a`
   }
 `;
 
-const SecondaryButton = styled.a`
+const SecondaryLink = styled.a`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.95rem 2.15rem;
+  padding: 0.95rem 1.6rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(244, 244, 245, 0.9);
-  font-weight: 600;
+  color: rgba(244, 244, 245, 0.92);
+  font-weight: 740;
   text-decoration: none;
-  transition: transform 0.25s ease, background 0.25s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.09);
-    transform: translateY(-1px);
-  }
-`;
-
-const MicroLine = styled.p`
-  margin-top: 1.4rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: rgba(244, 244, 245, 0.6);
-`;
-
-/* =========================
-   PREMIUM SURFACE + FX
-========================= */
-const Surface = styled.section`
-  position: relative;
-  background: #f4f5f7;
-  border-top-left-radius: 28px;
-  border-top-right-radius: 28px;
-  margin-top: -18px;
-  box-shadow: 0 -20px 80px rgba(0, 0, 0, 0.35);
-  border-top: 1px solid rgba(196, 151, 98, 0.35);
-  overflow: hidden;
-`;
-
-/* Ambient spotlight + editorial gradient, follows cursor */
-const Ambient = styled.div`
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(
-      800px 520px at var(--mx) var(--my),
-      rgba(196, 151, 98, 0.18),
-      rgba(196, 151, 98, 0.05) 45%,
-      rgba(244, 245, 247, 0) 70%
-    ),
-    radial-gradient(
-      900px 620px at 18% 12%,
-      rgba(15, 23, 42, 0.06),
-      rgba(244, 245, 247, 0) 62%
-    );
-  mix-blend-mode: multiply;
-  opacity: 0.9;
-
-  @media (prefers-reduced-motion: reduce) {
-    background: radial-gradient(
-      900px 600px at 50% 20%,
-      rgba(196, 151, 98, 0.12),
-      rgba(244, 245, 247, 0) 70%
-    );
-  }
-`;
-
-/* Subtle film grain */
-const Noise = styled.div`
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.08;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
-  mix-blend-mode: multiply;
-`;
-
-const SurfaceInner = styled.div`
-  position: relative;
-  width: min(1120px, calc(100% - 3rem));
-  margin: 0 auto;
-  padding: clamp(2.2rem, 5vw, 4rem) 0 4.25rem;
-
-  @media (max-width: 768px) {
-    width: min(1120px, calc(100% - 2rem));
-  }
-`;
-
-const Section = styled.section`
-  padding: clamp(2.2rem, 4.2vw, 3.4rem) 0;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-
-  &:last-of-type {
-    border-bottom: 0;
-    padding-bottom: 0;
-  }
-
-  /* Reveal animation */
-  &[data-reveal="out"] {
-    opacity: 0;
-    transform: translateY(10px);
-    filter: blur(2px);
-  }
-  &[data-reveal="in"] {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-    transition: opacity 700ms ease, transform 700ms ease, filter 700ms ease;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    &[data-reveal="out"],
-    &[data-reveal="in"] {
-      opacity: 1;
-      transform: none;
-      filter: none;
-      transition: none;
-    }
-  }
-`;
-
-const SectionTop = styled.div`
-  max-width: 860px;
-  margin-bottom: 1.35rem;
-`;
-
-const Kicker = styled.p`
-  margin: 0 0 0.55rem 0;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  font-size: 0.82rem;
-  color: rgba(17, 17, 17, 0.55);
-  position: relative;
-  display: inline-block;
-  padding-bottom: 0.55rem;
-
-  &:after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0.1rem;
-    width: 48px;
-    height: 1px;
-    background: rgba(196, 151, 98, 0.65);
-  }
-`;
-
-const Lead = styled.p`
-  margin: 0.75rem 0 0;
-  font-size: 1.08rem;
-  line-height: 1.7;
-  color: rgba(17, 17, 17, 0.62);
-`;
-
-/* =========================
-   INTRO (Editorial)
-========================= */
-const EditorialGrid = styled.div`
-  margin-top: 1.8rem;
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 1.1rem;
-  align-items: stretch;
-
-  @media (max-width: 980px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const EditorialCard = styled.div`
-  border-radius: 24px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.9),
-    rgba(255, 255, 255, 0.66)
-  );
-  box-shadow: 0 28px 90px rgba(15, 23, 42, 0.08);
-  padding: clamp(1.25rem, 2.5vw, 1.6rem);
-  position: relative;
-  overflow: hidden;
-
-  &:before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    background: radial-gradient(
-      600px 340px at var(--mx) var(--my),
-      rgba(196, 151, 98, 0.22),
-      rgba(196, 151, 98, 0) 55%
-    );
-    opacity: 0.65;
-    pointer-events: none;
-  }
-`;
-
-const CardTop = styled.div`
-  position: relative;
-  z-index: 1;
-`;
-
-const Chip = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.7rem;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.04);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  color: rgba(15, 23, 42, 0.78);
-  font-weight: 760;
-  font-size: 0.8rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-`;
-
-const CardTitle = styled.h3`
-  margin: 0.85rem 0 0.5rem;
-  font-size: 1.55rem;
-  letter-spacing: -0.02em;
-  color: rgba(15, 23, 42, 0.92);
-`;
-
-const CardText = styled.p`
-  margin: 0;
-  line-height: 1.75;
-  color: rgba(15, 23, 42, 0.72);
-  max-width: 62ch;
-`;
-
-const Rule = styled.div`
-  margin: 1.05rem 0;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    rgba(196, 151, 98, 0.55),
-    rgba(15, 23, 42, 0.08),
-    transparent
-  );
-`;
-
-const BulletGrid = styled.div`
-  position: relative;
-  z-index: 1;
-  display: grid;
-  gap: 0.65rem;
-`;
-
-const Bullet = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 0.7rem;
-
-  span {
-    line-height: 1.55;
-    color: rgba(17, 17, 17, 0.82);
-    font-weight: 680;
-  }
-`;
-
-const CardActions = styled.div`
-  position: relative;
-  z-index: 1;
-  margin-top: 1.15rem;
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-`;
-
-const MiniPrimary = styled(Link)`
-  text-decoration: none;
-  padding: 0.9rem 1.05rem;
-  border-radius: 14px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: #111;
-  font-weight: 720;
-  display: inline-flex;
-  gap: 0.5rem;
-  align-items: center;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.12);
-  transition: transform 180ms ease, filter 180ms ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.02);
-  }
-`;
-
-const MiniGhost = styled.a`
-  text-decoration: none;
-  padding: 0.9rem 1.05rem;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  color: rgba(15, 23, 42, 0.82);
-  font-weight: 700;
   transition: transform 180ms ease, background 180ms ease;
 
   &:hover {
-    transform: translateY(-2px);
-    background: rgba(15, 23, 42, 0.02);
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.09);
   }
 `;
 
-const MediaCard = styled.div`
-  position: relative;
-  border-radius: 24px;
-  overflow: hidden;
-  min-height: 320px;
-  background: #0b0c0f;
-  box-shadow: 0 34px 100px rgba(15, 23, 42, 0.14);
-  border: 1px solid rgba(196, 151, 98, 0.18);
-
-  transform: translateZ(0);
+const HeroMicro = styled.div`
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: rgba(244, 244, 245, 0.7);
+  font-weight: 650;
 `;
 
-const MediaImage = styled.img`
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  transform: scale(1.04);
-  filter: contrast(1.06) saturate(0.98);
-`;
-
-const MediaTint = styled.div`
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-      900px 520px at var(--mx) var(--my),
-      rgba(196, 151, 98, 0.24),
-      rgba(0, 0, 0, 0) 58%
-    ),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.45));
-  opacity: 0.9;
-`;
-
-const MediaLabel = styled.div`
-  position: absolute;
-  left: 14px;
-  bottom: 14px;
-  padding: 0.75rem 0.9rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(196, 151, 98, 0.28);
-  backdrop-filter: blur(12px);
-  color: rgba(255, 255, 255, 0.9);
-
-  strong {
-    display: block;
-    font-weight: 760;
-    letter-spacing: -0.01em;
-  }
-
-  span {
-    display: block;
-    margin-top: 0.15rem;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.78);
-  }
-`;
-
-const StatsRow = styled.div`
-  margin-top: 1.05rem;
+const HeroSide = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.85rem;
+  justify-content: end;
 
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
+  @media (max-width: 979px) {
+    justify-content: start;
   }
 `;
 
-const Stat = styled.div`
-  border-radius: 18px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  background: rgba(255, 255, 255, 0.8);
-  padding: 1rem 1rem 0.95rem;
-  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.05);
+const HeroStatCard = styled.div`
+  width: min(420px, 100%);
+  border-radius: 22px;
+  padding: 1.15rem 1.15rem 1.05rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 26px 100px rgba(0, 0, 0, 0.35);
 `;
 
-const StatKicker = styled.div`
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  color: rgba(15, 23, 42, 0.58);
-  font-weight: 760;
+const StatLabel = styled.div`
+  color: rgba(244, 244, 245, 0.7);
+  font-size: 0.9rem;
+  font-weight: 720;
 `;
 
 const StatValue = styled.div`
   margin-top: 0.35rem;
-  font-size: 1.25rem;
-  letter-spacing: -0.02em;
-  color: rgba(15, 23, 42, 0.92);
-  font-weight: 820;
+  font-size: 1.55rem;
+  font-weight: 880;
+  color: rgba(244, 244, 245, 0.95);
 `;
 
-const StatText = styled.div`
+const StatSub = styled.div`
   margin-top: 0.35rem;
-  color: rgba(15, 23, 42, 0.66);
-  line-height: 1.6;
+  color: rgba(244, 244, 245, 0.66);
 `;
 
-/* =========================
-   PATHS (kept + refined)
-========================= */
-const PathGrid = styled.div`
-  margin-top: 1.25rem;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.95rem;
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-  }
+const StatRow = styled.div`
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 `;
 
-const PathCard = styled(Link)`
-  position: relative;
-  display: block;
-  border-radius: 20px;
-  overflow: hidden;
-  text-decoration: none;
-  border: 1px solid rgba(17, 17, 17, 0.1);
-  background: #fff;
-  box-shadow: 0 12px 30px rgba(17, 17, 17, 0.06);
-  transition: transform 220ms ease, box-shadow 220ms ease,
-    border-color 220ms ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 44px rgba(17, 17, 17, 0.09);
-    border-color: rgba(17, 17, 17, 0.14);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1), 0 12px 30px rgba(17, 17, 17, 0.06);
-  }
-`;
-
-const PathMedia = styled.div`
-  position: relative;
-  height: 150px;
-
-  @media (max-width: 900px) {
-    height: 160px;
-  }
-`;
-
-const PathImg = styled.div`
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  transform: scale(1.01);
-  transition: transform 700ms ease;
-
-  ${PathCard}:hover & {
-    transform: scale(1.06);
-  }
-`;
-
-const PathOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.22));
-`;
-
-const PathBadge = styled.span`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 0.35rem 0.6rem;
-  border-radius: 999px;
-  border: 1px solid rgba(196, 151, 98, 0.35);
-  background: rgba(255, 255, 255, 0.86);
-  color: rgba(17, 17, 17, 0.78);
-  font-size: 0.78rem;
-  font-weight: 800;
-`;
-
-const PathBody = styled.div`
-  padding: 1rem 1rem 1.05rem;
-  display: grid;
-  gap: 0.35rem;
-`;
-
-const PathTitle = styled.h3`
-  margin: 0;
-  font-size: 1.12rem;
-  letter-spacing: -0.01em;
-  color: rgba(17, 17, 17, 0.95);
-`;
-
-const PathText = styled.p`
-  margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.55;
-  color: rgba(17, 17, 17, 0.62);
-`;
-
-const PathCta = styled.div`
-  margin-top: 0.35rem;
+const StatPill = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  font-weight: 850;
-  font-size: 0.95rem;
-  color: rgba(17, 17, 17, 0.92);
-
-  svg {
-    transition: transform 200ms ease;
-  }
-
-  ${PathCard}:hover & svg {
-    transform: translateX(3px);
-  }
+  gap: 0.4rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(244, 244, 245, 0.86);
+  font-weight: 720;
+  font-size: 0.9rem;
 `;
 
-/* =========================
-   QUOTE
-========================= */
-const Quote = styled.figure`
-  margin: 1.25rem 0 0;
-  border-radius: 22px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.9),
-    rgba(255, 255, 255, 0.72)
-  );
-  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.06);
-  padding: 1.2rem 1.2rem 1.05rem;
-  position: relative;
-  overflow: hidden;
-
-  &[data-reveal="out"] {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  &[data-reveal="in"] {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 700ms ease, transform 700ms ease;
-  }
+const BackRow = styled.div`
+  margin-top: 1.05rem;
 `;
 
-const QuoteMark = styled.div`
-  position: absolute;
-  top: -16px;
-  left: 12px;
-  font-size: 4rem;
-  color: rgba(196, 151, 98, 0.22);
-  font-weight: 900;
-  line-height: 1;
-`;
-
-const QuoteText = styled.blockquote`
-  margin: 0;
-  padding: 0.25rem 0 0;
-  font-size: 1.08rem;
-  line-height: 1.75;
-  color: rgba(15, 23, 42, 0.78);
-  max-width: 78ch;
-`;
-
-const QuoteMeta = styled.figcaption`
-  margin-top: 0.7rem;
-  color: rgba(15, 23, 42, 0.62);
-  font-size: 0.95rem;
-
-  span {
-    color: rgba(15, 23, 42, 0.86);
-    font-weight: 780;
-  }
-`;
-
-/* =========================
-   SCENES (interactive)
-========================= */
-const Scenes = styled.div`
-  margin-top: 1.25rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-
-  @media (max-width: 980px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const ScenesLeft = styled.div`
-  display: grid;
-  gap: 0.9rem;
-`;
-
-const SceneTabs = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
-
-  @media (max-width: 560px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const SceneTab = styled.button`
-  appearance: none;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: rgba(255, 255, 255, 0.86);
-  border-radius: 16px;
-  padding: 0.9rem 0.95rem;
-  text-align: left;
-  cursor: pointer;
-  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.06);
-  transition: transform 180ms ease, background 180ms ease,
-    border-color 180ms ease;
-
-  span {
-    display: block;
-    font-weight: 820;
-    letter-spacing: -0.01em;
-    color: rgba(15, 23, 42, 0.92);
-  }
-  small {
-    display: block;
-    margin-top: 0.25rem;
-    color: rgba(15, 23, 42, 0.62);
-    line-height: 1.45;
-  }
-
-  ${({ $active, theme }) =>
-    $active &&
-    css`
-      border-color: rgba(196, 151, 98, 0.45);
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.95),
-        rgba(255, 255, 255, 0.78)
-      );
-      box-shadow: 0 26px 90px rgba(15, 23, 42, 0.1);
-      transform: translateY(-1px);
-
-      span {
-        color: rgba(15, 23, 42, 0.98);
-      }
-      small {
-        color: rgba(15, 23, 42, 0.68);
-      }
-    `}
+const BackLink = styled(Link)`
+  text-decoration: none;
+  color: rgba(244, 244, 245, 0.65);
+  font-weight: 680;
 
   &:hover {
-    transform: translateY(-1px);
-    border-color: rgba(15, 23, 42, 0.16);
+    color: rgba(244, 244, 245, 0.9);
+  }
+`;
+
+/* =========================
+   SHEET + SECTIONS
+========================= */
+
+const Sheet = styled.section`
+  background: #ffffff;
+  color: #111;
+  border-top-left-radius: 34px;
+  border-top-right-radius: 34px;
+  margin-top: -18px;
+  position: relative;
+  z-index: 5;
+  box-shadow: 0 -18px 60px rgba(0, 0, 0, 0.35);
+`;
+
+const SheetInner = styled.div`
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 4.2rem 2rem 5.4rem;
+
+  @media (max-width: 768px) {
+    padding: 3.1rem 1.5rem 4.4rem;
+  }
+`;
+
+const Section = styled.section`
+  padding: 3.2rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+
+  &:first-child {
+    border-top: none;
+    padding-top: 0;
+  }
+`;
+
+const Kicker = styled.p`
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: rgba(17, 17, 17, 0.55);
+  margin: 0 0 0.7rem 0;
+`;
+
+const H2 = styled.h2`
+  margin: 0;
+  font-size: 2.1rem;
+  font-weight: 760;
+  letter-spacing: -0.02em;
+
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
+`;
+
+const SubLead = styled.p`
+  margin: 0.85rem 0 0 0;
+  max-width: 80ch;
+  font-size: 1.03rem;
+  line-height: 1.75;
+  color: rgba(17, 17, 17, 0.7);
+
+  b {
+    color: rgba(17, 17, 17, 0.88);
+    font-weight: 800;
+  }
+`;
+
+const ProofLine = styled.p`
+  margin: 1.1rem 0 0;
+  color: rgba(15, 23, 42, 0.65);
+  line-height: 1.7;
+
+  strong {
+    color: rgba(15, 23, 42, 0.9);
+    font-weight: 860;
+  }
+`;
+
+/* =========================
+   VALUE GRID
+========================= */
+
+const ValueGrid = styled.div`
+  margin-top: 1.4rem;
+  display: grid;
+  gap: 0.95rem;
+
+  @media (min-width: 980px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+`;
+
+const ValueCard = styled.div`
+  border-radius: 22px;
+  padding: 1.25rem 1.25rem 1.15rem;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.03),
+    rgba(15, 23, 42, 0.01)
+  );
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.06);
+`;
+
+const ValueIcon = styled.div`
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: rgba(229, 0, 126, 0.08);
+  border: 1px solid rgba(229, 0, 126, 0.14);
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: rgba(17, 17, 17, 0.9);
+  }
+`;
+
+const ValueTitle = styled.h3`
+  margin: 0.85rem 0 0.45rem;
+  font-size: 1.15rem;
+  font-weight: 860;
+  letter-spacing: -0.01em;
+  color: rgba(15, 23, 42, 0.92);
+`;
+
+const ValueText = styled.p`
+  margin: 0;
+  line-height: 1.75;
+  color: rgba(15, 23, 42, 0.68);
+`;
+
+const ValueProof = styled.div`
+  margin-top: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 750;
+  color: rgba(15, 23, 42, 0.8);
+`;
+
+/* =========================
+   COCKPIT (Bundles + Sticky)
+========================= */
+
+const Cockpit = styled.div`
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 1.1rem;
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: start;
+  }
+`;
+
+const CockpitLeft = styled.div``;
+
+const CockpitRight = styled.div`
+  @media (min-width: 980px) {
+    position: relative;
+  }
+`;
+
+const BundleGrid = styled.div`
+  display: grid;
+  gap: 0.95rem;
+
+  @media (min-width: 700px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const sheen = keyframes`
+  from { transform: translateX(-30%) rotate(10deg); opacity: 0; }
+  30% { opacity: .85; }
+  to { transform: translateX(30%) rotate(10deg); opacity: 0; }
+`;
+
+const BundleCard = styled.button`
+  appearance: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  --my: 50%;
+
+  position: relative;
+  border-radius: 22px;
+  padding: 1.15rem 1.15rem 1.05rem;
+
+  background: ${({ $active }) =>
+    $active
+      ? "linear-gradient(180deg, rgba(255,255,255,1), rgba(255,255,255,0.86))"
+      : "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.78))"};
+  border: 1px solid
+    ${({ $active }) =>
+      $active ? "rgba(196,151,98,.42)" : "rgba(15,23,42,.10)"};
+  box-shadow: ${({ $active }) =>
+    $active
+      ? "0 30px 120px rgba(15,23,42,.14)"
+      : "0 18px 70px rgba(15,23,42,.08)"};
+
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 180ms ease, box-shadow 180ms ease,
+    border-color 180ms ease;
+
+  &:hover {
+    box-shadow: 0 34px 140px rgba(15, 23, 42, 0.14);
   }
 
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08), 0 26px 90px rgba(15, 23, 42, 0.1);
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08),
+      0 34px 140px rgba(15, 23, 42, 0.14);
   }
-`;
 
-const SceneCard = styled.div`
-  border-radius: 24px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 30px 100px rgba(15, 23, 42, 0.1);
-  padding: 1.2rem 1.2rem 1.15rem;
-  position: relative;
-  overflow: hidden;
-
-  &:before {
+  &::before {
     content: "";
     position: absolute;
-    inset: -2px;
+    inset: 0;
+    border-radius: 22px;
     pointer-events: none;
-    opacity: 0.9;
+    background: radial-gradient(
+      420px 240px at var(--mx) var(--my),
+      rgba(196, 151, 98, 0.24),
+      transparent 55%
+    );
+    opacity: ${({ $active }) => ($active ? 1 : 0)};
+    transition: opacity 180ms ease;
+  }
 
-    ${({ $accent }) => {
-      if ($accent === "warm")
-        return css`
-          background: radial-gradient(
-            640px 380px at var(--mx) var(--my),
-            rgba(196, 151, 98, 0.22),
-            rgba(255, 255, 255, 0) 58%
-          );
-        `;
-      if ($accent === "cool")
-        return css`
-          background: radial-gradient(
-            640px 380px at var(--mx) var(--my),
-            rgba(59, 130, 246, 0.16),
-            rgba(255, 255, 255, 0) 58%
-          );
-        `;
-      return css`
-        background: radial-gradient(
-          640px 380px at var(--mx) var(--my),
-          rgba(15, 23, 42, 0.12),
-          rgba(255, 255, 255, 0) 58%
-        );
-      `;
-    }}
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -40% -60%;
+    pointer-events: none;
+    background: linear-gradient(
+      120deg,
+      transparent 35%,
+      rgba(255, 255, 255, 0.32) 45%,
+      transparent 55%
+    );
+    opacity: ${({ $active }) => ($active ? 1 : 0)};
+    animation: ${({ $active }) => ($active ? sheen : "none")} 950ms ease;
   }
 `;
 
-const SceneCardTop = styled.div`
-  position: relative;
-  z-index: 1;
+const BundleTop = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
 `;
 
-const SceneChip = styled.div`
+const BundleTag = styled.div`
   display: inline-flex;
   padding: 0.35rem 0.65rem;
   border-radius: 999px;
-  background: rgba(15, 23, 42, 0.04);
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: ${({ $active }) =>
+    $active ? "rgba(196,151,98,0.16)" : "rgba(15,23,42,0.04)"};
+  border: 1px solid
+    ${({ $active }) =>
+      $active ? "rgba(196,151,98,0.32)" : "rgba(15,23,42,0.08)"};
   color: rgba(15, 23, 42, 0.78);
-  font-weight: 780;
+  font-weight: 860;
   font-size: 0.78rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 `;
 
-const SceneH3 = styled.h3`
-  margin: 0.75rem 0 0.35rem;
-  font-size: 1.5rem;
-  letter-spacing: -0.02em;
-  color: rgba(15, 23, 42, 0.92);
-`;
-
-const SceneP = styled.p`
-  margin: 0;
-  line-height: 1.75;
+const BundleHint = styled.div`
+  font-weight: 820;
   color: rgba(15, 23, 42, 0.68);
 `;
 
-const SceneList = styled.div`
-  position: relative;
-  z-index: 1;
-  margin-top: 1rem;
-  display: grid;
-  gap: 0.65rem;
+const BundleTitle = styled.h3`
+  margin: 0.85rem 0 0.35rem;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+  font-weight: 880;
+  color: rgba(15, 23, 42, 0.92);
 `;
 
-const SceneLi = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 0.7rem;
+const BundleSub = styled.p`
+  margin: 0;
+  color: rgba(15, 23, 42, 0.68);
+  line-height: 1.65;
+`;
 
-  span {
-    line-height: 1.55;
-    color: rgba(17, 17, 17, 0.82);
-    font-weight: 680;
+const BundleSignature = styled.div`
+  margin-top: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 780;
+  color: rgba(15, 23, 42, 0.8);
+`;
+
+const BundleWhy = styled.div`
+  margin-top: 0.75rem;
+  display: grid;
+  gap: 0.45rem;
+`;
+
+const BundleWhyItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(15, 23, 42, 0.72);
+  font-weight: 650;
+
+  svg {
+    opacity: 0.75;
   }
 `;
 
-const SceneCtas = styled.div`
-  position: relative;
-  z-index: 1;
-  margin-top: 1.05rem;
+const BundleFooter = styled.div`
+  margin-top: 0.9rem;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const BundleCta = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 880;
+  color: rgba(15, 23, 42, 0.92);
+
+  svg {
+    transition: transform 180ms ease;
+  }
+
+  ${BundleCard}:hover & svg {
+    transform: translateX(3px);
+  }
+`;
+
+const AddOns = styled.div`
+  margin-top: 1.1rem;
+  border-radius: 22px;
+  padding: 1.15rem 1.15rem 1.05rem;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.03),
+    rgba(15, 23, 42, 0.01)
+  );
+  border: 1px solid rgba(15, 23, 42, 0.08);
+`;
+
+const AddOnsTitle = styled.div`
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: rgba(15, 23, 42, 0.9);
+`;
+
+const AddOnsGrid = styled.div`
+  margin-top: 0.9rem;
+  display: grid;
+  gap: 0.75rem;
+
+  @media (min-width: 700px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+`;
+
+const AddOn = styled.button`
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+
+  border-radius: 18px;
+  padding: 0.85rem 0.85rem;
+
+  background: ${({ $on }) =>
+    $on ? "rgba(196,151,98,0.14)" : "rgba(255,255,255,0.72)"};
+  border: 1px solid
+    ${({ $on }) => ($on ? "rgba(196,151,98,0.32)" : "rgba(15,23,42,0.10)")};
+  transition: transform 160ms ease, background 160ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: ${({ $on }) =>
+      $on ? "rgba(196,151,98,0.18)" : "rgba(255,255,255,0.82)"};
+  }
+`;
+
+const AddOnIcon = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: ${({ $on }) =>
+    $on ? "rgba(229,0,126,0.10)" : "rgba(15,23,42,0.04)"};
+  border: 1px solid
+    ${({ $on }) => ($on ? "rgba(229,0,126,0.16)" : "rgba(15,23,42,0.08)")};
+  color: rgba(15, 23, 42, 0.9);
+`;
+
+const AddOnText = styled.div`
+  strong {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-weight: 900;
+    color: rgba(15, 23, 42, 0.92);
+  }
+  span {
+    display: block;
+    margin-top: 0.12rem;
+    color: rgba(15, 23, 42, 0.66);
+    line-height: 1.45;
+    font-size: 0.95rem;
+  }
+`;
+
+const Badge = styled.span`
+  display: inline-flex;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: rgba(15, 23, 42, 0.78);
+  font-weight: 850;
+  font-size: 0.78rem;
+`;
+
+const AddOnPrice = styled.div`
+  font-weight: 900;
+  color: rgba(15, 23, 42, 0.84);
+`;
+
+const StickyCard = styled.div`
+  @media (min-width: 980px) {
+    position: sticky;
+    top: 92px;
+  }
+`;
+
+const StickyTop = styled.div`
+  border-radius: 22px;
+  padding: 1.15rem 1.15rem 1.05rem;
+  background: #0b0c0f;
+  color: rgba(244, 244, 245, 0.95);
+  box-shadow: 0 34px 140px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const StickyKicker = styled.div`
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: rgba(244, 244, 245, 0.68);
+`;
+
+const StickyPrice = styled.div`
+  margin-top: 0.55rem;
+  font-size: 1.75rem;
+  font-weight: 920;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+
+  i {
+    font-style: normal;
+    opacity: 0.6;
+    font-weight: 700;
+  }
+`;
+
+const StickySub = styled.div`
+  margin-top: 0.35rem;
+  color: rgba(244, 244, 245, 0.72);
+  line-height: 1.55;
+`;
+
+const Savings = styled.div`
+  margin-top: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(244, 244, 245, 0.9);
+  font-weight: 750;
+`;
+
+const StickyButtons = styled.div`
+  margin-top: 0.9rem;
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
 `;
 
-const ScenePrimary = styled(Link)`
-  text-decoration: none;
-  padding: 0.95rem 1.05rem;
-  border-radius: 14px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: #111;
-  font-weight: 760;
-  display: inline-flex;
-  gap: 0.5rem;
-  align-items: center;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.12);
-  transition: transform 180ms ease, filter 180ms ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.02);
-  }
-`;
-
-const SceneGhost = styled.a`
-  text-decoration: none;
-  padding: 0.95rem 1.05rem;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  color: rgba(15, 23, 42, 0.82);
-  font-weight: 720;
-  transition: transform 180ms ease, background 180ms ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    background: rgba(15, 23, 42, 0.02);
-  }
-`;
-
-const ScenesRight = styled.div`
-  display: grid;
-  gap: 0.85rem;
-`;
-
-const SceneVisual = styled.div`
-  position: relative;
-  border-radius: 24px;
-  overflow: hidden;
-  min-height: 360px;
-  background: #0b0c0f;
-  border: 1px solid rgba(196, 151, 98, 0.18);
-  box-shadow: 0 36px 120px rgba(15, 23, 42, 0.16);
-
-  @media (max-width: 980px) {
-    min-height: 300px;
-  }
-`;
-
-const SceneImg = styled.img`
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  transform: scale(1.04);
-  filter: saturate(0.98) contrast(1.06);
-`;
-
-const SceneOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-      820px 520px at var(--mx) var(--my),
-      rgba(196, 151, 98, 0.24),
-      rgba(0, 0, 0, 0) 60%
-    ),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.48));
-`;
-
-const specFade = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-    filter: blur(1px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-`;
-
-const SceneSpec = styled.div`
-  position: absolute;
-  left: 14px;
-  bottom: 14px;
-  padding: 0.75rem 0.9rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(196, 151, 98, 0.28);
-  backdrop-filter: blur(12px);
-  color: rgba(255, 255, 255, 0.9);
-
-  strong {
-    display: block;
-    font-weight: 770;
-    letter-spacing: -0.01em;
-  }
-  span {
-    display: block;
-    margin-top: 0.15rem;
-    color: rgba(255, 255, 255, 0.78);
-  }
-`;
-
-// NEW: animated swap wrapper
-const SceneSpecSwap = styled.div`
-  animation: ${specFade} 260ms ease-out both;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
-`;
-
-const marquee = keyframes`
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-`;
-
-const Marquee = styled.div`
-  border-radius: 18px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.06);
-  overflow: hidden;
-  padding: 0.75rem 0;
-
-  @media (prefers-reduced-motion: reduce) {
-    display: none;
-  }
-`;
-
-const MarqueeTrack = styled.div`
-  display: flex;
-  gap: 1rem;
-  width: max-content;
-  padding-left: 1rem;
-  animation: ${marquee} 18s linear infinite;
-`;
-
-const MarqueeItem = styled.div`
-  font-weight: 860;
-  letter-spacing: -0.01em;
-  color: rgba(15, 23, 42, 0.82);
-  white-space: nowrap;
-`;
-
-const MarqueeDot = styled.div`
-  width: 5px;
-  height: 5px;
-  border-radius: 999px;
-  background: rgba(196, 151, 98, 0.9);
-  align-self: center;
-`;
-
-/* =========================
-   BENEFITS (kept)
-========================= */
-const BenefitsGrid = styled.div`
-  margin-top: 1.4rem;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.9rem;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: unset;
-    display: flex;
-    gap: 0.85rem;
-    overflow-x: auto;
-    padding-bottom: 0.35rem;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-
-    scrollbar-width: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-`;
-
-const BenefitCard = styled.article`
-  position: relative;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #fff;
-  border: 1px solid rgba(17, 17, 17, 0.1);
-  box-shadow: 0 12px 30px rgba(17, 17, 17, 0.06);
-  transition: transform 220ms ease, box-shadow 220ms ease,
-    border-color 220ms ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 44px rgba(17, 17, 17, 0.09);
-    border-color: rgba(17, 17, 17, 0.14);
-  }
-
-  @media (max-width: 768px) {
-    min-width: 82%;
-    scroll-snap-align: start;
-  }
-`;
-
-const BenefitMedia = styled.div`
-  position: relative;
-  height: 140px;
-
-  @media (max-width: 768px) {
-    height: 160px;
-  }
-`;
-
-const BenefitImg = styled.img`
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  transform: scale(1.01);
-  transition: transform 700ms ease;
-
-  ${BenefitCard}:hover & {
-    transform: scale(1.06);
-  }
-`;
-
-const BenefitOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.22));
-`;
-
-const BenefitBody = styled.div`
-  padding: 0.95rem 0.95rem 1.05rem;
-  display: grid;
-  gap: 0.4rem;
-`;
-
-const BenefitTitle = styled.h3`
-  margin: 0;
-  font-size: 1.05rem;
-  letter-spacing: -0.01em;
-  color: rgba(17, 17, 17, 0.95);
-`;
-
-const BenefitParagraph = styled.p`
-  margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.55;
-  color: rgba(17, 17, 17, 0.62);
-`;
-
-const BenefitHint = styled.div`
-  margin-top: 0.15rem;
-  font-size: 0.88rem;
-  font-weight: 750;
-  color: rgba(17, 17, 17, 0.85);
+const StickyPrimary = styled.a`
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-`;
-
-const Dot = styled.span`
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
+  gap: 0.55rem;
+  justify-content: center;
+  padding: 0.9rem 1.05rem;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 900;
+  color: #0b0c0f;
   background: ${({ theme }) => theme.colors.primary};
-  display: inline-block;
-`;
+  transition: transform 180ms ease;
 
-const Sheen = styled.div`
-  position: absolute;
-  inset: -40% -60%;
-  background: linear-gradient(
-    120deg,
-    transparent 35%,
-    rgba(255, 255, 255, 0.28) 45%,
-    transparent 55%
-  );
-  transform: translateX(-30%) rotate(10deg);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 240ms ease;
-
-  ${BenefitCard}:hover &,
-  ${PathCard}:hover & {
-    opacity: 1;
-    animation: sheenMove 900ms ease forwards;
-  }
-
-  @keyframes sheenMove {
-    from {
-      transform: translateX(-30%) rotate(10deg);
-    }
-    to {
-      transform: translateX(30%) rotate(10deg);
-    }
+  &:hover {
+    transform: translateY(-1px);
   }
 `;
 
-const MicroProof = styled.p`
-  margin: 1rem 0 0;
-  color: rgba(17, 17, 17, 0.62);
-  font-size: 0.95rem;
+const StickyGhost = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 1.05rem;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 850;
+  color: rgba(244, 244, 245, 0.92);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+`;
+
+const StickyProof = styled.div`
+  margin-top: 0.9rem;
+  color: rgba(244, 244, 245, 0.7);
   line-height: 1.6;
 
   strong {
-    color: rgba(17, 17, 17, 0.9);
-    font-weight: 800;
+    color: rgba(244, 244, 245, 0.92);
+    font-weight: 900;
   }
+`;
+
+const Divider = styled.div`
+  height: 14px;
 `;
 
 /* =========================
-   STEPS (kept)
+   CTA
 ========================= */
-const Steps = styled.div`
-  margin-top: 1.7rem;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.1rem;
 
-  @media (max-width: 980px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const Step = styled.div`
-  border-radius: 22px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: linear-gradient(
-    180deg,
-    rgba(252, 252, 255, 1),
-    rgba(219, 233, 244, 1)
-  );
-  padding: 1.35rem 1.35rem 1.25rem;
-  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.06);
-`;
-
-const StepIndex = styled.div`
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  color: ${({ theme }) => theme.colors.primary};
-  opacity: 0.95;
-`;
-
-const StepTitle = styled.h3`
-  margin: 0.7rem 0 0.55rem;
-  font-size: 1.15rem;
-  letter-spacing: -0.01em;
-  color: rgba(15, 23, 42, 0.9);
-`;
-
-const StepText = styled.p`
-  margin: 0;
-  line-height: 1.75;
-  color: rgba(15, 23, 42, 0.68);
-`;
-
-/* =========================
-   FAQ
-========================= */
-const FaqWrap = styled.div`
-  margin-top: 1.15rem;
-  display: grid;
-  gap: 0.65rem;
-`;
-
-const FaqItem = styled.div`
-  border-radius: 18px;
-  border: 1px solid
-    ${({ $open }) =>
-      $open ? "rgba(196, 151, 98, 0.35)" : "rgba(15, 23, 42, 0.1)"};
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: ${({ $open }) =>
-    $open
-      ? "0 26px 90px rgba(15, 23, 42, 0.1)"
-      : "0 18px 60px rgba(15, 23, 42, 0.06)"};
-  overflow: hidden;
-  transition: box-shadow 220ms ease, border-color 220ms ease;
-`;
-
-const FaqButton = styled.button`
-  width: 100%;
-  appearance: none;
-  border: 0;
-  background: transparent;
-  padding: 1rem 1rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.9rem;
-  text-align: left;
-
-  span {
-    color: rgba(15, 23, 42, 0.92);
-    font-weight: 820;
-    line-height: 1.45;
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.08);
-  }
-`;
-
-const FaqIcon = styled.div`
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: rgba(15, 23, 42, 0.04);
-  color: rgba(15, 23, 42, 0.82);
-  font-weight: 950;
-  transform: ${({ $open }) => ($open ? "rotate(45deg)" : "rotate(0deg)")};
-  transition: transform 220ms ease;
-`;
-
-const FaqPanel = styled.div`
-  padding: ${({ $open }) => ($open ? "0 1rem 1rem" : "0 1rem")};
-  max-height: ${({ $open }) => ($open ? "220px" : "0px")};
-  overflow: hidden;
-  transition: max-height 280ms ease, padding 280ms ease;
-
-  p {
-    margin: 0.1rem 0 0;
-    line-height: 1.75;
-    color: rgba(15, 23, 42, 0.68);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-    max-height: none;
-    padding: 0 1rem 1rem;
-  }
-`;
-
-/* =========================
-   CTA (kept)
-========================= */
 const CTA = styled.div`
-  border-radius: 26px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: radial-gradient(
-      1200px 600px at 20% 10%,
-      rgba(0, 0, 0, 0.03),
-      rgba(0, 0, 0, 0)
-    ),
-    linear-gradient(180deg, #fff, rgba(15, 23, 42, 0.01));
-  padding: clamp(1.35rem, 3.2vw, 2rem);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-  box-shadow: 0 26px 90px rgba(15, 23, 42, 0.1);
+  margin-top: 1.8rem;
+  border-radius: 22px;
+  padding: 2.2rem;
+  background: #0b0c0f;
+  color: #f4f4f5;
+  display: grid;
+  gap: 1.2rem;
 
-  @media (max-width: 900px) {
-    flex-direction: column;
-    align-items: flex-start;
+  @media (min-width: 900px) {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
   }
 `;
 
 const CTATitle = styled.h3`
   margin: 0;
   font-size: 1.6rem;
-  letter-spacing: -0.02em;
-  color: rgba(15, 23, 42, 0.92);
+  font-weight: 760;
+  line-height: 1.2;
 `;
 
 const CTAText = styled.p`
-  margin: 0.55rem 0 0;
-  line-height: 1.75;
-  color: rgba(15, 23, 42, 0.68);
-  max-width: 56ch;
+  margin: 0.6rem 0 0 0;
+  color: rgba(244, 244, 245, 0.72);
+  line-height: 1.65;
 `;
 
 const CTAButtons = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 0.9rem;
+  justify-content: flex-start;
   flex-wrap: wrap;
+
+  @media (min-width: 900px) {
+    justify-content: flex-end;
+  }
 `;
 
 const CTAButtonPrimary = styled.a`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.95rem 1.15rem;
-  border-radius: 14px;
-  text-decoration: none;
-  font-weight: 750;
-  color: #111;
+  padding: 0.9rem 1.7rem;
+  border-radius: 999px;
   background: ${({ theme }) => theme.colors.primary};
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.12);
-  transition: transform 180ms ease, filter 180ms ease;
+  color: #0b0c0f;
+  font-weight: 860;
+  text-decoration: none;
 
   &:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.02);
+    opacity: 0.92;
   }
 `;
 
@@ -2180,17 +1748,164 @@ const CTAButtonSecondary = styled.a`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.95rem 1.15rem;
-  border-radius: 14px;
+  padding: 0.9rem 1.6rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(244, 244, 245, 0.92);
+  font-weight: 740;
   text-decoration: none;
-  font-weight: 750;
-  color: rgba(15, 23, 42, 0.86);
-  background: #fff;
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  transition: transform 180ms ease, background 180ms ease;
 
   &:hover {
-    transform: translateY(-2px);
-    background: rgba(15, 23, 42, 0.02);
+    background: rgba(255, 255, 255, 0.11);
   }
+`;
+/* =========================
+  MOBILE SHEET
+========================= */
+
+const MobileOnly = styled.div`
+  @media (min-width: 980px) {
+    display: none;
+  }
+`;
+
+const DesktopOnly = styled.div`
+  @media (max-width: 979px) {
+    display: none;
+  }
+`;
+
+const BottomSheetOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  opacity: ${({ $open }) => ($open ? 1 : 0)};
+  pointer-events: ${({ $open }) => ($open ? "auto" : "none")};
+  transition: opacity 220ms ease;
+`;
+
+const BottomSheet = styled.div`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 88vh;
+  background: #0b0c0f;
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+  z-index: 1000;
+  transform: translateY(${({ $open }) => ($open ? "0%" : "105%")});
+  transition: transform 260ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  overflow: auto;
+  box-shadow: 0 -24px 90px rgba(0, 0, 0, 0.55);
+`;
+
+const SheetHandle = styled.div`
+  width: 44px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  margin: 10px auto 6px;
+`;
+
+const SheetHeader = styled.div`
+  padding: 0.85rem 1rem 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SheetTitle = styled.div`
+  font-weight: 900;
+  color: rgba(244, 244, 245, 0.95);
+  letter-spacing: -0.01em;
+`;
+
+const SheetClose = styled.button`
+  appearance: none;
+  border: 0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(244, 244, 245, 0.9);
+  border-radius: 999px;
+  padding: 0.55rem 0.75rem;
+  font-weight: 800;
+`;
+
+const StickyBar = styled.div`
+  position: sticky;
+  bottom: 0;
+  margin-top: 1.1rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: 18px;
+  background: rgba(11, 12, 15, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+`;
+
+const StickyBarLeft = styled.div`
+  display: grid;
+  gap: 0.1rem;
+`;
+
+const StickyBarLabel = styled.div`
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(244, 244, 245, 0.68);
+`;
+
+const StickyBarValue = styled.div`
+  font-size: 1.02rem;
+  font-weight: 900;
+  color: rgba(244, 244, 245, 0.95);
+`;
+
+const StickyBarHint = styled.div`
+  font-size: 0.85rem;
+  color: rgba(244, 244, 245, 0.65);
+`;
+
+const StickyBarButtons = styled.div`
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: nowrap;
+`;
+
+const StickyBarBtn = styled.button`
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 0.75rem 0.85rem;
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(244, 244, 245, 0.92);
+  white-space: nowrap;
+`;
+
+const StickyBarCta = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.75rem 0.95rem;
+  font-weight: 950;
+  background: ${({ theme }) => theme.colors.primary};
+  color: #0b0c0f;
+  text-decoration: none;
+  white-space: nowrap;
+`;
+const SheetBody = styled.div`
+  padding: 1rem 1.25rem 1.5rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
 `;
