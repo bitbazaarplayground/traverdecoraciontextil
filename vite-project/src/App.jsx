@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
 import Auto from "./pages/Auto";
 import Auto2 from "./pages/Automatizacion2";
+import Completa from "./pages/completa";
 import HomePage from "./pages/HomePage"; // ✅ keep eager for best LCP
 import Auto3 from "./pages/opcionB";
 
@@ -108,6 +109,7 @@ export default function App() {
           <Route path="/auto" element={<Auto />} />
           <Route path="/auto2" element={<Auto2 />} />
           <Route path="/auto3" element={<Auto3 />} />
+          <Route path="/completa" element={<Completa />} />
           {/* CONTACTO */}
           <Route path="/contact" element={<ContactPage />} />
 
