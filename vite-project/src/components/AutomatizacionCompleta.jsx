@@ -1,12 +1,14 @@
-import { Check, Shield, Sparkles, Sun, Wind } from "lucide-react";
+import { ArrowRight, Check, Shield, Sparkles, Sun, Wind } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import styled, { keyframes } from "styled-components";
 import { CONTACT } from "../config/contact";
+import useRevealOnScroll from "../hooks/useReveal";
 
 /* =========================
    ASSETS
 ========================= */
+import welcome from "../assets/Automatizacion/ctaAuto.png";
 import domoticaControl from "../assets/Automatizacion/domotica1.webp";
 import packBackground from "../assets/Automatizacion/heroB.webp";
 
@@ -29,6 +31,24 @@ const Badge = ({ tone = "primary", children }) => {
   return <PillBadge $tone={tone}>{children}</PillBadge>;
 };
 
+const FAQItem = ({ q, a, defaultOpen = false }) => {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <FaqItem $open={open}>
+      <FaqQ
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+      >
+        <span>{q}</span>
+        <FaqIcon aria-hidden="true">{open ? "–" : "+"}</FaqIcon>
+      </FaqQ>
+      <FaqA role="region" $open={open}>
+        <FaqAInner>{a}</FaqAInner>
+      </FaqA>
+    </FaqItem>
+  );
+};
 /* =========================
    COMPONENT
 ========================= */
@@ -140,7 +160,61 @@ export default function Auto() {
     ],
     []
   );
-
+  const faqs = useMemo(
+    () => [
+      {
+        q: "¿Por qué elegir Traver en lugar de una franquicia?",
+        a: (
+          <>
+            Porque aquí no solo compras el producto: tienes{" "}
+            <strong>asesoramiento</strong>, <strong>medición</strong>,{" "}
+            <strong>instalación profesional</strong>, configuración y{" "}
+            <strong>soporte</strong>. En automatización la diferencia suele
+            estar en el montaje, ajustes y postventa.
+          </>
+        ),
+      },
+      {
+        q: "¿Los precios son cerrados?",
+        a: (
+          <>
+            Los packs son <strong>precios desde</strong>. El coste final depende
+            de medidas, tejido, tipo de motor, marca y extras (sensores,
+            centralización, control móvil).
+          </>
+        ),
+      },
+      {
+        q: "¿Cuánto tarda la instalación?",
+        a: (
+          <>
+            Normalmente <strong>1 día</strong> para packs pequeños y{" "}
+            <strong>1–2 días</strong> para viviendas completas, según el número
+            de elementos.
+          </>
+        ),
+      },
+      {
+        q: "¿Se puede controlar desde el móvil?",
+        a: (
+          <>
+            Sí, en muchos casos. Depende del sistema/marca elegidos. En la
+            visita te proponemos la opción adecuada para tu presupuesto.
+          </>
+        ),
+      },
+      {
+        q: "¿Qué incluye siempre Traver?",
+        a: (
+          <>
+            Medición, asesoramiento, instalación, puesta en marcha, ajustes y{" "}
+            <strong>soporte post-instalación</strong>.
+          </>
+        ),
+      },
+    ],
+    []
+  );
   // totals/estimateProps no se usan todavía; lo dejo fuera para no meter más ruido.
   // Si lo necesitas luego, lo reintroducimos limpio.
   const [activeIndex, setActiveIndex] = useState(0);
@@ -166,223 +240,226 @@ export default function Auto() {
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
+  useRevealOnScroll();
   return (
     <Page>
-      <Helmet>
-        <title>{title}</title>
+      <RevealStyles>
+        <Helmet>
+          <title>{title}</title>
 
-        <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={canonical} />
+          <meta name="description" content={description} />
+          <meta name="robots" content="index,follow" />
+          <link rel="canonical" href={canonical} />
 
-        <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:alt" content={ogImageAlt} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
+          <meta property="og:site_name" content={siteName} />
+          <meta property="og:type" content="website" />
+          <meta property="og:locale" content="es_ES" />
+          <meta property="og:url" content={canonical} />
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={description} />
+          <meta property="og:image" content={ogImage} />
+          <meta property="og:image:alt" content={ogImageAlt} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta name="twitter:image:alt" content={ogImageAlt} />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={title} />
+          <meta name="twitter:description" content={description} />
+          <meta name="twitter:image" content={ogImage} />
+          <meta name="twitter:image:alt" content={ogImageAlt} />
 
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        </Helmet>
 
-      {/* FUTURISTIC HERO — NO TOCADO */}
-      <Hero>
-        <HeroBg>
-          <HeroImg src={domoticaControl} alt="" aria-hidden="true" />
-          <HeroOverlay />
+        {/* FUTURISTIC HERO — NO TOCADO */}
+        <Hero>
+          <HeroBg>
+            <HeroImg src={domoticaControl} alt="" aria-hidden="true" />
+            <HeroOverlay />
 
-          <HeroScan />
-          <HeroGlow />
-        </HeroBg>
+            <HeroScan />
+            <HeroGlow />
+          </HeroBg>
 
-        <HeroInner>
-          <HeroTop>
-            <KickerDark>AUTOMATIZACIÓN INTEGRAL DEL HOGAR</KickerDark>
-            <HeroTitle>
-              No es domótica.
-              <br />
-              Es <span>control invisible</span>.
-            </HeroTitle>
-            <HeroLead>
-              Cortinas, estores, persianas y toldos coordinados con sensores y
-              escenas reales. Protege el exterior, regula el calor y convierte
-              rutinas en tranquilidad.
-            </HeroLead>
+          <HeroInner>
+            <HeroTop>
+              <KickerDark>AUTOMATIZACIÓN INTEGRAL DEL HOGAR</KickerDark>
+              <HeroTitle>
+                No es domótica.
+                <br />
+                Es <span>control invisible</span>.
+              </HeroTitle>
+              <HeroLead>
+                Cortinas, estores, persianas y toldos coordinados con sensores y
+                escenas reales. Protege el exterior, regula el calor y convierte
+                rutinas en tranquilidad.
+              </HeroLead>
 
-            <HeroMicro>
-              <Sparkles size={16} />
-              <span>
-                Confort sin esfuerzo. Integración discreta de luz, privacidad y
-                rutina, para que tu hogar se adapte a ti.
-              </span>
-            </HeroMicro>
-          </HeroTop>
-        </HeroInner>
-      </Hero>
+              <HeroMicro>
+                <Sparkles size={16} />
+                <span>
+                  Confort sin esfuerzo. Integración discreta de luz, privacidad
+                  y rutina, para que tu hogar se adapte a ti.
+                </span>
+              </HeroMicro>
+            </HeroTop>
+          </HeroInner>
+        </Hero>
 
-      {/* SHEET */}
-      <Sheet>
-        <SheetInner>
-          {/* VALUE — Reescrito limpio, profesional y responsive */}
-          <SheetSection>
-            <SheetKicker>Qué cambia</SheetKicker>
-            <SheetH2>Los motivos reales para automatizar</SheetH2>
-            <SheetLead>
-              No va de “domótica”. Va de <b>confort</b>, <b>protección</b> y{" "}
-              <b>rutinas discretas</b> que mejoran la casa sin alterar su
-              estética.
-            </SheetLead>
+        {/* SHEET */}
+        <Sheet>
+          <SheetInner>
+            {/* VALUE — Reescrito limpio, profesional y responsive */}
+            <SheetSection>
+              <SheetKicker>Qué cambia</SheetKicker>
+              <SheetH2>Los motivos reales para automatizar</SheetH2>
+              <SheetLead>
+                No va de “domótica”. Va de <b>confort</b>, <b>protección</b> y{" "}
+                <b>rutinas discretas</b> que mejoran la casa sin alterar su
+                estética.
+              </SheetLead>
 
-            <ValueGrid ref={gridRef}>
-              <ValueCard>
-                <ValueIconWrap>
-                  <Sun />
-                </ValueIconWrap>
-                <ValueTitle>Control solar elegante</ValueTitle>
-                <ValueText>
-                  Reduce reflejos y calor sin oscurecer el espacio. Ajuste fino
-                  por orientación para mantener la luz agradable.
-                </ValueText>
-                <ValueMeta>
-                  <Check size={16} /> Reglas por horas y estación
-                </ValueMeta>
-              </ValueCard>
+              <ValueGrid ref={gridRef}>
+                <ValueCard>
+                  <ValueIconWrap>
+                    <Sun />
+                  </ValueIconWrap>
+                  <ValueTitle>Control solar elegante</ValueTitle>
+                  <ValueText>
+                    Reduce reflejos y calor sin oscurecer el espacio. Ajuste
+                    fino por orientación para mantener la luz agradable.
+                  </ValueText>
+                  <ValueMeta>
+                    <Check size={16} /> Reglas por horas y estación
+                  </ValueMeta>
+                </ValueCard>
 
-              <ValueCard>
-                <ValueIconWrap>
-                  <Wind />
-                </ValueIconWrap>
-                <ValueTitle>Protección del toldo</ValueTitle>
-                <ValueText>
-                  Con viento, el sistema retrae antes de que sufra. Tranquilidad
-                  real: no depende de que estés pendiente.
-                </ValueText>
-                <ValueMeta>
-                  <Check size={16} /> Sensibilidad calibrada a tu zona
-                </ValueMeta>
-              </ValueCard>
+                <ValueCard>
+                  <ValueIconWrap>
+                    <Wind />
+                  </ValueIconWrap>
+                  <ValueTitle>Protección del toldo</ValueTitle>
+                  <ValueText>
+                    Con viento, el sistema retrae antes de que sufra.
+                    Tranquilidad real: no depende de que estés pendiente.
+                  </ValueText>
+                  <ValueMeta>
+                    <Check size={16} /> Sensibilidad calibrada a tu zona
+                  </ValueMeta>
+                </ValueCard>
 
-              <ValueCard>
-                <ValueIconWrap>
-                  <Shield />
-                </ValueIconWrap>
-                <ValueTitle>Privacidad automática</ValueTitle>
-                <ValueText>
-                  Cierres nocturnos y escenas por rutina. Más intimidad sin
-                  “estar tocando mandos”.
-                </ValueText>
-                <ValueMeta>
-                  <Check size={16} /> Escenas entregadas funcionando
-                </ValueMeta>
-              </ValueCard>
+                <ValueCard>
+                  <ValueIconWrap>
+                    <Shield />
+                  </ValueIconWrap>
+                  <ValueTitle>Privacidad automática</ValueTitle>
+                  <ValueText>
+                    Cierres nocturnos y escenas por rutina. Más intimidad sin
+                    “estar tocando mandos”.
+                  </ValueText>
+                  <ValueMeta>
+                    <Check size={16} /> Escenas entregadas funcionando
+                  </ValueMeta>
+                </ValueCard>
 
-              <ValueCard>
-                <ValueIconWrap>
-                  <Sparkles />
-                </ValueIconWrap>
-                <ValueTitle>Escenas listas para vivir</ValueTitle>
-                <ValueText>
-                  Mañana, tarde, noche. Te lo dejamos configurado y probado para
-                  que simplemente funcione.
-                </ValueText>
-                <ValueMeta>
-                  <Check size={16} /> Puesta en marcha + explicación
-                </ValueMeta>
-              </ValueCard>
-            </ValueGrid>
-            <CarouselDots>
-              {[0, 1, 2, 3].map((i) => (
-                <Dot
-                  key={i}
-                  type="button"
-                  $active={i === activeIndex}
-                  onClick={() => {
-                    const el = gridRef.current;
-                    if (!el) return;
+                <ValueCard>
+                  <ValueIconWrap>
+                    <Sparkles />
+                  </ValueIconWrap>
+                  <ValueTitle>Escenas listas para vivir</ValueTitle>
+                  <ValueText>
+                    Mañana, tarde, noche. Te lo dejamos configurado y probado
+                    para que simplemente funcione.
+                  </ValueText>
+                  <ValueMeta>
+                    <Check size={16} /> Puesta en marcha + explicación
+                  </ValueMeta>
+                </ValueCard>
+              </ValueGrid>
+              <CarouselDots>
+                {[0, 1, 2, 3].map((i) => (
+                  <Dot
+                    key={i}
+                    type="button"
+                    $active={i === activeIndex}
+                    onClick={() => {
+                      const el = gridRef.current;
+                      if (!el) return;
 
-                    const card = el.querySelector(":scope > *");
-                    const cardWidth = card?.getBoundingClientRect().width || 1;
+                      const card = el.querySelector(":scope > *");
+                      const cardWidth =
+                        card?.getBoundingClientRect().width || 1;
 
-                    const styles = window.getComputedStyle(el);
-                    const gap =
-                      parseFloat(styles.columnGap || styles.gap || "0") || 0;
+                      const styles = window.getComputedStyle(el);
+                      const gap =
+                        parseFloat(styles.columnGap || styles.gap || "0") || 0;
 
-                    el.scrollTo({
-                      left: i * (cardWidth + gap),
-                      behavior: "smooth",
-                    });
-                  }}
-                />
-              ))}
-            </CarouselDots>
+                      el.scrollTo({
+                        left: i * (cardWidth + gap),
+                        behavior: "smooth",
+                      });
+                    }}
+                  />
+                ))}
+              </CarouselDots>
 
-            <ValueFooter>
-              <SerifNote>
-                “El mejor sistema es el que no se ve: solo se nota en cómo se
-                vive la casa.”
-              </SerifNote>
-            </ValueFooter>
-          </SheetSection>
-        </SheetInner>
-      </Sheet>
+              <ValueFooter>
+                <SerifNote>
+                  “El mejor sistema es el que no se ve: solo se nota en cómo se
+                  vive la casa.”
+                </SerifNote>
+              </ValueFooter>
+            </SheetSection>
+          </SheetInner>
+        </Sheet>
 
-      {/* PACKS */}
-      <SectionAlt id="packs">
-        <Container>
-          <SectionHeader>
-            <H2>Packs de Automatización</H2>
-            <Muted>
-              Precios orientativos “desde”. Ajustamos a medidas, tejidos y nivel
-              de automatización.
-            </Muted>
-          </SectionHeader>
+        {/* PACKS */}
+        <SectionAlt id="packs">
+          <Container>
+            <SectionHeader>
+              <H2>Packs de Automatización</H2>
+              <Muted>
+                Precios orientativos “desde”. Ajustamos a medidas, tejidos y
+                nivel de automatización.
+              </Muted>
+            </SectionHeader>
 
-          <PackGrid>
-            {packs.map((p) => {
-              const priceLabel = p.priceRange
-                ? `Desde ${formatEUR(p.priceRange[0])} · hasta ${formatEUR(
-                    p.priceRange[1]
-                  )}`
-                : `Desde ${formatEUR(p.priceFrom)}`;
+            <PackGrid>
+              {packs.map((p) => {
+                const priceLabel = p.priceRange
+                  ? `Desde ${formatEUR(p.priceRange[0])} · hasta ${formatEUR(
+                      p.priceRange[1]
+                    )}`
+                  : `Desde ${formatEUR(p.priceFrom)}`;
 
-              const waMessage = `Hola, me interesa el pack "${p.name}". ¿Podéis darme una propuesta para mi vivienda y una visita sin compromiso?`;
+                const waMessage = `Hola, me interesa el pack "${p.name}". ¿Podéis darme una propuesta para mi vivienda y una visita sin compromiso?`;
 
-              return (
-                <PackCard key={p.id} $tone={p.tone}>
-                  <PackHeader>
-                    <Badge tone={p.tone === "premium" ? "premium" : p.tone}>
-                      {p.highlight}
-                    </Badge>
-                    <PackTitle>{p.name}</PackTitle>
-                    <PackSubtitle>{p.subtitle}</PackSubtitle>
-                    <PackPrice>{priceLabel}</PackPrice>
-                  </PackHeader>
+                return (
+                  <PackCard key={p.id} $tone={p.tone}>
+                    <PackHeader>
+                      <Badge tone={p.tone === "premium" ? "premium" : p.tone}>
+                        {p.highlight}
+                      </Badge>
+                      <PackTitle>{p.name}</PackTitle>
+                      <PackSubtitle>{p.subtitle}</PackSubtitle>
+                      <PackPrice>{priceLabel}</PackPrice>
+                    </PackHeader>
 
-                  <PackList>
-                    {p.includes.map((item) => (
-                      <li key={item}>
-                        <CheckDot>
-                          <Check size={14} />
-                        </CheckDot>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </PackList>
+                    <PackList>
+                      {p.includes.map((item) => (
+                        <li key={item}>
+                          <CheckDot>
+                            <Check size={14} />
+                          </CheckDot>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </PackList>
 
-                  {p.bundle && <PackBundle>💡 {p.bundle}</PackBundle>}
-                  <PackNote>{p.notes}</PackNote>
+                    {p.bundle && <PackBundle>💡 {p.bundle}</PackBundle>}
+                    <PackNote>{p.notes}</PackNote>
 
-                  <PackCtas>
+                    {/* <PackCtas>
                     <BtnPrimary
                       as={WhatsAppLink}
                       phone={WA_PHONE}
@@ -391,20 +468,129 @@ export default function Auto() {
                       Pedir propuesta
                     </BtnPrimary>
                     <BtnGhost href="#faq">Dudas</BtnGhost>
-                  </PackCtas>
-                </PackCard>
-              );
-            })}
-          </PackGrid>
-        </Container>
-      </SectionAlt>
+                  </PackCtas> */}
+                  </PackCard>
+                );
+              })}
+            </PackGrid>
+          </Container>
+        </SectionAlt>
+
+        {/* Nuestro proceso */}
+        <ProcessSection data-reveal>
+          <ProcessInner>
+            <ProcessLeft data-reveal>
+              <ProcessKicker>Nuestro proceso</ProcessKicker>
+
+              <ProcessTitle>
+                Diseñamos contigo.
+                <br />
+                En tu casa o en nuestra tienda.
+              </ProcessTitle>
+
+              <ProcessLead>
+                Escuchamos, medimos y proponemos con criterio.
+                <br />
+                <strong>La visita y asesoramiento son gratuitos.</strong>
+              </ProcessLead>
+            </ProcessLeft>
+
+            <ProcessSteps>
+              <ProcessItem data-reveal style={{ "--d": "250ms" }}>
+                <ProcessNumber>01</ProcessNumber>
+                <ProcessContent>
+                  <h4>Visitamos y analizamos</h4>
+                  <p>
+                    Medimos, estudiamos orientación y uso real. Sin prisas. Sin
+                    compromiso.
+                  </p>
+                </ProcessContent>
+              </ProcessItem>
+
+              <ProcessItem data-reveal style={{ "--d": "500ms" }}>
+                <ProcessNumber>02</ProcessNumber>
+                <ProcessContent>
+                  <h4>Propuesta clara</h4>
+                  <p>
+                    Opciones con rango realista y acabados que respetan tu
+                    estética.
+                  </p>
+                </ProcessContent>
+              </ProcessItem>
+
+              <ProcessItem data-reveal style={{ "--d": "750ms" }}>
+                <ProcessNumber>03</ProcessNumber>
+                <ProcessContent>
+                  <h4>Instalación cuidada</h4>
+                  <p>Montaje limpio, preciso y escenas configuradas contigo.</p>
+                </ProcessContent>
+              </ProcessItem>
+            </ProcessSteps>
+          </ProcessInner>
+        </ProcessSection>
+
+        {/* CTA */}
+        <AfterPacksCTA id="cta">
+          <AfterCTAInner>
+            <AfterCTALeft>
+              <AfterKicker>Estamos aquí para ayudarte</AfterKicker>
+              <AfterTitle>¿Lo vemos en tu casa sin compromiso?</AfterTitle>
+              <AfterText>
+                Medimos, proponemos y te damos un rango claro. Te recomendamos
+                lo que tiene sentido según orientación, uso y estética.
+              </AfterText>
+
+              <AfterProof>
+                <Check size={16} />
+                Visita + propuesta sin coste · instalación profesional · escenas
+                configuradas
+              </AfterProof>
+            </AfterCTALeft>
+
+            <AfterCTARight>
+              <AfterButtons>
+                <AfterPrimary href="/contact">
+                  Pedir asesoramiento <ArrowRight size={16} />
+                </AfterPrimary>
+
+                <AfterSecondary
+                  as={WhatsAppLink}
+                  phone={WA_PHONE}
+                  message={`Hola, quiero una propuesta de automatización integral. ¿Podemos agendar una visita?`}
+                >
+                  WhatsApp
+                </AfterSecondary>
+              </AfterButtons>
+
+              <AfterMini>
+                Respuesta rápida en horario comercial · Castellón y Valencia
+              </AfterMini>
+            </AfterCTARight>
+          </AfterCTAInner>
+        </AfterPacksCTA>
+        {/* FAQ */}
+        <Section id="faq">
+          <Container>
+            <SectionHeader>
+              <H2F>Preguntas frecuentes</H2F>
+              <MutedF>Lo típico antes de decidir.</MutedF>
+            </SectionHeader>
+
+            <Faq>
+              {faqs.map((f, idx) => (
+                <FAQItem key={f.q} q={f.q} a={f.a} defaultOpen={idx === 0} />
+              ))}
+            </Faq>
+          </Container>
+        </Section>
+      </RevealStyles>
     </Page>
   );
 }
 
 const Page = styled.main`
   width: 100%;
-  background: #0b0c0f;
+  background: #ffffff;
   color: #f4f4f5;
 `;
 const Container = styled.div`
@@ -1091,4 +1277,404 @@ const PillBadge = styled.span`
         color: rgba(0,0,0,0.76);
         border: 1px solid rgba(229,0,126,0.18);
       `}
+`;
+
+// Proceso
+const RevealStyles = styled.div`
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 650ms ease, transform 650ms ease;
+    transition-delay: var(--d, 0ms);
+    will-change: opacity, transform;
+  }
+
+  [data-reveal].is-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+`;
+const ProcessSection = styled.section`
+  background: #ffffff;
+  padding: 80px 0 70px;
+`;
+
+const ProcessInner = styled.div`
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  display: grid;
+  gap: 60px;
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: start;
+  }
+`;
+
+const ProcessLeft = styled.div``;
+
+const ProcessKicker = styled.p`
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.45);
+  margin-bottom: 14px;
+`;
+
+const ProcessTitle = styled.h2`
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: #111;
+`;
+
+const ProcessLead = styled.p`
+  margin-top: 22px;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: rgba(0, 0, 0, 0.65);
+
+  strong {
+    display: block;
+    margin-top: 8px;
+    color: ${({ theme }) => theme.colors.primary};
+    font-weight: 800;
+  }
+`;
+
+const ProcessSteps = styled.div`
+  display: grid;
+  gap: 40px;
+  position: relative;
+`;
+
+const ProcessItem = styled.div`
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 20px;
+  align-items: start;
+  position: relative;
+
+  &:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 30px;
+    top: 50px;
+    bottom: -40px;
+    width: 1px;
+    background: rgba(0, 0, 0, 0.08);
+  }
+`;
+
+const ProcessNumber = styled.div`
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.35);
+`;
+
+const ProcessContent = styled.div`
+  h4 {
+    margin: 0 0 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111;
+  }
+
+  p {
+    margin: 0;
+    line-height: 1.7;
+    color: rgba(0, 0, 0, 0.6);
+  }
+`;
+// CTA
+const AfterPacksCTA = styled.section`
+  margin-top: 32px;
+  position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+
+  /* Base image */
+  background-image: url(${welcome});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Layer system */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    /* Dark gradient for text readability */
+    background: linear-gradient(
+      90deg,
+      rgba(11, 12, 15, 0.88) 0%,
+      rgba(11, 12, 15, 0.75) 35%,
+      rgba(11, 12, 15, 0.45) 60%,
+      rgba(11, 12, 15, 0.25) 100%
+    );
+
+    z-index: 0;
+  }
+
+  /* Brand glow accent */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        800px 420px at 15% 10%,
+        rgba(229, 0, 126, 0.18),
+        transparent 55%
+      ),
+      radial-gradient(
+        800px 420px at 80% 40%,
+        rgba(196, 151, 98, 0.16),
+        transparent 60%
+      );
+    z-index: 0;
+  }
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.45);
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+`;
+
+const AfterCTAInner = styled.div`
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+
+  @media (min-width: 900px) {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+    padding: 22px;
+  }
+`;
+
+const AfterCTALeft = styled.div``;
+
+const AfterKicker = styled.p`
+  margin: 0 0 8px 0;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: rgba(244, 244, 245, 0.72);
+`;
+
+const AfterTitle = styled.h3`
+  margin: 0;
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  letter-spacing: -0.02em;
+  color: rgba(244, 244, 245, 0.98);
+`;
+
+const AfterText = styled.p`
+  margin: 8px 0 0;
+  line-height: 1.7;
+  color: rgba(244, 244, 245, 0.74);
+  max-width: 62ch;
+`;
+
+const AfterProof = styled.div`
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(244, 244, 245, 0.88);
+  font-weight: 750;
+
+  svg {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const AfterCTARight = styled.div`
+  display: grid;
+  gap: 10px;
+
+  @media (min-width: 900px) {
+    justify-items: end;
+    text-align: right;
+  }
+`;
+
+const AfterButtons = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  @media (min-width: 900px) {
+    justify-content: flex-end;
+  }
+`;
+
+const AfterPrimary = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 12px 14px;
+  border-radius: 14px;
+
+  background: ${({ theme }) => theme.colors.primary};
+  color: #0b0c0f;
+  font-weight: 900;
+  text-decoration: none;
+
+  transition: transform 0.15s ease, opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+`;
+
+const AfterSecondary = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 14px;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(244, 244, 245, 0.95);
+  font-weight: 850;
+  text-decoration: none;
+
+  transition: transform 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.1);
+  }
+`;
+
+const AfterMini = styled.div`
+  color: rgba(244, 244, 245, 0.62);
+  font-size: 0.92rem;
+`;
+
+// FAQ
+const Faq = styled.div`
+  display: grid;
+  gap: 10px;
+`;
+
+const FaqItem = styled.div`
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
+
+  ${({ $open }) =>
+    $open
+      ? `
+    `
+      : `
+    `}
+`;
+
+const FaqQ = styled.button`
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+`;
+
+const FaqIcon = styled.span`
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+`;
+
+const FaqA = styled.div`
+  max-height: ${({ $open }) => ($open ? "260px" : "0px")};
+  overflow: hidden;
+  transition: max-height 0.22s ease;
+`;
+
+const FaqAInner = styled.div`
+  padding: 0 14px 14px;
+  color: rgba(0, 0, 0, 0.66);
+  font-size: 13px;
+  line-height: 1.55;
+`;
+
+/* ✅ Acordeón: max-height por prop $open */
+const FaqItemWithOpen = styled(FaqItem)``; // (no se usa; evitamos duplicar)
+
+FaqItem.defaultProps = { "data-open": "false" };
+
+const StickyCta = styled.div`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  z-index: 50;
+  padding: 0 14px;
+  display: grid;
+  place-items: center;
+
+  @media (min-width: 920px) {
+    display: none;
+  }
+`;
+
+const StickyBtn = styled(ButtonBase)`
+  width: min(520px, 100%);
+  padding: 14px 16px;
+  border-radius: 16px;
+
+  background: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.light};
+  box-shadow: 0 18px 55px rgba(229, 0, 126, 0.25);
+`;
+
+const H2F = styled.h2`
+  margin: 0 0 8px;
+  font-size: clamp(22px, 3.3vw, 30px);
+  letter-spacing: -0.02em;
+  color: ${({ theme }) => theme.colors.dark};
+`;
+
+const MutedF = styled.p`
+  margin: 0;
+  color: rgba(0, 0, 0, 0.62);
 `;
