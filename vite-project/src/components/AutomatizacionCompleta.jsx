@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import styled, { keyframes } from "styled-components";
 import { CONTACT } from "../config/contact";
 import useRevealOnScroll from "../hooks/useReveal";
-
+import StickyCtaButton from "../mobile/StickyCtaButton";
 /* =========================
    ASSETS
 ========================= */
@@ -458,17 +458,6 @@ export default function Auto() {
 
                     {p.bundle && <PackBundle>💡 {p.bundle}</PackBundle>}
                     <PackNote>{p.notes}</PackNote>
-
-                    {/* <PackCtas>
-                    <BtnPrimary
-                      as={WhatsAppLink}
-                      phone={WA_PHONE}
-                      message={waMessage}
-                    >
-                      Pedir propuesta
-                    </BtnPrimary>
-                    <BtnGhost href="#faq">Dudas</BtnGhost>
-                  </PackCtas> */}
                   </PackCard>
                 );
               })}
@@ -584,6 +573,7 @@ export default function Auto() {
           </Container>
         </Section>
       </RevealStyles>
+      <StickyCtaButton message="Hola, quiero una propuesta de automatización integral. ¿Podemos agendar una visita?" />
     </Page>
   );
 }
@@ -1453,6 +1443,9 @@ const AfterPacksCTA = styled.section`
     position: relative;
     z-index: 1;
   }
+  @media (max-width: 899px) {
+    background-position: center 100%;
+  }
 `;
 
 const AfterCTAInner = styled.div`
@@ -1500,14 +1493,17 @@ const AfterProof = styled.div`
   border-radius: 14px;
   rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
   color: rgba(244, 244, 245, 0.88);
   font-weight: 750;
 
   svg {
     color: ${({ theme }) => theme.colors.primary};
   }
+  /* Mobile: don't show AfterProof */
+  @media (max-width: 899px) {
+    display: none;
 `;
-
 const AfterCTARight = styled.div`
   display: grid;
   gap: 10px;
@@ -1523,11 +1519,13 @@ const AfterButtons = styled.div`
   flex-wrap: wrap;
   gap: 10px;
 
-  @media (min-width: 900px) {
-    justify-content: flex-end;
-  }
-`;
 
+  @media (max-width: 899px) {
+    display: none;
+`;
+// @media (min-width: 900px) {
+//   justify-content: flex-end;
+// }
 const AfterPrimary = styled.a`
   display: inline-flex;
   align-items: center;
@@ -1575,6 +1573,8 @@ const AfterSecondary = styled.a`
 const AfterMini = styled.div`
   color: rgba(244, 244, 245, 0.62);
   font-size: 0.92rem;
+  @media (max-width: 899px) {
+    display: none;
 `;
 
 // FAQ
@@ -1678,3 +1678,4 @@ const MutedF = styled.p`
   margin: 0;
   color: rgba(0, 0, 0, 0.62);
 `;
+const Lead = styled.h2``;
