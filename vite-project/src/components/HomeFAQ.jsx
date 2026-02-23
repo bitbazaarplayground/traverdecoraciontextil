@@ -1,10 +1,11 @@
 // src/components/HomeFAQ.jsx
-import React, { useId, useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { CONTACT } from "../config/contact";
 import { homeFaq } from "../content/homeFaq";
 import { trackEvent } from "../lib/analytics";
+import StickyCtaButton from "../mobile/StickyCtaButton";
 
 export default function HomeFAQ({ onOpenAsesoramiento }) {
   const baseId = useId();
@@ -108,12 +109,14 @@ export default function HomeFAQ({ onOpenAsesoramiento }) {
               </AsideActions>
 
               <AsideNote>
-                Sin obligación · Sin coste · Respuesta rápida
+                {" "}
+                Sin obligación · Sin coste · Respuesta rápida{" "}
               </AsideNote>
             </AsideCard>
           </Aside>
         </Grid>
       </Inner>
+      <StickyCtaButton message="Hola, me gustaría recibir más información sobre vuestros servicios." />
     </Section>
   );
 }
@@ -330,6 +333,10 @@ const AsideActions = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+
+  @media (max-width: 899px) {
+    display: none;
+  }
 `;
 
 const PrimaryBtn = styled(Link)`
@@ -372,8 +379,34 @@ const SecondaryBtn = styled.a`
   }
 `;
 
+const shimmer = keyframes`
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+`;
+
 const AsideNote = styled.p`
   margin: 0.85rem 0 0;
-  color: rgba(15, 23, 42, 0.62);
   font-size: 0.95rem;
+  color: rgba(15, 23, 42, 0.62);
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(229, 0, 126, 0.18),
+      transparent
+    );
+
+    animation: ${shimmer} 4s linear infinite;
+  }
 `;
