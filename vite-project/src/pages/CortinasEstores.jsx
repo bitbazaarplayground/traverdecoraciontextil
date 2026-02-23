@@ -6,6 +6,9 @@ import ContactCTA from "../components/ContactCTA";
 import SlickCarouselLazy from "../components/SlickCarouselLazy";
 import { CONTACT } from "../config/contact";
 
+import cortinaM from "../assets/CortinasEstores/cortinaM.png";
+import customerM from "../assets/CortinasEstores/customerM.png";
+import estorM from "../assets/CortinasEstores/estorM.png";
 // Assets
 import heroImg from "../assets/CortinasEstores/carousel/cortinas1.webp";
 
@@ -41,31 +44,62 @@ const Page = styled.main`
 
 const Hero = styled.section`
   position: relative;
-  min-height: 45vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin-top: 3.5rem;
-  padding: 5rem 2rem;
+
+  /* Control hero size across screens */
+  height: clamp(360px, 45vh, 560px);
+
+  display: grid;
+  place-items: center;
+  padding: 0 2rem;
   text-align: center;
-  color: white;
+  color: #fff;
 
-  background-image: url(${heroImg});
-  background-size: cover;
-  background-position: center;
+  overflow: hidden;
 
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.35));
+  @media (max-width: 768px) {
+    height: clamp(420px, 60vh, 640px);
+    padding: 0 1.5rem;
+  }
+`;
+const HeroMedia = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+`;
+
+const HeroImg = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+
+  /* This is the important part */
+  object-fit: cover;
+  object-position: center 45%;
+
+  /* “Zoom out” slightly without changing layout */
+  transform: scale(1.04);
+
+  /* Smooth on resize */
+  will-change: transform;
+
+  @media (min-width: 1400px) {
+    object-position: center 50%;
+    transform: scale(1.02);
   }
 
   @media (max-width: 768px) {
-    min-height: 70vh;
+    object-position: center;
+    transform: scale(1.03);
   }
 `;
 
+const HeroOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.35));
+`;
 const HeroInner = styled.div`
   position: relative;
   z-index: 1;
@@ -105,60 +139,64 @@ const HeroText = styled.p`
 ========================= */
 
 const Features = styled.section`
-  background: #fff;
+  background: #f6f6f7;
   border-top: 1px solid rgba(17, 17, 17, 0.08);
   border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+
+  /* Hide this strip on very large screens */
+  @media (min-width: 1400px) {
+    display: none;
+  }
 `;
 
 const FeaturesGrid = styled.div`
   max-width: 1100px;
   margin: 0 auto;
-  padding: 1.7rem 1.25rem;
+  padding: 18px 18px;
 
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 
   @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-    padding: 1.25rem 1.1rem;
+    padding: 12px 12px;
+    gap: 8px;
   }
 `;
 
 const Feature = styled.article`
   text-align: center;
-  padding: 1.1rem 0.9rem;
+  padding: 16px 10px;
 
-  /* vertical dividers */
-  border-right: 1px solid rgba(17, 17, 17, 0.08);
-
-  &:last-child {
-    border-right: none;
+  /* Vertical dividers always (desktop + mobile) */
+  &:not(:first-child) {
+    border-left: 1px solid rgba(17, 17, 17, 0.12);
   }
 
   @media (max-width: 900px) {
-    border-right: none;
-    border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+    padding: 14px 8px;
 
-    &:last-child {
-      border-bottom: none;
+    /* dividers slightly softer on mobile */
+    &:not(:first-child) {
+      border-left: 1px solid rgba(17, 17, 17, 0.1);
     }
   }
 `;
 
 const FeatureIcon = styled.div`
-  width: 58px;
-  height: 58px;
-  margin: 0 auto 0.65rem;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 10px;
 
-  display: grid;
-  place-items: center;
-
-  color: #111; /* icon stroke */
-
-  svg {
-    width: 42px;
-    height: 42px;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     display: block;
+  }
+
+  @media (max-width: 900px) {
+    width: 46px;
+    height: 46px;
   }
 `;
 
@@ -167,13 +205,22 @@ const FeatureTitle = styled.h3`
   font-size: 0.95rem;
   font-weight: 700;
   color: rgba(17, 17, 17, 0.92);
+
+  @media (max-width: 900px) {
+    font-size: 0.82rem;
+    line-height: 1.15;
+  }
 `;
 
 const FeatureText = styled.p`
-  margin: 0.35rem 0 0;
-  font-size: 0.85rem;
-  line-height: 1.45;
+  margin: 6px 0 0;
+  font-size: 0.83rem;
+  line-height: 1.35;
   color: rgba(17, 17, 17, 0.62);
+
+  @media (max-width: 900px) {
+    display: none;
+  }
 `;
 
 /* =========================
@@ -574,6 +621,11 @@ export default function CortinasEstoresPremium() {
 
       {/* HERO */}
       <Hero>
+        <HeroMedia aria-hidden="true">
+          <HeroImg src={heroImg} alt="" />
+          <HeroOverlay />
+        </HeroMedia>
+
         <HeroInner>
           <HeroEyebrow>Decoración textil a medida</HeroEyebrow>
           <HeroTitle>
@@ -589,21 +641,9 @@ export default function CortinasEstoresPremium() {
         <FeaturesGrid>
           <Feature>
             <FeatureIcon aria-hidden="true">
-              <svg viewBox="0 0 64 64">
-                <path
-                  d="M10 10h44v44H10z"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M20 10v44M32 10v44M44 10v44"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-              </svg>
+              <img src={cortinaM} alt="" />
             </FeatureIcon>
+
             <FeatureTitle>Cortinas a Medida</FeatureTitle>
             <FeatureText>
               Diseños personalizados y tejidos de calidad
@@ -612,20 +652,7 @@ export default function CortinasEstoresPremium() {
 
           <Feature>
             <FeatureIcon aria-hidden="true">
-              <svg viewBox="0 0 64 64">
-                <path
-                  d="M12 16h40M12 26h40M12 36h40M12 46h40"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M20 16v30"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-              </svg>
+              <img src={estorM} alt="" />
             </FeatureIcon>
             <FeatureTitle>Estores Motorizados</FeatureTitle>
             <FeatureText>Estores eléctricos y automatizados</FeatureText>
@@ -633,20 +660,7 @@ export default function CortinasEstoresPremium() {
 
           <Feature>
             <FeatureIcon aria-hidden="true">
-              <svg viewBox="0 0 64 64">
-                <path
-                  d="M32 34c7 0 12-5 12-12S39 10 32 10 20 15 20 22s5 12 12 12z"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M14 54c3-9 11-14 18-14s15 5 18 14"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-              </svg>
+              <img src={customerM} alt="" />
             </FeatureIcon>
             <FeatureTitle>Asesoramiento Profesional</FeatureTitle>
             <FeatureText>Expertos en decoración de interiores</FeatureText>
