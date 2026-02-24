@@ -2,12 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Host = styled.div`
-  /* keeps layout stable while we lazy-load the real carousel */
-  min-height: 260px;
-
-  @media (min-width: 769px) {
-    min-height: 420px;
-  }
+  width: 100%;
 `;
 
 const CarouselImage = styled.div`

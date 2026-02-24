@@ -2,13 +2,13 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import styled from "styled-components";
 
-import ContactCTA from "../components/ContactCTA";
-import SlickCarouselLazy from "../components/SlickCarouselLazy";
-import { CONTACT } from "../config/contact";
-
 import cortinaM from "../assets/CortinasEstores/cortinaM.png";
 import customerM from "../assets/CortinasEstores/customerM.png";
 import estorM from "../assets/CortinasEstores/estorM.png";
+import ContactCTA from "../components/ContactCTA";
+import SlickCarouselLazy from "../components/SlickCarouselLazy";
+import { CONTACT } from "../config/contact";
+import StickyCtaButton from "../mobile/StickyCtaButton";
 // Assets
 import heroImg from "../assets/CortinasEstores/carousel/cortinas1.webp";
 
@@ -58,7 +58,7 @@ const Hero = styled.section`
   overflow: hidden;
 
   @media (max-width: 768px) {
-    height: clamp(420px, 60vh, 640px);
+    height: clamp(320px, 48vh, 480px);
     padding: 0 1.5rem;
   }
 `;
@@ -73,32 +73,22 @@ const HeroImg = styled.img`
   inset: 0;
   width: 100%;
   height: 100%;
-
-  /* This is the important part */
   object-fit: cover;
-  object-position: center 45%;
-
-  /* “Zoom out” slightly without changing layout */
-  transform: scale(1.04);
-
-  /* Smooth on resize */
+  object-position: center 85%;
+  transform: translateZ(0) scale(1.04);
+  backface-visibility: hidden;
   will-change: transform;
 
-  @media (min-width: 1400px) {
-    object-position: center 50%;
-    transform: scale(1.02);
-  }
-
   @media (max-width: 768px) {
-    object-position: center;
-    transform: scale(1.03);
+    object-position: center 75%;
+    transform: scale(1.01);
   }
 `;
 
 const HeroOverlay = styled.div`
   position: absolute;
   inset: 0;
-  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.35));
+  background: linear-gradient(rgba(10, 0, 0, 0.35), rgba(0, 0, 0, 0.25));
 `;
 const HeroInner = styled.div`
   position: relative;
@@ -150,15 +140,14 @@ const Features = styled.section`
 `;
 
 const FeaturesGrid = styled.div`
-  max-width: 1100px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 18px 18px;
+  padding: clamp(10px, 2vw, 18px);
 
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 
   @media (max-width: 900px) {
-    padding: 12px 12px;
     gap: 8px;
   }
 `;
@@ -192,6 +181,7 @@ const FeatureIcon = styled.div`
     height: 100%;
     object-fit: contain;
     display: block;
+    filter: contrast(1.08);
   }
 
   @media (max-width: 900px) {
@@ -228,8 +218,8 @@ const FeatureText = styled.p`
 ========================= */
 
 const CarouselSection = styled.section`
-  padding: 4rem 2rem;
-
+  padding: 4rem 0rem;
+  margin-top: -2rem;
   /* Slick dots – match homepage (primary color) */
   .slick-dots {
     position: relative;
@@ -817,6 +807,7 @@ export default function CortinasEstoresPremium() {
           </FAQGrid>
         </FAQInner>
       </FAQSection>
+      <StickyCtaButton message="Hola, me gustaría más información sobre cortinas y estores. Gracias." />
     </Page>
   );
 }

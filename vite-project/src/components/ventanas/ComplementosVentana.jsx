@@ -4,13 +4,10 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
+import domoticaControl from "../../assets/Automatizacion/heroB.webp";
 import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanel.webp";
 import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
 import venecianasImg from "../../assets/venecianas/oficina2.webp";
-
-// If you don't have a real "barras/rieles" image yet, keep this placeholder for now.
-const barrasRielesPlaceholder =
-  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=2000&q=70";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 14 },
@@ -48,10 +45,10 @@ export default function ComplementosVentana({ id = "sistemas" }) {
       to: "/venecianas",
     },
     {
-      title: "Barras · Rieles",
-      desc: "Acabados premium que elevan el conjunto.",
-      img: barrasRielesPlaceholder,
-      to: "/barras-rieles",
+      title: "Automatización",
+      desc: "Sistemas motorizados y control inteligente del hogar.",
+      img: domoticaControl,
+      to: "/automatizacion",
     },
     {
       title: "Mosquiteras",
