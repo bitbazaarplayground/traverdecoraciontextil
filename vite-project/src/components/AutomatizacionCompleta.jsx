@@ -271,7 +271,7 @@ export default function Auto() {
           <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
         </Helmet>
 
-        {/* FUTURISTIC HERO — NO TOCADO */}
+        {/* HERO*/}
         <Hero>
           <HeroBg>
             <HeroImg src={domoticaControl} alt="" aria-hidden="true" />
@@ -680,7 +680,7 @@ const HeroOverlay = styled.div`
       rgba(0, 0, 0, 0.15),
       rgba(0, 0, 0, 0.74)
     ),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.15), rgba(11, 12, 15, 0.92));
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.15), rgba(11, 12, 15, 0.42));
 `;
 
 const scan = keyframes`

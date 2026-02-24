@@ -6,9 +6,8 @@ import "./App.css";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
-import Auto2 from "./pages/Automatizacion2";
-import Completa from "./pages/completa";
 import HomePage from "./pages/HomePage";
+import Auto3 from "./pages/opcionB";
 
 // ✅ Lazy load modal (only when opened)
 const AsesoramientoModal = lazy(() =>
@@ -104,10 +103,7 @@ export default function App() {
             path="/automatizacion/individual"
             element={<AutomatizacionIndividual />}
           />
-
-          <Route path="/auto2" element={<Auto2 />} />
-
-          <Route path="/completa" element={<Completa />} />
+          <Route path="/auto3" element={<Auto3 />} />
           {/* CONTACTO */}
           <Route path="/contact" element={<ContactPage />} />
 
