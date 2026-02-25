@@ -33,24 +33,6 @@ const Badge = ({ tone = "primary", children }) => {
   return <PillBadge $tone={tone}>{children}</PillBadge>;
 };
 
-// const FAQItem = ({ q, a, defaultOpen = false }) => {
-//   const [open, setOpen] = useState(defaultOpen);
-//   return (
-//     <FaqItem $open={open}>
-//       <FaqQ
-//         type="button"
-//         onClick={() => setOpen((v) => !v)}
-//         aria-expanded={open}
-//       >
-//         <span>{q}</span>
-//         <FaqIcon aria-hidden="true">{open ? "–" : "+"}</FaqIcon>
-//       </FaqQ>
-//       <FaqA role="region" $open={open}>
-//         <FaqAInner>{a}</FaqAInner>
-//       </FaqA>
-//     </FaqItem>
-//   );
-// };
 /* =========================
    COMPONENT
 ========================= */
@@ -592,7 +574,7 @@ export default function Auto() {
 const Page = styled.main`
   width: 100%;
   background: #ffffff;
-  color: #f4f4f5;
+  color: #111;
 `;
 const Container = styled.div`
   width: min(${({ theme }) => theme.layout.maxWidth}, 100%);

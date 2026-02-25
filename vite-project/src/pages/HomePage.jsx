@@ -6,7 +6,6 @@ import Hero from "../components/Hero";
 import LazyOnVisible from "../components/LazyOnVisible";
 
 import { CONTACT } from "../config/contact";
-import { homeFaq } from "../content/homeFaq";
 
 // Lazy sections (below the hero)
 const ServicesSection = lazy(() => import("../components/ServicesSection"));
@@ -102,23 +101,7 @@ export default function HomePage({ onOpenAsesoramiento }) {
     about: { "@id": `${canonical}#business` },
   };
 
-  const faqPageJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "@id": `${canonical}#faq`,
-    mainEntity: homeFaq.map(({ q, a }) => ({
-      "@type": "Question",
-      name: q,
-      acceptedAnswer: { "@type": "Answer", text: a },
-    })),
-  };
-
-  const jsonLd = [
-    localBusinessJsonLd,
-    webSiteJsonLd,
-    webPageJsonLd,
-    faqPageJsonLd,
-  ];
+  const jsonLd = [localBusinessJsonLd, webSiteJsonLd, webPageJsonLd];
 
   // Warm up the first below-the-fold chunks after initial paint (idle if possible)
   useEffect(() => {

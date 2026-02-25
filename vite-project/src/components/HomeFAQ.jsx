@@ -1,21 +1,54 @@
 // src/components/HomeFAQ.jsx
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo } from "react";
 import { Link } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { CONTACT } from "../config/contact";
-import { homeFaq } from "../content/homeFaq";
 import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
+import FaqAccordion from "./faq/FaqAccordion";
+
+// ✅ keep data OUTSIDE the component
+const homeFaq = [
+  {
+    q: "¿El asesoramiento tiene algún coste u obligación?",
+    a: "No. El asesoramiento es totalmente gratuito y sin compromiso. Analizamos tu espacio, te orientamos y te proponemos la mejor solución según tus necesidades. Tú decides si seguimos adelante.",
+    aText:
+      "No. El asesoramiento es totalmente gratuito y sin compromiso. Analizamos tu espacio, te orientamos y te proponemos la mejor solución según tus necesidades. Tú decides si seguimos adelante.",
+  },
+  {
+    q: "¿Incluís la medición y la instalación?",
+    a: "Sí. Nos encargamos del proceso completo: visita técnica, medición precisa, confección y una instalación profesional y limpia. Así garantizamos que el resultado final sea coherente y funcione correctamente.",
+    aText:
+      "Sí. Nos encargamos del proceso completo: visita técnica, medición precisa, confección y una instalación profesional y limpia. Así garantizamos que el resultado final sea coherente y funcione correctamente.",
+  },
+  {
+    q: "¿Trabajáis solo en Castellón o también en Valencia?",
+    a: "Trabajamos principalmente en Castellón y alrededores. También realizamos proyectos en Valencia según el tipo de servicio y el alcance del proyecto. Consúltanos sin compromiso.",
+    aText:
+      "Trabajamos principalmente en Castellón y alrededores. También realizamos proyectos en Valencia según el tipo de servicio y el alcance del proyecto. Consúltanos sin compromiso.",
+  },
+  {
+    q: "¿Cuánto tiempo tarda un proyecto desde la medición?",
+    a: "Depende del producto y del tipo de confección, pero normalmente el plazo oscila entre 2 y 5 semanas desde la medición hasta la instalación. Siempre te indicamos tiempos realistas desde el inicio.",
+    aText:
+      "Depende del producto y del tipo de confección, pero normalmente el plazo oscila entre 2 y 5 semanas desde la medición hasta la instalación. Siempre te indicamos tiempos realistas desde el inicio.",
+  },
+  {
+    q: "¿Puedo automatizar mis cortinas o toldos más adelante?",
+    a: "Sí. Muchas soluciones permiten empezar de forma manual y añadir automatización más adelante. Te asesoramos para que el sistema sea compatible y escalable desde el primer momento.",
+    aText:
+      "Sí. Muchas soluciones permiten empezar de forma manual y añadir automatización más adelante. Te asesoramos para que el sistema sea compatible y escalable desde el primer momento.",
+  },
+];
 
 export default function HomeFAQ({ onOpenAsesoramiento }) {
   const baseId = useId();
-  const [openIndex, setOpenIndex] = useState(-1);
-
+  const baseUrl = (
+    import.meta.env.VITE_SITE_URL || window.location.origin
+  ).replace(/\/$/, "");
+  const canonical = `${baseUrl}/`;
+  // optional memo (not required, but fine)
   const items = useMemo(() => homeFaq, []);
-
-  const toggle = (idx) => {
-    setOpenIndex((current) => (current === idx ? -1 : idx));
-  };
 
   return (
     <Section aria-labelledby={`${baseId}-title`}>
@@ -32,40 +65,12 @@ export default function HomeFAQ({ onOpenAsesoramiento }) {
         </Top>
 
         <Grid>
-          <Accordion role="list">
-            {items.map((item, idx) => {
-              const isOpen = openIndex === idx;
-              const buttonId = `${baseId}-q-${idx}`;
-              const panelId = `${baseId}-a-${idx}`;
-
-              return (
-                <Item key={buttonId} role="listitem" $open={isOpen}>
-                  <QuestionBtn
-                    id={buttonId}
-                    type="button"
-                    aria-expanded={isOpen}
-                    aria-controls={panelId}
-                    onClick={() => toggle(idx)}
-                  >
-                    <QuestionText>{item.q}</QuestionText>
-                    <Chevron aria-hidden="true" $open={isOpen}>
-                      +
-                    </Chevron>
-                  </QuestionBtn>
-
-                  <Answer
-                    id={panelId}
-                    role="region"
-                    aria-labelledby={buttonId}
-                    aria-hidden={!isOpen}
-                    $open={isOpen}
-                  >
-                    <AnswerInner>{item.a}</AnswerInner>
-                  </Answer>
-                </Item>
-              );
-            })}
-          </Accordion>
+          <FaqAccordion
+            items={items}
+            withSchema={true}
+            canonicalUrl={canonical}
+            defaultOpenIndex={-1}
+          />
 
           <Aside>
             <AsideCard>
@@ -109,13 +114,13 @@ export default function HomeFAQ({ onOpenAsesoramiento }) {
               </AsideActions>
 
               <AsideNote>
-                {" "}
-                Sin obligación · Sin coste · Respuesta rápida{" "}
+                Sin obligación · Sin coste · Respuesta rápida
               </AsideNote>
             </AsideCard>
           </Aside>
         </Grid>
       </Inner>
+
       <StickyCtaButton message="Hola, me gustaría recibir más información sobre vuestros servicios." />
     </Section>
   );
