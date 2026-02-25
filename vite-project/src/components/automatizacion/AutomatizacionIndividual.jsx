@@ -2,7 +2,7 @@
 import { ArrowRight } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styled, { css, keyframes } from "styled-components";
 import { CONTACT } from "../../config/contact";
 import StickyCtaButton from "../../mobile/StickyCtaButton";
@@ -10,23 +10,12 @@ import StickyCtaButton from "../../mobile/StickyCtaButton";
 import persianasImg from "../../assets/Automatizacion/benefit1.webp";
 import cortinasImg from "../../assets/Automatizacion/domotica1.webp";
 import toldosImg from "../../assets/Automatizacion/toldoInd.webp";
+import AutomationFaq from "../../components/automatizacion/AutomationFaq";
 // import toldosImg from "../../assets/Automatizacion/smartHom2.webp";
 
 /* =========================
    MOTION (subtle, premium)
 ========================= */
-
-const floatIn = keyframes`
-  from { transform: translateY(14px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-`;
-
-const shimmer = keyframes`
-  0%   { transform: translateX(-120%); opacity: .0; }
-  35%  { opacity: .55; }
-  70%  { opacity: .18; }
-  100% { transform: translateX(120%); opacity: 0; }
-`;
 
 const reduceMotion = css`
   @media (prefers-reduced-motion: reduce) {
@@ -201,136 +190,124 @@ const HeroPDark = styled.p`
   color: rgba(244, 244, 245, 0.78);
 `;
 /* =========================
-   REASSURANCE STRIP (between Hero and Main)
+   REASSURANCE / PROCESS MINI
+   (matches Automatizacion.jsx system)
 ========================= */
 
-const Reassure = styled.section`
-  position: relative;
-  padding: 1.25rem 0 0.75rem;
+const ReassureSection = styled.section`
+  padding: clamp(1.6rem, 3.2vw, 2.4rem) 0 0;
 `;
 
-const ReassureWrap = styled.div`
-  width: min(1120px, calc(100% - 2.4rem));
+const ReassureInner = styled.div`
+  width: min(1120px, calc(100% - 3rem));
   margin: 0 auto;
-`;
 
-const ReassureCard = styled.div`
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  @media (max-width: 768px) {
+    width: min(1120px, calc(100% - 2rem));
+  }
 `;
 
 const ReassureTop = styled.div`
-  padding: 1.05rem 1.15rem 0.9rem;
-
-  display: grid;
-  gap: 0.55rem;
-
-  @media (min-width: 980px) {
-    grid-template-columns: 1.2fr 0.8fr;
-    align-items: center;
-  }
+  max-width: 860px;
+  margin-bottom: 1.35rem;
 `;
 
-const ReassureTitle = styled.h2`
-  margin: 0;
-  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
-  font-weight: 780;
-  letter-spacing: -0.02em;
-  color: rgba(0, 0, 0, 0.86);
-`;
-
-const ReassureP = styled.p`
-  margin: 0;
-  color: rgba(0, 0, 0, 0.64);
-  line-height: 1.6;
-  font-size: 0.98rem;
-  max-width: 70ch;
-`;
-
-const ReassureChips = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-
-  @media (min-width: 980px) {
-    justify-content: flex-end;
-  }
-`;
-
-const Chip = styled.span`
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
+/* --- reuse from Automatizacion.jsx --- */
+const Kicker = styled.p`
+  margin: 0 0 0.55rem 0;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  padding: 0.42rem 0.7rem;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.045);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  color: rgba(0, 0, 0, 0.72);
-`;
+  font-size: 0.82rem;
+  color: rgba(17, 17, 17, 0.55);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.55rem;
 
-const ReassureGrid = styled.div`
-  display: grid;
-  gap: 0.65rem;
-  padding: 0 1.15rem 1.05rem;
-
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(3, 1fr);
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0.1rem;
+    width: 48px;
+    height: 1px;
+    background: rgba(196, 151, 98, 0.65);
   }
 `;
 
-const MiniCard = styled.div`
-  position: relative;
-  border-radius: 18px;
-  padding: 0.95rem 0.95rem;
+/* REQUIRED TITLE (DO NOT EDIT) — same as Automatizacion.jsx */
+const Title = styled.h2`
+  margin: 0;
+  font-size: 2.15rem;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: rgba(17, 17, 17, 0.96);
 
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  @media (max-width: 768px) {
+    font-size: 1.7rem;
+  }
+`;
+
+const Lead = styled.p`
+  margin: 0.75rem 0 0;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.62);
+`;
+
+/* STEPS (kept) — same as Automatizacion.jsx */
+const Steps = styled.div`
+  margin-top: 1.7rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.1rem;
+
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Step = styled.div`
+  border-radius: 22px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: linear-gradient(
+    180deg,
+    rgba(252, 252, 255, 1),
+    rgba(219, 233, 244, 1)
+  );
+  padding: 1.35rem 1.35rem 1.25rem;
+  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.06);
+  transition: transform 180ms ease, box-shadow 180ms ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
-  }
-
-  /* subtle editorial “shine” */
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      420px 140px at 25% 10%,
-      rgba(229, 0, 126, 0.1),
-      transparent 62%
-    );
-    pointer-events: none;
-    opacity: 0.75;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
   }
 `;
 
-const MiniKicker = styled.div`
-  font-size: 0.72rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.55);
+const StepIndex = styled.div`
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: ${({ theme }) => theme.colors.primary};
+  opacity: 0.95;
 `;
 
-const MiniTitle = styled.div`
-  margin-top: 0.35rem;
-  font-weight: 800;
-  color: rgba(0, 0, 0, 0.86);
+const StepTitle = styled.h3`
+  margin: 0.7rem 0 0.55rem;
+  font-size: 1.15rem;
   letter-spacing: -0.01em;
+  color: rgba(15, 23, 42, 0.9);
 `;
 
-const MiniText = styled.div`
-  margin-top: 0.4rem;
-  color: rgba(0, 0, 0, 0.62);
-  line-height: 1.55;
-  font-size: 0.92rem;
+const StepText = styled.p`
+  margin: 0;
+  line-height: 1.75;
+  color: rgba(15, 23, 42, 0.68);
 `;
+
 /* =========================
    MAIN LAYOUT
 ========================= */
@@ -339,445 +316,218 @@ const Main = styled.main`
   padding: 1.2rem 0 4.2rem;
 `;
 
-const Section = styled.section`
-  scroll-margin-top: 92px;
-  padding: clamp(2.6rem, 4vw, 3.6rem) 0;
-`;
-
 const Wrap = styled.div`
   width: min(1120px, calc(100% - 2.4rem));
   margin: 0 auto;
 `;
 
-const Grid = styled.div`
+/* =========================
+   PACKS
+========================= */
+const PacksSection = styled.section`
+  padding: clamp(2.4rem, 4.2vw, 3.4rem) 0;
+`;
+
+const PacksHeader = styled.div`
+  margin-bottom: 14px;
   display: grid;
-  gap: 1.5rem;
-
-  @media (min-width: 980px) {
-    grid-template-columns: 1.03fr 0.97fr;
-    align-items: center;
-
-    ${(p) =>
-      p.$flip &&
-      css`
-        direction: rtl;
-        & > * {
-          direction: ltr;
-        }
-      `}
-  }
+  gap: 8px;
 `;
 
-/* =========================
-   MEDIA CARD
-========================= */
-
-const MediaCard = styled.div`
-  position: relative;
-  border-radius: 28px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.1);
-
-  transform: translateY(0);
-  transition: transform 260ms ease, box-shadow 260ms ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 34px 110px rgba(0, 0, 0, 0.12);
-  }
-
-  /* soft film overlay (editorial) */
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      900px 420px at 30% 20%,
-      rgba(255, 255, 255, 0.2),
-      transparent 60%
-    );
-    pointer-events: none;
-  }
-`;
-
-const Img = styled.img`
-  width: 100%;
-  height: 360px;
-  object-fit: cover;
-  display: block;
-
-  @media (max-width: 768px) {
-    height: 255px;
-  }
-`;
-
-/* =========================
-   CONTENT / EDITORIAL
-========================= */
-
-const Content = styled.div`
-  position: relative;
-`;
-
-const Kicker = styled.div`
-  font-size: 0.72rem;
-  letter-spacing: 0.28em;
+const PacksKicker = styled.div`
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.58);
-`;
-
-const H2 = styled.h2`
-  font-family: "Cormorant Garamond", serif;
-  font-weight: 300;
-  text-transform: uppercase;
-  margin: 0.7rem 0 0;
-  line-height: 1.05;
-  font-size: clamp(1.65rem, 2.4vw, 2.25rem);
-`;
-
-const Lead = styled.p`
-  margin: 0.75rem 0 0;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.78);
-  line-height: 1.5;
-`;
-
-const Text = styled.p`
-  margin: 0.8rem 0 0;
-  color: rgba(0, 0, 0, 0.66);
-  line-height: 1.78;
-`;
-
-const PriceRow = styled.div`
-  margin-top: 1.15rem;
-  display: grid;
-  gap: 0.35rem;
-`;
-
-const Price = styled.div`
-  font-size: 0.86rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.84);
-`;
-
-const Availability = styled.div`
-  margin-top: 0.25rem;
-  font-size: 0.9rem;
-  color: rgba(0, 0, 0, 0.55);
-`;
-
-/* =========================
-   OFFER CARD
-========================= */
-
-const Offer = styled.div`
-  margin-top: 1.35rem;
-  padding: 1.15rem 1.15rem;
-  border-radius: 22px;
-  background: rgba(0, 0, 0, 0.045);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  position: relative;
-  overflow: hidden;
-
-  /* subtle pink editorial shimmer */
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -30%;
-    width: 42%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(229, 0, 126, 0.1),
-      transparent
-    );
-    animation: ${shimmer} 7s ease-in-out infinite;
-    pointer-events: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    &::before {
-      display: none;
-    }
-  }
-`;
-
-const OfferTitle = styled.h3`
   font-size: 0.78rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  margin: 0;
-  color: rgba(0, 0, 0, 0.75);
-`;
-
-const List = styled.ul`
-  margin: 0.85rem 0 0;
-  padding-left: 1.1rem;
-  color: rgba(0, 0, 0, 0.67);
-
-  li {
-    margin: 0.35rem 0;
-    line-height: 1.55;
-  }
-`;
-
-const Conversion = styled.div`
-  margin-top: 1.05rem;
-  display: grid;
-  gap: 0.75rem;
-`;
-
-const TrustRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-`;
-
-const PrimaryWide = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-
-  width: 100%;
-  padding: 0.95rem 1.2rem;
-  border-radius: 999px;
-
-  background: ${({ theme }) => theme.colors.primary};
-  color: #fff;
-  text-decoration: none;
-
-  font-size: 0.82rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-
-  transition: transform 180ms ease, filter 180ms ease;
-
-  &:hover {
-    filter: brightness(0.98);
-    transform: translateY(-1px);
-  }
-`;
-
-const Packs = styled.div`
-  margin-top: 1.25rem;
-  display: grid;
-  gap: 12px;
-
-  @media (min-width: 720px) {
-    grid-template-columns: 1fr 1fr;
-    align-items: start;
-  }
-`;
-
-const BaseCard = styled.div`
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.08);
-  padding: 16px;
-  position: relative;
-  overflow: hidden;
-`;
-
-const CardKicker = styled.div`
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
   color: rgba(0, 0, 0, 0.58);
-  font-weight: 800;
-  margin-bottom: 10px;
 `;
 
-const PriceCard = styled(BaseCard)`
-  /* subtle highlight so price feels like “the offer” */
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      520px 180px at 24% 12%,
-      rgba(229, 0, 126, 0.1),
-      transparent 60%
-    );
-    pointer-events: none;
-    opacity: 0.9;
-  }
-`;
-
-const PriceStack = styled.div`
-  display: grid;
-  gap: 10px;
-`;
-
-const PriceLine = styled.div`
-  padding: 12px 12px;
-  border-radius: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(0, 0, 0, 0.03);
-  line-height: 1.45;
-  font-weight: 750;
-  color: rgba(0, 0, 0, 0.86);
-`;
-
-const IncludesCard = styled(BaseCard)``;
-
-const IncludesList = styled.ul`
+const PacksTitle = styled.h2`
   margin: 0;
-  padding-left: 1.1rem;
-  color: rgba(0, 0, 0, 0.66);
-
-  li {
-    margin: 0.35rem 0;
-    line-height: 1.55;
-  }
-`;
-
-const CtaCard = styled(BaseCard)`
-  grid-column: 1 / -1; /* spans full width under the two cards */
-  padding: 16px;
-
-  /* your editorial shimmer can live here instead of inside Offer */
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -30%;
-    width: 42%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(229, 0, 126, 0.1),
-      transparent
-    );
-    animation: ${shimmer} 7s ease-in-out infinite;
-    pointer-events: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    &::before {
-      display: none;
-    }
-  }
-`;
-
-const CtaRow = styled.div`
-  margin-top: 12px;
-  display: grid;
-  gap: 10px;
-
-  @media (min-width: 560px) {
-    grid-template-columns: 1fr 1fr;
-  }
-`;
-
-const SecondaryWide = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  width: 100%;
-  padding: 0.95rem 1.2rem;
-  border-radius: 999px;
-
-  background: rgba(0, 0, 0, 0.06);
-  color: rgba(0, 0, 0, 0.86);
-  text-decoration: none;
-
-  font-size: 0.82rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-weight: 780;
-
-  transition: transform 180ms ease, background 180ms ease;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.09);
-    transform: translateY(-1px);
-  }
-`;
-
-const FinePrint = styled.p`
-  margin-top: 0.75rem;
-  font-size: 0.82rem;
-  color: rgba(0, 0, 0, 0.48);
-  line-height: 1.5;
-`;
-
-/* =========================
-   REVEAL (JS + CSS)
-========================= */
-
-const Reveal = styled.div`
-  opacity: 0;
-  transform: translateY(14px);
-  will-change: transform, opacity;
-
-  &.is-visible {
-    animation: ${floatIn} 560ms cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    opacity: 1;
-    transform: none;
-  }
-`;
-
-/* =========================
-   MOBILE WHATSAPP MINI CTA
-========================= */
-
-const MobileFab = styled.a`
-  position: fixed;
-  right: 14px;
-  bottom: 14px;
-  z-index: 50;
-
-  display: none;
-
-  @media (max-width: 820px) {
-    display: inline-flex;
-  }
-
-  align-items: center;
-  gap: 0.55rem;
-
-  padding: 0.85rem 1rem;
-  border-radius: 999px;
-
-  background: rgba(255, 255, 255, 0.86);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.16);
-
-  text-decoration: none;
-  color: rgba(0, 0, 0, 0.86);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  transition: transform 180ms ease;
-
-  &:hover {
-    transform: translateY(-2px);
-  }
-
-  svg {
+  font-size: clamp(1.7rem, 2.4vw, 2.2rem);
+  letter-spacing: -0.02em;
+  span {
     color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
-const FabText = styled.span`
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
+const PacksMuted = styled.p`
+  margin: 0;
+  max-width: 70ch;
+  color: rgba(0, 0, 0, 0.62);
+  line-height: 1.65;
+`;
+
+const PackGrid = styled.div`
+  display: grid;
+  gap: 14px;
+
+  @media (min-width: 860px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+  }
+`;
+
+const PackCard = styled.article`
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+const PackMedia = styled.div`
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: #e9e7e3;
+  overflow: hidden;
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(1.02) contrast(1.02);
+    transform: scale(1.02);
+    transition: transform 260ms ease;
+  }
+
+  ${PackCard}:hover & img {
+    transform: scale(1.06);
+  }
+`;
+
+const PackMediaOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.4));
+`;
+
+const PackMediaLabel = styled.div`
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 850;
+  letter-spacing: -0.02em;
+  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+`;
+
+const PackBody = styled.div`
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+`;
+
+const PackLead = styled.p`
+  margin: 0;
+  color: rgba(0, 0, 0, 0.74);
+  font-weight: 750;
+  line-height: 1.45;
+  min-height: 44px;
+`;
+
+const PackPrice = styled.div`
+  display: grid;
+  gap: 6px;
+  font-weight: 850;
+  color: rgba(0, 0, 0, 0.86);
+
+  div {
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    line-height: 1.35;
+  }
+`;
+
+const PackList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+
+  li {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 10px;
+    align-items: start;
+    font-size: 0.92rem;
+    color: rgba(0, 0, 0, 0.72);
+    line-height: 1.4;
+  }
+`;
+
+const CheckDot = styled.span`
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(229, 0, 126, 0.1);
+  border: 1px solid rgba(229, 0, 126, 0.18);
+`;
+
+const PackNote = styled.div`
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.58);
+`;
+
+const PackCtas = styled.div`
+  margin-top: auto; /* ✅ pushes CTAs to the bottom */
+  padding-top: 8px;
+
+  display: grid;
+  gap: 10px;
+
+  @media (min-width: 520px) {
+    grid-template-columns: 1fr 1fr;
+  }
+`;
+
+const PackTertiary = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.8rem 1.1rem;
+  border-radius: 999px;
+  border: 1px dashed rgba(0, 0, 0, 0.16);
+  background: rgba(255, 255, 255, 0.7);
+  color: rgba(0, 0, 0, 0.76);
+  text-decoration: none;
+  font-weight: 850;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-weight: 700;
+  font-size: 0.78rem;
+
+  &:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.02);
+    background: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (min-width: 520px) {
+    grid-column: 1 / -1;
+  }
+`;
+
+const PackFine = styled.p`
+  margin: 0;
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: rgba(0, 0, 0, 0.46);
+  line-height: 1.55;
 `;
 
 /* =========================
@@ -821,7 +571,6 @@ export default function AutomatizacionIndividual({ contactTo = "/contact" }) {
           "Motor + controlador (instalación incluida): 220€",
           "Estor + motor + controlador (instalación incluida): 345€",
         ],
-        availability: "Disponibilidad: plazas de instalación limitadas.",
         bullets: [
           "Motor silencioso y ajuste fino",
           "Control por mando / app (según sistema)",
@@ -844,8 +593,6 @@ export default function AutomatizacionIndividual({ contactTo = "/contact" }) {
         paragraph:
           "Cuando buscas luz bonita sin deslumbramiento, el screen suele ser la solución más equilibrada. Con automatización, tu casa se adapta con naturalidad.",
         prices: ["Desde 990€ (instalación incluida)"],
-        availability:
-          "Recomendado instalar antes de los meses de mayor exposición solar.",
         bullets: [
           "Tejido técnico screen (según elección)",
           "Movimiento suave y preciso",
@@ -871,7 +618,7 @@ export default function AutomatizacionIndividual({ contactTo = "/contact" }) {
           "Toldo 4m x 2m acrílico + motor WiFi + app (instalación + IVA incl.): 1380€",
           "Toldo cofre 4m x 2m + motor WiFi + app (instalación + IVA incl.): 1998€",
         ],
-        availability: "Temporada alta: agenda de instalación limitada.",
+
         bullets: [
           "Motor WiFi + control con app",
           "Mando y calibración de límites",
@@ -889,7 +636,35 @@ export default function AutomatizacionIndividual({ contactTo = "/contact" }) {
     ],
     []
   );
-
+  const faqs = useMemo(
+    () => [
+      {
+        q: "¿Puedo empezar solo con una estancia y ampliar después?",
+        a: "Sí. Puedes motorizar una cortina, un screen o un toldo en una sola estancia y ampliar más adelante. Diseñamos la base para que futuras automatizaciones queden integradas y fáciles de usar.",
+        aText:
+          "Sí. Puedes motorizar una cortina, un screen o un toldo en una sola estancia y ampliar más adelante. Diseñamos la base para que futuras automatizaciones queden integradas y fáciles de usar.",
+      },
+      {
+        q: "¿Necesito hacer obra para motorizar cortinas o persianas?",
+        a: "En la mayoría de casos no es necesaria obra. Buscamos una instalación limpia y discreta, cuidando cableado, remates y ajustes para que solo se note el resultado.",
+        aText:
+          "En la mayoría de casos no es necesaria obra. Buscamos una instalación limpia y discreta, cuidando cableado, remates y ajustes para que solo se note el resultado.",
+      },
+      {
+        q: "¿Se controla con mando, con móvil o con ambos?",
+        a: "Depende del sistema elegido. Podemos configurar control por mando, por app móvil o ambas opciones. En la visita te recomendamos la solución adecuada según uso y presupuesto.",
+        aText:
+          "Depende del sistema elegido. Podemos configurar control por mando, por app móvil o ambas opciones. En la visita te recomendamos la solución adecuada según uso y presupuesto.",
+      },
+      {
+        q: "¿Cuánto tarda la instalación?",
+        a: "En la mayoría de proyectos de automatización por estancia, la instalación se realiza en una sola visita. El tiempo final depende de las medidas y del número de elementos a motorizar.",
+        aText:
+          "En la mayoría de proyectos de automatización por estancia, la instalación se realiza en una sola visita. El tiempo final depende de las medidas y del número de elementos a motorizar.",
+      },
+    ],
+    []
+  );
   // Scroll-to-hash support
   useEffect(() => {
     const hash = location.hash.replace("#", "");
@@ -1052,149 +827,123 @@ export default function AutomatizacionIndividual({ contactTo = "/contact" }) {
           </HeroTop>
         </HeroInner>
       </Hero>
-      {/* Tiny reassurance strip */}
-      <Reassure>
-        <ReassureWrap>
-          <ReassureCard>
-            <ReassureTop>
-              <div>
-                <ReassureTitle>
-                  Automatiza por estancias o por piezas.
-                </ReassureTitle>
-                <ReassureP>
-                  Empieza por lo esencial (una cortina, un screen o un toldo) y
-                  amplía cuando te encaje. Te guiamos para que quede integrado,
-                  limpio y cómodo.
-                </ReassureP>
-              </div>
-            </ReassureTop>
+      {/* REASSURANCE / PROCESS MINI */}
+      <ReassureSection>
+        <ReassureInner>
+          <ReassureTop>
+            <Kicker>Automatización individual</Kicker>
+            <Title>
+              Automatiza <span>a tu ritmo</span>
+            </Title>
+            <Lead>
+              Por estancias o por piezas: empiezas por lo esencial y ampliamos
+              cuando te encaje. Instalación limpia, ajuste fino y cero
+              sorpresas.
+            </Lead>
+          </ReassureTop>
 
-            <ReassureGrid>
-              <MiniCard>
-                <MiniKicker>01 · A medida</MiniKicker>
-                <MiniTitle>Una estancia a la vez</MiniTitle>
-                <MiniText>
-                  Automatiza salón, dormitorio o terraza sin comprometer toda la
-                  vivienda.
-                </MiniText>
-              </MiniCard>
+          <Steps>
+            <Step>
+              <StepIndex>01</StepIndex>
+              <StepTitle>Una estancia o un elemento</StepTitle>
+              <StepText>
+                Salón, dormitorio o terraza. Motorizar una pieza ya cambia tu
+                día a día sin comprometer toda la vivienda.
+              </StepText>
+            </Step>
 
-              <MiniCard>
-                <MiniKicker>02 · Simple</MiniKicker>
-                <MiniTitle>Un solo elemento</MiniTitle>
-                <MiniText>
-                  Motorizar un estor o un toldo puede cambiar el día a día más
-                  de lo que imaginas.
-                </MiniText>
-              </MiniCard>
+            <Step>
+              <StepIndex>02</StepIndex>
+              <StepTitle>Propuesta clara</StepTitle>
+              <StepText>
+                Te recomendamos el sistema adecuado según medidas, tejido y uso
+                (mando o app, según el caso).
+              </StepText>
+            </Step>
 
-              <MiniCard>
-                <MiniKicker>03 · Seguro</MiniKicker>
-                <MiniTitle>Sin sorpresas</MiniTitle>
-                <MiniText>
-                  Propuesta clara, montaje profesional y puesta a punto para que
-                  funcione perfecto.
-                </MiniText>
-              </MiniCard>
-            </ReassureGrid>
-          </ReassureCard>
-        </ReassureWrap>
-      </Reassure>
+            <Step>
+              <StepIndex>03</StepIndex>
+              <StepTitle>Instalamos y calibramos</StepTitle>
+              <StepText>
+                Montaje profesional, límites ajustados y pruebas finales para
+                que todo funcione perfecto desde el primer día.
+              </StepText>
+            </Step>
+          </Steps>
+        </ReassureInner>
+      </ReassureSection>
       <Main>
-        {sections.map((s, idx) => (
-          <Section key={s.id} id={s.id}>
-            <Wrap>
-              <Grid $flip={idx % 2 === 1}>
-                <Reveal
-                  ref={(el) => {
-                    revealRefs.current[idx * 2] = el;
-                  }}
-                >
-                  <MediaCard>
-                    <Img
-                      src={s.imageSrc}
-                      alt={s.imageAlt}
-                      loading={idx === 0 ? "eager" : "lazy"}
-                      decoding="async"
-                    />
-                  </MediaCard>
-                </Reveal>
+        {/* PACKS (catalog style) */}
+        <PacksSection id="packs">
+          <Wrap>
+            <PacksHeader>
+              <PacksKicker>Configuraciones</PacksKicker>
+              <PacksTitle>
+                <span>Elige</span> dónde empezar
+              </PacksTitle>
+              <PacksMuted>
+                Orientativo según medidas, tejido y sistema de control (mando o
+                app).
+              </PacksMuted>
+            </PacksHeader>
 
-                <Reveal
-                  ref={(el) => {
-                    revealRefs.current[idx * 2 + 1] = el;
-                  }}
-                >
-                  <Content>
-                    <Kicker>Precio orientativo</Kicker>
-                    <H2>{s.title}</H2>
-                    <Lead>{s.lead}</Lead>
-                    <Text>{s.paragraph}</Text>
+            <PackGrid>
+              {sections.map((s) => (
+                <PackCard key={s.id}>
+                  <PackMedia>
+                    <img src={s.imageSrc} alt={s.imageAlt} loading="lazy" />
+                    <PackMediaOverlay />
+                    <PackMediaLabel>{s.title}</PackMediaLabel>
+                  </PackMedia>
 
-                    <Packs>
-                      <PriceCard>
-                        <CardKicker>Precio orientativo</CardKicker>
+                  <PackBody>
+                    <PackLead>{s.lead}</PackLead>
 
-                        <PriceStack>
-                          {(s.prices || []).map((p) => (
-                            <PriceLine key={p}>{p}</PriceLine>
-                          ))}
-                        </PriceStack>
+                    <PackPrice>
+                      {(s.prices || []).slice(0, 2).map((p) => (
+                        <div key={p}>{p}</div>
+                      ))}
+                    </PackPrice>
 
-                        <Availability>{s.availability}</Availability>
-                      </PriceCard>
+                    <PackList>
+                      {s.bullets.slice(0, 4).map((b) => (
+                        <li key={b}>
+                          <CheckDot aria-hidden="true" />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </PackList>
 
-                      <IncludesCard>
-                        <CardKicker>Qué incluye</CardKicker>
-                        <IncludesList>
-                          {s.bullets.map((b) => (
-                            <li key={b}>{b}</li>
-                          ))}
-                        </IncludesList>
-                      </IncludesCard>
+                    <PackNote>{s.availability}</PackNote>
 
-                      <CtaCard>
-                        <TrustRow>
-                          <Chip>Visita sin coste</Chip>
-                          <Chip>Instalación incluida</Chip>
-                          <Chip>Respuesta rápida</Chip>
-                          <Chip>Castellón · Valencia</Chip>
-                        </TrustRow>
+                    <PackCtas>
+                      <PackTertiary href={`#${s.id}`}>
+                        Solicitar Propuesta <ArrowRight size={16} />
+                      </PackTertiary>
+                    </PackCtas>
 
-                        <CtaRow>
-                          <PrimaryWide
-                            to={contactTo}
-                            state={{
-                              from: "/automatizacion/individual",
-                              focus: s.id,
-                              message: s.whatsappMsg,
-                            }}
-                          >
-                            Solicitar propuesta
-                            <ArrowRight size={18} />
-                          </PrimaryWide>
-
-                          <SecondaryWide
-                            href={buildWhatsAppLink(s.whatsappMsg)}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            WhatsApp
-                            <ArrowRight size={18} />
-                          </SecondaryWide>
-                        </CtaRow>
-
-                        <FinePrint>{s.finePrint}</FinePrint>
-                      </CtaCard>
-                    </Packs>
-                  </Content>
-                </Reveal>
-              </Grid>
-            </Wrap>
-          </Section>
-        ))}
+                    <PackFine>{s.finePrint}</PackFine>
+                  </PackBody>
+                </PackCard>
+              ))}
+            </PackGrid>
+          </Wrap>
+        </PacksSection>
+        <AutomationFaq
+          items={faqs}
+          kicker="Dudas rápidas"
+          title={
+            <>
+              Preguntas <span>frecuentes</span>
+            </>
+          }
+          lead="Resolvemos lo importante antes de la visita."
+          withSchema
+          canonicalUrl={canonical}
+        />
       </Main>
-      <StickyCtaButton message="Hola, quiero una propuesta de automatización integral. ¿Podemos agendar una visita?" />
+
+      <StickyCtaButton message="Hola, quiero una propuesta para automatización por estancias. ¿Podemos agendar una visita?" />
     </Page>
   );
 }

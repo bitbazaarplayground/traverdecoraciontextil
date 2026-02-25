@@ -1985,6 +1985,12 @@ const Step = styled.div`
   );
   padding: 1.35rem 1.35rem 1.25rem;
   box-shadow: 0 18px 60px rgba(15, 23, 42, 0.06);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+  }
 `;
 
 const StepIndex = styled.div`
