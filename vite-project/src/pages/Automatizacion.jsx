@@ -3,8 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled, { css, keyframes } from "styled-components";
+import AutomationFaq from "../components/automatizacion/AutomationFaq";
 import { CONTACT } from "../config/contact";
-
 /* =========================
    ASSETS
 ========================= */
@@ -170,23 +170,30 @@ export default function Automatizacion() {
       {
         q: "¿Se puede empezar por una zona y ampliar después?",
         a: "Sí. Diseñamos una base sólida (motores + control) para que puedas añadir estancias o productos sin rehacerlo todo.",
+        aText:
+          "Sí. Diseñamos una base sólida (motores + control) para que puedas añadir estancias o productos sin rehacerlo todo.",
       },
       {
         q: "¿La instalación se nota? (cajas, cableado, estética)",
         a: "Nuestro enfoque es “estética primero”: solución discreta, remates limpios y configuración final para que solo se vea el resultado.",
+        aText:
+          "Nuestro enfoque es “estética primero”: solución discreta, remates limpios y configuración final para que solo se vea el resultado.",
       },
       {
         q: "¿Necesito domótica completa para usar Somfy?",
         a: "No. Puedes empezar con app, mando o escenas simples. Si quieres integrar más adelante, lo dejamos preparado.",
+        aText:
+          "No. Puedes empezar con app, mando o escenas simples. Si quieres integrar más adelante, lo dejamos preparado.",
       },
       {
         q: "¿Qué gana el día a día (más allá del móvil)?",
         a: "Confort real: luz y privacidad en el punto justo, escenas que se activan solas y un hogar que responde con calma.",
+        aText:
+          "Confort real: luz y privacidad en el punto justo, escenas que se activan solas y un hogar que responde con calma.",
       },
     ],
     []
   );
-  const [openFaq, setOpenFaq] = useState(0);
 
   return (
     <Page>
@@ -667,40 +674,18 @@ export default function Automatizacion() {
           </Section>
 
           {/* SECTION: FAQ */}
-          <Section data-reveal="out" aria-label="Preguntas frecuentes">
-            <SectionTop>
-              <Kicker>FAQ</Kicker>
-              <Title>
+          <AutomationFaq
+            items={faqs}
+            kicker="FAQ"
+            title={
+              <>
                 Respuestas claras, <span>sin humo</span>
-              </Title>
-              <Lead>
-                Si lo estás considerando, esto es lo que más nos preguntan.
-              </Lead>
-            </SectionTop>
-
-            <FaqWrap>
-              {faqs.map((f, idx) => {
-                const open = idx === openFaq;
-                return (
-                  <FaqItem key={f.q} $open={open}>
-                    <FaqButton
-                      type="button"
-                      aria-expanded={open}
-                      onClick={() => setOpenFaq(open ? -1 : idx)}
-                    >
-                      <span>{f.q}</span>
-                      <FaqIcon $open={open} aria-hidden="true">
-                        +
-                      </FaqIcon>
-                    </FaqButton>
-                    <FaqPanel $open={open} role="region">
-                      <p>{f.a}</p>
-                    </FaqPanel>
-                  </FaqItem>
-                );
-              })}
-            </FaqWrap>
-          </Section>
+              </>
+            }
+            lead="Si lo estás considerando, esto es lo que más nos preguntan."
+            withSchema
+            canonicalUrl={canonical}
+          />
 
           {/* FINAL CTA */}
           <Section data-reveal="out">
@@ -2011,87 +1996,6 @@ const StepText = styled.p`
   margin: 0;
   line-height: 1.75;
   color: rgba(15, 23, 42, 0.68);
-`;
-
-/* =========================
-   FAQ
-========================= */
-const FaqWrap = styled.div`
-  margin-top: 1.15rem;
-  display: grid;
-  gap: 0.65rem;
-`;
-
-const FaqItem = styled.div`
-  border-radius: 18px;
-  border: 1px solid
-    ${({ $open }) =>
-      $open ? "rgba(196, 151, 98, 0.35)" : "rgba(15, 23, 42, 0.1)"};
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: ${({ $open }) =>
-    $open
-      ? "0 26px 90px rgba(15, 23, 42, 0.1)"
-      : "0 18px 60px rgba(15, 23, 42, 0.06)"};
-  overflow: hidden;
-  transition: box-shadow 220ms ease, border-color 220ms ease;
-`;
-
-const FaqButton = styled.button`
-  width: 100%;
-  appearance: none;
-  border: 0;
-  background: transparent;
-  padding: 1rem 1rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.9rem;
-  text-align: left;
-
-  span {
-    color: rgba(15, 23, 42, 0.92);
-    font-weight: 820;
-    line-height: 1.45;
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.08);
-  }
-`;
-
-const FaqIcon = styled.div`
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: rgba(15, 23, 42, 0.04);
-  color: rgba(15, 23, 42, 0.82);
-  font-weight: 950;
-  transform: ${({ $open }) => ($open ? "rotate(45deg)" : "rotate(0deg)")};
-  transition: transform 220ms ease;
-`;
-
-const FaqPanel = styled.div`
-  padding: ${({ $open }) => ($open ? "0 1rem 1rem" : "0 1rem")};
-  max-height: ${({ $open }) => ($open ? "220px" : "0px")};
-  overflow: hidden;
-  transition: max-height 280ms ease, padding 280ms ease;
-
-  p {
-    margin: 0.1rem 0 0;
-    line-height: 1.75;
-    color: rgba(15, 23, 42, 0.68);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-    max-height: none;
-    padding: 0 1rem 1rem;
-  }
 `;
 
 /* =========================
