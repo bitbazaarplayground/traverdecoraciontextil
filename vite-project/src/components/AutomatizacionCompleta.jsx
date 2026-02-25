@@ -2,9 +2,11 @@ import { ArrowRight, Check, Shield, Sparkles, Sun, Wind } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import styled, { keyframes } from "styled-components";
+import AutomationFaq from "../components/automatizacion/AutomationFaq";
 import { CONTACT } from "../config/contact";
 import useRevealOnScroll from "../hooks/useReveal";
 import StickyCtaButton from "../mobile/StickyCtaButton";
+
 /* =========================
    ASSETS
 ========================= */
@@ -31,24 +33,24 @@ const Badge = ({ tone = "primary", children }) => {
   return <PillBadge $tone={tone}>{children}</PillBadge>;
 };
 
-const FAQItem = ({ q, a, defaultOpen = false }) => {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <FaqItem $open={open}>
-      <FaqQ
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-      >
-        <span>{q}</span>
-        <FaqIcon aria-hidden="true">{open ? "–" : "+"}</FaqIcon>
-      </FaqQ>
-      <FaqA role="region" $open={open}>
-        <FaqAInner>{a}</FaqAInner>
-      </FaqA>
-    </FaqItem>
-  );
-};
+// const FAQItem = ({ q, a, defaultOpen = false }) => {
+//   const [open, setOpen] = useState(defaultOpen);
+//   return (
+//     <FaqItem $open={open}>
+//       <FaqQ
+//         type="button"
+//         onClick={() => setOpen((v) => !v)}
+//         aria-expanded={open}
+//       >
+//         <span>{q}</span>
+//         <FaqIcon aria-hidden="true">{open ? "–" : "+"}</FaqIcon>
+//       </FaqQ>
+//       <FaqA role="region" $open={open}>
+//         <FaqAInner>{a}</FaqAInner>
+//       </FaqA>
+//     </FaqItem>
+//   );
+// };
 /* =========================
    COMPONENT
 ========================= */
@@ -173,6 +175,8 @@ export default function Auto() {
             estar en el montaje, ajustes y postventa.
           </>
         ),
+        aText:
+          "Porque aquí no solo compras el producto: tienes asesoramiento, medición, instalación profesional, configuración y soporte. En automatización la diferencia suele estar en el montaje, ajustes y postventa.",
       },
       {
         q: "¿Los precios son cerrados?",
@@ -183,6 +187,8 @@ export default function Auto() {
             centralización, control móvil).
           </>
         ),
+        aText:
+          "Los packs son precios desde. El coste final depende de medidas, tejido, tipo de motor, marca y extras (sensores, centralización, control móvil).",
       },
       {
         q: "¿Cuánto tarda la instalación?",
@@ -193,6 +199,8 @@ export default function Auto() {
             de elementos.
           </>
         ),
+        aText:
+          "Normalmente 1 día para packs pequeños y 1–2 días para viviendas completas, según el número de elementos.",
       },
       {
         q: "¿Se puede controlar desde el móvil?",
@@ -202,6 +210,8 @@ export default function Auto() {
             visita te proponemos la opción adecuada para tu presupuesto.
           </>
         ),
+        aText:
+          "Sí, en muchos casos. Depende del sistema y la marca elegidos. En la visita te proponemos la opción adecuada para tu presupuesto.",
       },
       {
         q: "¿Qué incluye siempre Traver?",
@@ -211,6 +221,8 @@ export default function Auto() {
             <strong>soporte post-instalación</strong>.
           </>
         ),
+        aText:
+          "Medición, asesoramiento, instalación, puesta en marcha, ajustes y soporte post-instalación.",
       },
     ],
     []
@@ -558,20 +570,19 @@ export default function Auto() {
           </AfterCTAInner>
         </AfterPacksCTA>
         {/* FAQ */}
-        <Section id="faq">
-          <Container>
-            <SectionHeader>
-              <H2F>Preguntas frecuentes</H2F>
-              <MutedF>Lo típico antes de decidir.</MutedF>
-            </SectionHeader>
 
-            <Faq>
-              {faqs.map((f, idx) => (
-                <FAQItem key={f.q} q={f.q} a={f.a} defaultOpen={idx === 0} />
-              ))}
-            </Faq>
-          </Container>
-        </Section>
+        <AutomationFaq
+          items={faqs}
+          kicker="Dudas rápidas"
+          title={
+            <>
+              Preguntas <span>frecuentes</span>
+            </>
+          }
+          lead="Lo típico antes de decidir."
+          withSchema
+          canonicalUrl={canonical}
+        />
       </RevealStyles>
       <StickyCtaButton message="Hola, quiero una propuesta de automatización integral. ¿Podemos agendar una visita?" />
     </Page>
@@ -1503,6 +1514,7 @@ const AfterProof = styled.div`
   /* Mobile: don't show AfterProof */
   @media (max-width: 899px) {
     display: none;
+  }
 `;
 const AfterCTARight = styled.div`
   display: grid;
@@ -1519,13 +1531,11 @@ const AfterButtons = styled.div`
   flex-wrap: wrap;
   gap: 10px;
 
-
   @media (max-width: 899px) {
     display: none;
+  }
 `;
-// @media (min-width: 900px) {
-//   justify-content: flex-end;
-// }
+
 const AfterPrimary = styled.a`
   display: inline-flex;
   align-items: center;
@@ -1575,107 +1585,7 @@ const AfterMini = styled.div`
   font-size: 0.92rem;
   @media (max-width: 899px) {
     display: none;
-`;
-
-// FAQ
-const Faq = styled.div`
-  display: grid;
-  gap: 10px;
-`;
-
-const FaqItem = styled.div`
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
-
-  ${({ $open }) =>
-    $open
-      ? `
-    `
-      : `
-    `}
-`;
-
-const FaqQ = styled.button`
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: 0;
-  color: #111;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 14px;
-  font-weight: 800;
-  font-size: 14px;
-  cursor: pointer;
-`;
-
-const FaqIcon = styled.span`
-  width: 32px;
-  height: 32px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-`;
-
-const FaqA = styled.div`
-  max-height: ${({ $open }) => ($open ? "260px" : "0px")};
-  overflow: hidden;
-  transition: max-height 0.22s ease;
-`;
-
-const FaqAInner = styled.div`
-  padding: 0 14px 14px;
-  color: rgba(0, 0, 0, 0.66);
-  font-size: 13px;
-  line-height: 1.55;
-`;
-
-/* ✅ Acordeón: max-height por prop $open */
-const FaqItemWithOpen = styled(FaqItem)``; // (no se usa; evitamos duplicar)
-
-FaqItem.defaultProps = { "data-open": "false" };
-
-const StickyCta = styled.div`
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 10px;
-  z-index: 50;
-  padding: 0 14px;
-  display: grid;
-  place-items: center;
-
-  @media (min-width: 920px) {
-    display: none;
   }
 `;
 
-const StickyBtn = styled(ButtonBase)`
-  width: min(520px, 100%);
-  padding: 14px 16px;
-  border-radius: 16px;
-
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.light};
-  box-shadow: 0 18px 55px rgba(229, 0, 126, 0.25);
-`;
-
-const H2F = styled.h2`
-  margin: 0 0 8px;
-  font-size: clamp(22px, 3.3vw, 30px);
-  letter-spacing: -0.02em;
-  color: ${({ theme }) => theme.colors.dark};
-`;
-
-const MutedF = styled.p`
-  margin: 0;
-  color: rgba(0, 0, 0, 0.62);
-`;
-const Lead = styled.h2``;
+// FaqItem.defaultProps = { "data-open": "false" };
