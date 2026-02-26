@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import styled from "styled-components";
+import FaqAccordion from "../components/faq/FaqAccordion";
 
 import cortinaM from "../assets/CortinasEstores/cortinaM.png";
 import customerM from "../assets/CortinasEstores/customerM.png";
@@ -36,6 +37,10 @@ import ComplementosVentana from "../components/ventanas/ComplementosVentana";
 const Page = styled.main`
   width: 100%;
   background: #fff;
+
+  color: #151515;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    "Helvetica Neue", sans-serif;
 `;
 
 /* =========================
@@ -363,68 +368,74 @@ const HandmadeNote = styled.div`
 ========================= */
 
 const FAQSection = styled.section`
-  padding: 5.5rem 2rem;
+  padding: clamp(3.5rem, 5vw, 5.5rem) 0;
   background: #fafafa;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
 `;
 
 const FAQInner = styled.div`
-  max-width: 900px;
+  width: min(1120px, calc(100% - 3rem));
   margin: 0 auto;
-`;
 
-const FAQTitle = styled.h2`
-  font-size: 2rem;
-  font-weight: 650;
-  color: #121212;
-  margin: 0 0 1.2rem 0;
-  text-align: center;
-`;
-
-const FAQGrid = styled.div`
-  display: grid;
-  gap: 0.9rem;
-  margin-top: 1.6rem;
-`;
-
-const FAQItem = styled.details`
-  border-radius: 16px;
-  background: #fff;
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  padding: 1.05rem 1.1rem;
-`;
-
-const FAQSummary = styled.summary`
-  list-style: none;
-  cursor: pointer;
-  font-weight: 750;
-  color: rgba(17, 17, 17, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-
-  &::-webkit-details-marker {
-    display: none;
+  @media (max-width: 768px) {
+    width: min(1120px, calc(100% - 2rem));
   }
+`;
+/* =========================
+   SHARED SECTION HEADERS (match AutomatizacionIndividual)
+========================= */
 
-  &::after {
-    content: "+";
-    font-size: 1.25rem;
-    line-height: 1;
-    color: rgba(17, 17, 17, 0.6);
-  }
+const SectionTop = styled.div`
+  max-width: 860px;
+  margin: 0 0 1.35rem 0;
+  text-align: left;
+`;
 
-  ${FAQItem}[open] &::after {
-    content: "–";
+const Kicker = styled.p`
+  margin: 0 0 0.55rem 0;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  color: rgba(17, 17, 17, 0.55);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.55rem;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0.1rem;
+    width: 48px;
+    height: 1px;
+    background: rgba(196, 151, 98, 0.65);
   }
 `;
 
-const FAQBody = styled.p`
-  margin: 0.85rem 0 0 0;
-  color: rgba(17, 17, 17, 0.68);
+/* Same idea as your other pages: primary pink touch via span */
+const SectionTitle = styled.h2`
+  margin: 0;
+  font-size: 2.15rem;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: rgba(17, 17, 17, 0.96);
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.7rem;
+  }
+`;
+
+const SectionLead = styled.p`
+  margin: 0.75rem 0;
+  font-size: 1.08rem;
   line-height: 1.7;
+  color: rgba(17, 17, 17, 0.62);
+  max-width: 70ch;
 `;
-
 /* =========================
    STATIC DATA (avoid rebuild every render)
 ========================= */
@@ -433,22 +444,32 @@ const FAQ_ITEMS = [
   {
     q: "¿Qué diferencia hay entre cortinas y estores?",
     a: "Las cortinas aportan más presencia textil y caída decorativa; los estores son más minimalistas y prácticos para controlar luz en ventanas con poco espacio. Te recomendamos según uso, estilo y orientación.",
+    aText:
+      "Las cortinas aportan más presencia textil y caída decorativa; los estores son más minimalistas y prácticos para controlar luz en ventanas con poco espacio. Te recomendamos según uso, estilo y orientación.",
   },
   {
     q: "¿Hacéis visita y medición en casa?",
     a: "Sí. La medición precisa es clave para que el resultado quede perfecto. Te asesoramos sobre tejido, confección y sistema antes de fabricar.",
+    aText:
+      "Sí. La medición precisa es clave para que el resultado quede perfecto. Te asesoramos sobre tejido, confección y sistema antes de fabricar.",
   },
   {
     q: "¿Tenéis opciones térmicas o blackout?",
     a: "Sí. Hay tejidos térmicos y blackout para reducir entrada de luz y mejorar confort. En dormitorios solemos proponer combinaciones (visillo + blackout) para flexibilidad.",
+    aText:
+      "Sí. Hay tejidos térmicos y blackout para reducir entrada de luz y mejorar confort. En dormitorios solemos proponer combinaciones (visillo + blackout) para flexibilidad.",
   },
   {
     q: "¿Cuánto tarda el proceso?",
     a: "Depende del tejido y la confección. Tras la visita y la elección, te confirmamos plazos reales de fabricación e instalación.",
+    aText:
+      "Depende del tejido y la confección. Tras la visita y la elección, te confirmamos plazos reales de fabricación e instalación.",
   },
   {
     q: "¿Instaláis también rieles y sistemas?",
     a: "Sí. Instalamos rieles, barras y sistemas de estor con una puesta a punto final para que el movimiento sea suave y limpio.",
+    aText:
+      "Sí. Instalamos rieles, barras y sistemas de estor con una puesta a punto final para que el movimiento sea suave y limpio.",
   },
 ];
 
@@ -540,22 +561,9 @@ export default function CortinasEstoresPremium() {
     [baseUrl, canonical, siteName, description]
   );
 
-  const faqJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: FAQ_ITEMS.map((f) => ({
-        "@type": "Question",
-        name: f.q,
-        acceptedAnswer: { "@type": "Answer", text: f.a },
-      })),
-    }),
-    []
-  );
-
   const jsonLd = useMemo(
-    () => [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd, faqJsonLd],
-    [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd, faqJsonLd]
+    () => [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd],
+    [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd]
   );
 
   // ✅ memoized settings (so SlickCarouselLazy can stay stable)
@@ -793,20 +801,30 @@ export default function CortinasEstoresPremium() {
         <SlickCarouselLazy images={images} settings={sliderSettings} />
       </CarouselSection>
 
-      {/* FAQ (UI + schema ya incluido arriba) */}
+      {/* FAQ */}
       <FAQSection>
         <FAQInner>
-          <FAQTitle>Preguntas frecuentes</FAQTitle>
-          <FAQGrid>
-            {FAQ_ITEMS.map((f) => (
-              <FAQItem key={f.q}>
-                <FAQSummary>{f.q}</FAQSummary>
-                <FAQBody>{f.a}</FAQBody>
-              </FAQItem>
-            ))}
-          </FAQGrid>
+          <SectionTop>
+            <Kicker>FAQ</Kicker>
+            <SectionTitle>
+              Preguntas <span>frecuentes</span>
+            </SectionTitle>
+            <SectionLead>
+              Resolvemos lo importante antes de la visita: tiempos, tejidos,
+              medición e instalación.
+            </SectionLead>
+          </SectionTop>
+
+          <FaqAccordion
+            items={FAQ_ITEMS}
+            withSchema={true}
+            canonicalUrl={canonical}
+            defaultOpenIndex={-1}
+            ariaLabel="Preguntas frecuentes sobre cortinas y estores"
+          />
         </FAQInner>
       </FAQSection>
+
       <StickyCtaButton message="Hola, me gustaría más información sobre cortinas y estores. Gracias." />
     </Page>
   );

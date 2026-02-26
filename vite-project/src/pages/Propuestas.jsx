@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AsesoramientoForm from "../components/AsesoramientoForm";
 import AsesoramientoModal from "../components/AsesoramientoModal";
+import FaqAccordion from "../components/faq/FaqAccordion";
 import { CONTACT } from "../config/contact";
 
 /* =========================
@@ -199,6 +200,10 @@ const H2 = styled.h2`
   color: #121212;
   margin: 0 0 0.8rem 0;
 
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -210,7 +215,55 @@ const Lead = styled.p`
   color: rgba(17, 17, 17, 0.68);
   margin: 0;
 `;
+const SectionTop = styled.div`
+  margin-bottom: 2.2rem;
+`;
 
+const Kicker = styled.p`
+  margin: 0 0 0.55rem 0;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  color: rgba(17, 17, 17, 0.55);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.55rem;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0.1rem;
+    width: 48px;
+    height: 1px;
+    background: rgba(196, 151, 98, 0.65);
+  }
+`;
+
+const SectionTitle = styled.h2`
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: rgba(17, 17, 17, 0.96);
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.7rem;
+  }
+`;
+
+const SectionLead = styled.p`
+  margin: 0.75rem 0 0; /* ✅ IMPORTANT: no auto */
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.62);
+  max-width: 70ch;
+`;
 /* =========================
    PACKS GRID (premium cards)
 ========================= */
@@ -514,64 +567,6 @@ const TrustCTA = styled(Link)`
    FAQ (simple, premium)
 ========================= */
 
-const FAQGrid = styled.div`
-  margin-top: 2.6rem;
-  display: grid;
-  gap: 1rem;
-
-  @media (min-width: 980px) {
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-`;
-
-const FAQItem = styled.details`
-  border-radius: 18px;
-  background: #fff;
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
-  padding: 1.1rem 1.2rem;
-  overflow: hidden;
-
-  &[open] summary {
-    color: #111;
-  }
-
-  &[open] summary::after {
-    transform: rotate(45deg);
-  }
-`;
-
-const FAQSummary = styled.summary`
-  list-style: none;
-  cursor: pointer;
-  font-weight: 750;
-  color: rgba(17, 17, 17, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-
-  &::-webkit-details-marker {
-    display: none;
-  }
-
-  &::after {
-    content: "+";
-    font-size: 1.25rem;
-    line-height: 1;
-    color: rgba(17, 17, 17, 0.6);
-    transition: transform 0.2s ease;
-  }
-`;
-
-const FAQBody = styled.p`
-  margin: 0.85rem 0 0 0;
-  color: rgba(17, 17, 17, 0.68);
-  line-height: 1.7;
-  font-size: 0.98rem;
-`;
-
 const InlineFormWrap = styled.div`
   margin-top: 0.9rem;
   padding: 1rem 1rem 1.15rem;
@@ -600,6 +595,33 @@ const ContextPill = styled.div`
     font-weight: 800;
   }
 `;
+
+const FAQ_ITEMS = [
+  {
+    q: "¿Esto son precios cerrados?",
+    a: "No. Son propuestas orientativas para decidir el enfoque. Cada vivienda cambia por medidas, tejidos, sistemas y acabados. Te damos una propuesta ajustada tras la visita técnica.",
+    aText:
+      "No. Son propuestas orientativas para decidir el enfoque. Cada vivienda cambia por medidas, tejidos, sistemas y acabados. Te damos una propuesta ajustada tras la visita técnica.",
+  },
+  {
+    q: "¿Puedo empezar por una sola estancia?",
+    a: "Sí, y es una forma excelente de comprobar el resultado. Mucha gente empieza por salón o dormitorio y luego unifica el resto con la misma línea estética.",
+    aText:
+      "Sí, y es una forma excelente de comprobar el resultado. Mucha gente empieza por salón o dormitorio y luego unifica el resto con la misma línea estética.",
+  },
+  {
+    q: "¿La automatización es solo “domótica”?",
+    a: "No. Es confort y protección: controlar luz, sombra y privacidad sin esfuerzo. Si quieres, lo dejamos automático; si prefieres, lo controlas tú desde mando, app o escenas.",
+    aText:
+      "No. Es confort y protección: controlar luz, sombra y privacidad sin esfuerzo. Si quieres, lo dejamos automático; si prefieres, lo controlas tú desde mando, app o escenas.",
+  },
+  {
+    q: "¿En qué zonas trabajáis?",
+    a: "Principalmente Castellón y alrededores, y proyectos seleccionados en Valencia según alcance. Cuéntanos tu ubicación y te diremos disponibilidad real.",
+    aText:
+      "Principalmente Castellón y alrededores, y proyectos seleccionados en Valencia según alcance. Cuéntanos tu ubicación y te diremos disponibilidad real.",
+  },
+];
 
 /* =========================
    COMPONENT
@@ -753,7 +775,9 @@ export default function Propuestas() {
       <LightSection id="propuestas">
         <LightInner>
           <CenterHeader>
-            <H2>Propuestas pensadas para decidir rápido</H2>
+            <H2>
+              Propuestas pensadas para <span>decidir</span> rápido
+            </H2>
             <Lead>
               No son “packs cerrados”. Son puntos de partida. Ajustamos tejidos,
               sistemas y acabados a tu espacio y a tu forma de vivir.
@@ -925,7 +949,7 @@ export default function Propuestas() {
           </DarkHeader>
 
           <Tiles>
-            <Tile to="/cortinas-estores" aria-label="Dormitorio">
+            <Tile aria-label="Dormitorio">
               <TileBg style={{ backgroundImage: `url(${imgDormitorio})` }} />
               <TileOverlay />
               <TileBody>
@@ -937,7 +961,7 @@ export default function Propuestas() {
               </TileBody>
             </Tile>
 
-            <Tile to="/cortinas-estores" aria-label="Salón">
+            <Tile aria-label="Salón">
               <TileBg style={{ backgroundImage: `url(${imgSalon})` }} />
               <TileOverlay />
               <TileBody>
@@ -948,7 +972,7 @@ export default function Propuestas() {
               </TileBody>
             </Tile>
 
-            <Tile to="/cortinas-estores" aria-label="Cocina">
+            <Tile aria-label="Cocina">
               <TileBg style={{ backgroundImage: `url(${imgCocina})` }} />
               <TileOverlay />
               <TileBody>
@@ -960,7 +984,7 @@ export default function Propuestas() {
               </TileBody>
             </Tile>
 
-            <Tile to="/cortinas-estores" aria-label="Baño">
+            <Tile aria-label="Baño">
               <TileBg style={{ backgroundImage: `url(${imgBano})` }} />
               <TileOverlay />
               <TileBody>
@@ -971,7 +995,7 @@ export default function Propuestas() {
               </TileBody>
             </Tile>
 
-            <Tile to="/cortinas-estores" aria-label="Habitación infantil">
+            <Tile aria-label="Habitación infantil">
               <TileBg style={{ backgroundImage: `url(${imgInfantil})` }} />
               <TileOverlay />
               <TileBody>
@@ -982,7 +1006,7 @@ export default function Propuestas() {
               </TileBody>
             </Tile>
 
-            <Tile to="/toldos-proteccionsolar" aria-label="Exterior">
+            <Tile aria-label="Exterior">
               <TileBg style={{ backgroundImage: `url(${imgToldos})` }} />
               <TileOverlay />
               <TileBody>
@@ -1008,51 +1032,24 @@ export default function Propuestas() {
       {/* FAQ */}
       <LightSection>
         <LightInner>
-          <CenterHeader>
-            <H2>Preguntas rápidas</H2>
-            <Lead>
+          <SectionTop>
+            <Kicker>FAQ</Kicker>
+            <SectionTitle>
+              Preguntas <span>rápidas</span>
+            </SectionTitle>
+            <SectionLead>
               Claridad sin letra pequeña. Si tienes un caso especial, te
               respondemos con honestidad.
-            </Lead>
-          </CenterHeader>
+            </SectionLead>
+          </SectionTop>
 
-          <FAQGrid>
-            <FAQItem>
-              <FAQSummary>¿Esto son precios cerrados?</FAQSummary>
-              <FAQBody>
-                No. Son propuestas orientativas para decidir el enfoque. Cada
-                vivienda cambia por medidas, tejidos, sistemas y acabados. Te
-                damos una propuesta ajustada tras la visita técnica.
-              </FAQBody>
-            </FAQItem>
-
-            <FAQItem>
-              <FAQSummary>¿Puedo empezar por una sola estancia?</FAQSummary>
-              <FAQBody>
-                Sí, y es una forma excelente de comprobar el resultado. Mucha
-                gente empieza por salón o dormitorio y luego unifica el resto
-                con la misma línea estética.
-              </FAQBody>
-            </FAQItem>
-
-            <FAQItem>
-              <FAQSummary>¿La automatización es solo “domótica”?</FAQSummary>
-              <FAQBody>
-                No. Es confort y protección: controlar luz, sombra y privacidad
-                sin esfuerzo. Si quieres, lo dejamos automático; si prefieres,
-                lo controlas tú desde mando, app o escenas.
-              </FAQBody>
-            </FAQItem>
-
-            <FAQItem>
-              <FAQSummary>¿En qué zonas trabajáis?</FAQSummary>
-              <FAQBody>
-                Principalmente Castellón y alrededores, y proyectos
-                seleccionados en Valencia según alcance. Cuéntanos tu ubicación
-                y te diremos disponibilidad real.
-              </FAQBody>
-            </FAQItem>
-          </FAQGrid>
+          <FaqAccordion
+            items={FAQ_ITEMS}
+            withSchema={true}
+            canonicalUrl={canonical}
+            defaultOpenIndex={-1}
+            ariaLabel="Preguntas frecuentes sobre propuestas"
+          />
         </LightInner>
       </LightSection>
 
