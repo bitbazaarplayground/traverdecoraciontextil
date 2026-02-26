@@ -7,6 +7,7 @@ import AsesoramientoForm from "../components/AsesoramientoForm";
 import AsesoramientoModal from "../components/AsesoramientoModal";
 import FaqAccordion from "../components/faq/FaqAccordion";
 import { CONTACT } from "../config/contact";
+import StickyCtaButton from "../mobile/StickyCtaButton";
 
 /* =========================
    QUICK ASSETS (placeholders)
@@ -1058,6 +1059,7 @@ export default function Propuestas() {
         packLabel={modalPack}
         onClose={() => setModalPack(null)}
       />
+      <StickyCtaButton message="Hola, quiero una propuesta a medida. ¿Podemos concertar una visita para medir y definir tejidos, sistemas y acabados?" />
     </Page>
   );
 }

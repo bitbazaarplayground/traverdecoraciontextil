@@ -3,7 +3,16 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import heroImg from "../assets/toldos/toldo2.webp";
+import StickyCtaButton from "../mobile/StickyCtaButton";
+
+/* =========================
+   COMPONENTS
+========================= */
 import FaqAccordion from "../components/faq/FaqAccordion";
+import AwningAccessories from "../components/toldos/AwningAccessories";
+import SectionIntro from "../components/ui/SectionIntro";
+
+import { CONTACT } from "../config/contact";
 
 /* =========================
    IMAGES (local assets)
@@ -14,21 +23,21 @@ import pergolaImg from "../assets/toldos/pergola.webp";
 import toldoExtensibleImg from "../assets/toldos/toldo1.webp";
 import toldoVerticalImg from "../assets/toldos/toldos-verticales.webp";
 import sailImg from "../assets/toldos/vela.webp";
-import AwningAccessories from "../components/toldos/AwningAccessories";
 
 /* =========================
-   IMAGES EXTRAS TOLDOS
+   IMAGES (extras toldos)
 ========================= */
-import lightSensor from "../assets/toldos/extrasToldo/LightSensor.webp";
-import calentador from "../assets/toldos/extrasToldo/calentador.webp";
-import tahoma from "../assets/toldos/extrasToldo/tahoma.webp";
-import toldoLED from "../assets/toldos/extrasToldo/toldoLED.webp";
-import windSensor from "../assets/toldos/extrasToldo/windSensor.webp";
-
-import { CONTACT } from "../config/contact";
-
+import lightSensorImg from "../assets/toldos/extrasToldo/LightSensor.webp";
+import calentadorImg from "../assets/toldos/extrasToldo/calentador.webp";
+import tahomaImg from "../assets/toldos/extrasToldo/tahoma.webp";
+import toldoLEDImg from "../assets/toldos/extrasToldo/toldoLED.webp";
+import windSensorImg from "../assets/toldos/extrasToldo/windSensor.webp";
 /* =========================
-   PAGE
+   CTA
+========================= */
+import ctaImg from "../assets/Automatizacion/cortinaMotorizada.webp";
+/* =========================
+   STYLES
 ========================= */
 
 const Page = styled.main`
@@ -38,7 +47,7 @@ const Page = styled.main`
 `;
 
 /* =========================
-   HERO (premium)
+   HERO
 ========================= */
 
 const Hero = styled.section`
@@ -95,7 +104,7 @@ const HeroContent = styled.div`
 `;
 
 const Eyebrow = styled.p`
-  margin: 0 0 0.9rem 0;
+  margin: 0 0 0.9rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-size: 0.8rem;
@@ -106,7 +115,7 @@ const HeroTitle = styled.h1`
   font-size: 3.2rem;
   font-weight: 650;
   line-height: 1.06;
-  margin: 0 0 1.1rem 0;
+  margin: 0 0 1.1rem;
 
   span {
     color: ${({ theme }) => theme.colors.primary};
@@ -171,6 +180,13 @@ const SecondaryButton = styled.a`
     transform: translateY(-1px);
   }
 `;
+const BlockSpacer = styled.div`
+  margin-top: 3.25rem;
+
+  @media (max-width: 768px) {
+    margin-top: 2.4rem;
+  }
+`;
 
 /* =========================
    SECTION SHELL
@@ -189,47 +205,8 @@ const SectionInner = styled.div`
   margin: 0 auto;
 `;
 
-const SectionHeader = styled.div`
-  max-width: 720px;
-  margin: 0 0 2.3rem 0;
-  text-align: left;
-`;
-
-const SectionLead = styled.p`
-  margin: 0.75rem 0 0;
-  font-size: 1.08rem;
-  line-height: 1.7;
-  color: rgba(17, 17, 17, 0.62);
-  max-width: 70ch;
-`;
-
-const SectionTitle = styled.h2`
-  margin: 0;
-  font-size: 2.15rem;
-  font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  color: #111;
-
-  span {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
-`;
-
-const SectionText = styled.p`
-  margin: 0.75rem 0 0;
-  max-width: 70ch;
-  font-size: 1.08rem;
-  line-height: 1.75;
-  color: rgba(17, 17, 17, 0.65);
-`;
-
 const Kicker = styled.p`
-  margin: 0 0 0.55rem 0;
+  margin: 0 0 0.55rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   font-size: 0.82rem;
@@ -248,13 +225,44 @@ const Kicker = styled.p`
     background: rgba(196, 151, 98, 0.65);
   }
 `;
+const IntroHeader = styled.div`
+  max-width: 720px;
+  margin: 0 auto 2.4rem;
+  text-align: center;
 
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+  }
+`;
+
+const IntroTitle = styled.h2`
+  margin: 0 0 1rem;
+  font-size: 2.2rem;
+  font-weight: 600;
+  line-height: 1.12;
+  color: #121212;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.8rem;
+  }
+`;
+
+const IntroText = styled.p`
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.62);
+`;
 /* =========================
    BENEFITS STRIP
 ========================= */
 
 const BenefitsStrip = styled.div`
-  margin: 2.6rem auto 0;
+  margin: 2rem auto 2.25rem; /* was: 2rem auto 0 */
   max-width: 980px;
   padding: 1.25rem 1.2rem;
   border-radius: 18px;
@@ -292,7 +300,6 @@ const Grid = styled.div`
 
   @media (min-width: 980px) {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem;
   }
 `;
 
@@ -388,74 +395,9 @@ const CardText = styled.p`
 `;
 
 /* =========================
-   CTA BAND
+   AUTOMATION BAND
 ========================= */
 
-const CTABand = styled.section`
-  padding: 0 2rem 6.2rem;
-
-  @media (max-width: 768px) {
-    padding: 0 1.5rem 4.8rem;
-  }
-`;
-
-const CTABandInner = styled.div`
-  max-width: 1120px;
-  margin: 0 auto;
-`;
-
-const CTACard = styled.div`
-  border-radius: 24px;
-  padding: 2.2rem 2rem;
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  background: #fafafa;
-  display: grid;
-  gap: 1.3rem;
-
-  @media (min-width: 980px) {
-    grid-template-columns: 1.25fr 0.75fr;
-    align-items: center;
-    gap: 1.8rem;
-    padding: 2.4rem 2.3rem;
-  }
-`;
-
-const CTATitle = styled.h2`
-  font-size: 1.6rem;
-  font-weight: 750;
-  margin: 0 0 0.45rem;
-  color: #111;
-`;
-
-const CTAText = styled.p`
-  margin: 0;
-  color: rgba(17, 17, 17, 0.7);
-  line-height: 1.75;
-`;
-
-const CTAButton = styled(Link)`
-  justify-self: start;
-
-  @media (min-width: 980px) {
-    justify-self: end;
-  }
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.95rem 1.7rem;
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: #0b0c0f;
-  font-weight: 900;
-  text-decoration: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-
-  &:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
-  }
-`;
 const AutomationBand = styled.section`
   padding: 4rem 2rem 2rem;
 `;
@@ -463,11 +405,10 @@ const AutomationBand = styled.section`
 const AutomationCard = styled.div`
   max-width: 1120px;
   margin: 0 auto;
-  padding: 2rem 2rem;
+  padding: 2rem;
   border-radius: 22px;
   background: #fafafa;
   border: 1px solid rgba(17, 17, 17, 0.08);
-
   display: grid;
   gap: 1rem;
 
@@ -496,11 +437,6 @@ const AutomationText = styled.p`
 
 const AutomationButton = styled(Link)`
   justify-self: start;
-
-  @media (min-width: 980px) {
-    justify-self: end;
-  }
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -512,11 +448,205 @@ const AutomationButton = styled(Link)`
   text-decoration: none;
   transition: transform 0.25s ease, opacity 0.25s ease;
 
+  @media (min-width: 980px) {
+    justify-self: end;
+  }
+
   &:hover {
     opacity: 0.92;
     transform: translateY(-1px);
   }
 `;
+const SectionTight = styled(Section)`
+  padding-top: 3.25rem; /* was 5.5rem */
+
+  @media (max-width: 768px) {
+    padding-top: 2.6rem; /* was 3.8rem */
+  }
+`;
+const AccessoriesWrap = styled.div`
+  margin-top: 3.25rem;
+
+  @media (max-width: 768px) {
+    margin-top: 2.4rem;
+  }
+`;
+/* =========================
+   CTA
+========================= */
+const AutomationCTA = styled.section`
+  padding: 0 2rem 5rem;
+
+  @media (max-width: 768px) {
+    padding: 0 1.5rem 4rem;
+  }
+`;
+
+const AutomationCTAInner = styled.div`
+  position: relative;
+  max-width: 1120px;
+  margin: 0 auto;
+
+  border-radius: 24px;
+  overflow: hidden; /* clips bg + overlay perfectly */
+
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.12);
+
+  display: grid;
+  gap: 1.6rem;
+  padding: 2.2rem 2rem;
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1.25fr 0.75fr;
+    align-items: center;
+    padding: 2.6rem 2.4rem;
+    gap: 2rem;
+  }
+`;
+
+const AutomationCTABg = styled.div`
+  position: absolute;
+  inset: 0;
+  background-image: url(${ctaImg});
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.04);
+  filter: saturate(1.03) contrast(1.03);
+  z-index: 0;
+`;
+
+const AutomationCTAOverlay = styled.div`
+  position: absolute;
+  inset: -2px; /* removes 1px seams */
+
+  /* Darker, premium */
+  background: radial-gradient(
+      1100px 600px at 35% 35%,
+      rgba(0, 0, 0, 0.35),
+      rgba(0, 0, 0, 0.86)
+    ),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.25));
+
+  z-index: 1;
+  pointer-events: none;
+`;
+
+const AutomationLeft = styled.div`
+  position: relative;
+  z-index: 2;
+  color: rgba(255, 255, 255, 0.95);
+`;
+
+const AutomationRight = styled.div`
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 0.9rem;
+
+  @media (min-width: 980px) {
+    justify-items: end;
+    text-align: right;
+  }
+`;
+
+const AutomationKicker = styled.p`
+  margin: 0 0 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.78);
+`;
+
+const AutomationHeadline = styled.h2`
+  margin: 0 0 0.85rem;
+  font-size: 2.05rem;
+  line-height: 1.12;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
+`;
+
+const AutomationCopy = styled.p`
+  margin: 0;
+  max-width: 68ch;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+`;
+
+const AutomationProof = styled.p`
+  margin: 1rem 0 0;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.82);
+`;
+
+const AutomationButtons = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+
+  @media (min-width: 980px) {
+    justify-content: flex-end;
+  }
+`;
+
+const AutomationPrimary = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+
+  padding: 0.95rem 1.55rem;
+  border-radius: 999px;
+
+  background: ${({ theme }) => theme.colors.primary};
+  color: #0b0c0f;
+
+  font-weight: 900;
+  text-decoration: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+
+  &:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+`;
+
+const AutomationSecondary = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.95rem 1.45rem;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.92);
+
+  font-weight: 750;
+  text-decoration: none;
+  transition: transform 0.25s ease, background 0.25s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+  }
+`;
+
+/* =========================
+   DATA
+========================= */
+
 const FAQ_ITEMS = [
   {
     q: "¿Qué tipo de toldo necesito: extensible o cofre?",
@@ -551,7 +681,7 @@ const FAQ_ITEMS = [
 ];
 
 /* =========================
-   COMPONENT
+   PAGE
 ========================= */
 
 export default function ToldosProteccionSolar() {
@@ -632,7 +762,9 @@ export default function ToldosProteccionSolar() {
       },
     },
   ];
+
   const faqItems = useMemo(() => FAQ_ITEMS, []);
+
   return (
     <Page>
       <Helmet>
@@ -687,31 +819,30 @@ export default function ToldosProteccionSolar() {
       {/* INTRO + BENEFITS */}
       <Section id="tipos">
         <SectionInner>
-          <SectionHeader>
-            <Kicker>Exterior</Kicker>
-            <SectionTitle>
+          <IntroHeader>
+            <IntroTitle>
               Toldos <span>a medida</span>
-            </SectionTitle>
-            <SectionText>
+            </IntroTitle>
+            <IntroText>
               Seleccionamos el sistema adecuado según orientación, uso y
               arquitectura. Medimos, instalamos y ajustamos con precisión para
               un resultado sólido y discreto.
-            </SectionText>
+            </IntroText>
+          </IntroHeader>
 
-            <BenefitsStrip>
-              <Benefit>
-                <strong>Confort térmico:</strong> menos calor, más sombra útil.
-              </Benefit>
-              <Benefit>
-                <strong>Instalación limpia:</strong> detalles cuidados y ajuste
-                final.
-              </Benefit>
-              <Benefit>
-                <strong>Durabilidad:</strong> sistemas preparados para el uso
-                real.
-              </Benefit>
-            </BenefitsStrip>
-          </SectionHeader>
+          <BenefitsStrip>
+            <Benefit>
+              <strong>Confort térmico:</strong> menos calor, más sombra útil.
+            </Benefit>
+            <Benefit>
+              <strong>Instalación limpia:</strong> detalles cuidados y ajuste
+              final.
+            </Benefit>
+            <Benefit>
+              <strong>Durabilidad:</strong> sistemas preparados para el uso
+              real.
+            </Benefit>
+          </BenefitsStrip>
 
           <Grid>
             <Card>
@@ -722,6 +853,7 @@ export default function ToldosProteccionSolar() {
                 <CardOverlay />
                 <CardBadge>Terrazas</CardBadge>
               </CardMedia>
+
               <CardContent>
                 <CardTitle>Toldos extensibles</CardTitle>
                 <ValueLine>Sombra regulable con estética ligera.</ValueLine>
@@ -738,6 +870,7 @@ export default function ToldosProteccionSolar() {
                 <CardOverlay />
                 <CardBadge>Alta protección</CardBadge>
               </CardMedia>
+
               <CardContent>
                 <CardTitle>Toldos cofre</CardTitle>
                 <ValueLine>Acabado limpio, mecanismo protegido.</ValueLine>
@@ -756,6 +889,7 @@ export default function ToldosProteccionSolar() {
                 <CardOverlay />
                 <CardBadge>Privacidad</CardBadge>
               </CardMedia>
+
               <CardContent>
                 <CardTitle>Toldos verticales / screen</CardTitle>
                 <ValueLine>
@@ -774,6 +908,7 @@ export default function ToldosProteccionSolar() {
                 <CardOverlay />
                 <CardBadge>Negocio</CardBadge>
               </CardMedia>
+
               <CardContent>
                 <CardTitle>Toldos para hostelería</CardTitle>
                 <ValueLine>Resistencia, presencia y funcionalidad.</ValueLine>
@@ -786,17 +921,22 @@ export default function ToldosProteccionSolar() {
           </Grid>
 
           {/* SECONDARY */}
-          <SectionHeader style={{ marginTop: "4.8rem" }}>
-            <Kicker>Complementos</Kicker>
-            <SectionTitle>
-              Otras <span>soluciones</span> de sombra
-            </SectionTitle>
-            <SectionText>
-              Cuando el proyecto lo exige, combinamos toldos con sistemas
-              estructurales para crear exterior habitable todo el año.
-            </SectionText>
-          </SectionHeader>
-
+          <BlockSpacer>
+            <SectionIntro
+              kicker="Complementos"
+              title={
+                <>
+                  Otras <span>soluciones</span> de sombra
+                </>
+              }
+              lead={
+                <>
+                  Cuando el proyecto lo exige, combinamos toldos con sistemas
+                  estructurales para crear exterior habitable todo el año.
+                </>
+              }
+            />
+          </BlockSpacer>
           <Grid>
             <Card>
               <CardMedia>
@@ -804,6 +944,7 @@ export default function ToldosProteccionSolar() {
                 <CardOverlay />
                 <CardBadge>Estructura</CardBadge>
               </CardMedia>
+
               <CardContent>
                 <CardTitle>Pérgolas</CardTitle>
                 <ValueLine>Arquitectura exterior con presencia.</ValueLine>
@@ -820,6 +961,7 @@ export default function ToldosProteccionSolar() {
                 <CardOverlay />
                 <CardBadge>Ligereza</CardBadge>
               </CardMedia>
+
               <CardContent>
                 <CardTitle>Velas de sombra</CardTitle>
                 <ValueLine>Diseño contemporáneo y sombra flexible.</ValueLine>
@@ -830,102 +972,124 @@ export default function ToldosProteccionSolar() {
               </CardContent>
             </Card>
           </Grid>
+          {/* ACCESSORIES */}
+          <BlockSpacer>
+            <SectionIntro
+              kicker="Accesorios"
+              title={
+                <>
+                  Accesorios <span>premium</span> para tu toldo
+                </>
+              }
+              lead="Sensores, iluminación y confort para una terraza perfecta."
+            />
+          </BlockSpacer>
+
+          <AccessoriesWrap>
+            <AwningAccessories
+              items={[
+                {
+                  key: "smart",
+                  title: "Tecnología inteligente",
+                  description: "Automatiza tu toldo con control avanzado.",
+                  image: tahomaImg,
+                  size: "big",
+                },
+                {
+                  key: "led",
+                  title: "LED ambiente",
+                  description: "Luz cálida integrada para noches exteriores.",
+                  image: toldoLEDImg,
+                },
+                {
+                  key: "wind",
+                  title: "Sensor de viento",
+                  description: "Se recoge automáticamente ante rachas.",
+                  image: windSensorImg,
+                },
+                {
+                  key: "heat",
+                  title: "Calefacción",
+                  description: "Confort exterior incluso en invierno.",
+                  image: calentadorImg,
+                },
+                {
+                  key: "sun",
+                  title: "Sensor solar",
+                  description: "Se adapta a la intensidad de la luz.",
+                  image: lightSensorImg,
+                },
+              ]}
+            />
+          </AccessoriesWrap>
         </SectionInner>
       </Section>
 
-      <AwningAccessories
-        title="Accesorios premium para tu toldo"
-        subtitle="Sensores, iluminación y confort para una terraza perfecta."
-        items={[
-          {
-            key: "smart",
-            title: "Tecnología inteligente",
-            description: "Automatiza tu toldo con control avanzado.",
-            image: tahoma,
-            size: "big",
-          },
-          {
-            key: "led",
-            title: "LED ambiente",
-            description: "Luz cálida integrada para noches exteriores.",
-            image: toldoLED,
-          },
-          {
-            key: "wind",
-            title: "Sensor de viento",
-            description: "Se recoge automáticamente ante rachas.",
-            image: windSensor,
-          },
-          {
-            key: "heat",
-            title: "Calefacción",
-            description: "Confort exterior incluso en invierno.",
-            image: calentador,
-          },
-          {
-            key: "sun",
-            title: "Sensor solar",
-            description: "Se adapta a la intensidad de la luz.",
-            image: lightSensor,
-          },
-        ]}
-      />
-      <AutomationBand>
-        <AutomationCard>
-          <div>
-            <Kicker>Automatización</Kicker>
-            <AutomationTitle>
+      {/* CTA — Automatización */}
+      <AutomationCTA aria-label="CTA automatización">
+        <AutomationCTAInner>
+          <AutomationCTABg aria-hidden="true" />
+          <AutomationCTAOverlay aria-hidden="true" />
+
+          <AutomationLeft>
+            <AutomationKicker>Automatización</AutomationKicker>
+
+            <AutomationHeadline>
               ¿Quieres que el toldo responda <span>solo</span>?
-            </AutomationTitle>
-            <AutomationText>
+            </AutomationHeadline>
+
+            <AutomationCopy>
               Sensores de viento y sol, control por app y escenas programadas.
               Confort exterior sin preocuparte por recogerlo a tiempo.
-            </AutomationText>
-          </div>
+            </AutomationCopy>
 
-          <AutomationButton to="/automatizacion">
-            Ver automatización
-          </AutomationButton>
-        </AutomationCard>
-      </AutomationBand>
+            <AutomationProof>
+              ✓ Visita + propuesta sin coste · instalación profesional ·
+              configuración de escenas
+            </AutomationProof>
+          </AutomationLeft>
 
-      <Section aria-label="Preguntas frecuentes">
+          <AutomationRight>
+            <AutomationButtons>
+              <AutomationPrimary to="/automatizacion">
+                Ver automatización <span aria-hidden="true">→</span>
+              </AutomationPrimary>
+
+              <AutomationSecondary to="/contact">
+                Pedir asesoramiento
+              </AutomationSecondary>
+            </AutomationButtons>
+          </AutomationRight>
+        </AutomationCTAInner>
+      </AutomationCTA>
+
+      <SectionTight aria-label="Preguntas frecuentes">
         <SectionInner>
-          <SectionHeader>
-            <Kicker>FAQ</Kicker>
-            <SectionTitle>
-              Preguntas <span>frecuentes</span>
-            </SectionTitle>
-            <SectionText>
-              Lo importante antes de decidir: viento, sistemas, motorización,
-              tiempos y montaje.
-            </SectionText>
-          </SectionHeader>
+          <SectionIntro
+            kicker="FAQ"
+            title={
+              <>
+                Preguntas <span>frecuentes</span>
+              </>
+            }
+            lead={
+              <>
+                Lo importante antes de decidir: viento, sistemas, motorización,
+                tiempos y montaje.
+              </>
+            }
+          />
 
           <FaqAccordion
             items={faqItems}
-            withSchema={true}
+            withSchema
             canonicalUrl={canonical}
             defaultOpenIndex={-1}
             ariaLabel="Preguntas frecuentes sobre toldos y protección solar"
           />
         </SectionInner>
-      </Section>
-      {/* CTA BAND */}
-      <CTABand>
-        <CTABandInner>
-          <CTACard>
-            <div>
-              <CTATitle>Te decimos la mejor solución para tu fachada</CTATitle>
-              <CTAText>
-                Envíanos una foto y medidas aproximadas. Te orientamos con
-                honestidad y te preparamos una propuesta ajustada.
-              </CTAText>
-            </div>
-            <CTAButton to="/contact">Solicitar asesoramiento</CTAButton>
-          </CTACard>
-        </CTABandInner>
-      </CTABand>
+      </SectionTight>
+      <StickyCtaButton message="Hola, quiero una propuesta para toldos. ¿Podemos agendar una visita?" />
     </Page>
   );
 }
