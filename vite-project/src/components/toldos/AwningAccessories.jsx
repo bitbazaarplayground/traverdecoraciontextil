@@ -2,9 +2,9 @@ import styled from "styled-components";
 
 /**
  * AwningAccessories
- * - Layout like the reference: 1 large card (left) + 4 cards (right)
- * - Uses background images with a dark gradient overlay
- * - Pass images as URLs (recommended: from /public, e.g. "/toldos/cofre.jpg")
+ * - Layout: 1 large card (left) + 4 cards (right)
+ * - Background images with gradient overlay
+ * - Designed to "sit inside" a parent Section without adding huge vertical gaps
  */
 
 const DEFAULT_ITEMS = [
@@ -35,7 +35,7 @@ const DEFAULT_ITEMS = [
     image: "/toldos/toldo1.jpeg",
   },
   {
-    key: "light",
+    key: "sun",
     title: "Sensor de sol",
     description:
       "Extiende o recoge el toldo según la intensidad solar para máximo confort.",
@@ -52,13 +52,8 @@ export default function AwningAccessories({
   const rest = items.filter((i) => i.key !== big.key).slice(0, 4);
 
   return (
-    <Section>
+    <Wrap aria-label="Accesorios para toldos">
       <Inner>
-        <Header>
-          <Title>{title}</Title>
-          <Subtitle>{subtitle}</Subtitle>
-        </Header>
-
         <Grid>
           <Card $bg={big.image} $variant="big">
             <Overlay />
@@ -79,7 +74,7 @@ export default function AwningAccessories({
           ))}
         </Grid>
       </Inner>
-    </Section>
+    </Wrap>
   );
 }
 
@@ -87,36 +82,41 @@ export default function AwningAccessories({
    STYLES
 ========================= */
 
-const Section = styled.section`
+const Wrap = styled.section`
   width: 100%;
-  padding: 5rem 1.5rem;
-  background: #fff;
+  background: transparent;
 
-  @media (max-width: 768px) {
-    padding: 3.5rem 1rem;
-  }
+  /* IMPORTANT:
+     This component is rendered inside other sections.
+     Keep vertical spacing controlled and not "section-sized". */
+  padding: 0;
+  margin: 0;
 `;
 
 const Inner = styled.div`
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
 `;
 
 const Header = styled.div`
   text-align: center;
   max-width: 760px;
-  margin: 0 auto 2.8rem;
+  margin: 0 auto 2rem;
+
+  @media (max-width: 768px) {
+    margin-bottom: 1.6rem;
+  }
 `;
 
 const Title = styled.h2`
-  font-size: 2.7rem;
-  line-height: 1.1;
-  margin: 0 0 0.8rem;
-  font-weight: 650;
+  font-size: 2.15rem;
+  line-height: 1.12;
+  margin: 0 0 0.65rem;
+  font-weight: 750;
   color: #0f172a;
 
   @media (max-width: 768px) {
-    font-size: 2.05rem;
+    font-size: 1.85rem;
   }
 `;
 
@@ -124,14 +124,14 @@ const Subtitle = styled.p`
   margin: 0 auto;
   font-size: 1.05rem;
   line-height: 1.7;
-  color: #64748b;
+  color: rgba(17, 17, 17, 0.68);
 `;
 
 const Grid = styled.div`
   display: grid;
   grid-template-columns: 1.35fr 1fr 1fr;
   grid-auto-rows: 210px;
-  gap: 1.6rem;
+  gap: 1.25rem;
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
@@ -146,8 +146,12 @@ const Card = styled.div`
   background-image: url(${(p) => p.$bg});
   background-size: cover;
   background-position: center;
-  box-shadow: 0 16px 30px rgba(2, 6, 23, 0.12);
+
+  border: 1px solid rgba(2, 6, 23, 0.08);
+  box-shadow: 0 18px 44px rgba(2, 6, 23, 0.12);
   transform: translateZ(0);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
   min-height: ${(p) => (p.$variant === "big" ? "auto" : "210px")};
 
   ${(p) =>
@@ -157,9 +161,12 @@ const Card = styled.div`
         grid-column: 1 / 2;
         min-height: 440px;
       `
-      : `
-        grid-column: auto;
-      `}
+      : ""}
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 26px 64px rgba(2, 6, 23, 0.16);
+  }
 
   @media (max-width: 900px) {
     grid-row: auto;
@@ -183,29 +190,29 @@ const CardContent = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
-  padding: 1.6rem;
+  padding: 1.5rem;
   color: #fff;
 
   @media (max-width: 768px) {
-    padding: 1.25rem;
+    padding: 1.2rem;
   }
 `;
 
 const CardTitle = styled.h3`
   margin: 0 0 0.35rem;
-  font-size: 1.35rem;
-  font-weight: 650;
+  font-size: 1.32rem;
+  font-weight: 750;
   letter-spacing: -0.01em;
 
   @media (max-width: 768px) {
-    font-size: 1.2rem;
+    font-size: 1.18rem;
   }
 `;
 
 const CardText = styled.p`
   margin: 0;
   font-size: 0.98rem;
-  line-height: 1.45;
+  line-height: 1.5;
   opacity: 0.92;
 
   @media (max-width: 768px) {
