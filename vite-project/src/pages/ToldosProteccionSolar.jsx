@@ -1,17 +1,18 @@
+import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-
-import heroImg from "../assets/toldos/toldo2.jpg";
+import heroImg from "../assets/toldos/toldo2.webp";
+import FaqAccordion from "../components/faq/FaqAccordion";
 
 /* =========================
    IMAGES (local assets)
 ========================= */
-import toldoCofreImg from "../assets/toldos/cofre.jpg";
-import hosteleriaImg from "../assets/toldos/hosteleria.jpg";
-import pergolaImg from "../assets/toldos/pergola.jpg";
-import toldoExtensibleImg from "../assets/toldos/toldo1.jpeg";
-import toldoVerticalImg from "../assets/toldos/toldos-verticales.jpg";
+import toldoCofreImg from "../assets/toldos/cofre.webp";
+import hosteleriaImg from "../assets/toldos/hosteleria.webp";
+import pergolaImg from "../assets/toldos/pergola.webp";
+import toldoExtensibleImg from "../assets/toldos/toldo1.webp";
+import toldoVerticalImg from "../assets/toldos/toldos-verticales.webp";
 import sailImg from "../assets/toldos/vela.webp";
 import AwningAccessories from "../components/toldos/AwningAccessories";
 
@@ -189,16 +190,30 @@ const SectionInner = styled.div`
 `;
 
 const SectionHeader = styled.div`
-  max-width: 820px;
-  margin: 0 auto 3.2rem;
-  text-align: center;
+  max-width: 720px;
+  margin: 0 0 2.3rem 0;
+  text-align: left;
+`;
+
+const SectionLead = styled.p`
+  margin: 0.75rem 0 0;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.62);
+  max-width: 70ch;
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 2.35rem;
-  font-weight: 650;
+  margin: 0;
+  font-size: 2.15rem;
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
   color: #111;
-  margin: 0 0 0.85rem 0;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 
   @media (max-width: 768px) {
     font-size: 2rem;
@@ -206,11 +221,32 @@ const SectionTitle = styled.h2`
 `;
 
 const SectionText = styled.p`
-  margin: 0 auto;
-  max-width: 74ch;
-  font-size: 1.05rem;
+  margin: 0.75rem 0 0;
+  max-width: 70ch;
+  font-size: 1.08rem;
   line-height: 1.75;
-  color: rgba(17, 17, 17, 0.68);
+  color: rgba(17, 17, 17, 0.65);
+`;
+
+const Kicker = styled.p`
+  margin: 0 0 0.55rem 0;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  color: rgba(17, 17, 17, 0.55);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.55rem;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0.1rem;
+    width: 48px;
+    height: 1px;
+    background: rgba(196, 151, 98, 0.65);
+  }
 `;
 
 /* =========================
@@ -420,6 +456,99 @@ const CTAButton = styled(Link)`
     transform: translateY(-1px);
   }
 `;
+const AutomationBand = styled.section`
+  padding: 4rem 2rem 2rem;
+`;
+
+const AutomationCard = styled.div`
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2rem 2rem;
+  border-radius: 22px;
+  background: #fafafa;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+
+  display: grid;
+  gap: 1rem;
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+  }
+`;
+
+const AutomationTitle = styled.h3`
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 750;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const AutomationText = styled.p`
+  margin: 0.5rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.68);
+`;
+
+const AutomationButton = styled(Link)`
+  justify-self: start;
+
+  @media (min-width: 980px) {
+    justify-self: end;
+  }
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 1.6rem;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.primary};
+  color: #0b0c0f;
+  font-weight: 850;
+  text-decoration: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+
+  &:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+`;
+const FAQ_ITEMS = [
+  {
+    q: "¿Qué tipo de toldo necesito: extensible o cofre?",
+    a: "Depende de la exposición y del uso. El toldo cofre protege el tejido y el mecanismo cuando está recogido (más durabilidad y acabado limpio). El extensible es ideal si buscas ligereza y sombra regulable.",
+    aText:
+      "Depende de la exposición y del uso. El toldo cofre protege el tejido y el mecanismo cuando está recogido (más durabilidad y acabado limpio). El extensible es ideal si buscas ligereza y sombra regulable.",
+  },
+  {
+    q: "¿Qué pasa si hace viento?",
+    a: "Podemos incluir sensor de viento para que el toldo se recoja automáticamente ante rachas. Así se reduce el riesgo de golpes y tensiones.",
+    aText:
+      "Podemos incluir sensor de viento para que el toldo se recoja automáticamente ante rachas. Así se reduce el riesgo de golpes y tensiones.",
+  },
+  {
+    q: "¿Se puede motorizar un toldo?",
+    a: "Sí. Hay opciones con mando, app y escenas. Si quieres, lo dejamos preparado para automatización (sensores y control inteligente) desde el principio.",
+    aText:
+      "Sí. Hay opciones con mando, app y escenas. Si quieres, lo dejamos preparado para automatización (sensores y control inteligente) desde el principio.",
+  },
+  {
+    q: "¿Incluís visita, medición e instalación?",
+    a: "Sí. Medimos en tu espacio, te asesoramos y hacemos una instalación limpia con ajuste final para que el toldo funcione suave y seguro.",
+    aText:
+      "Sí. Medimos en tu espacio, te asesoramos y hacemos una instalación limpia con ajuste final para que el toldo funcione suave y seguro.",
+  },
+  {
+    q: "¿Cuánto tarda el proceso?",
+    a: "Tras la visita y la elección, te confirmamos plazos reales de fabricación e instalación según sistema y tejido.",
+    aText:
+      "Tras la visita y la elección, te confirmamos plazos reales de fabricación e instalación según sistema y tejido.",
+  },
+];
 
 /* =========================
    COMPONENT
@@ -503,7 +632,7 @@ export default function ToldosProteccionSolar() {
       },
     },
   ];
-
+  const faqItems = useMemo(() => FAQ_ITEMS, []);
   return (
     <Page>
       <Helmet>
@@ -559,7 +688,10 @@ export default function ToldosProteccionSolar() {
       <Section id="tipos">
         <SectionInner>
           <SectionHeader>
-            <SectionTitle>Toldos a medida</SectionTitle>
+            <Kicker>Exterior</Kicker>
+            <SectionTitle>
+              Toldos <span>a medida</span>
+            </SectionTitle>
             <SectionText>
               Seleccionamos el sistema adecuado según orientación, uso y
               arquitectura. Medimos, instalamos y ajustamos con precisión para
@@ -655,7 +787,10 @@ export default function ToldosProteccionSolar() {
 
           {/* SECONDARY */}
           <SectionHeader style={{ marginTop: "4.8rem" }}>
-            <SectionTitle>Otras soluciones de sombra</SectionTitle>
+            <Kicker>Complementos</Kicker>
+            <SectionTitle>
+              Otras <span>soluciones</span> de sombra
+            </SectionTitle>
             <SectionText>
               Cuando el proyecto lo exige, combinamos toldos con sistemas
               estructurales para crear exterior habitable todo el año.
@@ -735,7 +870,47 @@ export default function ToldosProteccionSolar() {
           },
         ]}
       />
+      <AutomationBand>
+        <AutomationCard>
+          <div>
+            <Kicker>Automatización</Kicker>
+            <AutomationTitle>
+              ¿Quieres que el toldo responda <span>solo</span>?
+            </AutomationTitle>
+            <AutomationText>
+              Sensores de viento y sol, control por app y escenas programadas.
+              Confort exterior sin preocuparte por recogerlo a tiempo.
+            </AutomationText>
+          </div>
 
+          <AutomationButton to="/automatizacion">
+            Ver automatización
+          </AutomationButton>
+        </AutomationCard>
+      </AutomationBand>
+
+      <Section aria-label="Preguntas frecuentes">
+        <SectionInner>
+          <SectionHeader>
+            <Kicker>FAQ</Kicker>
+            <SectionTitle>
+              Preguntas <span>frecuentes</span>
+            </SectionTitle>
+            <SectionText>
+              Lo importante antes de decidir: viento, sistemas, motorización,
+              tiempos y montaje.
+            </SectionText>
+          </SectionHeader>
+
+          <FaqAccordion
+            items={faqItems}
+            withSchema={true}
+            canonicalUrl={canonical}
+            defaultOpenIndex={-1}
+            ariaLabel="Preguntas frecuentes sobre toldos y protección solar"
+          />
+        </SectionInner>
+      </Section>
       {/* CTA BAND */}
       <CTABand>
         <CTABandInner>

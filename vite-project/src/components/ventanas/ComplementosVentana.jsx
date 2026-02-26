@@ -64,7 +64,13 @@ export default function ComplementosVentana({ id = "sistemas" }) {
         <Top>
           <Heading>
             <Kicker>Accesos rápidos</Kicker>
-            <Title>Otros productos para tu ventana</Title>
+            <Title>
+              Otros productos <span>para tu ventana</span>
+            </Title>
+            <Lead>
+              Complementos que combinan con cortinas y estores para dejar el
+              conjunto perfecto.
+            </Lead>
           </Heading>
 
           <Hint>
@@ -114,18 +120,18 @@ export default function ComplementosVentana({ id = "sistemas" }) {
 ========================= */
 
 const Section = styled.section`
-  padding: 2.75rem 1.25rem;
+  padding: clamp(2.4rem, 4.2vw, 3.4rem) 0;
   background: #fff;
-  border-top: 1px solid rgba(17, 17, 17, 0.08);
-
-  @media (max-width: 768px) {
-    padding: 2.25rem 1.1rem;
-  }
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
 `;
 
 const Container = styled.div`
-  max-width: 1120px;
+  width: min(1120px, calc(100% - 3rem));
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    width: min(1120px, calc(100% - 2rem));
+  }
 `;
 
 const Top = styled.div`
@@ -133,34 +139,53 @@ const Top = styled.div`
   align-items: flex-end;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1.15rem;
+  margin-bottom: 1.35rem;
 
   @media (max-width: 768px) {
     align-items: flex-start;
     flex-direction: column;
-    margin-bottom: 0.95rem;
+    margin-bottom: 1.1rem;
   }
 `;
 
-const Heading = styled.div``;
+const Heading = styled.div`
+  max-width: 860px;
+`;
 
 const Kicker = styled.p`
-  margin: 0 0 0.45rem 0;
-  letter-spacing: 0.22em;
+  margin: 0 0 0.55rem 0;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   font-size: 0.82rem;
-  color: rgba(17, 17, 17, 0.6);
+  color: rgba(17, 17, 17, 0.55);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.55rem;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0.1rem;
+    width: 48px;
+    height: 1px;
+    background: rgba(196, 151, 98, 0.65);
+  }
 `;
 
 const Title = styled.h2`
   margin: 0;
-  font-size: 1.55rem;
-  line-height: 1.15;
-  letter-spacing: -0.015em;
-  color: rgba(17, 17, 17, 0.95);
+  font-size: 2.15rem;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: rgba(17, 17, 17, 0.96);
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 
   @media (max-width: 768px) {
-    font-size: 1.35rem;
+    font-size: 1.7rem;
   }
 `;
 
@@ -178,7 +203,13 @@ const Hint = styled.p`
     display: none;
   }
 `;
-
+const Lead = styled.p`
+  margin: 0.75rem 0 0;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.62);
+  max-width: 70ch;
+`;
 const Cards = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(4, 1fr);

@@ -41,20 +41,36 @@ const Top = styled.div`
 `;
 
 const Kicker = styled(motion.p)`
-  margin: 0;
+  margin: 0 0 0.55rem 0;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: rgba(17, 17, 17, 0.55);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.55rem;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0.1rem;
+    width: 48px;
+    height: 1px;
+    background: rgba(196, 151, 98, 0.65); /* gold underline */
+  }
 `;
 
 const Title = styled(motion.h2)`
-  margin: 0.25rem 0 0;
+  margin: 0;
   font-size: clamp(1.85rem, 3.2vw, 2.6rem);
   font-weight: 650;
   letter-spacing: -0.03em;
   color: #121212;
   line-height: 1.08;
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
 const Lead = styled(motion.p)`
@@ -63,6 +79,9 @@ const Lead = styled(motion.p)`
   font-size: 1.06rem;
   line-height: 1.75;
   color: rgba(17, 17, 17, 0.7);
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
 const RailWrap = styled.div`
@@ -133,7 +152,7 @@ const ProgressTrack = styled.div`
 const ProgressBar = styled(motion.div)`
   height: 100%;
   border-radius: 999px;
-  background: rgba(17, 17, 17, 0.65);
+  background: rgba(196, 151, 98, 0.75);
   transform-origin: 0% 50%;
 `;
 
@@ -239,7 +258,7 @@ const CTA = styled(motion(Link))`
   padding: 0.95rem 1.35rem;
   border-radius: 999px;
 
-  background: #111;
+  background: ${({ theme }) => theme.colors.primary};
   color: #fff;
   font-weight: 900;
   text-decoration: none;
@@ -497,8 +516,9 @@ export default function EnfoqueSlider() {
             viewport={{ once: true, amount: 0.6 }}
           >
             En cortinas y estores, la diferencia no está en “poner una tela”.
-            Está en la caída, la proporción y el remate. Aquí es donde somos
-            obsesivos — y se nota.
+            Está en la caída, la proporción y el remate. Aquí es donde somos{" "}
+            {""}
+            <span>obsesivos</span> — y se nota.
           </Lead>
         </Top>
 
