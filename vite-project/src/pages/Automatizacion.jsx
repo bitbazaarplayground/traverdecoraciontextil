@@ -1,10 +1,11 @@
 import { ArrowRight } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import styled, { css, keyframes } from "styled-components";
+import styled from "styled-components";
 import AutomationFaq from "../components/automatizacion/AutomationFaq";
 import { CONTACT } from "../config/contact";
+
 /* =========================
    ASSETS
 ========================= */
@@ -161,8 +162,6 @@ export default function Automatizacion() {
     ],
     []
   );
-
-  const [activeScene, setActiveScene] = useState(scenes[0]);
 
   // Premium: FAQ accordion (editorial + clean)
   const faqs = useMemo(
@@ -418,7 +417,7 @@ export default function Automatizacion() {
               </PathCard>
             </PathGrid>
 
-            <Quote data-reveal="out">
+            <Quote>
               <QuoteMark aria-hidden="true">“</QuoteMark>
               <QuoteText>
                 El lujo aquí es invisible: todo está pensado para que la casa se
@@ -441,96 +440,60 @@ export default function Automatizacion() {
               <Lead>
                 Lo importante no es la app. Es lo que evita: calor,
                 deslumbramientos, daños por viento y la sensación de “estar
-                pendiente”. La casa responde sola, en el momento justo.
+                pendiente”.
               </Lead>
             </SectionTop>
 
-            <Scenes>
-              <ScenesLeft>
-                <SceneTabs role="tablist" aria-label="Seleccionar escena">
-                  {scenes.map((s) => {
-                    const active = s.id === activeScene.id;
-                    return (
-                      <SceneTab
-                        key={s.id}
-                        role="tab"
-                        aria-selected={active}
-                        $active={active}
-                        onClick={() => setActiveScene(s)}
-                        type="button"
-                      >
-                        <span>{s.title}</span>
-                        <small>{s.sub}</small>
-                      </SceneTab>
-                    );
-                  })}
-                </SceneTabs>
+            <ScenesGrid>
+              <SceneTile>
+                <SceneIcon aria-hidden="true">🌅</SceneIcon>
+                <SceneTileTitle>Mañana</SceneTileTitle>
+                <SceneTileText>
+                  Apertura suave para aprovechar luz natural sin
+                  deslumbramiento.
+                </SceneTileText>
+                <SceneMeta>Horario · amanecer · rutina</SceneMeta>
+              </SceneTile>
 
-                <SceneCard $accent={activeScene.accent}>
-                  <SceneCardTop>
-                    <SceneChip>Escena activa</SceneChip>
-                    <SceneH3>{activeScene.title}</SceneH3>
-                    <SceneP>{activeScene.sub}</SceneP>
-                  </SceneCardTop>
+              <SceneTile>
+                <SceneIcon aria-hidden="true">🌙</SceneIcon>
+                <SceneTileTitle>Noche</SceneTileTitle>
+                <SceneTileText>
+                  Privacidad total y oscuridad cuando toca. Se cierra sola.
+                </SceneTileText>
+                <SceneMeta>Anochecer · descanso</SceneMeta>
+              </SceneTile>
 
-                  <SceneList>
-                    {activeScene.bullets.map((b) => (
-                      <SceneLi key={b}>
-                        <Dot />
-                        <span>{b}</span>
-                      </SceneLi>
-                    ))}
-                  </SceneList>
+              <SceneTile>
+                <SceneIcon aria-hidden="true">💨</SceneIcon>
+                <SceneTileTitle>Viento / lluvia</SceneTileTitle>
+                <SceneTileText>
+                  El toldo se recoge automáticamente para evitar golpes y
+                  tensiones.
+                </SceneTileText>
+                <SceneMeta>Sensores · protección</SceneMeta>
+              </SceneTile>
 
-                  <SceneCtas>
-                    <ScenePrimary to="/contact">
-                      Quiero esto en mi casa <ArrowRight size={16} />
-                    </ScenePrimary>
-                    <SceneGhost href="#experiencia">Ver beneficios</SceneGhost>
-                  </SceneCtas>
-                </SceneCard>
-              </ScenesLeft>
+              <SceneTile>
+                <SceneIcon aria-hidden="true">📱</SceneIcon>
+                <SceneTileTitle>Control por app</SceneTileTitle>
+                <SceneTileText>
+                  Mando o móvil. Ajustes rápidos y escenas guardadas para cada
+                  momento.
+                </SceneTileText>
+                <SceneMeta>Wi-Fi · escenas</SceneMeta>
+              </SceneTile>
+            </ScenesGrid>
 
-              <ScenesRight>
-                <SceneVisual>
-                  <SceneImg
-                    src={activeScene.img}
-                    alt={`Escena ${activeScene.title}`}
-                    loading="lazy"
-                  />
-                  <SceneOverlay />
-                  <SceneSpec>
-                    <strong>{activeScene.specTitle}</strong>
-                    <span>{activeScene.specText}</span>
-                  </SceneSpec>
-                </SceneVisual>
-
-                <Marquee aria-hidden="true">
-                  <MarqueeTrack>
-                    <MarqueeItem>Somfy</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Escenas</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Sensores</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Rutinas</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Control por app</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Instalación limpia</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Somfy</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Escenas</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Sensores</MarqueeItem>
-                    <MarqueeDot />
-                    <MarqueeItem>Rutinas</MarqueeItem>
-                    <MarqueeDot />
-                  </MarqueeTrack>
-                </Marquee>
-              </ScenesRight>
-            </Scenes>
+            <ScenesCtaRow>
+              <ScenesCtaText>
+                ¿Quieres que lo dejemos listo para tu rutina desde el primer
+                día?
+              </ScenesCtaText>
+              <ScenesCtaButton to="/contact">
+                Pedir asesoramiento <ArrowRight size={16} />
+              </ScenesCtaButton>
+            </ScenesCtaRow>
           </Section>
 
           {/* SECTION: BENEFITS */}
@@ -861,6 +824,11 @@ const HeroActions = styled.div`
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+
+  @media (max-width: 520px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 const PrimaryButton = styled.a`
@@ -878,6 +846,9 @@ const PrimaryButton = styled.a`
   &:hover {
     opacity: 0.92;
     transform: translateY(-1px);
+  }
+  @media (max-width: 520px) {
+    width: 100%;
   }
 `;
 
@@ -897,6 +868,9 @@ const SecondaryButton = styled.a`
   &:hover {
     background: rgba(255, 255, 255, 0.09);
     transform: translateY(-1px);
+  }
+  @media (max-width: 520px) {
+    width: 100%;
   }
 `;
 
@@ -1418,16 +1392,6 @@ const Quote = styled.figure`
   padding: 1.2rem 1.2rem 1.05rem;
   position: relative;
   overflow: hidden;
-
-  &[data-reveal="out"] {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  &[data-reveal="in"] {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 700ms ease, transform 700ms ease;
-  }
 `;
 
 const QuoteMark = styled.div`
@@ -1463,328 +1427,115 @@ const QuoteMeta = styled.figcaption`
 /* =========================
    SCENES (interactive)
 ========================= */
-const Scenes = styled.div`
-  margin-top: 1.25rem;
+const ScenesGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 1.15rem;
+  margin-top: 1.8rem;
 
-  @media (max-width: 980px) {
-    grid-template-columns: 1fr;
+  @media (min-width: 980px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
   }
 `;
 
-const ScenesLeft = styled.div`
-  display: grid;
-  gap: 0.9rem;
-`;
-
-const SceneTabs = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
-
-  @media (max-width: 560px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const SceneTab = styled.button`
-  appearance: none;
+const SceneTile = styled.article`
+  border-radius: 20px;
   border: 1px solid rgba(15, 23, 42, 0.1);
-  background: rgba(255, 255, 255, 0.86);
-  border-radius: 16px;
-  padding: 0.9rem 0.95rem;
-  text-align: left;
-  cursor: pointer;
-  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.06);
-  transition: transform 180ms ease, background 180ms ease,
-    border-color 180ms ease;
-
-  span {
-    display: block;
-    font-weight: 820;
-    letter-spacing: -0.01em;
-    color: rgba(15, 23, 42, 0.92);
-  }
-  small {
-    display: block;
-    margin-top: 0.25rem;
-    color: rgba(15, 23, 42, 0.62);
-    line-height: 1.45;
-  }
-
-  ${({ $active, theme }) =>
-    $active &&
-    css`
-      border-color: rgba(196, 151, 98, 0.45);
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.95),
-        rgba(255, 255, 255, 0.78)
-      );
-      box-shadow: 0 26px 90px rgba(15, 23, 42, 0.1);
-      transform: translateY(-1px);
-
-      span {
-        color: rgba(15, 23, 42, 0.98);
-      }
-      small {
-        color: rgba(15, 23, 42, 0.68);
-      }
-    `}
-
-  &:hover {
-    transform: translateY(-1px);
-    border-color: rgba(15, 23, 42, 0.16);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08), 0 26px 90px rgba(15, 23, 42, 0.1);
-  }
-`;
-
-const SceneCard = styled.div`
-  border-radius: 24px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 30px 100px rgba(15, 23, 42, 0.1);
-  padding: 1.2rem 1.2rem 1.15rem;
-  position: relative;
-  overflow: hidden;
-
-  &:before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    pointer-events: none;
-    opacity: 0.9;
-
-    ${({ $accent }) => {
-      if ($accent === "warm")
-        return css`
-          background: radial-gradient(
-            640px 380px at var(--mx) var(--my),
-            rgba(196, 151, 98, 0.22),
-            rgba(255, 255, 255, 0) 58%
-          );
-        `;
-      if ($accent === "cool")
-        return css`
-          background: radial-gradient(
-            640px 380px at var(--mx) var(--my),
-            rgba(59, 130, 246, 0.16),
-            rgba(255, 255, 255, 0) 58%
-          );
-        `;
-      return css`
-        background: radial-gradient(
-          640px 380px at var(--mx) var(--my),
-          rgba(15, 23, 42, 0.12),
-          rgba(255, 255, 255, 0) 58%
-        );
-      `;
-    }}
-  }
-`;
-
-const SceneCardTop = styled.div`
-  position: relative;
-  z-index: 1;
-`;
-
-const SceneChip = styled.div`
-  display: inline-flex;
-  padding: 0.35rem 0.65rem;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.04);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  color: rgba(15, 23, 42, 0.78);
-  font-weight: 780;
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-`;
-
-const SceneH3 = styled.h3`
-  margin: 0.75rem 0 0.35rem;
-  font-size: 1.5rem;
-  letter-spacing: -0.02em;
-  color: rgba(15, 23, 42, 0.92);
-`;
-
-const SceneP = styled.p`
-  margin: 0;
-  line-height: 1.75;
-  color: rgba(15, 23, 42, 0.68);
-`;
-
-const SceneList = styled.div`
-  position: relative;
-  z-index: 1;
-  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.06);
+  padding: 1.35rem 1.25rem;
   display: grid;
   gap: 0.65rem;
-`;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 
-const SceneLi = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 0.7rem;
-
-  span {
-    line-height: 1.55;
-    color: rgba(17, 17, 17, 0.82);
-    font-weight: 680;
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 28px 78px rgba(0, 0, 0, 0.09);
+  }
+  @media (max-width: 520px) {
+    padding: 1.1rem 1rem;
   }
 `;
 
-const SceneCtas = styled.div`
-  position: relative;
-  z-index: 1;
-  margin-top: 1.05rem;
+const SceneIcon = styled.div`
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(17, 17, 17, 0.06);
+  font-size: 1.25rem;
+`;
+
+const SceneTileTitle = styled.h3`
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 750;
+  color: rgba(17, 17, 17, 0.92);
+`;
+
+const SceneTileText = styled.p`
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: rgba(17, 17, 17, 0.68);
+  @media (max-width: 520px) {
+    font-size: 0.95rem;
+  }
+`;
+
+const SceneMeta = styled.p`
+  margin: 0.25rem 0 0;
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.52);
+  @media (max-width: 520px) {
+    font-size: 0.82rem;
+  }
+`;
+
+const ScenesCtaRow = styled.div`
+  margin-top: 1.9rem;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(250, 250, 250, 0.8);
+  padding: 1.2rem 1.2rem;
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
 `;
 
-const ScenePrimary = styled(Link)`
-  text-decoration: none;
-  padding: 0.95rem 1.05rem;
-  border-radius: 14px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: #111;
-  font-weight: 760;
+const ScenesCtaText = styled.p`
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(17, 17, 17, 0.7);
+  max-width: 65ch;
+`;
+
+const ScenesCtaButton = styled(Link)`
   display: inline-flex;
-  gap: 0.5rem;
   align-items: center;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.12);
-  transition: transform 180ms ease, filter 180ms ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.02);
-  }
-`;
-
-const SceneGhost = styled.a`
-  text-decoration: none;
-  padding: 0.95rem 1.05rem;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  color: rgba(15, 23, 42, 0.82);
-  font-weight: 720;
-  transition: transform 180ms ease, background 180ms ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    background: rgba(15, 23, 42, 0.02);
-  }
-`;
-
-const ScenesRight = styled.div`
-  display: grid;
-  gap: 0.85rem;
-`;
-
-const SceneVisual = styled.div`
-  position: relative;
-  border-radius: 24px;
-  overflow: hidden;
-  min-height: 360px;
-  background: #0b0c0f;
-  border: 1px solid rgba(196, 151, 98, 0.18);
-  box-shadow: 0 36px 120px rgba(15, 23, 42, 0.16);
-
-  @media (max-width: 980px) {
-    min-height: 300px;
-  }
-`;
-
-const SceneImg = styled.img`
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  transform: scale(1.04);
-  filter: saturate(0.98) contrast(1.06);
-`;
-
-const SceneOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-      820px 520px at var(--mx) var(--my),
-      rgba(196, 151, 98, 0.24),
-      rgba(0, 0, 0, 0) 60%
-    ),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.48));
-`;
-
-const SceneSpec = styled.div`
-  position: absolute;
-  left: 14px;
-  bottom: 14px;
-  padding: 0.75rem 0.9rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(196, 151, 98, 0.28);
-  backdrop-filter: blur(12px);
-  color: rgba(255, 255, 255, 0.9);
-
-  strong {
-    display: block;
-    font-weight: 770;
-    letter-spacing: -0.01em;
-  }
-  span {
-    display: block;
-    margin-top: 0.15rem;
-    color: rgba(255, 255, 255, 0.78);
-  }
-`;
-
-const marquee = keyframes`
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-`;
-
-const Marquee = styled.div`
-  border-radius: 18px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.06);
-  overflow: hidden;
-  padding: 0.75rem 0;
-
-  @media (prefers-reduced-motion: reduce) {
-    display: none;
-  }
-`;
-
-const MarqueeTrack = styled.div`
-  display: flex;
-  gap: 1rem;
-  width: max-content;
-  padding-left: 1rem;
-  animation: ${marquee} 18s linear infinite;
-`;
-
-const MarqueeItem = styled.div`
-  font-weight: 860;
-  letter-spacing: -0.01em;
-  color: rgba(15, 23, 42, 0.82);
-  white-space: nowrap;
-`;
-
-const MarqueeDot = styled.div`
-  width: 5px;
-  height: 5px;
+  gap: 0.55rem;
+  padding: 0.9rem 1.35rem;
   border-radius: 999px;
-  background: rgba(196, 151, 98, 0.9);
-  align-self: center;
+  background: ${({ theme }) => theme.colors.primary};
+  color: #0b0c0f;
+  font-weight: 900;
+  text-decoration: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+
+  &:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+  @media (max-width: 520px) {
+    width: 100%;
+    justify-content: center;
+  }
 `;
 
 /* =========================
@@ -1806,6 +1557,10 @@ const BenefitsGrid = styled.div`
     gap: 0.85rem;
     overflow-x: auto;
     padding-bottom: 0.35rem;
+
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 
@@ -1833,7 +1588,7 @@ const BenefitCard = styled.article`
   }
 
   @media (max-width: 768px) {
-    min-width: 82%;
+    min-width: 86%;
     scroll-snap-align: start;
   }
 `;
