@@ -306,7 +306,9 @@ export default function Auto() {
             {/* VALUE — Reescrito limpio, profesional y responsive */}
             <SheetSection>
               <SheetKicker>Qué cambia</SheetKicker>
-              <SheetH2>Los motivos reales para automatizar</SheetH2>
+              <SheetH2>
+                Los motivos reales para <span>automatizar</span>
+              </SheetH2>
               <SheetLead>
                 No va de “domótica”. Va de <b>confort</b>, <b>protección</b> y{" "}
                 <b>rutinas discretas</b> que mejoran la casa sin alterar su
@@ -463,7 +465,7 @@ export default function Auto() {
         <ProcessSection data-reveal>
           <ProcessInner>
             <ProcessLeft data-reveal>
-              <ProcessKicker>Nuestro proceso</ProcessKicker>
+              <SheetKicker>Nuestro proceso</SheetKicker>
 
               <ProcessTitle>
                 Diseñamos contigo.
@@ -846,21 +848,39 @@ const SheetSection = styled.section`
 `;
 
 const SheetKicker = styled.p`
-  letter-spacing: 0.18em;
+  margin: 0 0 0.55rem 0;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: rgba(17, 17, 17, 0.55);
-  margin: 0 0 0.7rem 0;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.55rem;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0.1rem;
+    width: 48px;
+    height: 1px;
+    background: rgba(196, 151, 98, 0.65);
+  }
 `;
 
 const SheetH2 = styled.h2`
   margin: 0;
-  font-size: 2.1rem;
-  font-weight: 760;
+  font-size: 2.15rem;
+  line-height: 1.12;
   letter-spacing: -0.02em;
+  color: rgba(17, 17, 17, 0.96);
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 
   @media (max-width: 768px) {
-    font-size: 1.75rem;
+    font-size: 1.7rem;
   }
 `;
 

@@ -11,10 +11,10 @@ import { CONTACT } from "../config/contact";
 import benefit1 from "../assets/Automatizacion/benefit1.webp";
 import automatizacionPackImg from "../assets/Automatizacion/domoticaInd.webp";
 import programaHorarios from "../assets/Automatizacion/programa.webp";
+import rainingDay from "../assets/Automatizacion/raining.webp";
 import vacaciones from "../assets/Automatizacion/vacaciones.webp";
 import Img3 from "../assets/Home/HeroImg/img3.webp";
 import heroVideo from "../assets/video1.mp4";
-
 /* =========================
    PAGE
 ========================= */
@@ -154,7 +154,7 @@ export default function Automatizacion() {
           "Tu terraza lista sin estar pendiente",
         ],
         accent: "cool",
-        img: programaHorarios,
+        img: rainingDay,
         specTitle: "Protección climática",
         specText: "Sensor de viento · retracción automática del toldo",
       },
