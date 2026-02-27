@@ -2,7 +2,7 @@
 import { lazy, Suspense, useMemo, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
-
+import NetlifyFormsRegistry from "./components/contact/NetlifyFormsRegistry";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
@@ -11,7 +11,7 @@ import Auto3 from "./pages/opcionB";
 
 // ✅ Lazy load modal (only when opened)
 const AsesoramientoModal = lazy(() =>
-  import("./components/AsesoramientoModal")
+  import("./components/AsesoramientoModalSupabase")
 );
 
 // ✅ Public pages (lazy)
@@ -78,7 +78,7 @@ export default function App() {
     <>
       <ScrollToTop />
       {!isAdminRoute && <Navbar />}
-
+      <NetlifyFormsRegistry />
       {/* ✅ One Suspense boundary for all lazy routes */}
       <Suspense fallback={null}>
         <Routes>
@@ -124,14 +124,14 @@ export default function App() {
           <Route path="/politica-cookies" element={<PoliticaCookies />} />
 
           {/* ADMIN */}
-          <Route path="/admin" element={<AdminLayout />}>
+          {/* <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="requests" element={<AdminBookings />} />
             <Route path="calendario" element={<AdminCalendar />} />
             <Route path="clientes" element={<AdminClients />} />
             <Route path="clientes/:customerKey" element={<AdminCustomer />} />
             <Route path="ajustes" element={<AdminSettings />} />
-          </Route>
+          </Route> */}
 
           {/* AUTH */}
           <Route path="/auth/callback" element={<AuthCallback />} />
