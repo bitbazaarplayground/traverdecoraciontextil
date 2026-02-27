@@ -1,21 +1,15 @@
+// src/components/contact/QuickEnquiryModal.jsx
 import { X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
-import AsesoramientoForm from "./AsesoramientoForm";
-
-/* =========================
-   Drawer UI
-========================= */
+import QuickEnquiryForm from "./QuickEnquiryForm";
 
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  z-index: 5000;
-
+  z-index: 6000;
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
   display: flex;
   justify-content: flex-end;
 `;
@@ -24,13 +18,10 @@ const Drawer = styled.aside`
   width: min(520px, 92vw);
   height: 100%;
   background: #fff;
-
   border-left: 1px solid rgba(17, 17, 17, 0.1);
   box-shadow: -40px 0 120px rgba(0, 0, 0, 0.25);
-
   display: grid;
   grid-template-rows: auto 1fr;
-
   transform: translateX(${({ $open }) => ($open ? "0%" : "100%")});
   transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -75,13 +66,10 @@ const ContextPill = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-
   padding: 0.45rem 0.75rem;
   border-radius: 999px;
-
   background: rgba(17, 17, 17, 0.05);
   border: 1px solid rgba(17, 17, 17, 0.08);
-
   font-size: 0.85rem;
   color: rgba(17, 17, 17, 0.7);
 
@@ -97,10 +85,8 @@ const CloseBtn = styled.button`
   border-radius: 12px;
   border: 1px solid rgba(17, 17, 17, 0.1);
   background: rgba(17, 17, 17, 0.03);
-
   display: grid;
   place-items: center;
-
   cursor: pointer;
 
   svg {
@@ -116,41 +102,32 @@ const Body = styled.div`
   -webkit-overflow-scrolling: touch;
 `;
 
-/**
- * Right-side drawer to request proposals.
- *
- * Props:
- * - open: boolean
- * - onClose: () => void
- * - packLabel: string (e.g. "Dormitorio")
- */
-export default function AsesoramientoModal({ open, onClose, packLabel }) {
+export default function QuickEnquiryModal({
+  open,
+  onClose,
+  packLabel,
+  source,
+}) {
   const closeBtnRef = useRef(null);
   const lastActiveRef = useRef(null);
 
-  // ESC close + scroll lock + focus management
   useEffect(() => {
     if (!open) return;
 
     lastActiveRef.current = document.activeElement;
 
-    const onKey = (e) => {
-      if (e.key === "Escape") onClose?.();
-    };
+    const onKey = (e) => e.key === "Escape" && onClose?.();
     window.addEventListener("keydown", onKey);
 
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    // focus close button for accessibility
     requestAnimationFrame(() => closeBtnRef.current?.focus());
 
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
-
-      // restore focus
-      if (lastActiveRef.current?.focus) lastActiveRef.current.focus();
+      lastActiveRef.current?.focus?.();
     };
   }, [open, onClose]);
 
@@ -160,18 +137,14 @@ export default function AsesoramientoModal({ open, onClose, packLabel }) {
     <Overlay
       role="dialog"
       aria-modal="true"
-      aria-label="Formulario de asesoramiento"
-      onMouseDown={(e) => {
-        // click outside drawer closes
-        if (e.target === e.currentTarget) onClose?.();
-      }}
+      aria-label="Formulario de contacto"
+      onMouseDown={(e) => e.target === e.currentTarget && onClose?.()}
     >
       <Drawer $open={open}>
         <Top>
           <TitleBlock>
             <Title>Solicitar asesoramiento</Title>
-            <Sub>Déjanos tus datos y te respondemos lo antes posible.</Sub>
-
+            <Sub>Déjanos tu consulta y te respondemos lo antes posible.</Sub>
             {packLabel && (
               <ContextPill>
                 Solicitud: <strong>{packLabel}</strong>
@@ -190,7 +163,14 @@ export default function AsesoramientoModal({ open, onClose, packLabel }) {
         </Top>
 
         <Body>
-          <AsesoramientoForm packLabel={packLabel} />
+          <QuickEnquiryForm
+            packLabel={packLabel}
+            source={source || "cta"}
+            onSuccess={() => {
+              // optional: close after short delay
+              setTimeout(() => onClose?.(), 900);
+            }}
+          />
         </Body>
       </Drawer>
     </Overlay>

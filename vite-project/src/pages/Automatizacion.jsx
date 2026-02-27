@@ -1,11 +1,10 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Moon, Smartphone, Sun, Wind } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AutomationFaq from "../components/automatizacion/AutomationFaq";
 import { CONTACT } from "../config/contact";
-
 /* =========================
    ASSETS
 ========================= */
@@ -446,7 +445,9 @@ export default function Automatizacion() {
 
             <ScenesGrid>
               <SceneTile>
-                <SceneIcon aria-hidden="true">🌅</SceneIcon>
+                <SceneIcon aria-hidden="true">
+                  <Sun size={18} />
+                </SceneIcon>
                 <SceneTileTitle>Mañana</SceneTileTitle>
                 <SceneTileText>
                   Apertura suave para aprovechar luz natural sin
@@ -456,7 +457,9 @@ export default function Automatizacion() {
               </SceneTile>
 
               <SceneTile>
-                <SceneIcon aria-hidden="true">🌙</SceneIcon>
+                <SceneIcon aria-hidden="true">
+                  <Moon size={18} />
+                </SceneIcon>
                 <SceneTileTitle>Noche</SceneTileTitle>
                 <SceneTileText>
                   Privacidad total y oscuridad cuando toca. Se cierra sola.
@@ -465,7 +468,9 @@ export default function Automatizacion() {
               </SceneTile>
 
               <SceneTile>
-                <SceneIcon aria-hidden="true">💨</SceneIcon>
+                <SceneIcon aria-hidden="true">
+                  <Wind size={18} />
+                </SceneIcon>
                 <SceneTileTitle>Viento / lluvia</SceneTileTitle>
                 <SceneTileText>
                   El toldo se recoge automáticamente para evitar golpes y
@@ -475,7 +480,9 @@ export default function Automatizacion() {
               </SceneTile>
 
               <SceneTile>
-                <SceneIcon aria-hidden="true">📱</SceneIcon>
+                <SceneIcon aria-hidden="true">
+                  <Smartphone size={18} />
+                </SceneIcon>
                 <SceneTileTitle>Control por app</SceneTileTitle>
                 <SceneTileText>
                   Mando o móvil. Ajustes rápidos y escenas guardadas para cada
@@ -1432,7 +1439,21 @@ const ScenesGrid = styled.div`
   gap: 1.15rem;
   margin-top: 1.8rem;
 
+  @media (max-width: 768px) {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
   @media (min-width: 980px) {
+    display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.25rem;
   }
@@ -1440,23 +1461,51 @@ const ScenesGrid = styled.div`
 
 const SceneTile = styled.article`
   border-radius: 20px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.55)
+  );
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.06);
   padding: 1.35rem 1.25rem;
   display: grid;
   gap: 0.65rem;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 12px;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      rgba(196, 151, 98, 0.65),
+      rgba(15, 23, 42, 0.08),
+      transparent
+    );
+    opacity: 0.9;
+    pointer-events: none;
+  }
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 28px 78px rgba(0, 0, 0, 0.09);
+    transform: translateY(-2px);
+    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.08);
   }
+
+  @media (max-width: 768px) {
+    min-width: 84%;
+    scroll-snap-align: start;
+  }
+
   @media (max-width: 520px) {
     padding: 1.1rem 1rem;
   }
 `;
-
 const SceneIcon = styled.div`
   width: 44px;
   height: 44px;
@@ -1464,7 +1513,11 @@ const SceneIcon = styled.div`
   display: grid;
   place-items: center;
   background: rgba(17, 17, 17, 0.06);
-  font-size: 1.25rem;
+
+  svg {
+    display: block;
+    color: rgba(15, 23, 42, 0.82);
+  }
 `;
 
 const SceneTileTitle = styled.h3`

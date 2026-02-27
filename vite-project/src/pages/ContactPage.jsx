@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import AsesoramientoForm from "../components/AsesoramientoForm";
+import AsesoramientoForm from "../components/AsesoramientoFormSupabase";
 import { CONTACT } from "../config/contact";
 import { trackEvent } from "../lib/analytics";
 
