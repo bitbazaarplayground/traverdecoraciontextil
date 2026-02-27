@@ -877,7 +877,7 @@ export default function AutomatizacionIndividual({ contactTo = "/contact" }) {
         <PacksSection id="packs">
           <Wrap>
             <PacksHeader>
-              <PacksKicker>Configuraciones</PacksKicker>
+              <Kicker>Configuraciones</Kicker>
               <PacksTitle>
                 <span>Elige</span> dónde empezar
               </PacksTitle>
