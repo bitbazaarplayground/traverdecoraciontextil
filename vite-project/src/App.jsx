@@ -3,11 +3,11 @@ import { lazy, Suspense, useMemo, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import NetlifyFormsRegistry from "./components/contact/NetlifyFormsRegistry";
+import QuickEnquiryModal from "./components/contact/QuickEnquiryModal";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
 import HomePage from "./pages/HomePage";
-import Auto3 from "./pages/opcionB";
 
 // ✅ Lazy load modal (only when opened)
 const AsesoramientoModal = lazy(() =>
@@ -57,6 +57,10 @@ const AdminSettings = lazy(() => import("./pages/Admin/AdminSettings"));
 export default function App() {
   const [isAsesoramientoOpen, setIsAsesoramientoOpen] = useState(false);
   const [modalPack, setModalPack] = useState(null);
+  // Form
+  const [enquiryOpen, setEnquiryOpen] = useState(false);
+  const [enquiryPack, setEnquiryPack] = useState("General");
+  const [enquirySource, setEnquirySource] = useState("cta");
 
   const { pathname } = useLocation();
   const isAdminRoute = useMemo(
@@ -73,7 +77,11 @@ export default function App() {
     setIsAsesoramientoOpen(false);
     setModalPack(null);
   };
-
+  function onOpenAsesoramiento(packLabel = "General", source = "cta") {
+    setEnquiryPack(packLabel);
+    setEnquirySource(source);
+    setEnquiryOpen(true);
+  }
   return (
     <>
       <ScrollToTop />
@@ -84,13 +92,13 @@ export default function App() {
         <Routes>
           <Route
             path="/"
-            element={<HomePage onOpenAsesoramiento={openAsesoramiento} />}
+            element={<HomePage onOpenAsesoramiento={onOpenAsesoramiento} />}
           />
 
           {/* PROPUESTAS */}
           <Route
             path="/propuestas"
-            element={<Propuestas onOpenAsesoramiento={openAsesoramiento} />}
+            element={<Propuestas onOpenAsesoramiento={onOpenAsesoramiento} />}
           />
 
           {/* AUTOMATIZACION */}
@@ -103,7 +111,7 @@ export default function App() {
             path="/automatizacion/individual"
             element={<AutomatizacionIndividual />}
           />
-          <Route path="/auto3" element={<Auto3 />} />
+
           {/* CONTACTO */}
           <Route path="/contact" element={<ContactPage />} />
 
@@ -143,7 +151,7 @@ export default function App() {
       </Suspense>
 
       {/* ✅ Modal only loads when needed */}
-      {isAsesoramientoOpen && (
+      {/* {isAsesoramientoOpen && (
         <Suspense fallback={null}>
           <AsesoramientoModal
             open={isAsesoramientoOpen}
@@ -151,8 +159,13 @@ export default function App() {
             onClose={closeAsesoramiento}
           />
         </Suspense>
-      )}
-
+      )} */}
+      <QuickEnquiryModal
+        open={enquiryOpen}
+        onClose={() => setEnquiryOpen(false)}
+        packLabel={enquiryPack}
+        source={enquirySource}
+      />
       {!isAdminRoute && <Footer />}
     </>
   );

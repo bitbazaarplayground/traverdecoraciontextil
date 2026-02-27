@@ -398,7 +398,7 @@ export default function Hero({ onOpenAsesoramiento }) {
           <PrimaryAction
             type="button"
             onClick={() => {
-              trackEvent("open_asesoramiento", {
+              trackEvent("open_quick_enquiry", {
                 source: "hero",
                 pack: "General",
               });
