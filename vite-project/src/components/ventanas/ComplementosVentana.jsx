@@ -1,4 +1,4 @@
-// src/components/CortinasEstores/ComplementosVentana.jsx
+// src/components/ventanas/ComplementosVentana.jsx
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -17,6 +17,7 @@ const fadeUp = {
     transition: { duration: 0.45, delay: i * 0.06, ease: "easeOut" },
   }),
 };
+
 const STORAGE_KEY = "scroll-positions:v4";
 
 const saveScrollNow = () => {
@@ -30,47 +31,51 @@ const saveScrollNow = () => {
   } catch {}
 };
 
-export default function ComplementosVentana({ id = "sistemas" }) {
-  const items = [
-    {
-      title: "Panel japonés",
-      desc: "Ideal para puertas correderas y grandes ventanales.",
-      img: panelJaponesImg,
-      to: "/panel-japones",
-    },
-    {
-      title: "Venecianas",
-      desc: "Control solar preciso con privacidad regulable.",
-      img: venecianasImg,
-      to: "/venecianas",
-    },
-    {
-      title: "Automatización",
-      desc: "Sistemas motorizados y control inteligente del hogar.",
-      img: domoticaControl,
-      to: "/automatizacion",
-    },
-    {
-      title: "Mosquiteras",
-      desc: "Ventila sin insectos. Discretas y resistentes.",
-      img: mosquiteraPatio,
-      to: "/mosquiteras",
-    },
-  ];
+const DEFAULT_ITEMS = [
+  {
+    title: "Panel japonés",
+    desc: "Ideal para puertas correderas y grandes ventanales.",
+    img: panelJaponesImg,
+    to: "/panel-japones",
+  },
+  {
+    title: "Venecianas",
+    desc: "Control solar preciso con privacidad regulable.",
+    img: venecianasImg,
+    to: "/venecianas",
+  },
+  {
+    title: "Automatización",
+    desc: "Sistemas motorizados y control inteligente del hogar.",
+    img: domoticaControl,
+    to: "/automatizacion",
+  },
+  {
+    title: "Mosquiteras",
+    desc: "Ventila sin insectos. Discretas y resistentes.",
+    img: mosquiteraPatio,
+    to: "/mosquiteras",
+  },
+];
 
+export default function ComplementosVentana({
+  id = "sistemas",
+  items = DEFAULT_ITEMS,
+  title = (
+    <>
+      Otros productos <span>para tu ventana</span>
+    </>
+  ),
+  lead = "Complementos que combinan para dejar el conjunto perfecto.",
+}) {
   return (
     <Section id={id} aria-label="Accesos rápidos a otros productos">
       <Container>
         <Top>
           <Heading>
             <Kicker>Accesos rápidos</Kicker>
-            <Title>
-              Otros productos <span>para tu ventana</span>
-            </Title>
-            <Lead>
-              Complementos que combinan con cortinas y estores para dejar el
-              conjunto perfecto.
-            </Lead>
+            <Title>{title}</Title>
+            <Lead>{lead}</Lead>
           </Heading>
 
           <Hint>
@@ -84,14 +89,24 @@ export default function ComplementosVentana({ id = "sistemas" }) {
           viewport={{ once: true, amount: 0.35 }}
         >
           {items.map((it, i) => (
-            <Card key={it.title} as={motion.div} variants={fadeUp} custom={i}>
+            <Card
+              key={it.to || it.title}
+              as={motion.div}
+              variants={fadeUp}
+              custom={i}
+            >
               <CardLink
                 to={it.to}
                 aria-label={`Ver ${it.title}`}
                 onClick={saveScrollNow}
               >
                 <Media>
-                  <Img src={it.img} alt={it.title} loading="lazy" />
+                  <Img
+                    src={it.img}
+                    alt={it.title}
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <Overlay />
                 </Media>
 
@@ -104,7 +119,6 @@ export default function ComplementosVentana({ id = "sistemas" }) {
                   </More>
                 </Body>
 
-                {/* Fancy micro-interaction layer */}
                 <Sheen aria-hidden="true" />
               </CardLink>
             </Card>
@@ -203,6 +217,7 @@ const Hint = styled.p`
     display: none;
   }
 `;
+
 const Lead = styled.p`
   margin: 0.75rem 0 0;
   font-size: 1.08rem;
@@ -210,13 +225,15 @@ const Lead = styled.p`
   color: rgba(17, 17, 17, 0.62);
   max-width: 70ch;
 `;
+
+/* ✅ Auto-fit: mejor si cambias el nº de items */
 const Cards = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 0.9rem;
 
   @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 
   /* Mobile: swipeable row */
@@ -229,7 +246,6 @@ const Cards = styled(motion.div)`
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 
-    /* hide scrollbar (best effort) */
     scrollbar-width: none;
     &::-webkit-scrollbar {
       display: none;
@@ -239,7 +255,7 @@ const Cards = styled(motion.div)`
 
 const Card = styled.div`
   @media (max-width: 768px) {
-    min-width: 78%;
+    min-width: min(82vw, 360px);
     scroll-snap-align: start;
   }
 `;
@@ -302,24 +318,8 @@ const Overlay = styled.div`
   background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.22));
 `;
 
-const Badge = styled.span`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-
-  padding: 0.35rem 0.6rem;
-  border-radius: 999px;
-
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(17, 17, 17, 0.1);
-  color: rgba(17, 17, 17, 0.78);
-  font-size: 0.78rem;
-  font-weight: 750;
-`;
-
 const Body = styled.div`
   padding: 0.95rem 0.95rem 1.05rem;
-
   display: grid;
   gap: 0.35rem;
 `;
@@ -357,7 +357,6 @@ const More = styled.div`
   }
 `;
 
-/* Fancy micro-interaction: subtle moving sheen */
 const Sheen = styled.div`
   position: absolute;
   inset: -40% -60%;
