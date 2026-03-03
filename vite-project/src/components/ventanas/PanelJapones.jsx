@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../../config/contact";
-
+import { trackEvent } from "../../lib/analytics";
 /* IMAGES */
 import bedroomDarkPanel from "../../assets/panelJapones/bedroomDarkPanel.webp";
 import bedroomStudyarea from "../../assets/panelJapones/bedroomStudyarea.webp";
@@ -187,7 +187,7 @@ const CTA = styled(Link)`
    COMPONENT
 ========================= */
 
-export default function PanelJapones() {
+export default function PanelJapones({ onOpenAsesoramiento }) {
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
@@ -360,7 +360,21 @@ export default function PanelJapones() {
             sea funcional, equilibrado y coherente con el espacio.
           </ValueText>
 
-          <CTA to="/contact">Solicitar propuesta</CTA>
+          <CTA
+            to="/contact"
+            onClick={(e) => {
+              e.preventDefault();
+
+              trackEvent("open_quick_enquiry", {
+                source: "panel_japones_cta",
+                pack: "Panel Japonés",
+              });
+
+              onOpenAsesoramiento?.("Panel Japonés", "panel_japones_cta");
+            }}
+          >
+            Solicitar propuesta
+          </CTA>
         </ValueCard>
       </ValueSection>
     </Page>

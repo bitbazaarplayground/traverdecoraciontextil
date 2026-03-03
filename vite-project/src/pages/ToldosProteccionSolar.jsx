@@ -3,8 +3,8 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import heroImg from "../assets/toldos/toldo2.webp";
+import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
-
 /* =========================
    COMPONENTS
 ========================= */
@@ -394,69 +394,6 @@ const CardText = styled.p`
   color: rgba(17, 17, 17, 0.68);
 `;
 
-/* =========================
-   AUTOMATION BAND
-========================= */
-
-const AutomationBand = styled.section`
-  padding: 4rem 2rem 2rem;
-`;
-
-const AutomationCard = styled.div`
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 2rem;
-  border-radius: 22px;
-  background: #fafafa;
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  display: grid;
-  gap: 1rem;
-
-  @media (min-width: 980px) {
-    grid-template-columns: 1.2fr 0.8fr;
-    align-items: center;
-  }
-`;
-
-const AutomationTitle = styled.h3`
-  margin: 0;
-  font-size: 1.45rem;
-  font-weight: 750;
-
-  span {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-const AutomationText = styled.p`
-  margin: 0.5rem 0 0;
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: rgba(17, 17, 17, 0.68);
-`;
-
-const AutomationButton = styled(Link)`
-  justify-self: start;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.9rem 1.6rem;
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: #0b0c0f;
-  font-weight: 850;
-  text-decoration: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-
-  @media (min-width: 980px) {
-    justify-self: end;
-  }
-
-  &:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
-  }
-`;
 const SectionTight = styled(Section)`
   padding-top: 3.25rem; /* was 5.5rem */
 
@@ -594,6 +531,13 @@ const AutomationButtons = styled.div`
   flex-wrap: wrap;
   gap: 0.85rem;
 
+  align-items: stretch;
+
+  @media (max-width: 979px) {
+    flex-direction: column;
+    width: 100%;
+  }
+
   @media (min-width: 980px) {
     justify-content: flex-end;
   }
@@ -605,7 +549,8 @@ const AutomationPrimary = styled(Link)`
   justify-content: center;
   gap: 0.55rem;
 
-  padding: 0.95rem 1.55rem;
+  padding: 0.95rem 1.6rem;
+  min-width: 220px;
   border-radius: 999px;
 
   background: ${({ theme }) => theme.colors.primary};
@@ -615,18 +560,23 @@ const AutomationPrimary = styled(Link)`
   text-decoration: none;
   transition: transform 0.25s ease, opacity 0.25s ease;
 
+  @media (max-width: 979px) {
+    width: 100%;
+  }
+
   &:hover {
     opacity: 0.92;
     transform: translateY(-1px);
   }
 `;
-
 const AutomationSecondary = styled(Link)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.55rem;
 
-  padding: 0.95rem 1.45rem;
+  padding: 0.95rem 1.6rem;
+  min-width: 220px;
   border-radius: 999px;
 
   background: rgba(255, 255, 255, 0.08);
@@ -637,12 +587,15 @@ const AutomationSecondary = styled(Link)`
   text-decoration: none;
   transition: transform 0.25s ease, background 0.25s ease;
 
+  @media (max-width: 979px) {
+    width: 100%;
+  }
+
   &:hover {
     background: rgba(255, 255, 255, 0.12);
     transform: translateY(-1px);
   }
 `;
-
 /* =========================
    DATA
 ========================= */
@@ -684,7 +637,7 @@ const FAQ_ITEMS = [
    PAGE
 ========================= */
 
-export default function ToldosProteccionSolar() {
+export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
@@ -810,7 +763,21 @@ export default function ToldosProteccionSolar() {
           </HeroSubtitle>
 
           <HeroActions>
-            <PrimaryButton to="/contact">Solicitar propuesta</PrimaryButton>
+            <PrimaryButton
+              to="/contact"
+              onClick={(e) => {
+                e.preventDefault();
+
+                trackEvent("open_quick_enquiry", {
+                  source: "toldos_proteccion_solar",
+                  pack: "Toldos",
+                });
+
+                onOpenAsesoramiento?.("Toldos", "toldos_proteccion_solar");
+              }}
+            >
+              Solicitar propuesta
+            </PrimaryButton>
             <SecondaryButton href="#tipos">Ver tipos de toldos</SecondaryButton>
           </HeroActions>
         </HeroContent>
@@ -1051,12 +1018,27 @@ export default function ToldosProteccionSolar() {
 
           <AutomationRight>
             <AutomationButtons>
-              <AutomationPrimary to="/automatizacion">
-                Ver automatización <span aria-hidden="true">→</span>
+              <AutomationPrimary
+                to="/contact"
+                onClick={(e) => {
+                  e.preventDefault();
+
+                  trackEvent("open_quick_enquiry", {
+                    source: "toldos_proteccion_solar_primary",
+                    pack: "Toldos",
+                  });
+
+                  onOpenAsesoramiento?.(
+                    "Toldos",
+                    "toldos_proteccion_solar_primary"
+                  );
+                }}
+              >
+                Pedir asesoramiento
               </AutomationPrimary>
 
-              <AutomationSecondary to="/contact">
-                Pedir asesoramiento
+              <AutomationSecondary to="/automatizacion">
+                Ver automatización <span aria-hidden="true">→</span>
               </AutomationSecondary>
             </AutomationButtons>
           </AutomationRight>

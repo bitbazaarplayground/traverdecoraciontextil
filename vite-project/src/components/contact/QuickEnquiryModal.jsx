@@ -168,7 +168,7 @@ export default function QuickEnquiryModal({
             source={source || "cta"}
             onSuccess={() => {
               // optional: close after short delay
-              setTimeout(() => onClose?.(), 900);
+              setTimeout(() => onClose?.(), 20000);
             }}
           />
         </Body>

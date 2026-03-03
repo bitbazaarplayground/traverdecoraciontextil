@@ -199,11 +199,13 @@ export default function ContactCTAHome({ onOpenAsesoramiento }) {
           <CTAButton
             type="button"
             onClick={() => {
-              trackEvent("open_asesoramiento", {
+              trackEvent("open_quick_enquiry", {
                 source: "cta_home",
                 pack: "General",
               });
-              onOpenAsesoramiento?.("General");
+
+              // Open the new Netlify form drawer
+              onOpenAsesoramiento?.("General", "cta_home");
             }}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}

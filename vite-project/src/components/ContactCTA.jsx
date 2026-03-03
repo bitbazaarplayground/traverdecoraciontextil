@@ -2,7 +2,7 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 import styled from "styled-components";
 import Img4 from "../assets/img4.png";
-
+import { trackEvent } from "../lib/analytics";
 const Section = styled.section`
   width: 100%;
   position: relative;
@@ -109,7 +109,7 @@ const CTAButton = styled(motion.a)`
   }
 `;
 
-export default function ContactCTA() {
+export default function ContactCTA({ onOpenAsesoramiento }) {
   const reduceMotion = useReducedMotion();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.65 });
@@ -151,6 +151,16 @@ export default function ContactCTA() {
           href="#contact"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.98 }}
+          onClick={(e) => {
+            e.preventDefault();
+
+            trackEvent("open_quick_enquiry", {
+              source: "cortinas_estores_cta",
+              pack: "Cortinas",
+            });
+
+            onOpenAsesoramiento?.("Cortinas", "cortinas_estores_cta");
+          }}
         >
           Reserva Ahora
         </CTAButton>

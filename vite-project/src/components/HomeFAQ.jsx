@@ -93,11 +93,12 @@ export default function HomeFAQ({ onOpenAsesoramiento }) {
                   as="button"
                   type="button"
                   onClick={() => {
-                    trackEvent("open_asesoramiento", {
+                    trackEvent("open_quick_enquiry", {
                       source: "home_faq",
                       pack: "General",
                     });
-                    onOpenAsesoramiento?.("General");
+
+                    onOpenAsesoramiento?.("General", "home_faq");
                   }}
                 >
                   Solicitar asesoramiento

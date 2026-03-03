@@ -5,20 +5,20 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AutomationFaq from "../components/automatizacion/AutomationFaq";
 import { CONTACT } from "../config/contact";
+import { trackEvent } from "../lib/analytics";
 /* =========================
    ASSETS
 ========================= */
 import benefit1 from "../assets/Automatizacion/benefit1.webp";
 import automatizacionPackImg from "../assets/Automatizacion/domoticaInd.webp";
 import programaHorarios from "../assets/Automatizacion/programa.webp";
-import rainingDay from "../assets/Automatizacion/raining.webp";
 import vacaciones from "../assets/Automatizacion/vacaciones.webp";
 import Img3 from "../assets/Home/HeroImg/img3.webp";
 import heroVideo from "../assets/video1.mp4";
 /* =========================
    PAGE
 ========================= */
-export default function Automatizacion() {
+export default function Automatizacion({ onOpenAsesoramiento }) {
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
@@ -113,55 +113,6 @@ export default function Automatizacion() {
     return () => io.disconnect();
   }, []);
 
-  // Premium: “scene” selector (feels bespoke)
-  const scenes = useMemo(
-    () => [
-      {
-        id: "dia",
-        title: "Día",
-        sub: "Luz exacta · menos calor · más confort",
-        bullets: [
-          "Control de deslumbramiento",
-          "Menos carga de aire acondicionado",
-          "Privacidad sin oscurecer",
-        ],
-        accent: "warm",
-        img: benefit1,
-        specTitle: "Control solar",
-        specText: "Ajuste automático según luz natural · confort térmico",
-      },
-      {
-        id: "noche",
-        title: "Noche",
-        sub: "Privacidad total · descanso real",
-        bullets: [
-          "Cierre al anochecer automático",
-          "Oscuridad cuando lo necesitas",
-          "Sensación de hogar protegido",
-        ],
-        accent: "neutral",
-        img: vacaciones,
-        specTitle: "Privacidad inteligente",
-        specText: "Cierre programado · sensación de seguridad",
-      },
-      {
-        id: "clima",
-        title: "Viento & lluvia",
-        sub: "Toldos protegidos · respuesta automática",
-        bullets: [
-          "Sensores que retraen el toldo a tiempo",
-          "Evita golpes y tensiones por viento",
-          "Tu terraza lista sin estar pendiente",
-        ],
-        accent: "cool",
-        img: rainingDay,
-        specTitle: "Protección climática",
-        specText: "Sensor de viento · retracción automática del toldo",
-      },
-    ],
-    []
-  );
-
   // Premium: FAQ accordion (editorial + clean)
   const faqs = useMemo(
     () => [
@@ -242,7 +193,22 @@ export default function Automatizacion() {
           </HeroSubtitle>
 
           <HeroActions>
-            <PrimaryButton href="/contact">Asesoramiento privado</PrimaryButton>
+            <PrimaryButton
+              href="/contact"
+              onClick={(e) => {
+                e.preventDefault();
+                trackEvent("open_quick_enquiry", {
+                  source: "automatizacion_private",
+                  pack: "Automatización",
+                });
+                onOpenAsesoramiento?.(
+                  "Automatización",
+                  "automatizacion_private"
+                );
+              }}
+            >
+              Asesoramiento privado
+            </PrimaryButton>
             <SecondaryButton href="#experiencia">
               Descubrir la experiencia
             </SecondaryButton>
@@ -304,7 +270,22 @@ export default function Automatizacion() {
                 </BulletGrid>
 
                 <CardActions>
-                  <MiniPrimary to="/contact">
+                  <MiniPrimary
+                    to="/contact"
+                    onClick={(e) => {
+                      e.preventDefault();
+
+                      trackEvent("open_quick_enquiry", {
+                        source: "mini_primary_cta",
+                        pack: "Automatización",
+                      });
+
+                      onOpenAsesoramiento?.(
+                        "Automatización",
+                        "mini_primary_cta"
+                      );
+                    }}
+                  >
                     Solicitar propuesta <ArrowRight size={16} />
                   </MiniPrimary>
                   <MiniGhost href="#escenas">Ver escenas</MiniGhost>
@@ -429,80 +410,6 @@ export default function Automatizacion() {
             </Quote>
           </Section>
 
-          {/* SECTION: SCENES (interactive, “premium”) */}
-          <Section id="escenas" data-reveal="out">
-            <SectionTop>
-              <Kicker>Escenas</Kicker>
-              <Title>
-                Automatización con <span>sentido</span>
-              </Title>
-              <Lead>
-                Lo importante no es la app. Es lo que evita: calor,
-                deslumbramientos, daños por viento y la sensación de “estar
-                pendiente”.
-              </Lead>
-            </SectionTop>
-
-            <ScenesGrid>
-              <SceneTile>
-                <SceneIcon aria-hidden="true">
-                  <Sun size={18} />
-                </SceneIcon>
-                <SceneTileTitle>Mañana</SceneTileTitle>
-                <SceneTileText>
-                  Apertura suave para aprovechar luz natural sin
-                  deslumbramiento.
-                </SceneTileText>
-                <SceneMeta>Horario · amanecer · rutina</SceneMeta>
-              </SceneTile>
-
-              <SceneTile>
-                <SceneIcon aria-hidden="true">
-                  <Moon size={18} />
-                </SceneIcon>
-                <SceneTileTitle>Noche</SceneTileTitle>
-                <SceneTileText>
-                  Privacidad total y oscuridad cuando toca. Se cierra sola.
-                </SceneTileText>
-                <SceneMeta>Anochecer · descanso</SceneMeta>
-              </SceneTile>
-
-              <SceneTile>
-                <SceneIcon aria-hidden="true">
-                  <Wind size={18} />
-                </SceneIcon>
-                <SceneTileTitle>Viento / lluvia</SceneTileTitle>
-                <SceneTileText>
-                  El toldo se recoge automáticamente para evitar golpes y
-                  tensiones.
-                </SceneTileText>
-                <SceneMeta>Sensores · protección</SceneMeta>
-              </SceneTile>
-
-              <SceneTile>
-                <SceneIcon aria-hidden="true">
-                  <Smartphone size={18} />
-                </SceneIcon>
-                <SceneTileTitle>Control por app</SceneTileTitle>
-                <SceneTileText>
-                  Mando o móvil. Ajustes rápidos y escenas guardadas para cada
-                  momento.
-                </SceneTileText>
-                <SceneMeta>Wi-Fi · escenas</SceneMeta>
-              </SceneTile>
-            </ScenesGrid>
-
-            <ScenesCtaRow>
-              <ScenesCtaText>
-                ¿Quieres que lo dejemos listo para tu rutina desde el primer
-                día?
-              </ScenesCtaText>
-              <ScenesCtaButton to="/contact">
-                Pedir asesoramiento <ArrowRight size={16} />
-              </ScenesCtaButton>
-            </ScenesCtaRow>
-          </Section>
-
           {/* SECTION: BENEFITS */}
           <Section id="experiencia" data-reveal="out">
             <SectionTop>
@@ -599,7 +506,108 @@ export default function Automatizacion() {
               (luz + privacidad) y escalamos cuando lo disfrutas.
             </MicroProof>
           </Section>
+          {/* SECTION: SCENES (interactive, “premium”) */}
+          <Section id="escenas" data-reveal="out">
+            <SectionTop>
+              <Kicker>Escenas</Kicker>
+              <Title>
+                Automatización con <span>sentido</span>
+              </Title>
+              <Lead>
+                Lo importante no es la app. Es lo que evita: calor,
+                deslumbramientos, daños por viento y la sensación de “estar
+                pendiente”.
+              </Lead>
+            </SectionTop>
 
+            <ScenesGrid>
+              <SceneTile>
+                <SceneIcon aria-hidden="true">
+                  <Sun size={18} />
+                </SceneIcon>
+                <SceneTileTitle>Mañana</SceneTileTitle>
+                <SceneTileText>
+                  Apertura suave para aprovechar luz natural sin
+                  deslumbramiento.
+                </SceneTileText>
+                <SceneMeta>Horario · amanecer · rutina</SceneMeta>
+              </SceneTile>
+
+              <SceneTile>
+                <SceneIcon aria-hidden="true">
+                  <Moon size={18} />
+                </SceneIcon>
+                <SceneTileTitle>Noche</SceneTileTitle>
+                <SceneTileText>
+                  Privacidad total y oscuridad cuando toca. Se cierra sola.
+                </SceneTileText>
+                <SceneMeta>Anochecer · descanso</SceneMeta>
+              </SceneTile>
+
+              <SceneTile>
+                <SceneIcon aria-hidden="true">
+                  <Wind size={18} />
+                </SceneIcon>
+                <SceneTileTitle>Viento / lluvia</SceneTileTitle>
+                <SceneTileText>
+                  El toldo se recoge automáticamente para evitar golpes y
+                  tensiones.
+                </SceneTileText>
+                <SceneMeta>Sensores · protección</SceneMeta>
+              </SceneTile>
+
+              <SceneTile>
+                <SceneIcon aria-hidden="true">
+                  <Smartphone size={18} />
+                </SceneIcon>
+                <SceneTileTitle>Control por app</SceneTileTitle>
+                <SceneTileText>
+                  Mando o móvil. Ajustes rápidos y escenas guardadas para cada
+                  momento.
+                </SceneTileText>
+                <SceneMeta>Wi-Fi · escenas</SceneMeta>
+              </SceneTile>
+            </ScenesGrid>
+
+            {/* FINAL CTA */}
+            <Section data-reveal="out">
+              <CTA>
+                <div>
+                  <CTATitle>¿Lo vemos en tu casa?</CTATitle>
+                  <CTAText>
+                    Te proponemos una solución clara y realista según tu
+                    espacio. Medición, propuesta y presupuesto sin compromiso.
+                  </CTAText>
+                </div>
+
+                <CTAButtons>
+                  <CTAButtonPrimary
+                    href="/contact"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      trackEvent("open_quick_enquiry", {
+                        source: "automatizacion_primary",
+                        pack: "Automatización",
+                      });
+                      onOpenAsesoramiento?.(
+                        "Automatización",
+                        "automatizacion_primary"
+                      );
+                    }}
+                  >
+                    Pedir asesoramiento
+                  </CTAButtonPrimary>
+                  <CTAButtonSecondary
+                    href={CONTACT.whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    WhatsApp
+                  </CTAButtonSecondary>
+                </CTAButtons>
+              </CTA>
+            </Section>
+          </Section>
           {/* SECTION: PROCESS */}
           <Section data-reveal="out">
             <SectionTop>
@@ -656,32 +664,6 @@ export default function Automatizacion() {
             withSchema
             canonicalUrl={canonical}
           />
-
-          {/* FINAL CTA */}
-          <Section data-reveal="out">
-            <CTA>
-              <div>
-                <CTATitle>¿Lo vemos en tu casa?</CTATitle>
-                <CTAText>
-                  Te proponemos una solución clara y realista según tu espacio.
-                  Medición, propuesta y presupuesto sin compromiso.
-                </CTAText>
-              </div>
-
-              <CTAButtons>
-                <CTAButtonPrimary href="/contact">
-                  Pedir asesoramiento
-                </CTAButtonPrimary>
-                <CTAButtonSecondary
-                  href={CONTACT.whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  WhatsApp
-                </CTAButtonSecondary>
-              </CTAButtons>
-            </CTA>
-          </Section>
         </SurfaceInner>
       </Surface>
     </Page>

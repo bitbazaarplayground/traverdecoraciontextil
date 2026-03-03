@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-
+import { trackEvent } from "../lib/analytics";
 /* =========================
    2026 SHOWROOM / ARTIST SECTION
    - Kinetic intro
@@ -389,7 +389,7 @@ function TiltCard({ s }) {
   );
 }
 
-export default function EnfoqueSlider() {
+export default function EnfoqueSlider({ onOpenAsesoramiento }) {
   const steps = useMemo(
     () => [
       {
@@ -551,6 +551,19 @@ export default function EnfoqueSlider() {
             style={{ x: magnet.x, y: magnet.y }}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.99 }}
+            onClick={(e) => {
+              e.preventDefault();
+
+              trackEvent("open_quick_enquiry", {
+                source: "cortinas_estores_enfoque_slider",
+                pack: "Cortinas",
+              });
+
+              onOpenAsesoramiento?.(
+                "Cortinas",
+                "cortinas_estores_enfoque_slider"
+              );
+            }}
           >
             Pedir propuesta <ArrowRight size={18} />
           </CTA>

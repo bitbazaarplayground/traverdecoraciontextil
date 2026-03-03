@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../../config/contact";
-
+import { trackEvent } from "../../lib/analytics";
 /* IMAGES */
 import bano1 from "../../assets/venecianas/bano1.webp";
 import cocina1 from "../../assets/venecianas/cocina1.webp";
@@ -234,7 +234,7 @@ const CTA = styled(Link)`
    COMPONENT
 ========================= */
 
-export default function Venecianas() {
+export default function Venecianas({ onOpenAsesoramiento }) {
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
@@ -403,7 +403,21 @@ export default function Venecianas() {
             clara según tu espacio.
           </ValueText>
 
-          <CTA to="/contact">Solicitar propuesta</CTA>
+          <CTA
+            to="/contact"
+            onClick={(e) => {
+              e.preventDefault();
+
+              trackEvent("open_quick_enquiry", {
+                source: "venecianas_cta",
+                pack: "Venecianas",
+              });
+
+              onOpenAsesoramiento?.("Venecianas", "venecianas_cta");
+            }}
+          >
+            Solicitar propuesta
+          </CTA>
         </ValueCard>
       </ValueSection>
     </Page>
