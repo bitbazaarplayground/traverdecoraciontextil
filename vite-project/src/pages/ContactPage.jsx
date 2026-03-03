@@ -1,17 +1,10 @@
-import {
-  ChevronDown,
-  Clock,
-  Mail,
-  MapPin,
-  MessageCircle,
-  Phone,
-  X,
-} from "lucide-react";
-import { useEffect, useState } from "react";
+// src/pages/ContactPage.jsx
+import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import AsesoramientoForm from "../components/AsesoramientoFormSupabase";
+
 import { CONTACT } from "../config/contact";
 import { trackEvent } from "../lib/analytics";
 
@@ -139,6 +132,7 @@ const PanelTop = styled.div`
   padding: 1.35rem 1.3rem 1.1rem;
   border-bottom: 1px solid rgba(17, 17, 17, 0.08);
 `;
+
 const ContextPill = styled.div`
   margin-top: 0.85rem;
   display: inline-flex;
@@ -247,20 +241,6 @@ const RightArrow = styled.div`
   color: rgba(17, 17, 17, 0.35);
 `;
 
-const Chevron = styled.div`
-  display: grid;
-  place-items: center;
-  color: rgba(17, 17, 17, 0.38);
-  transition: transform 0.2s ease;
-
-  svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  transform: ${({ $open }) => ($open ? "rotate(180deg)" : "rotate(0deg)")};
-`;
-
 const StaticItem = styled.div`
   display: flex;
   align-items: center;
@@ -274,92 +254,8 @@ const StaticItem = styled.div`
   border: 1px solid rgba(17, 17, 17, 0.06);
 `;
 
-const InlineCollapse = styled.div`
-  overflow: hidden;
-  max-height: ${({ $open }) => ($open ? "1400px" : "0px")};
-  opacity: ${({ $open }) => ($open ? 1 : 0)};
-  transform: ${({ $open }) => ($open ? "translateY(0)" : "translateY(-4px)")};
-  transition: max-height 0.4s ease, opacity 0.25s ease, transform 0.25s ease;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const InlineInner = styled.div`
-  padding: 0.75rem 0.2rem 0.2rem;
-`;
-
-/* =========================
-   MODAL (MOBILE)
-========================= */
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
-  display: grid;
-  place-items: center;
-  padding: 1.1rem;
-`;
-
-const ModalCard = styled.div`
-  width: min(560px, 100%);
-  border-radius: 20px;
-  background: #fff;
-  border: 1px solid rgba(17, 17, 17, 0.1);
-  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-`;
-
-const ModalTop = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-
-  padding: 1.05rem 1.05rem 0.9rem;
-  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
-`;
-
-const ModalTitle = styled.h3`
-  margin: 0;
-  font-size: 1.05rem;
-  font-weight: 900;
-  color: #111;
-`;
-
-const CloseButton = styled.button`
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  border: 1px solid rgba(17, 17, 17, 0.1);
-  background: rgba(17, 17, 17, 0.03);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-
-  svg {
-    width: 18px;
-    height: 18px;
-    color: rgba(17, 17, 17, 0.7);
-  }
-`;
-
-const ModalBody = styled.div`
-  padding: 1rem 1.05rem 1.1rem;
-`;
-
-export default function ContactPage() {
+export default function ContactPage({ onOpenAsesoramiento }) {
   const [isMobile, setIsMobile] = useState(false);
-  const [inlineOpen, setInlineOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-
   const location = useLocation();
 
   // SEO base
@@ -378,73 +274,86 @@ export default function ContactPage() {
   const ogImageAlt = `Contacto ${CONTACT.siteName} en ${CONTACT.address.addressLocality} (${CONTACT.address.addressRegion})`;
 
   const telephone = CONTACT.phoneLandline;
-  const telephoneTel = CONTACT.phoneLandlineTel;
   const whatsappNumber = CONTACT.whatsappNumber;
   const whatsappUrl = CONTACT.whatsappUrl;
-
-  const mapUrl = CONTACT.mapsUrl;
 
   const address = {
     "@type": "PostalAddress",
     ...CONTACT.address,
   };
 
-  // JSON-LD: ContactPage (linked to your business entity from HomePage)
-  const contactPageJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    "@id": `${canonical}#contactpage`,
-    url: canonical,
-    name: title,
+  const jsonLd = useMemo(() => {
+    const contactPageJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "@id": `${canonical}#contactpage`,
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: "es-ES",
+      isPartOf: {
+        "@type": "WebSite",
+        "@id": `${baseUrl}/#website`,
+        url: `${baseUrl}/`,
+        name: siteName,
+      },
+      about: { "@id": `${baseUrl}/#business` },
+      mainEntity: {
+        "@type": "Organization",
+        "@id": `${baseUrl}/#business`,
+        name: siteName,
+        url: `${baseUrl}/`,
+        telephone,
+        address,
+        contactPoint: [
+          {
+            "@type": "ContactPoint",
+            telephone,
+            contactType: "customer support",
+            availableLanguage: ["es"],
+          },
+          {
+            "@type": "ContactPoint",
+            telephone: `+${whatsappNumber.slice(0, 2)} ${whatsappNumber.slice(
+              2,
+              5
+            )} ${whatsappNumber.slice(5, 8)} ${whatsappNumber.slice(8)}`,
+            contactType: "customer support",
+            availableLanguage: ["es"],
+            url: whatsappUrl,
+          },
+        ],
+        sameAs: [CONTACT.facebookUrl],
+      },
+    };
+
+    return [contactPageJsonLd];
+  }, [
+    canonical,
+    title,
     description,
-    inLanguage: "es-ES",
-    isPartOf: {
-      "@type": "WebSite",
-      "@id": `${baseUrl}/#website`,
-      url: `${baseUrl}/`,
-      name: siteName,
-    },
-    about: { "@id": `${baseUrl}/#business` },
-    mainEntity: {
-      "@type": "Organization",
-      "@id": `${baseUrl}/#business`,
-      name: siteName,
-      url: `${baseUrl}/`,
-      telephone,
-      address,
-      contactPoint: [
-        {
-          "@type": "ContactPoint",
-          telephone,
-          contactType: "customer support",
-          availableLanguage: ["es"],
-        },
-        {
-          "@type": "ContactPoint",
-          telephone: `+${whatsappNumber.slice(0, 2)} ${whatsappNumber.slice(
-            2,
-            5
-          )} ${whatsappNumber.slice(5, 8)} ${whatsappNumber.slice(8)}`,
-          contactType: "customer support",
-          availableLanguage: ["es"],
-          url: whatsappUrl,
-        },
-      ],
-      sameAs: [CONTACT.facebookUrl],
-    },
-  };
+    baseUrl,
+    siteName,
+    telephone,
+    address,
+    whatsappNumber,
+    whatsappUrl,
+  ]);
 
-  const jsonLd = [contactPageJsonLd];
-
-  const packLabel = (() => {
+  // Map pack query param to friendly label (kept)
+  const packLabel = useMemo(() => {
     const params = new URLSearchParams(location.search);
     const pack = params.get("pack");
 
     if (pack === "dormitorio") return "Dormitorio";
     if (pack === "salon") return "Salón / Comedor";
     if (pack === "automatizacion") return "Confort + Automatización";
+
+    // If a page ever passes a real label directly: /contact?pack=Toldos
+    if (pack && pack.trim().length) return pack;
+
     return null;
-  })();
+  }, [location.search]);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 768px)");
@@ -461,26 +370,16 @@ export default function ContactPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!modalOpen) return;
+  const openDrawerForm = () => {
+    const pack = packLabel ?? "General";
 
-    const onKey = (e) => {
-      if (e.key === "Escape") setModalOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
+    trackEvent("open_quick_enquiry", {
+      source: "contact_page",
+      pack,
+      device: isMobile ? "mobile" : "desktop",
+    });
 
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
-    };
-  }, [modalOpen]);
-
-  const openForm = () => {
-    if (isMobile) setModalOpen(true);
-    else setInlineOpen((v) => !v);
+    onOpenAsesoramiento?.(pack, "contact_page");
   };
 
   return (
@@ -569,18 +468,11 @@ export default function ContactPage() {
             </PanelTop>
 
             <List>
+              {/* FORM (opens QuickEnquiryModal drawer) */}
               <ItemButton
                 type="button"
-                onClick={() => {
-                  trackEvent("open_asesoramiento", {
-                    source: "contact_page",
-                    method: isMobile ? "modal" : "inline",
-                    pack: packLabel ?? "General",
-                  });
-                  openForm();
-                }}
-                aria-expanded={!isMobile ? inlineOpen : undefined}
-                aria-controls={!isMobile ? "asesoramiento-inline" : undefined}
+                onClick={openDrawerForm}
+                aria-label="Abrir formulario de contacto"
               >
                 <ItemLeft>
                   <Mail />
@@ -590,30 +482,8 @@ export default function ContactPage() {
                   </ItemText>
                 </ItemLeft>
 
-                {isMobile ? (
-                  <RightArrow>→</RightArrow>
-                ) : (
-                  <Chevron $open={inlineOpen}>
-                    <ChevronDown />
-                  </Chevron>
-                )}
+                <RightArrow>→</RightArrow>
               </ItemButton>
-
-              <InlineCollapse id="asesoramiento-inline" $open={inlineOpen}>
-                <InlineInner>
-                  <AsesoramientoForm
-                    packLabel={packLabel}
-                    onSuccess={() => {
-                      trackEvent("form_submit_success", {
-                        source: "contact_page",
-                        method: "inline",
-                        pack: packLabel ?? "General",
-                      });
-                      setTimeout(() => setInlineOpen(false), 1200);
-                    }}
-                  />
-                </InlineInner>
-              </InlineCollapse>
 
               <Item
                 href={`tel:${CONTACT.phoneLandlineTel}`}
@@ -684,44 +554,6 @@ export default function ContactPage() {
                 <RightArrow>→</RightArrow>
               </Item>
             </List>
-
-            {modalOpen && (
-              <ModalOverlay
-                role="dialog"
-                aria-modal="true"
-                aria-label="Formulario de asesoramiento"
-                onMouseDown={(e) => {
-                  if (e.target === e.currentTarget) setModalOpen(false);
-                }}
-              >
-                <ModalCard>
-                  <ModalTop>
-                    <ModalTitle>Solicitar asesoramiento</ModalTitle>
-                    <CloseButton
-                      type="button"
-                      onClick={() => setModalOpen(false)}
-                      aria-label="Cerrar"
-                    >
-                      <X />
-                    </CloseButton>
-                  </ModalTop>
-
-                  <ModalBody>
-                    <AsesoramientoForm
-                      packLabel={packLabel}
-                      onSuccess={() => {
-                        trackEvent("form_submit_success", {
-                          source: "contact_page",
-                          method: "modal",
-                          pack: packLabel ?? "General",
-                        });
-                        setTimeout(() => setModalOpen(false), 1200);
-                      }}
-                    />
-                  </ModalBody>
-                </ModalCard>
-              </ModalOverlay>
-            )}
           </Panel>
         </Grid>
       </Wrap>

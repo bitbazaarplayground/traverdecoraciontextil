@@ -1451,8 +1451,12 @@ const SceneTile = styled.article`
   );
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.06);
   padding: 1.35rem 1.25rem;
-  display: grid;
+
+  display: flex;
+  flex-direction: column;
   gap: 0.65rem;
+  height: 100%;
+
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   position: relative;
   overflow: hidden;
@@ -1477,6 +1481,7 @@ const SceneTile = styled.article`
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 26px 70px rgba(0, 0, 0, 0.08);
+    border-color: rgba(229, 0, 126, 0.22);
   }
 
   @media (max-width: 768px) {
@@ -1491,14 +1496,21 @@ const SceneTile = styled.article`
 const SceneIcon = styled.div`
   width: 44px;
   height: 44px;
-  border-radius: 14px;
+  border-radius: 16px;
   display: grid;
   place-items: center;
-  background: rgba(17, 17, 17, 0.06);
+
+  background: rgba(229, 0, 126, 0.08);
+  border: 1px solid rgba(229, 0, 126, 0.14);
 
   svg {
-    display: block;
-    color: rgba(15, 23, 42, 0.82);
+    width: 20px;
+    height: 20px;
+    color: rgba(17, 17, 17, 0.92);
+  }
+  ${SceneTile}:hover & {
+    background: rgba(229, 0, 126, 0.1);
+    border-color: rgba(229, 0, 126, 0.2);
   }
 `;
 
@@ -1520,56 +1532,14 @@ const SceneTileText = styled.p`
 `;
 
 const SceneMeta = styled.p`
-  margin: 0.25rem 0 0;
+  margin-top: auto;
+  padding-top: 0.85rem;
   font-size: 0.88rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(17, 17, 17, 0.52);
+  font-weight: 750;
+  color: rgba(17, 17, 17, 0.6);
+
   @media (max-width: 520px) {
     font-size: 0.82rem;
-  }
-`;
-
-const ScenesCtaRow = styled.div`
-  margin-top: 1.9rem;
-  border-radius: 18px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: rgba(250, 250, 250, 0.8);
-  padding: 1.2rem 1.2rem;
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-`;
-
-const ScenesCtaText = styled.p`
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: rgba(17, 17, 17, 0.7);
-  max-width: 65ch;
-`;
-
-const ScenesCtaButton = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.9rem 1.35rem;
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: #0b0c0f;
-  font-weight: 900;
-  text-decoration: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-
-  &:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
-  }
-  @media (max-width: 520px) {
-    width: 100%;
-    justify-content: center;
   }
 `;
 
@@ -1615,7 +1585,9 @@ const BenefitCard = styled.article`
   box-shadow: 0 12px 30px rgba(17, 17, 17, 0.06);
   transition: transform 220ms ease, box-shadow 220ms ease,
     border-color 220ms ease;
-
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 16px 44px rgba(17, 17, 17, 0.09);
@@ -1658,7 +1630,9 @@ const BenefitOverlay = styled.div`
 
 const BenefitBody = styled.div`
   padding: 0.95rem 0.95rem 1.05rem;
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   gap: 0.4rem;
 `;
 
@@ -1677,7 +1651,8 @@ const BenefitParagraph = styled.p`
 `;
 
 const BenefitHint = styled.div`
-  margin-top: 0.15rem;
+  margin-top: auto;
+  padding-top: 0.3rem;
   font-size: 0.88rem;
   font-weight: 750;
   color: rgba(17, 17, 17, 0.85);
