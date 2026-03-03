@@ -1,14 +1,14 @@
 // src/pages/Propuestas.jsx
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import AsesoramientoForm from "../components/AsesoramientoFormSupabase";
-import AsesoramientoModal from "../components/AsesoramientoModalSupabase";
+// import AsesoramientoForm from "../components/AsesoramientoFormSupabase";
+// import AsesoramientoModal from "../components/AsesoramientoModalSupabase";
 import FaqAccordion from "../components/faq/FaqAccordion";
 import { CONTACT } from "../config/contact";
+import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
-
 /* =========================
    QUICK ASSETS (placeholders)
 ========================= */
@@ -289,6 +289,10 @@ const PackCard = styled.article`
   transform: translateY(0);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 40px 110px rgba(0, 0, 0, 0.12);
@@ -318,6 +322,8 @@ const PackBadge = styled.div`
 
 const PackBody = styled.div`
   padding: 1.6rem 1.5rem 1.5rem;
+
+  flex: 1;
 `;
 
 const PackTitle = styled.h3`
@@ -389,6 +395,8 @@ const PackFooter = styled.div`
   justify-content: space-between;
   gap: 0.8rem;
   border-top: 1px solid rgba(17, 17, 17, 0.08);
+
+  margin-top: auto;
 `;
 
 const Note = styled.p`
@@ -628,7 +636,7 @@ const FAQ_ITEMS = [
    COMPONENT
 ========================= */
 
-export default function Propuestas() {
+export default function Propuestas({ onOpenAsesoramiento }) {
   // SEO base
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
@@ -644,35 +652,35 @@ export default function Propuestas() {
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt = "Propuestas a medida de Traver Decoración Textil";
 
-  const [openPack, setOpenPack] = useState(null); // "dormitorio" | "salon" | "automatizacion" | null
-  const [modalPack, setModalPack] = useState(null); // string | null
+  // const [openPack, setOpenPack] = useState(null);
+  // const [modalPack, setModalPack] = useState(null);
 
-  const packLabel =
-    openPack === "dormitorio"
-      ? "Dormitorio"
-      : openPack === "salon"
-      ? "Salón / Comedor"
-      : openPack === "automatizacion"
-      ? "Confort + Automatización"
-      : null;
+  // const packLabel =
+  //   openPack === "dormitorio"
+  //     ? "Dormitorio"
+  //     : openPack === "salon"
+  //     ? "Salón / Comedor"
+  //     : openPack === "automatizacion"
+  //     ? "Confort + Automatización"
+  //     : null;
 
   // JSON-LD: CollectionPage + ItemList (proposal options)
   const packItems = useMemo(
     () => [
       {
         name: "Descanso bien resuelto (Dormitorio)",
-        url: `${baseUrl}/propuestas#propuestas`,
+        url: `${canonical}#pack-dormitorio`,
       },
       {
         name: "Espacio que se vive (Salón / Comedor)",
-        url: `${baseUrl}/propuestas#propuestas`,
+        url: `${canonical}#pack-salon`,
       },
       {
         name: "La casa funciona sola (Confort + Automatización)",
-        url: `${baseUrl}/propuestas#propuestas`,
+        url: `${canonical}#pack-automatizacion`,
       },
     ],
-    [baseUrl]
+    [canonical]
   );
 
   const itemList = {
@@ -761,7 +769,21 @@ export default function Propuestas() {
           </HeroSubtitle>
 
           <HeroActions>
-            <PrimaryButton to="/contact">Solicitar propuesta</PrimaryButton>
+            <PrimaryButton
+              to="/contact"
+              onClick={(e) => {
+                e.preventDefault();
+
+                trackEvent("open_quick_enquiry", {
+                  source: "propuestas_primary",
+                  pack: "Propuestas",
+                });
+
+                onOpenAsesoramiento?.("Propuestas", "propuestas_primary");
+              }}
+            >
+              Solicitar propuesta
+            </PrimaryButton>
             <SecondaryButton href="#propuestas">Ver propuestas</SecondaryButton>
           </HeroActions>
 
@@ -787,7 +809,7 @@ export default function Propuestas() {
 
           <PacksGrid>
             {/* DORMITORIO */}
-            <PackCard>
+            <PackCard id="pack-dormitorio">
               <PackMedia style={{ backgroundImage: `url(${imgEssential})` }}>
                 <PackBadge>Dormitorio</PackBadge>
               </PackMedia>
@@ -815,12 +837,21 @@ export default function Propuestas() {
                 <PackCTA
                   as="button"
                   type="button"
-                  onClick={() => setModalPack("Dormitorio")}
+                  onClick={() => {
+                    trackEvent("open_quick_enquiry", {
+                      source: "propuestas_pack_dormitorio",
+                      pack: "Dormitorio",
+                    });
+                    onOpenAsesoramiento?.(
+                      "Dormitorio",
+                      "propuestas_pack_dormitorio"
+                    );
+                  }}
                 >
                   Solicitar propuesta
                 </PackCTA>
               </PackFooter>
-              {openPack === "dormitorio" && (
+              {/* {openPack === "dormitorio" && (
                 <InlineFormWrap>
                   <ContextPill>
                     Solicitud: <strong>Dormitorio</strong>
@@ -831,11 +862,11 @@ export default function Propuestas() {
                     onSuccess={() => setTimeout(() => setOpenPack(null), 1200)}
                   />
                 </InlineFormWrap>
-              )}
+              )} */}
             </PackCard>
 
             {/* SALÓN / COMEDOR */}
-            <PackCard>
+            <PackCard id="pack-salon">
               <PackMedia style={{ backgroundImage: `url(${imgBalance})` }}>
                 <PackBadge>Salón / Comedor</PackBadge>
               </PackMedia>
@@ -863,12 +894,21 @@ export default function Propuestas() {
                 <PackCTA
                   as="button"
                   type="button"
-                  onClick={() => setModalPack("Salón / Comedor")}
+                  onClick={() => {
+                    trackEvent("open_quick_enquiry", {
+                      source: "propuestas_pack_salon",
+                      pack: "Salón / Comedor",
+                    });
+                    onOpenAsesoramiento?.(
+                      "Salón / Comedor",
+                      "propuestas_pack_salon"
+                    );
+                  }}
                 >
-                  Ver propuesta
+                  Solicitar propuesta
                 </PackCTA>
               </PackFooter>
-              {openPack === "salon" && (
+              {/* {openPack === "salon" && (
                 <InlineFormWrap>
                   <ContextPill>
                     Solicitud: <strong>Salón / Comedor</strong>
@@ -879,11 +919,11 @@ export default function Propuestas() {
                     onSuccess={() => setTimeout(() => setOpenPack(null), 1200)}
                   />
                 </InlineFormWrap>
-              )}
+              )} */}
             </PackCard>
 
             {/* CONFORT + AUTOMATIZACIÓN */}
-            <PackCard>
+            <PackCard id="pack-automatizacion">
               <PackMedia style={{ backgroundImage: `url(${imgFuncionaSola})` }}>
                 <PackBadge>Confort + Automatización</PackBadge>
               </PackMedia>
@@ -911,12 +951,21 @@ export default function Propuestas() {
                 <PackCTA
                   as="button"
                   type="button"
-                  onClick={() => setModalPack("Confort + Automatización")}
+                  onClick={() => {
+                    trackEvent("open_quick_enquiry", {
+                      source: "propuestas_pack_automatizacion",
+                      pack: "Confort + Automatización",
+                    });
+                    onOpenAsesoramiento?.(
+                      "Confort + Automatización",
+                      "propuestas_pack_automatizacion"
+                    );
+                  }}
                 >
-                  Asesoramiento
+                  Solicitar propuesta
                 </PackCTA>
               </PackFooter>
-              {openPack === "automatizacion" && (
+              {/* {openPack === "automatizacion" && (
                 <InlineFormWrap>
                   <ContextPill>
                     Solicitud: <strong>Confort + Automatización</strong>
@@ -927,7 +976,7 @@ export default function Propuestas() {
                     onSuccess={() => setTimeout(() => setOpenPack(null), 1200)}
                   />
                 </InlineFormWrap>
-              )}
+              )} */}
             </PackCard>
           </PacksGrid>
           <AdjustNote>
@@ -1025,7 +1074,21 @@ export default function Propuestas() {
               la provincia y alrededores. Si quieres, te orientamos en 10
               minutos y te decimos el mejor punto de partida.
             </TrustText>
-            <TrustCTA to="/contact">Hablar con un asesor</TrustCTA>
+            <TrustCTA
+              to="/contact"
+              onClick={(e) => {
+                e.preventDefault();
+
+                trackEvent("open_quick_enquiry", {
+                  source: "propuestas_trust_cta",
+                  pack: "Propuestas",
+                });
+
+                onOpenAsesoramiento?.("Propuestas", "propuestas_trust_cta");
+              }}
+            >
+              Hablar con un asesor
+            </TrustCTA>
           </TrustStrip>
         </DarkInner>
       </DarkSection>
@@ -1054,11 +1117,11 @@ export default function Propuestas() {
         </LightInner>
       </LightSection>
 
-      <AsesoramientoModal
+      {/* <AsesoramientoModal
         open={!!modalPack}
         packLabel={modalPack}
         onClose={() => setModalPack(null)}
-      />
+      /> */}
       <StickyCtaButton message="Hola, quiero una propuesta a medida. ¿Podemos concertar una visita para medir y definir tejidos, sistemas y acabados?" />
     </Page>
   );

@@ -154,6 +154,7 @@ export default function QuickEnquiryForm({
     const nombre = String(fd.get("nombre") || "").trim();
     const telefono = String(fd.get("telefono") || "").trim();
     const email = String(fd.get("email") || "").trim();
+    const mensaje = String(fd.get("mensaje") || "").trim();
 
     if (!nombre) return setError("Por favor, incluye tu nombre.");
     if (!telefono && !email)
@@ -162,6 +163,7 @@ export default function QuickEnquiryForm({
       return setError("Por favor, introduce un teléfono válido.");
     if (email && !isValidEmail(email))
       return setError("Por favor, introduce un email válido.");
+    if (!mensaje) return setError("Por favor, escribe tu mensaje.");
 
     setStatus("loading");
 
@@ -176,7 +178,7 @@ export default function QuickEnquiryForm({
         email,
         preferencia: String(fd.get("preferencia") || "WhatsApp"),
 
-        mensaje: String(fd.get("mensaje") || ""),
+        mensaje,
         pack: packLabel || "Sin especificar",
         source,
         page,
@@ -284,7 +286,6 @@ export default function QuickEnquiryForm({
         <span>Mensaje</span>
         <TextArea
           name="mensaje"
-          required
           placeholder="Cuéntanos qué necesitas (tipo de estancia, estilo, medidas aproximadas, etc.)"
           disabled={status === "loading"}
         />

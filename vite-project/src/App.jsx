@@ -55,8 +55,8 @@ const AdminCustomer = lazy(() => import("./pages/Admin/AdminCustomer"));
 const AdminSettings = lazy(() => import("./pages/Admin/AdminSettings"));
 
 export default function App() {
-  const [isAsesoramientoOpen, setIsAsesoramientoOpen] = useState(false);
-  const [modalPack, setModalPack] = useState(null);
+  // const [isAsesoramientoOpen, setIsAsesoramientoOpen] = useState(false);
+  // const [modalPack, setModalPack] = useState(null);
   // Form
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const [enquiryPack, setEnquiryPack] = useState("General");
@@ -68,15 +68,15 @@ export default function App() {
     [pathname]
   );
 
-  const openAsesoramiento = (pack = "General") => {
-    setModalPack(pack);
-    setIsAsesoramientoOpen(true);
-  };
+  // const openAsesoramiento = (pack = "General") => {
+  //   setModalPack(pack);
+  //   setIsAsesoramientoOpen(true);
+  // };
 
-  const closeAsesoramiento = () => {
-    setIsAsesoramientoOpen(false);
-    setModalPack(null);
-  };
+  // const closeAsesoramiento = () => {
+  //   setIsAsesoramientoOpen(false);
+  //   setModalPack(null);
+  // };
   function onOpenAsesoramiento(packLabel = "General", source = "cta") {
     setEnquiryPack(packLabel);
     setEnquirySource(source);
@@ -102,26 +102,54 @@ export default function App() {
           />
 
           {/* AUTOMATIZACION */}
-          <Route path="/automatizacion" element={<Automatizacion />} />
+          <Route
+            path="/automatizacion"
+            element={
+              <Automatizacion onOpenAsesoramiento={onOpenAsesoramiento} />
+            }
+          />
           <Route
             path="/automatizacion/completa"
-            element={<AutomatizacionCompleta />}
+            element={
+              <AutomatizacionCompleta
+                onOpenAsesoramiento={onOpenAsesoramiento}
+              />
+            }
           />
           <Route
             path="/automatizacion/individual"
-            element={<AutomatizacionIndividual />}
+            element={
+              <AutomatizacionIndividual
+                onOpenAsesoramiento={onOpenAsesoramiento}
+              />
+            }
           />
 
           {/* CONTACTO */}
           <Route path="/contact" element={<ContactPage />} />
 
           {/* SERVICIOS / CATEGORIAS */}
-          <Route path="/panel-japones" element={<PanelJapones />} />
-          <Route path="/venecianas" element={<Venecianas />} />
-          <Route path="/cortinas-estores" element={<CortinasEstores />} />
+          <Route
+            path="/panel-japones"
+            element={<PanelJapones onOpenAsesoramiento={onOpenAsesoramiento} />}
+          />
+          <Route
+            path="/venecianas"
+            element={<Venecianas onOpenAsesoramiento={onOpenAsesoramiento} />}
+          />
+          <Route
+            path="/cortinas-estores"
+            element={
+              <CortinasEstores onOpenAsesoramiento={onOpenAsesoramiento} />
+            }
+          />
           <Route
             path="/toldos-proteccionsolar"
-            element={<ToldosProteccionSolar />}
+            element={
+              <ToldosProteccionSolar
+                onOpenAsesoramiento={onOpenAsesoramiento}
+              />
+            }
           />
           <Route path="/mosquiteras" element={<Mosquiteras />} />
           <Route path="/services" element={<Servicios />} />

@@ -1,13 +1,12 @@
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import styled from "styled-components";
-import FaqAccordion from "../components/faq/FaqAccordion";
-
 import cortinaM from "../assets/CortinasEstores/cortinaM.png";
 import customerM from "../assets/CortinasEstores/customerM.png";
 import estorM from "../assets/CortinasEstores/estorM.png";
 import ContactCTA from "../components/ContactCTA";
 import SlickCarouselLazy from "../components/SlickCarouselLazy";
+import FaqAccordion from "../components/faq/FaqAccordion";
 import { CONTACT } from "../config/contact";
 import StickyCtaButton from "../mobile/StickyCtaButton";
 // Assets
@@ -477,7 +476,7 @@ const FAQ_ITEMS = [
    COMPONENT
 ========================= */
 
-export default function CortinasEstoresPremium() {
+export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
@@ -790,11 +789,11 @@ export default function CortinasEstoresPremium() {
         </FabricsInner>
       </FabricsSection>
 
-      <ContactCTA />
+      <ContactCTA onOpenAsesoramiento={onOpenAsesoramiento} />
 
       {/* SISTEMAS + ENFOQUE */}
       <ComplementosVentana id="sistemas" />
-      <EnfoqueSlider />
+      <EnfoqueSlider onOpenAsesoramiento={onOpenAsesoramiento} />
 
       {/* ✅ CAROUSEL (Lazy-loaded Slick wrapper) */}
       <CarouselSection>

@@ -5,8 +5,8 @@ import styled, { keyframes } from "styled-components";
 import AutomationFaq from "../components/automatizacion/AutomationFaq";
 import { CONTACT } from "../config/contact";
 import useRevealOnScroll from "../hooks/useReveal";
+import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
-
 /* =========================
    ASSETS
 ========================= */
@@ -37,7 +37,7 @@ const Badge = ({ tone = "primary", children }) => {
    COMPONENT
 ========================= */
 
-export default function Auto() {
+export default function Auto({ onOpenAsesoramiento }) {
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
@@ -89,7 +89,7 @@ export default function Auto() {
       primaryImageOfPage: { "@type": "ImageObject", url: ogImage },
     },
   ];
-  const WA_PHONE = "34600000000";
+  const WA_PHONE = CONTACT.whatsappNumber;
 
   const packs = useMemo(
     () => [
@@ -454,6 +454,31 @@ export default function Auto() {
 
                     {p.bundle && <PackBundle>💡 {p.bundle}</PackBundle>}
                     <PackNote>{p.notes}</PackNote>
+
+                    <PackCtas>
+                      <BtnPrimary
+                        href="/contact"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          trackEvent("open_quick_enquiry", {
+                            source: `auto_pack_${p.id}`,
+                            pack: p.name,
+                          });
+
+                          onOpenAsesoramiento?.(p.name, `auto_pack_${p.id}`);
+                        }}
+                      >
+                        Pedir propuesta <ArrowRight size={16} />
+                      </BtnPrimary>
+
+                      <BtnGhost
+                        as={WhatsAppLink}
+                        phone={CONTACT.whatsappNumber}
+                        message={`Hola, me interesa el pack "${p.name}". ¿Podéis darme una propuesta y agendar una visita sin compromiso?`}
+                      >
+                        WhatsApp
+                      </BtnGhost>
+                    </PackCtas>
                   </PackCard>
                 );
               })}
@@ -534,7 +559,22 @@ export default function Auto() {
 
             <AfterCTARight>
               <AfterButtons>
-                <AfterPrimary href="/contact">
+                <AfterPrimary
+                  href="/contact"
+                  onClick={(e) => {
+                    e.preventDefault();
+
+                    trackEvent("open_quick_enquiry", {
+                      source: "automatizacion_completa_cta",
+                      pack: "Automatización Completa",
+                    });
+
+                    onOpenAsesoramiento?.(
+                      "Automatización Completa",
+                      "automatizacion_completa_cta"
+                    );
+                  }}
+                >
                   Pedir asesoramiento <ArrowRight size={16} />
                 </AfterPrimary>
 
@@ -986,6 +1026,10 @@ const ValueCard = styled.div`
   transition: transform 180ms ease, box-shadow 180ms ease,
     border-color 180ms ease;
 
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 26px 80px rgba(17, 17, 17, 0.09);
@@ -1035,7 +1079,9 @@ const ValueText = styled.p`
 `;
 
 const ValueMeta = styled.div`
-  margin-top: 0.85rem;
+  margin-top: auto;
+  padding-top: 0.85rem;
+
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
@@ -1070,56 +1116,6 @@ const SerifNote = styled.p`
   color: rgba(17, 17, 17, 0.72);
 `;
 
-const ValueCtas = styled.div`
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-
-  @media (min-width: 900px) {
-    justify-content: flex-end;
-  }
-`;
-
-const ButtonPrimary = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  padding: 0.95rem 1.45rem;
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.light || "#fff"};
-  font-weight: 800;
-  text-decoration: none;
-  transition: transform 180ms ease, opacity 180ms ease;
-
-  &:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
-  }
-`;
-
-const ButtonGhost = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  padding: 0.95rem 1.35rem;
-  border-radius: 999px;
-  background: rgba(17, 17, 17, 0.04);
-  border: 1px solid rgba(17, 17, 17, 0.1);
-  color: rgba(17, 17, 17, 0.92);
-  font-weight: 800;
-  text-decoration: none;
-  transition: transform 180ms ease, background 180ms ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    background: rgba(17, 17, 17, 0.07);
-  }
-`;
-
 // PACKS
 const PackGrid = styled.div`
   display: grid;
@@ -1132,6 +1128,34 @@ const PackGrid = styled.div`
 const Section = styled.section`
   padding: 54px 0;
 `;
+// const SectionAlt = styled(Section)`
+//   position: relative;
+//   background: #111;
+//   overflow: hidden;
+
+//   &::before {
+//     content: "";
+//     position: absolute;
+//     inset: 0;
+//     background-image: url(${packBackground});
+//     background-size: cover;
+//     background-position: center;
+//     background-repeat: no-repeat;
+//     opacity: 0.22; /* subtle */
+//     transform: scale(1.05);
+//   }
+
+//   &::after {
+//     content: "";
+//     position: absolute;
+//     inset: 0;
+//   }
+
+//   > * {
+//     position: relative;
+//     z-index: 1;
+//   }
+// `;
 const SectionAlt = styled(Section)`
   position: relative;
   background: #111;
@@ -1145,14 +1169,16 @@ const SectionAlt = styled(Section)`
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.22; /* subtle */
+    opacity: 0.22;
     transform: scale(1.05);
++   pointer-events: none;
   }
 
   &::after {
     content: "";
     position: absolute;
     inset: 0;
++   pointer-events: none;
   }
 
   > * {
@@ -1169,6 +1195,7 @@ const PackCard = styled.article`
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
+  height: 100%;
 
   ${({ theme, $tone }) =>
     $tone === "primary"
@@ -1247,7 +1274,8 @@ const PackNote = styled.div`
 `;
 
 const PackCtas = styled.div`
-  margin-top: 14px;
+  margin-top: auto;
+  padding-top: 15px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
