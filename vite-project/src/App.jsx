@@ -126,7 +126,10 @@ export default function App() {
           />
 
           {/* CONTACTO */}
-          <Route path="/contact" element={<ContactPage />} />
+          <Route
+            path="/contact"
+            element={<ContactPage onOpenAsesoramiento={onOpenAsesoramiento} />}
+          />
 
           {/* SERVICIOS / CATEGORIAS */}
           <Route
