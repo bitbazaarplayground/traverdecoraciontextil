@@ -1,8 +1,16 @@
+// src/pages/servicios/PanelJapones.jsx
+import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../../config/contact";
 import { trackEvent } from "../../lib/analytics";
+
+import ContactCTA from "../../components/ContactCTA";
+import SlickCarouselLazy from "../../components/SlickCarouselLazy";
+import FaqAccordion from "../../components/faq/FaqAccordion";
+import StickyCtaButton from "../../mobile/StickyCtaButton";
+
 /* IMAGES */
 import bedroomDarkPanel from "../../assets/panelJapones/bedroomDarkPanel.webp";
 import bedroomStudyarea from "../../assets/panelJapones/bedroomStudyarea.webp";
@@ -14,158 +22,481 @@ import livingroom2 from "../../assets/panelJapones/livingroom2.webp";
 import office from "../../assets/panelJapones/office1.webp";
 import waitingroom from "../../assets/panelJapones/waitingroom1.webp";
 
+// Complementos Ventana
+import domoticaControl from "../../assets/Automatizacion/heroB.webp";
+import cortinasEstoresImg from "../../assets/CortinasEstores/carousel/cortinas2.webp";
+import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
+import venecianasImg from "../../assets/venecianas/oficina2.webp";
+
+import ComplementosVentana from "../../components/ventanas/ComplementosVentana";
+
+const panelJaponesComplementos = [
+  {
+    title: "Mosquiteras",
+    desc: "Ventila sin insectos. Discretas y resistentes.",
+    img: mosquiteraPatio,
+    to: "/mosquiteras",
+  },
+  {
+    title: "Automatización",
+    desc: "Sistemas motorizados y control inteligente del hogar.",
+    img: domoticaControl,
+    to: "/automatizacion",
+  },
+  {
+    title: "Venecianas",
+    desc: "Control solar preciso con privacidad regulable.",
+    img: venecianasImg,
+    to: "/venecianas",
+  },
+  {
+    title: "Cortinas y estores",
+    desc: "Textiles a medida para regular luz, privacidad y estilo.",
+    img: cortinasEstoresImg,
+    to: "/cortinas-estores",
+  },
+];
 /* =========================
    PAGE
 ========================= */
 
 const Page = styled.main`
-  background: radial-gradient(
-      1200px 600px at 50% 0%,
-      rgba(255, 255, 255, 0.04),
-      transparent 60%
-    ),
-    #f5f4f2;
-  color: #1c1c1c;
+  width: 100%;
+  background: #fff;
+  color: #151515;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    "Helvetica Neue", sans-serif;
 `;
 
 /* =========================
-   HERO
+   HERO (premium)
 ========================= */
 
 const Hero = styled.section`
-  padding: clamp(4rem, 7vw, 6.5rem) 1.5rem 3rem;
+  position: relative;
+  margin-top: 3.5rem;
+  height: clamp(360px, 46vh, 590px);
+  display: grid;
+  place-items: center;
+  padding: 0 2rem;
   text-align: center;
+  color: #fff;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    height: clamp(320px, 50vh, 520px);
+    padding: 0 1.5rem;
+  }
+`;
+
+const HeroMedia = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+`;
+
+const HeroImg = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translateZ(0) scale(1.05);
+  backface-visibility: hidden;
+  will-change: transform;
+`;
+
+const HeroOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(10, 0, 0, 0.38), rgba(0, 0, 0, 0.28));
 `;
 
 const HeroInner = styled.div`
+  position: relative;
+  z-index: 1;
   max-width: 920px;
-  margin: 0 auto;
 `;
 
-const Eyebrow = styled.p`
-  margin: 0 0 1rem;
-  letter-spacing: 0.28em;
+const HeroEyebrow = styled.p`
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.55);
+  opacity: 0.9;
+  margin-bottom: 1.15rem;
 `;
 
-const Title = styled.h1`
+const HeroTitle = styled.h1`
   margin: 0;
-  font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  font-size: clamp(2.2rem, 5vw, 4.4rem);
-  line-height: 1.05;
+  font-size: 3.35rem;
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2.25rem;
+  }
 `;
 
-const Intro = styled.p`
-  margin: 1.2rem auto 0;
-  max-width: 70ch;
-  font-size: 1.05rem;
-  line-height: 1.75;
-  color: rgba(0, 0, 0, 0.65);
+const HeroText = styled.p`
+  margin: 1.1rem auto 0;
+  max-width: 72ch;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  opacity: 0.92;
 `;
 
 /* =========================
-   GALLERY
+   FEATURE STRIP (conversion)
 ========================= */
 
-const Section = styled.section`
-  padding: 2.5rem 1.5rem 5.5rem;
+const Features = styled.section`
+  background: #f6f6f7;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
 `;
 
-const SectionInner = styled.div`
-  max-width: 1200px;
+const FeaturesGrid = styled.div`
+  max-width: 1180px;
   margin: 0 auto;
-`;
-
-const Gallery = styled.div`
+  padding: clamp(10px, 2vw, 18px);
   display: grid;
-  gap: 1.2rem;
+  grid-template-columns: repeat(3, 1fr);
 
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (min-width: 1100px) {
-    grid-template-columns: repeat(3, 1fr);
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 `;
 
-const ImageCard = styled.figure`
+const Feature = styled.article`
+  text-align: center;
+  padding: 16px 10px;
+
+  &:not(:first-child) {
+    border-left: 1px solid rgba(17, 17, 17, 0.12);
+  }
+
+  @media (max-width: 860px) {
+    text-align: left;
+    border-left: none !important;
+    border-top: 1px solid rgba(17, 17, 17, 0.1);
+    padding: 14px 8px;
+
+    &:first-child {
+      border-top: none;
+    }
+  }
+`;
+
+const FeatureTitle = styled.h3`
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.92);
+`;
+
+const FeatureText = styled.p`
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: rgba(17, 17, 17, 0.62);
+`;
+
+/* =========================
+   SHARED SECTION HEADERS
+========================= */
+
+const SectionTop = styled.div`
+  max-width: 980px;
+  margin: 0 auto 1.5rem;
+  text-align: left;
+`;
+
+const Kicker = styled.p`
+  margin: 0 0 0.55rem 0;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  color: rgba(17, 17, 17, 0.55);
   position: relative;
+  display: inline-block;
+  padding-bottom: 0.55rem;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0.1rem;
+    width: 48px;
+    height: 1px;
+    background: rgba(196, 151, 98, 0.65);
+  }
+`;
+
+const SectionTitle = styled.h2`
+  margin: 0;
+  font-size: 2.15rem;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: rgba(17, 17, 17, 0.96);
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.7rem;
+  }
+`;
+
+const SectionLead = styled.p`
+  margin: 0.75rem 0 0;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.62);
+  max-width: 75ch;
+`;
+
+/* =========================
+   WHY / USE CASES (cards)
+========================= */
+
+const WhySection = styled.section`
+  padding: clamp(3.5rem, 5vw, 5.5rem) 0;
+  background: #fff;
+`;
+
+const WhyInner = styled.div`
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    width: min(1120px, calc(100% - 2rem));
+  }
+`;
+
+const WhyGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin-top: 1.75rem;
+
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const WhyCard = styled.article`
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff, #fbfbfb);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 1.3rem 1.25rem;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.06);
+`;
+
+const WhyTitle = styled.h3`
+  margin: 0 0 0.6rem 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.92);
+`;
+
+const WhyText = styled.p`
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: rgba(17, 17, 17, 0.62);
+`;
+
+/* =========================
+   SPLIT SECTION (image + copy)
+========================= */
+
+const SplitSection = styled.section`
+  padding: 0 0 clamp(3.5rem, 5vw, 5.5rem);
+  background: #fff;
+`;
+
+const SplitInner = styled.div`
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2rem;
+  align-items: center;
+
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 768px) {
+    width: min(1120px, calc(100% - 2rem));
+  }
+`;
+
+const SplitMedia = styled.div`
   border-radius: 22px;
   overflow: hidden;
-  background: #eae9e6;
-  margin: 0;
+  background: #eee;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.1);
 `;
 
-const Img = styled.img`
+const SplitImg = styled.img`
   width: 100%;
   height: 100%;
   display: block;
+  aspect-ratio: 16 / 11;
   object-fit: cover;
-  aspect-ratio: 4 / 3;
-  transition: transform 0.6s ease;
+`;
 
-  ${ImageCard}:hover & {
-    transform: scale(1.04);
+const SplitCopy = styled.div``;
+
+const Points = styled.ul`
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+`;
+
+const Point = styled.li`
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgba(17, 17, 17, 0.62);
+
+  &::before {
+    content: "✓";
+    font-weight: 900;
+    color: ${({ theme }) => theme.colors.primary};
+    line-height: 1.1;
+    margin-top: 2px;
   }
 `;
 
-const Label = styled.figcaption`
-  position: absolute;
-  left: 14px;
-  bottom: 14px;
-  padding: 0.45rem 0.75rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.88);
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.7);
+/* =========================
+   CAROUSEL (match homepage dots)
+========================= */
+
+const CarouselSection = styled.section`
+  padding: 4rem 0;
+  background: #fafafa;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+
+  .slick-dots {
+    position: relative;
+    margin-top: 1.25rem;
+  }
+
+  .slick-dots li {
+    margin: 0 4px;
+  }
+
+  .slick-dots li button:before {
+    font-size: 8px;
+    opacity: 0.35;
+    color: rgba(17, 17, 17, 0.55);
+    transition: transform 180ms ease, opacity 180ms ease, color 180ms ease;
+  }
+
+  .slick-dots li.slick-active button:before {
+    opacity: 0.95;
+    transform: scale(1.15);
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    padding: 3.25rem 0;
+
+    .slick-dots li button:before {
+      font-size: 7px;
+    }
+  }
+`;
+
+const CarouselInner = styled.div`
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    width: min(1120px, calc(100% - 2rem));
+  }
 `;
 
 /* =========================
-   VALUE BLOCK
+   VALUE / CTA CARD
 ========================= */
 
 const ValueSection = styled.section`
-  padding: 0 1.5rem 5.5rem;
+  padding: clamp(3.5rem, 5vw, 5.5rem) 0;
+  background: #fff;
+`;
+
+const ValueInner = styled.div`
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    width: min(1120px, calc(100% - 2rem));
+  }
 `;
 
 const ValueCard = styled.div`
-  max-width: 980px;
-  margin: 0 auto;
   border-radius: 26px;
-  background: rgba(255, 255, 255, 0.6);
-  padding: 2.5rem 2.3rem;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 2.6rem 2.3rem;
   box-shadow: 0 32px 90px rgba(0, 0, 0, 0.08);
-  text-align: center;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+
+  @media (max-width: 520px) {
+    padding: 2.1rem 1.4rem;
+  }
 `;
 
 const ValueTitle = styled.h2`
-  margin: 0 0 1rem;
-  font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  font-size: 2.2rem;
+  margin: 0 0 0.9rem;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgba(17, 17, 17, 0.95);
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.7rem;
+  }
 `;
 
 const ValueText = styled.p`
-  margin: 0 auto;
-  max-width: 75ch;
-  font-size: 1.05rem;
+  margin: 0;
+  max-width: 78ch;
+  font-size: 1.06rem;
   line-height: 1.75;
-  color: rgba(0, 0, 0, 0.65);
+  color: rgba(17, 17, 17, 0.62);
 `;
 
-const CTA = styled(Link)`
+const CtaRow = styled.div`
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 1.7rem;
+`;
+
+const PrimaryCTA = styled(Link)`
   display: inline-flex;
-  margin-top: 2rem;
   padding: 0.95rem 2.1rem;
   border-radius: 999px;
   background: #111;
@@ -183,6 +514,81 @@ const CTA = styled(Link)`
   }
 `;
 
+const SecondaryCTA = styled.a`
+  display: inline-flex;
+  padding: 0.95rem 1.4rem;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.06);
+  color: rgba(17, 17, 17, 0.9);
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  transition: transform 0.25s ease, background 0.25s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: rgba(17, 17, 17, 0.085);
+  }
+`;
+
+/* =========================
+   FAQ
+========================= */
+
+const FAQSection = styled.section`
+  padding: clamp(3.5rem, 5vw, 5.5rem) 0;
+  background: #fafafa;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+`;
+
+const FAQInner = styled.div`
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    width: min(1120px, calc(100% - 2rem));
+  }
+`;
+
+/* =========================
+   DATA
+========================= */
+
+const FAQ_ITEMS = [
+  {
+    q: "¿Cuándo es mejor elegir panel japonés?",
+    a: "Es ideal para ventanales grandes, puertas correderas y estancias de estética moderna. Funciona muy bien cuando quieres líneas rectas, orden visual y control de luz por zonas.",
+    aText:
+      "Es ideal para ventanales grandes, puertas correderas y estancias de estética moderna. Funciona muy bien cuando quieres líneas rectas, orden visual y control de luz por zonas.",
+  },
+  {
+    q: "¿Se puede combinar con visillo o tejidos traslúcidos?",
+    a: "Sí. Podemos plantear paneles traslúcidos para tamizar luz o combinaciones (panel traslúcido + tejido más opaco) para conseguir privacidad y ambiente según el momento del día.",
+    aText:
+      "Sí. Podemos plantear paneles traslúcidos para tamizar luz o combinaciones (panel traslúcido + tejido más opaco) para conseguir privacidad y ambiente según el momento del día.",
+  },
+  {
+    q: "¿Cómo se define el número de paneles y el solape?",
+    a: "Depende del ancho, del tipo de apertura y del efecto visual. Te proponemos una distribución equilibrada (paneles + solapes) para que el movimiento sea limpio y la caída quede perfecta.",
+    aText:
+      "Depende del ancho, del tipo de apertura y del efecto visual. Te proponemos una distribución equilibrada (paneles + solapes) para que el movimiento sea limpio y la caída quede perfecta.",
+  },
+  {
+    q: "¿Hacéis medición e instalación en Castellón y Valencia?",
+    a: "Sí. Realizamos visita, medición y montaje profesional para que el panel deslice suave y el remate quede alineado.",
+    aText:
+      "Sí. Realizamos visita, medición y montaje profesional para que el panel deslice suave y el remate quede alineado.",
+  },
+  {
+    q: "¿Qué mantenimiento requiere?",
+    a: "Según el tejido, puede ser limpieza puntual o lavado siguiendo la recomendación del fabricante. Te aconsejamos el material más adecuado si hay cocina, mascotas o mucho uso diario.",
+    aText:
+      "Según el tejido, puede ser limpieza puntual o lavado siguiendo la recomendación del fabricante. Te aconsejamos el material más adecuado si hay cocina, mascotas o mucho uso diario.",
+  },
+];
+
 /* =========================
    COMPONENT
 ========================= */
@@ -198,109 +604,143 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
   const title =
     "Panel japonés a medida | Traver Decoración Textil (Castellón y Valencia)";
   const description =
-    "Panel japonés a medida en Castellón y Valencia: ideal para grandes ventanales y espacios modernos. Tejidos seleccionados, medición e instalación profesional en Almassora.";
+    "Panel japonés a medida en Castellón y Valencia: perfecto para ventanales y puertas correderas. Tejidos seleccionados, medición e instalación profesional en Almassora.";
 
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt = "Panel japonés a medida — Traver Decoración Textil";
 
-  // JSON-LD: WebPage + Breadcrumbs (ligero y útil)
-  const webPageJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": `${canonical}#webpage`,
-    url: canonical,
-    name: title,
-    description,
-    inLanguage: "es-ES",
-    isPartOf: {
-      "@type": "WebSite",
-      "@id": `${baseUrl}/#website`,
-      url: `${baseUrl}/`,
-      name: siteName,
-    },
-  };
+  const breadcrumbJsonLd = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Inicio",
+          item: `${baseUrl}/`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Servicios",
+          item: `${baseUrl}/services`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: "Panel japonés",
+          item: canonical,
+        },
+      ],
+    }),
+    [baseUrl, canonical]
+  );
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Inicio",
-        item: `${baseUrl}/`,
+  const webPageJsonLd = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${canonical}#webpage`,
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: "es-ES",
+      isPartOf: { "@id": `${baseUrl}/#website` },
+    }),
+    [baseUrl, canonical, title, description]
+  );
+
+  const serviceJsonLd = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": `${canonical}#service`,
+      name: "Panel japonés a medida",
+      description,
+      areaServed: [
+        { "@type": "AdministrativeArea", name: "Castellón" },
+        { "@type": "AdministrativeArea", name: "Valencia" },
+      ],
+      provider: {
+        "@type": "LocalBusiness",
+        name: siteName,
+        url: `${baseUrl}/`,
+        telephone: CONTACT.phoneLandline,
+        email: CONTACT.email,
+        address: {
+          "@type": "PostalAddress",
+          ...CONTACT.address,
+        },
       },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Servicios",
-        item: `${baseUrl}/services`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Panel japonés",
-        item: canonical,
-      },
+    }),
+    [baseUrl, canonical, siteName, description]
+  );
+
+  const jsonLd = useMemo(
+    () => [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd],
+    [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd]
+  );
+
+  const heroImg = livingroom2;
+
+  const sliderSettings = useMemo(
+    () => ({
+      dots: true,
+      arrows: false,
+      infinite: true,
+      speed: 650,
+      autoplay: true,
+      autoplaySpeed: 3600,
+    }),
+    []
+  );
+
+  const carouselImages = useMemo(
+    () => [
+      livingroom,
+      livingroom1,
+      livingroom2,
+      kitchen1,
+      kitchen2,
+      bedroomStudyarea,
+      bedroomDarkPanel,
+      office,
+      waitingroom,
     ],
+    []
+  );
+
+  const PACK_LABEL = "Panel Japonés";
+  const PACK_QUERY = "panel-japones";
+  const CTA_SOURCE = "panel_japones_cta";
+
+  const handleOpenCta = (e) => {
+    trackEvent("open_quick_enquiry", {
+      source: CTA_SOURCE,
+      pack: PACK_LABEL,
+    });
+
+    if (typeof onOpenAsesoramiento === "function") {
+      e.preventDefault();
+      onOpenAsesoramiento(PACK_LABEL, CTA_SOURCE);
+    }
   };
 
-  const jsonLd = [webPageJsonLd, breadcrumbJsonLd];
-
-  const images = [
-    {
-      src: livingroom,
-      alt: "Panel japonés a medida en salón moderno (Castellón y Valencia)",
-      label: "Salón",
-    },
-    {
-      src: livingroom1,
-      alt: "Panel japonés en salón con caída limpia y luz suave",
-      label: "Salón",
-    },
-    {
-      src: livingroom2,
-      alt: "Panel japonés para ventanal con vistas exteriores",
-      label: "Salón",
-    },
-    {
-      src: kitchen1,
-      alt: "Panel japonés en cocina: control de luz y privacidad",
-      label: "Cocina",
-    },
-    {
-      src: kitchen2,
-      alt: "Panel japonés filtrando luz natural en cocina",
-      label: "Cocina",
-    },
-    {
-      src: bedroomStudyarea,
-      alt: "Panel japonés en dormitorio con zona de trabajo",
-      label: "Dormitorio",
-    },
-    {
-      src: bedroomDarkPanel,
-      alt: "Panel japonés oscuro en dormitorio: ambiente y descanso",
-      label: "Dormitorio",
-    },
-    {
-      src: office,
-      alt: "Panel japonés en despacho: líneas arquitectónicas y orden visual",
-      label: "Despacho",
-    },
-    {
-      src: waitingroom,
-      alt: "Panel japonés en espacio profesional: privacidad y estética",
-      label: "Espacio profesional",
-    },
-  ];
+  const handleCall = () => {
+    trackEvent("click_call", { source: "panel_japones_call" });
+  };
 
   return (
     <Page>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
+        <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
+
+        {/* Preload hero (LCP) */}
+        <link rel="preload" as="image" href={heroImg} fetchpriority="high" />
 
         {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
@@ -325,58 +765,216 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
 
       {/* HERO */}
       <Hero>
+        <HeroMedia aria-hidden="true">
+          <HeroImg src={heroImg} alt="" />
+          <HeroOverlay />
+        </HeroMedia>
+
         <HeroInner>
-          <Eyebrow>Interior · Soluciones arquitectónicas</Eyebrow>
-          <Title>Panel japonés</Title>
-          <Intro>
-            Una solución limpia y elegante para grandes ventanales y espacios
-            contemporáneos. Controla la luz, define el ambiente y aporta orden
-            visual con líneas puras y tejidos seleccionados.
-          </Intro>
+          <HeroEyebrow>Solución arquitectónica · Textil a medida</HeroEyebrow>
+          <HeroTitle>
+            Panel <span>japonés</span>
+          </HeroTitle>
+          <HeroText>
+            Líneas limpias, caída recta y control de luz por paneles. Perfecto
+            para ventanales grandes y puertas correderas, con tejidos
+            seleccionados y una instalación impecable.
+          </HeroText>
         </HeroInner>
       </Hero>
 
-      {/* GALLERY */}
-      <Section>
-        <SectionInner>
-          <Gallery>
-            {images.map((img) => (
-              <ImageCard key={img.alt}>
-                <Img src={img.src} alt={img.alt} loading="lazy" />
-                <Label>{img.label}</Label>
-              </ImageCard>
-            ))}
-          </Gallery>
-        </SectionInner>
-      </Section>
+      {/* FEATURES */}
+      <Features>
+        <FeaturesGrid>
+          <Feature>
+            <FeatureTitle>Hecho para ventanales</FeatureTitle>
+            <FeatureText>
+              Ideal en grandes superficies: orden visual y movimiento fluido.
+            </FeatureText>
+          </Feature>
+          <Feature>
+            <FeatureTitle>Control por paneles</FeatureTitle>
+            <FeatureText>
+              Regula privacidad y luz de forma modular, según el uso del
+              espacio.
+            </FeatureText>
+          </Feature>
+          <Feature>
+            <FeatureTitle>Medición + instalación</FeatureTitle>
+            <FeatureText>
+              Ajuste perfecto, deslizamiento suave y remate alineado al
+              milímetro.
+            </FeatureText>
+          </Feature>
+        </FeaturesGrid>
+      </Features>
 
-      {/* VALUE */}
+      {/* WHY */}
+      <WhySection>
+        <WhyInner>
+          <SectionTop>
+            <Kicker>Por qué funciona</Kicker>
+            <SectionTitle>
+              Minimalismo con <span>criterio</span>
+            </SectionTitle>
+            <SectionLead>
+              El panel japonés no es “una cortina más”: es una solución de
+              arquitectura interior. Si lo dimensionas bien, el espacio se ve
+              más limpio, más amplio y más intencional.
+            </SectionLead>
+          </SectionTop>
+
+          <WhyGrid>
+            <WhyCard>
+              <WhyTitle>Orden visual</WhyTitle>
+              <WhyText>
+                La caída recta y las líneas verticales estilizan paredes y
+                ventanales, reduciendo ruido visual.
+              </WhyText>
+            </WhyCard>
+
+            <WhyCard>
+              <WhyTitle>Comportamiento de luz</WhyTitle>
+              <WhyText>
+                Desde traslúcidos para tamizar hasta tejidos más opacos para
+                privacidad. Ajustamos el efecto a tu orientación.
+              </WhyText>
+            </WhyCard>
+
+            <WhyCard>
+              <WhyTitle>Proyecto a medida</WhyTitle>
+              <WhyText>
+                Número de paneles, solapes, apertura, riel y tejido: todo se
+                decide para que se vea y funcione “de revista”.
+              </WhyText>
+            </WhyCard>
+          </WhyGrid>
+        </WhyInner>
+      </WhySection>
+
+      {/* SPLIT */}
+      <SplitSection>
+        <SplitInner>
+          <SplitMedia>
+            <SplitImg
+              src={bedroomStudyarea}
+              alt="Panel japonés a medida en dormitorio con zona de trabajo"
+              loading="lazy"
+              decoding="async"
+            />
+          </SplitMedia>
+
+          <SplitCopy>
+            <SectionTop style={{ margin: 0 }}>
+              <Kicker>Cómo lo trabajamos</Kicker>
+              <SectionTitle>
+                Proporción, <span>solape</span> y tejido
+              </SectionTitle>
+              <SectionLead>
+                El resultado premium sale de detalles: cómo “cierra” el panel,
+                cómo se apila, cómo cae y cómo responde a la luz.
+              </SectionLead>
+            </SectionTop>
+
+            <Points aria-label="Puntos clave del panel japonés a medida">
+              <Point>Definimos paneles y solapes según el ancho real.</Point>
+              <Point>Elegimos tejido por luz, uso, limpieza y estilo.</Point>
+              <Point>Montaje profesional para un deslizamiento suave.</Point>
+            </Points>
+          </SplitCopy>
+        </SplitInner>
+      </SplitSection>
+
+      {/* CONTACT CTA (reutiliza tu componente) */}
+      <ContactCTA onOpenAsesoramiento={onOpenAsesoramiento} />
+
+      {/* CAROUSEL */}
+      <CarouselSection>
+        <CarouselInner>
+          <SectionTop>
+            <Kicker>Inspiración</Kicker>
+            <SectionTitle>
+              Ideas en <span>espacios reales</span>
+            </SectionTitle>
+            <SectionLead>
+              Salón, cocina, dormitorio o despacho: el panel japonés se adapta a
+              cada estancia si está bien dimensionado.
+            </SectionLead>
+          </SectionTop>
+
+          <SlickCarouselLazy
+            images={carouselImages}
+            settings={sliderSettings}
+          />
+        </CarouselInner>
+      </CarouselSection>
+
+      {/* VALUE + CTA */}
       <ValueSection>
-        <ValueCard>
-          <ValueTitle>Diseño, proporción y criterio</ValueTitle>
-          <ValueText>
-            Cada panel japonés se diseña a medida: número de paneles, solapes,
-            tejidos y sistema de apertura. Te asesoramos para que el resultado
-            sea funcional, equilibrado y coherente con el espacio.
-          </ValueText>
+        <ValueInner>
+          <ValueCard>
+            <ValueTitle>
+              Una propuesta <span>a tu medida</span>
+            </ValueTitle>
+            <ValueText>
+              Te preparamos una recomendación completa: tejido, número de
+              paneles, solapes, sistema de riel y tipo de apertura, con medición
+              e instalación en Castellón y Valencia.
+            </ValueText>
 
-          <CTA
-            to="/contact"
-            onClick={(e) => {
-              e.preventDefault();
+            <CtaRow>
+              <PrimaryCTA
+                to={`/contact?pack=${PACK_QUERY}`}
+                onClick={handleOpenCta}
+              >
+                Solicitar propuesta
+              </PrimaryCTA>
 
-              trackEvent("open_quick_enquiry", {
-                source: "panel_japones_cta",
-                pack: "Panel Japonés",
-              });
-
-              onOpenAsesoramiento?.("Panel Japonés", "panel_japones_cta");
-            }}
-          >
-            Solicitar propuesta
-          </CTA>
-        </ValueCard>
+              <SecondaryCTA
+                href={`tel:${CONTACT.phoneLandline}`}
+                onClick={handleCall}
+              >
+                Llamar
+              </SecondaryCTA>
+            </CtaRow>
+          </ValueCard>
+        </ValueInner>
       </ValueSection>
+      <ComplementosVentana
+        id="sistemas"
+        items={panelJaponesComplementos}
+        title={
+          <>
+            Otros productos <span>para tu ventana</span>
+          </>
+        }
+        lead="Complementos que combinan con el panel japonés para cerrar un conjunto perfecto."
+      />
+      {/* FAQ */}
+      <FAQSection>
+        <FAQInner>
+          <SectionTop>
+            <Kicker>FAQ</Kicker>
+            <SectionTitle>
+              Preguntas <span>frecuentes</span>
+            </SectionTitle>
+            <SectionLead>
+              Antes de la visita: dudas habituales sobre tejidos, paneles,
+              solapes e instalación.
+            </SectionLead>
+          </SectionTop>
+
+          <FaqAccordion
+            items={FAQ_ITEMS}
+            withSchema={true}
+            canonicalUrl={canonical}
+            defaultOpenIndex={-1}
+            ariaLabel="Preguntas frecuentes sobre panel japonés a medida"
+          />
+        </FAQInner>
+      </FAQSection>
+
+      <StickyCtaButton message="Hola, me gustaría información sobre panel japonés a medida. Gracias." />
     </Page>
   );
 }
