@@ -1,8 +1,9 @@
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 import styled from "styled-components";
-import Img4 from "../assets/img4.png";
+import Img4 from "../assets/img4.webp";
 import { trackEvent } from "../lib/analytics";
+
 const Section = styled.section`
   width: 100%;
   position: relative;

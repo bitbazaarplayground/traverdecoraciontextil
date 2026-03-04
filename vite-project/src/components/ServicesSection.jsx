@@ -15,17 +15,18 @@ const CARD_SIZES = "(max-width: 768px) 92vw, (max-width: 1100px) 30vw, 360px";
 
 /* =========================
    SECTION
+   (Tighter vertical rhythm)
 ========================= */
 
 const Section = styled.section`
   width: 100%;
-  padding: 4.4rem 2rem;
+  padding: 3.25rem 2rem; /* ⬅️ reduced from 4.4rem */
   background: #ffffff;
   position: relative;
   overflow: hidden;
 
   @media (max-width: 768px) {
-    padding: 3.6rem 1.5rem;
+    padding: 2.6rem 1.5rem; /* ⬅️ reduced from 3.6rem */
   }
 
   /* Zebra texture — desktop only (width-based, Lighthouse-safe) */
@@ -37,7 +38,7 @@ const Section = styled.section`
       background-image: url("/zebra_pattern.webp");
       background-size: cover;
       background-position: center;
-      opacity: 0.045;
+      opacity: 0.085; /* slightly toned down */
       filter: grayscale(1) contrast(0.9);
       pointer-events: none;
       z-index: 0;
@@ -68,21 +69,21 @@ const Inner = styled.div`
 
 const Header = styled.div`
   max-width: 820px;
-  margin: 0 auto 1.9rem;
+  margin: 0 auto 1.35rem; /* ⬅️ reduced from 1.9rem */
   text-align: center;
 `;
 
 const Eyebrow = styled.p`
-  margin: 0 0 0.9rem;
+  margin: 0 0 0.7rem; /* ⬅️ reduced */
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.78rem; /* ⬅️ tiny reduction */
   color: rgba(17, 17, 17, 0.55);
 `;
 
 const Title = styled.h2`
-  margin: 0 0 0.9rem;
-  font-size: 2.2rem;
+  margin: 0 0 0.7rem; /* ⬅️ reduced */
+  font-size: 2.05rem; /* ⬅️ reduced from 2.2rem */
   font-weight: 600;
   text-align: center;
   color: #111;
@@ -92,21 +93,21 @@ const Title = styled.h2`
   }
 
   @media (max-width: 768px) {
-    font-size: 1.95rem;
+    font-size: 1.82rem; /* ⬅️ reduced from 1.95rem */
   }
 `;
 
 const Intro = styled.p`
   margin: 0 auto;
   max-width: 74ch;
-  font-size: 1.05rem;
-  line-height: 1.75;
+  font-size: 1.02rem; /* ⬅️ tiny reduction */
+  line-height: 1.7; /* ⬅️ slightly tighter */
   color: rgba(17, 17, 17, 0.68);
 `;
 
 const Grid = styled.div`
   display: grid;
-  gap: 1.15rem;
+  gap: 1rem; /* ⬅️ reduced from 1.15rem */
 
   @media (min-width: 980px) {
     grid-template-columns: repeat(3, 1fr);
@@ -122,30 +123,30 @@ const CardBase = styled.article`
   overflow: hidden;
   border: 1px solid rgba(17, 17, 17, 0.08);
   background: #fff;
-  box-shadow: 0 28px 85px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 24px 75px rgba(0, 0, 0, 0.08); /* ⬅️ slightly lighter */
   transform: translateY(0);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 40px 110px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 34px 92px rgba(0, 0, 0, 0.12); /* ⬅️ slightly lighter */
   }
 
   @media (hover: none) {
     &:hover {
       transform: translateY(0);
-      box-shadow: 0 28px 85px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 24px 75px rgba(0, 0, 0, 0.08);
     }
   }
 `;
 
 const Media = styled.div`
   position: relative;
-  height: 285px;
+  height: 255px; /* ⬅️ reduced from 285px */
   overflow: hidden;
 
   @media (max-width: 768px) {
-    height: 240px;
+    height: 220px; /* ⬅️ reduced from 240px */
   }
 `;
 
@@ -180,12 +181,12 @@ const Overlay = styled.div`
 
 const Badge = styled.div`
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 14px; /* ⬅️ reduced */
+  left: 14px; /* ⬅️ reduced */
   z-index: 2;
-  padding: 0.48rem 0.8rem;
+  padding: 0.44rem 0.75rem; /* ⬅️ reduced */
   border-radius: 999px;
-  font-size: 0.78rem;
+  font-size: 0.76rem; /* ⬅️ reduced */
   letter-spacing: 0.12em;
   text-transform: uppercase;
   background: rgba(255, 255, 255, 0.92);
@@ -198,14 +199,14 @@ const Content = styled.div`
   right: 0;
   bottom: 0;
   z-index: 2;
-  padding: 1.35rem 1.35rem 1.25rem;
+  padding: 1.1rem 1.2rem 1.05rem; /* ⬅️ reduced */
   display: grid;
-  gap: 0.55rem;
+  gap: 0.5rem; /* ⬅️ reduced */
 `;
 
 const CardTitle = styled.h3`
   margin: 0;
-  font-size: 1.45rem;
+  font-size: 1.35rem; /* ⬅️ reduced */
   font-weight: 750;
   color: #fff;
   letter-spacing: -0.2px;
@@ -213,14 +214,14 @@ const CardTitle = styled.h3`
 
 const CardText = styled.p`
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.98rem; /* ⬅️ tiny reduction */
+  line-height: 1.55; /* ⬅️ slightly tighter */
   color: rgba(255, 255, 255, 0.82);
   max-width: 44ch;
 `;
 
 const CardFooter = styled.div`
-  margin-top: 0.55rem;
+  margin-top: 0.45rem; /* ⬅️ reduced */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -228,8 +229,8 @@ const CardFooter = styled.div`
 `;
 
 const AccentDot = styled.div`
-  width: 36px;
-  height: 36px;
+  width: 34px; /* ⬅️ reduced */
+  height: 34px; /* ⬅️ reduced */
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -263,7 +264,7 @@ const MediaLink = styled(Link)`
 `;
 
 const FooterRow = styled.div`
-  margin-top: 1.2rem;
+  margin-top: 0.95rem; /* ⬅️ reduced from 1.2rem */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -273,21 +274,21 @@ const FooterRow = styled.div`
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 0.75rem;
+    gap: 0.65rem; /* ⬅️ reduced */
   }
 `;
 
 const FooterHint = styled.p`
   margin: 0;
   color: rgba(17, 17, 17, 0.62);
-  font-size: 0.98rem;
+  font-size: 0.95rem; /* ⬅️ tiny reduction */
 `;
 
 const AllServicesLinkBase = styled(Link)`
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.75rem 1rem;
+  padding: 0.68rem 0.92rem; /* ⬅️ reduced */
   border-radius: 999px;
   text-decoration: none;
   font-weight: 750;
@@ -325,7 +326,6 @@ const AllServicesLinkBase = styled(Link)`
 export default function ServicesSection() {
   const magnetRef = useRef(null);
 
-  // Store whole module so we can support multiple framer-motion versions safely
   const [fm, setFm] = useState(null);
   const [allowMotion, setAllowMotion] = useState(false);
 
@@ -369,13 +369,8 @@ export default function ServicesSection() {
     const m = module?.motion;
     if (!m) return Comp;
 
-    // Newer versions
     if (typeof m.create === "function") return m.create(Comp);
-
-    // Some older versions
     if (typeof m.custom === "function") return m.custom(Comp);
-
-    // Some builds expose motion as a function
     if (typeof m === "function") return m(Comp);
 
     return Comp;
