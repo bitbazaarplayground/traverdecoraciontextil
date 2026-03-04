@@ -14,10 +14,10 @@ import ComplementosVentana from "../../components/ventanas/ComplementosVentana";
 import StickyCtaButton from "../../mobile/StickyCtaButton";
 
 /* Tabs icons (tipo) */
-import mPuerta from "../../assets/servicios/mosquiteras/correderaPuerta.png";
-import mEnrollable from "../../assets/servicios/mosquiteras/enrollable.png";
-import mExtensible from "../../assets/servicios/mosquiteras/extensible.png";
-import mFija from "../../assets/servicios/mosquiteras/fija.png";
+import mPuerta from "../../assets/servicios/mosquiteras/correderaPuerta.webp";
+import mEnrollable from "../../assets/servicios/mosquiteras/enrollable.webp";
+import mExtensible from "../../assets/servicios/mosquiteras/extensible.webp";
+import mFija from "../../assets/servicios/mosquiteras/fija.webp";
 
 /* Real images (puedes repetir si no tienes más) */
 import cocinaM from "../../assets/servicios/mosquiteras/carousel/cocinaM.webp";
