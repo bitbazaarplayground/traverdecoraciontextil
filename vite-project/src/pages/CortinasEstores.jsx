@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import styled from "styled-components";
-import cortinaM from "../assets/CortinasEstores/cortinaM.png";
-import customerM from "../assets/CortinasEstores/customerM.png";
-import estorM from "../assets/CortinasEstores/estorM.png";
+import cortinaM from "../assets/CortinasEstores/cortinaM.webp";
+import customerM from "../assets/CortinasEstores/customerM.webp";
+import estorM from "../assets/CortinasEstores/estorM.webp";
 import ContactCTA from "../components/ContactCTA";
 import SlickCarouselLazy from "../components/SlickCarouselLazy";
 import FaqAccordion from "../components/faq/FaqAccordion";
