@@ -1,16 +1,27 @@
+// src/components/Hero.jsx
+
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { trackEvent } from "../lib/analytics";
 
-import heroMobile from "../assets/heroHome/1-mobile.webp";
-import heroDesktop from "../assets/heroHome/1.webp";
+/**
+ * ✅ Images moved to /public/Hero/
+ * - No imports needed (avoids hashed asset paths + makes <link rel="preload"> stable)
+ * - LCP image uses srcSet/sizes directly on the <img>
+ */
 
-import blackoutImg from "../assets/heroHome/2.webp";
-import chenilleImg from "../assets/heroHome/3.webp";
-import Img2 from "../assets/heroHome/4.webp";
-import Img3 from "../assets/heroHome/5.webp";
-import wallpaper from "../assets/heroHome/6.webp";
+const HERO_MOBILE = "/Hero/1-mobile.webp";
+const HERO_DESKTOP = "/Hero/1.webp";
+
+const SLIDES = [
+  HERO_DESKTOP, // index 0 must remain the LCP slide
+  "/Hero/4.webp",
+  "/Hero/2.webp",
+  "/Hero/3.webp",
+  "/Hero/5.webp",
+  "/Hero/6.webp",
+];
 
 /* =========================
    HERO LAYOUT (EDITORIAL)
@@ -79,7 +90,6 @@ const Content = styled.div`
 
   padding: 7.5rem 1.5rem 6rem;
 
-  /* Premium move: content sits lower, not dead center */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -127,7 +137,6 @@ const Title = styled.h1`
   font-style: normal;
   text-transform: uppercase;
 
-  /* Keep it centered and single-line */
   text-align: center;
   white-space: nowrap;
 
@@ -137,16 +146,13 @@ const Title = styled.h1`
   color: rgba(255, 255, 255, 0.98);
   text-shadow: 0 16px 50px rgba(0, 0, 0, 0.45);
 
-  /* Desktop unchanged */
   font-size: clamp(2.6rem, 6vw, 6.6rem);
 
-  /* Mobile: scale down enough so it NEVER wraps or clips */
   @media (max-width: 768px) {
     font-size: clamp(1.55rem, 7.2vw, 3.2rem);
     letter-spacing: 0.012em;
   }
 
-  /* Very small phones: one more safety step */
   @media (max-width: 360px) {
     font-size: 1.45rem;
     letter-spacing: 0.01em;
@@ -170,7 +176,8 @@ const ScriptLine = styled(motion.div)`
 
   em {
     font-style: inherit;
-    font-weight: 400; /* tiny emphasis */
+    font-weight: 300;
+    opacity: 1;
     color: ${({ theme }) => theme.colors.primary};
   }
 
@@ -256,34 +263,29 @@ const ScrollHint = styled.div`
 ========================= */
 
 export default function Hero({ onOpenAsesoramiento }) {
-  const slides = useMemo(
-    () => [heroDesktop, Img2, blackoutImg, chenilleImg, Img3, wallpaper],
-    []
-  );
-
+  const slides = useMemo(() => SLIDES, []);
   const [index, setIndex] = useState(0);
   const [displaySrc, setDisplaySrc] = useState(slides[0]);
 
-  // LCP image ref (for fetchpriority without React warnings)
-  const lcpImgRef = useRef(null);
-
-  // Set browser-native fetchpriority on the LCP <img>
+  // ✅ Start slideshow AFTER LCP settles (reduces main-thread work at first paint)
   useEffect(() => {
-    if (lcpImgRef.current) {
-      lcpImgRef.current.setAttribute("fetchpriority", "high");
-    }
-  }, []);
+    let intervalId;
 
-  // Auto-rotate (same concept as theirs, slightly calmer pacing)
-  useEffect(() => {
-    const id = setInterval(() => {
-      setIndex((i) => (i + 1) % slides.length);
-    }, 7000);
-    return () => clearInterval(id);
+    const startTimeout = setTimeout(() => {
+      intervalId = setInterval(() => {
+        setIndex((i) => (i + 1) % slides.length);
+      }, 7000);
+    }, 2500);
+
+    return () => {
+      clearTimeout(startTimeout);
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [slides.length]);
 
-  // Warm the rest of the hero images (avoid competing with first paint)
+  // ✅ Warm the rest of the hero images AFTER first paint (desktop only)
   useEffect(() => {
+    if (typeof window === "undefined") return;
     if (window.matchMedia("(max-width: 768px)").matches) return;
 
     const rest = slides.slice(1);
@@ -302,9 +304,11 @@ export default function Hero({ onOpenAsesoramiento }) {
     }
   }, [slides]);
 
-  // Swap slides smoothly (decode when possible to avoid jank)
+  // ✅ Swap slides smoothly (decode when possible to avoid jank)
   useEffect(() => {
     const nextSrc = slides[index];
+    if (nextSrc === displaySrc) return;
+
     const img = new Image();
     img.src = nextSrc;
 
@@ -320,7 +324,7 @@ export default function Hero({ onOpenAsesoramiento }) {
     } else {
       img.onload = apply;
     }
-  }, [index, slides]);
+  }, [index, slides, displaySrc]);
 
   return (
     <HeroWrapper>
@@ -339,15 +343,17 @@ export default function Hero({ onOpenAsesoramiento }) {
               height: "100%",
             }}
           >
-            <source media="(max-width: 768px)" srcSet={heroMobile} />
+            {/* ✅ Put srcSet/sizes on the IMG so the browser always picks the right file */}
             <img
-              ref={lcpImgRef}
-              src={heroDesktop}
+              src={HERO_DESKTOP} // fallback
+              srcSet={`${HERO_MOBILE} 900w, ${HERO_DESKTOP} 1400w`}
+              sizes="(max-width: 768px) 100vw, 100vw"
               alt=""
               width="1100"
               height="733"
               loading="eager"
-              decoding="async"
+              decoding="sync"
+              fetchpriority="high"
               style={{
                 width: "100%",
                 height: "100%",

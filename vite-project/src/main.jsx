@@ -3,6 +3,9 @@ import ReactDOM from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import "swiper/css";
+import "swiper/css/pagination";
+import "./index.css";
 
 import App from "./App.jsx";
 import GlobalStyles from "./styles/GlobalStyles";

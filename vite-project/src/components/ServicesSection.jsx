@@ -1,5 +1,5 @@
 // src/components/ServicesSection.jsx
-import { motion } from "framer-motion";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -10,7 +10,6 @@ import Img3_850 from "../assets/Home/HeroImg/img3-mobile.webp";
 import Img3_1100 from "../assets/Home/HeroImg/img3.webp";
 import restaurante1_850 from "../assets/Home/HeroImg/restaurante1-mobile.webp";
 import restaurante1_1100 from "../assets/Home/HeroImg/restaurante1.webp";
-import zebraBg from "../assets/zebra_pattern.webp";
 
 const CARD_SIZES = "(max-width: 768px) 92vw, (max-width: 1100px) 30vw, 360px";
 
@@ -35,7 +34,7 @@ const Section = styled.section`
       content: "";
       position: absolute;
       inset: -10%;
-      background-image: url(${zebraBg});
+      background-image: url("/zebra_pattern.webp");
       background-size: cover;
       background-position: center;
       opacity: 0.045;
@@ -111,7 +110,6 @@ const Grid = styled.div`
 
   @media (min-width: 980px) {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.15rem;
   }
 `;
 
@@ -307,6 +305,7 @@ const AllServicesLinkBase = styled(Link)`
 
   &:hover {
     background: rgba(255, 255, 255, 0.92);
+    transform: scale(1.02);
   }
 
   &:hover span {
@@ -325,9 +324,11 @@ const AllServicesLinkBase = styled(Link)`
 
 export default function ServicesSection() {
   const magnetRef = useRef(null);
+
+  // Store whole module so we can support multiple framer-motion versions safely
+  const [fm, setFm] = useState(null);
   const [allowMotion, setAllowMotion] = useState(false);
 
-  // ✅ Decide motion on client (avoid doing work on mobile)
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) return;
 
@@ -338,11 +339,52 @@ export default function ServicesSection() {
       "(hover: hover) and (pointer: fine) and (min-width: 900px)"
     ).matches;
 
-    setAllowMotion(!reduced && desktopLike);
+    const shouldAnimate = !reduced && desktopLike;
+
+    let cancelled = false;
+    setAllowMotion(shouldAnimate);
+
+    if (shouldAnimate) {
+      import("framer-motion").then((mod) => {
+        if (!cancelled) setFm(mod);
+      });
+    }
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
+  const canAnimate = !!(allowMotion && fm?.motion);
+
+  const cardVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0, y: 26 },
+      visible: { opacity: 1, y: 0 },
+    }),
+    []
+  );
+
+  const wrapMotion = (module, Comp) => {
+    const m = module?.motion;
+    if (!m) return Comp;
+
+    // Newer versions
+    if (typeof m.create === "function") return m.create(Comp);
+
+    // Some older versions
+    if (typeof m.custom === "function") return m.custom(Comp);
+
+    // Some builds expose motion as a function
+    if (typeof m === "function") return m(Comp);
+
+    return Comp;
+  };
+
+  const Card = canAnimate ? wrapMotion(fm, CardBase) : CardBase;
+
   const setMagnet = (e) => {
-    if (!allowMotion) return;
+    if (!canAnimate) return;
     if (!magnetRef.current) return;
 
     const rect = magnetRef.current.getBoundingClientRect();
@@ -359,25 +401,9 @@ export default function ServicesSection() {
 
   const resetMagnet = () => {
     if (!magnetRef.current) return;
-    magnetRef.current.style.setProperty("--mx", `0px`);
-    magnetRef.current.style.setProperty("--my", `0px`);
+    magnetRef.current.style.setProperty("--mx", "0px");
+    magnetRef.current.style.setProperty("--my", "0px");
   };
-
-  const cardVariants = useMemo(
-    () => ({
-      hidden: { opacity: 0, y: 26 },
-      visible: { opacity: 1, y: 0 },
-    }),
-    []
-  );
-
-  // ✅ Card wrapper: motion on desktop-like devices only
-  const Card = allowMotion ? motion(CardBase) : CardBase;
-
-  // ✅ CTA link: motion hover only on desktop-like devices
-  const AllServicesLink = allowMotion
-    ? motion(AllServicesLinkBase)
-    : AllServicesLinkBase;
 
   return (
     <Section>
@@ -396,7 +422,7 @@ export default function ServicesSection() {
         <Grid>
           {/* CARD 1 */}
           <Card
-            {...(allowMotion
+            {...(canAnimate
               ? {
                   variants: cardVariants,
                   initial: "hidden",
@@ -439,7 +465,7 @@ export default function ServicesSection() {
 
           {/* CARD 2 */}
           <Card
-            {...(allowMotion
+            {...(canAnimate
               ? {
                   variants: cardVariants,
                   initial: "hidden",
@@ -482,7 +508,7 @@ export default function ServicesSection() {
 
           {/* CARD 3 */}
           <Card
-            {...(allowMotion
+            {...(canAnimate
               ? {
                   variants: cardVariants,
                   initial: "hidden",
@@ -530,7 +556,7 @@ export default function ServicesSection() {
             Más soluciones a medida para interior y exterior.
           </FooterHint>
 
-          <AllServicesLink
+          <AllServicesLinkBase
             ref={magnetRef}
             to="/services"
             aria-label="Ver todos los servicios"
@@ -541,10 +567,9 @@ export default function ServicesSection() {
               transform:
                 "translate3d(var(--mx, 0px), calc(var(--my, 0px) - 2px), 0)",
             }}
-            {...(allowMotion ? { whileHover: { scale: 1.02 } } : {})}
           >
             Ver todos los servicios <span>→</span>
-          </AllServicesLink>
+          </AllServicesLinkBase>
         </FooterRow>
       </Inner>
     </Section>

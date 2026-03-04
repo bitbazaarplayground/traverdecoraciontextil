@@ -182,7 +182,21 @@
         setTimeout(loadGA, 4000);
       })();
     </script>
-
+    <!-- Performance: Hero LCP image -->
+    <link
+      rel="preload"
+      as="image"
+      href="/Hero/1-mobile.webp"
+      media="(max-width: 768px)"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/Hero/1.webp"
+      media="(min-width: 769px)"
+      fetchpriority="high"
+    />
     <!-- Performance: Fonts -->
     <link
       rel="preload"
@@ -191,23 +205,13 @@
       type="font/woff2"
       crossorigin
     />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
     <link
       rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap"
-      onload="this.onload=null;this.rel='stylesheet'"
+      href="/fonts/CormorantGaramond-300italic.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
-
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap"
-      />
-    </noscript>
   </head>
 
   <body>

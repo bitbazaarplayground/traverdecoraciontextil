@@ -116,23 +116,6 @@ export default function GalleryCarousel() {
   const swiperRef = useRef(null);
   const isMobile = useIsMobile(768);
 
-  // ✅ Load Swiper CSS only when this component mounts (non-blocking)
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        await import("swiper/css");
-        await import("swiper/css/pagination");
-      } catch {
-        // If CSS chunk fails, we still want a functional carousel.
-      }
-    })();
-
-    return () => {
-      alive = false;
-    };
-  }, []);
-
   // ✅ Only include Autoplay module when we actually use it
   const modules = useMemo(
     () => (isMobile ? [Pagination] : [Pagination, Autoplay]),
@@ -155,8 +138,9 @@ export default function GalleryCarousel() {
           isMobile ? false : { delay: 3000, disableOnInteraction: false }
         }
         loop={true}
-        // ✅ Swiping is on by default in Swiper; keep it enabled on mobile
-        // allowTouchMove={true} // (optional; default is true)
+        watchSlidesProgress
+        preloadImages={false}
+        lazyPreloadPrevNext={1}
         onSwiper={(swiperInstance) => {
           swiperRef.current = swiperInstance;
         }}
