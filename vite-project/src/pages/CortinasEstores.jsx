@@ -619,7 +619,13 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
       {/* HERO */}
       <Hero>
         <HeroMedia aria-hidden="true">
-          <HeroImg src={heroImg} alt="" />
+          <HeroImg
+            src={heroImg}
+            alt=""
+            loading="eager"
+            decoding="sync"
+            fetchpriority="high"
+          />
           <HeroOverlay />
         </HeroMedia>
 

@@ -1,16 +1,13 @@
 // src/components/CortinasEstores/EnfoqueSlider.jsx
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { trackEvent } from "../lib/analytics";
+
 /* =========================
-   2026 SHOWROOM / ARTIST SECTION
-   - Kinetic intro
-   - Horizontal snap rail with progress
-   - 3D tilt cards + shimmer
-   - Magnetic CTA
+   SECTION
 ========================= */
 
 const Section = styled.section`
@@ -40,6 +37,7 @@ const Top = styled.div`
   }
 `;
 
+/* ✅ KEEP THESE EXACTLY (you asked to keep them) */
 const Kicker = styled(motion.p)`
   margin: 0 0 0.55rem 0;
   letter-spacing: 0.24em;
@@ -57,7 +55,7 @@ const Kicker = styled(motion.p)`
     bottom: 0.1rem;
     width: 48px;
     height: 1px;
-    background: rgba(196, 151, 98, 0.65); /* gold underline */
+    background: rgba(196, 151, 98, 0.65);
   }
 `;
 
@@ -84,49 +82,23 @@ const Lead = styled(motion.p)`
   }
 `;
 
+/* =========================
+   STEPS AREA
+========================= */
+
 const RailWrap = styled.div`
   position: relative;
 `;
 
-// Cursor spotlight
-const Spotlight = styled(motion.div)`
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-
-  /* subtle showroom layer */
-  opacity: 0;
-  transition: opacity 0.25s ease;
-
-  /* mix-blend keeps it premium on light backgrounds */
-  mix-blend-mode: multiply;
-`;
-
-const SpotlightMask = styled(motion.div)`
-  position: absolute;
-  inset: 0;
-
-  /* default state (will be overridden by style attr) */
-  background: radial-gradient(
-    420px 320px at 50% 50%,
-    rgba(0, 0, 0, 0.08),
-    transparent 60%
-  );
-`;
-
 const Rail = styled.div`
-  position: relative;
-  z-index: 1;
-
   display: grid;
   gap: 1rem;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(280px, 1fr);
 
+  /* Default: horizontal rail (used for mobile + mid screens) */
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(260px, 1fr);
   overflow-x: auto;
   padding: 0.25rem 0 0.9rem;
-
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
 
@@ -135,66 +107,36 @@ const Rail = styled.div`
     display: none;
   }
 
-  @media (min-width: 980px) {
-    gap: 1.15rem;
-    grid-auto-columns: minmax(320px, 1fr);
-  }
+  /* When we switch to "fits mode", we override this inline with style */
 `;
 
-const ProgressTrack = styled.div`
-  margin-top: 0.8rem;
-  height: 2px;
-  border-radius: 999px;
-  background: rgba(17, 17, 17, 0.1);
-  overflow: hidden;
-`;
-
-const ProgressBar = styled(motion.div)`
-  height: 100%;
-  border-radius: 999px;
-  background: rgba(196, 151, 98, 0.75);
-  transform-origin: 0% 50%;
-`;
-
-/* 3D card shell */
-const CardShell = styled(motion.article)`
+const Card = styled(motion.article)`
   scroll-snap-align: start;
-  border-radius: 26px;
-  position: relative;
-
-  background: rgba(255, 255, 255, 0.72);
-  outline: 1px solid rgba(17, 17, 17, 0.09);
-  outline-offset: -1px;
-
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  box-shadow: 0 14px 40px rgba(17, 17, 17, 0.06);
   overflow: hidden;
 
-  transform-style: preserve-3d;
+  transition: transform 220ms ease, box-shadow 220ms ease,
+    border-color 220ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 52px rgba(17, 17, 17, 0.08);
+    border-color: rgba(17, 17, 17, 0.14);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    &:hover {
+      transform: none;
+    }
+  }
 `;
 
 const CardInner = styled.div`
-  padding: 1.25rem 1.25rem 1.1rem;
-
-  @media (min-width: 980px) {
-    padding: 1.35rem 1.35rem 1.2rem;
-  }
-`;
-
-const Shimmer = styled.div`
-  position: absolute;
-  inset: -2px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-
-  /* “designer” sheen */
-  background: linear-gradient(
-    110deg,
-    transparent 35%,
-    rgba(255, 255, 255, 0.6) 50%,
-    transparent 65%
-  );
-  transform: translateX(-40%);
+  padding: 1.15rem 1.15rem 1.05rem;
 `;
 
 const CardTop = styled.div`
@@ -202,7 +144,7 @@ const CardTop = styled.div`
   align-items: baseline;
   justify-content: space-between;
   gap: 0.85rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.7rem;
 `;
 
 const Step = styled.span`
@@ -218,10 +160,8 @@ const Badge = styled.span`
   align-items: center;
   padding: 0.42rem 0.7rem;
   border-radius: 999px;
-
   background: rgba(17, 17, 17, 0.06);
   border: 1px solid rgba(17, 17, 17, 0.08);
-
   font-size: 0.76rem;
   font-weight: 800;
   color: rgba(17, 17, 17, 0.7);
@@ -229,19 +169,85 @@ const Badge = styled.span`
 
 const CardTitle = styled.h3`
   margin: 0 0 0.6rem;
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 1.18rem;
+  font-weight: 850;
   letter-spacing: -0.015em;
   color: #121212;
 `;
 
 const CardText = styled.p`
   margin: 0;
-  font-size: 0.98rem;
+  font-size: 0.97rem;
   line-height: 1.7;
   color: rgba(17, 17, 17, 0.68);
   max-width: 60ch;
 `;
+
+/* =========================
+   NAV (arrows + dots for in-between screens)
+========================= */
+
+const NavRow = styled.div`
+  margin-top: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+`;
+
+const ArrowBtn = styled.button`
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  box-shadow: 0 10px 24px rgba(17, 17, 17, 0.06);
+  transition: transform 180ms ease, opacity 180ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  svg {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const Dots = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 7px;
+`;
+
+const Dot = styled.button`
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+
+  background: ${({ $active, theme }) =>
+    $active ? theme.colors.primary : "rgba(17,17,17,0.25)"};
+
+  transform: ${({ $active }) => ($active ? "scale(1.15)" : "scale(1)")};
+  transition: transform 160ms ease, background 160ms ease;
+`;
+
+/* =========================
+   CTA
+========================= */
 
 const Bottom = styled.div`
   margin-top: 1.6rem;
@@ -249,7 +255,6 @@ const Bottom = styled.div`
   justify-content: flex-start;
 `;
 
-/* Magnetic CTA */
 const CTA = styled(motion(Link))`
   display: inline-flex;
   align-items: center;
@@ -270,123 +275,18 @@ const CTA = styled(motion(Link))`
   box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
 `;
 
+/* Simple reveal (no blur) */
 const reveal = {
-  hidden: { opacity: 0, y: 14, filter: "blur(6px)" },
+  hidden: { opacity: 0, y: 10 },
   show: (d = 0) => ({
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.9, delay: d, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.65, delay: d, ease: [0.22, 1, 0.36, 1] },
   }),
 };
 
-/* ===== Helpers ===== */
 function clamp(n, min, max) {
   return Math.min(Math.max(n, min), max);
-}
-
-/* 3D tilt hook */
-function useTilt() {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const rotateX = useTransform(y, [-1, 1], [10, -10]);
-  const rotateY = useTransform(x, [-1, 1], [-12, 12]);
-
-  const rX = useSpring(rotateX, { stiffness: 220, damping: 18 });
-  const rY = useSpring(rotateY, { stiffness: 220, damping: 18 });
-
-  const scale = useSpring(1, { stiffness: 260, damping: 18 });
-
-  function onMove(e) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width; // 0..1
-    const py = (e.clientY - rect.top) / rect.height; // 0..1
-    x.set((px - 0.5) * 2); // -1..1
-    y.set((py - 0.5) * 2);
-  }
-
-  function onEnter() {
-    scale.set(1.02);
-  }
-
-  function onLeave() {
-    x.set(0);
-    y.set(0);
-    scale.set(1);
-  }
-
-  return { rX, rY, scale, onMove, onEnter, onLeave };
-}
-
-/* Magnetic button hook */
-function useMagnet(strength = 10) {
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-
-  const x = useSpring(mx, { stiffness: 240, damping: 16 });
-  const y = useSpring(my, { stiffness: 240, damping: 16 });
-
-  function onMove(e) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const dx = e.clientX - (rect.left + rect.width / 2);
-    const dy = e.clientY - (rect.top + rect.height / 2);
-    mx.set(clamp(dx / 6, -strength, strength));
-    my.set(clamp(dy / 6, -strength, strength));
-  }
-
-  function onLeave() {
-    mx.set(0);
-    my.set(0);
-  }
-
-  return { x, y, onMove, onLeave };
-}
-
-function TiltCard({ s }) {
-  const { rX, rY, scale, onMove, onEnter, onLeave } = useTilt();
-  const [hover, setHover] = useState(false);
-
-  return (
-    <CardShell
-      onMouseMove={onMove}
-      onMouseEnter={() => {
-        setHover(true);
-        onEnter();
-      }}
-      onMouseLeave={() => {
-        setHover(false);
-        onLeave();
-      }}
-      whileTap={{ scale: 0.99 }}
-      style={{
-        rotateX: rX,
-        rotateY: rY,
-        scale,
-      }}
-      variants={reveal}
-      initial="hidden"
-      whileInView="show"
-      custom={0.15}
-      viewport={{ once: true, amount: 0.35 }}
-    >
-      <Shimmer
-        style={{
-          opacity: hover ? 1 : 0,
-          transform: hover ? "translateX(40%)" : "translateX(-40%)",
-          transition: "transform 0.8s ease, opacity 0.25s ease",
-        }}
-      />
-      <CardInner>
-        <CardTop>
-          <Step>{s.step}</Step>
-          <Badge>{s.badge}</Badge>
-        </CardTop>
-        <CardTitle>{s.title}</CardTitle>
-        <CardText>{s.text}</CardText>
-      </CardInner>
-    </CardShell>
-  );
 }
 
 export default function EnfoqueSlider({ onOpenAsesoramiento }) {
@@ -426,60 +326,92 @@ export default function EnfoqueSlider({ onOpenAsesoramiento }) {
     []
   );
 
-  // Progress bar from horizontal scroll
   const railRef = useRef(null);
-  const p = useMotionValue(0);
-  const progress = useSpring(p, { stiffness: 180, damping: 22 });
 
+  // Modes:
+  // - "touch": <=768px (swipe rail)
+  // - "fits": show 5 columns if there is room
+  // - "nav": in-between (rail + arrows + dots)
+  const [mode, setMode] = useState("touch");
+  const [active, setActive] = useState(0);
+
+  const recomputeMode = useCallback(() => {
+    const el = railRef.current;
+    if (!el) return;
+
+    const w = window.innerWidth;
+
+    // Your chosen breakpoints (tweak these)
+    const TOUCH_MAX = 1000; // <= this = touch/swipe (no bullets)
+    const NAV_MAX = 2000; // > this = treat as wide desktop (no bullets)
+
+    // 1) Touch range: swipe rail, no bullets
+    if (w <= TOUCH_MAX) {
+      setMode("touch");
+      return;
+    }
+
+    // 2) Determine if all 5 steps can fit
+    const needed = 5 * 220 + 4 * 16 + 40; // ~1200px (your fit threshold)
+    const available = el.getBoundingClientRect().width;
+
+    if (available >= needed) {
+      setMode("fits"); // show all 5, no bullets
+      return;
+    }
+
+    // 3) Only show nav in the “awkward middle”
+    if (w > TOUCH_MAX && w <= NAV_MAX) {
+      setMode("nav"); // bullets + arrows
+    } else {
+      // Very large screens but still not fitting (rare edge case)
+      // fall back to rail without nav UI:
+      setMode("touch"); // or create a "railNoNav" mode if you want
+    }
+  }, []);
+
+  useEffect(() => {
+    recomputeMode();
+    window.addEventListener("resize", recomputeMode);
+    return () => window.removeEventListener("resize", recomputeMode);
+  }, [recomputeMode]);
+
+  // Track active slide for dots (only relevant in rail modes)
   useEffect(() => {
     const el = railRef.current;
     if (!el) return;
 
     const onScroll = () => {
-      const max = el.scrollWidth - el.clientWidth;
-      const ratio = max <= 0 ? 1 : el.scrollLeft / max;
-      p.set(clamp(ratio, 0, 1));
+      // active = nearest card to left edge
+      const cardWidth =
+        el.firstElementChild?.getBoundingClientRect?.().width || 1;
+      const gap = 16; // close enough to our CSS gap
+      const idx = Math.round(el.scrollLeft / (cardWidth + gap));
+      setActive(clamp(idx, 0, steps.length - 1));
     };
 
-    onScroll();
     el.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
     return () => el.removeEventListener("scroll", onScroll);
-  }, [p]);
+  }, [steps.length]);
 
-  // Magnetic CTA motion
-  const magnet = useMagnet(12);
-
-  // Spotlight effect motion
-  const wrapRef = useRef(null);
-  const sx = useMotionValue(50);
-  const sy = useMotionValue(50);
-
-  const sxSpring = useSpring(sx, { stiffness: 160, damping: 20 });
-  const sySpring = useSpring(sy, { stiffness: 160, damping: 20 });
-
-  const spotlightBg = useTransform(
-    [sxSpring, sySpring],
-    ([x, y]) => `
-  radial-gradient(
-    460px 340px at ${x}% ${y}%,
-    rgba(229, 0, 126, 0.07)
-
-    transparent 60%
-  )
-`
-  );
-
-  const [spotOn, setSpotOn] = useState(false);
-
-  function onSpotMove(e) {
-    const el = wrapRef.current;
+  const scrollToIndex = (idx) => {
+    const el = railRef.current;
     if (!el) return;
-    const r = el.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width) * 100;
-    const y = ((e.clientY - r.top) / r.height) * 100;
-    sx.set(clamp(x, 0, 100));
-    sy.set(clamp(y, 0, 100));
-  }
+
+    const children = el.children;
+    const target = children[idx];
+    if (!target) return;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      inline: "start",
+      block: "nearest",
+    });
+  };
+
+  const canShowNav = mode === "nav"; // in-between only
+  const isRail = mode === "touch" || mode === "nav";
 
   return (
     <Section aria-label="Cómo trabajamos">
@@ -522,33 +454,85 @@ export default function EnfoqueSlider({ onOpenAsesoramiento }) {
           </Lead>
         </Top>
 
-        <RailWrap
-          ref={wrapRef}
-          onMouseEnter={() => setSpotOn(true)}
-          onMouseLeave={() => setSpotOn(false)}
-          onMouseMove={onSpotMove}
-        >
-          <Spotlight style={{ opacity: spotOn ? 1 : 0 }}>
-            <SpotlightMask style={{ background: spotlightBg }} />
-          </Spotlight>
-
-          <Rail ref={railRef}>
-            {steps.map((s) => (
-              <TiltCard key={s.title} s={s} />
+        <RailWrap>
+          <Rail
+            ref={railRef}
+            style={
+              mode === "fits"
+                ? {
+                    gridAutoFlow: "unset",
+                    gridAutoColumns: "unset",
+                    overflowX: "visible",
+                    scrollSnapType: "none",
+                    gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
+                    paddingBottom: "0.25rem",
+                  }
+                : undefined
+            }
+          >
+            {steps.map((s, i) => (
+              <Card
+                key={s.title}
+                variants={reveal}
+                initial="hidden"
+                whileInView="show"
+                custom={0.08 + i * 0.04}
+                viewport={{ once: true, amount: 0.25 }}
+              >
+                <CardInner>
+                  <CardTop>
+                    <Step>{s.step}</Step>
+                    <Badge>{s.badge}</Badge>
+                  </CardTop>
+                  <CardTitle>{s.title}</CardTitle>
+                  <CardText>{s.text}</CardText>
+                </CardInner>
+              </Card>
             ))}
           </Rail>
 
-          <ProgressTrack aria-hidden="true">
-            <ProgressBar style={{ scaleX: progress }} />
-          </ProgressTrack>
+          {canShowNav && (
+            <NavRow aria-label="Navegación de pasos">
+              <ArrowBtn
+                type="button"
+                onClick={() =>
+                  scrollToIndex(clamp(active - 1, 0, steps.length - 1))
+                }
+                disabled={active === 0}
+                aria-label="Paso anterior"
+              >
+                <ChevronLeft size={18} />
+              </ArrowBtn>
+
+              <Dots aria-label="Indicadores de pasos">
+                {steps.map((_, i) => (
+                  <Dot
+                    key={i}
+                    type="button"
+                    $active={i === active}
+                    onClick={() => scrollToIndex(i)}
+                    aria-label={`Ir al paso ${i + 1}`}
+                  />
+                ))}
+              </Dots>
+
+              <ArrowBtn
+                type="button"
+                onClick={() =>
+                  scrollToIndex(clamp(active + 1, 0, steps.length - 1))
+                }
+                disabled={active === steps.length - 1}
+                aria-label="Siguiente paso"
+              >
+                <ChevronRight size={18} />
+              </ArrowBtn>
+            </NavRow>
+          )}
         </RailWrap>
 
         <Bottom>
           <CTA
             to="/contact"
-            onMouseMove={magnet.onMove}
-            onMouseLeave={magnet.onLeave}
-            style={{ x: magnet.x, y: magnet.y }}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.99 }}
             onClick={(e) => {
