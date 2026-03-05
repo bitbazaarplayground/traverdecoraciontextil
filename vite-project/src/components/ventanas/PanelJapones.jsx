@@ -24,7 +24,7 @@ import waitingroom from "../../assets/panelJapones/waitingroom1.webp";
 
 // Complementos Ventana
 import domoticaControl from "../../assets/Automatizacion/heroB.webp";
-import cortinasEstoresImg from "../../assets/CortinasEstores/carousel/cortinas2.webp";
+import cortinasEstoresImg from "../../assets/CortinasEstores/carousel/cortinas2-1100.webp";
 import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
 import venecianasImg from "../../assets/venecianas/oficina2.webp";
 

@@ -36,7 +36,6 @@ export default function SlickCarouselLazy({ images = [], settings }) {
       if (loaded) return;
       loaded = true;
 
-      // Load CSS only when needed
       await Promise.all([
         import("slick-carousel/slick/slick.css"),
         import("slick-carousel/slick/slick-theme.css"),
@@ -46,7 +45,6 @@ export default function SlickCarouselLazy({ images = [], settings }) {
       setSliderComp(() => mod.default);
     };
 
-    // Fallback if IO is not available
     if (!("IntersectionObserver" in window)) {
       load();
       return;
@@ -66,23 +64,35 @@ export default function SlickCarouselLazy({ images = [], settings }) {
     return () => io.disconnect();
   }, []);
 
+  const slideSizes = "(max-width: 768px) 100vw, min(1100px, 100vw)";
+
   return (
     <Host ref={hostRef}>
       {SliderComp ? (
         <SliderComp {...settings}>
-          {images.map((img, i) => (
-            <CarouselImage key={`${i}-${img}`}>
-              <img
-                src={img}
-                alt={`Cortinas y estores instalados — ejemplo ${i + 1}`}
-                loading="lazy"
-                decoding="async"
-              />
-            </CarouselImage>
-          ))}
+          {images.map((img, i) => {
+            const isObj = img && typeof img === "object";
+            const src = isObj ? img.src : img;
+            const srcSet = isObj ? img.srcSet : undefined;
+
+            return (
+              <CarouselImage key={`${i}-${src}`}>
+                <img
+                  src={src}
+                  srcSet={srcSet}
+                  sizes={srcSet ? slideSizes : undefined}
+                  width="1100"
+                  height="733"
+                  alt={`Cortinas y estores instalados — ejemplo ${i + 1}`}
+                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="low"
+                />
+              </CarouselImage>
+            );
+          })}
         </SliderComp>
       ) : (
-        // Placeholder (keeps height, prevents layout jump)
         <CarouselImage aria-hidden="true" />
       )}
     </Host>

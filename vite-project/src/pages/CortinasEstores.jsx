@@ -1,3 +1,4 @@
+// CortinasEstores.jsx (rewritten with responsive images + better hero LCP hints)
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import styled from "styled-components";
@@ -5,29 +6,70 @@ import cortinaM from "../assets/CortinasEstores/cortinaM.webp";
 import customerM from "../assets/CortinasEstores/customerM.webp";
 import estorM from "../assets/CortinasEstores/estorM.webp";
 import ContactCTA from "../components/ContactCTA";
+import EnfoqueSlider from "../components/EnfoqueSlider";
 import SlickCarouselLazy from "../components/SlickCarouselLazy";
 import FaqAccordion from "../components/faq/FaqAccordion";
+import ComplementosVentana from "../components/ventanas/ComplementosVentana";
 import { CONTACT } from "../config/contact";
 import StickyCtaButton from "../mobile/StickyCtaButton";
-// Assets
-import heroImg from "../assets/CortinasEstores/carousel/cortinas1.webp";
 
-import cortina2 from "../assets/CortinasEstores/carousel/cortinas2.webp";
-import cortina3 from "../assets/CortinasEstores/carousel/cortinas3.webp";
-import cortina4 from "../assets/CortinasEstores/carousel/cortinas4.webp";
-import cortina5 from "../assets/CortinasEstores/carousel/cortinas5.webp";
-import cortina6 from "../assets/CortinasEstores/carousel/cortinas6.webp";
+/* =========================
+   HERO (use 768/1280/1920)
+========================= */
+import hero_1280 from "../assets/CortinasEstores/carousel/cortinas1-1280.webp";
+import hero_1920 from "../assets/CortinasEstores/carousel/cortinas1-1920.webp";
+import hero_768 from "../assets/CortinasEstores/carousel/cortinas1-768.webp";
 
-// Inspiracion
-import blackoutImg from "../assets/CortinasEstores/inspiracion/blackout.webp";
-import chenilleImg from "../assets/CortinasEstores/inspiracion/chenille.webp";
-import linenImg from "../assets/CortinasEstores/inspiracion/linen.webp";
-import patternedImg from "../assets/CortinasEstores/inspiracion/patterned.webp";
-import sheerImg from "../assets/CortinasEstores/inspiracion/sheer.webp";
-import velvetImg from "../assets/CortinasEstores/inspiracion/velvet.webp";
+/* =========================
+   CAROUSEL IMAGES (480/768/1100)
+   (we pass an object per slide so SlickCarouselLazy can use srcSet)
+========================= */
+import cortina2_1100 from "../assets/CortinasEstores/carousel/cortinas2-1100.webp";
+import cortina2_480 from "../assets/CortinasEstores/carousel/cortinas2-480.webp";
+import cortina2_768 from "../assets/CortinasEstores/carousel/cortinas2-768.webp";
 
-import EnfoqueSlider from "../components/EnfoqueSlider";
-import ComplementosVentana from "../components/ventanas/ComplementosVentana";
+import cortina3_1100 from "../assets/CortinasEstores/carousel/cortinas3-1100.webp";
+import cortina3_480 from "../assets/CortinasEstores/carousel/cortinas3-480.webp";
+import cortina3_768 from "../assets/CortinasEstores/carousel/cortinas3-768.webp";
+
+import cortina4_1100 from "../assets/CortinasEstores/carousel/cortinas4-1100.webp";
+import cortina4_480 from "../assets/CortinasEstores/carousel/cortinas4-480.webp";
+import cortina4_768 from "../assets/CortinasEstores/carousel/cortinas4-768.webp";
+
+import cortina5_1100 from "../assets/CortinasEstores/carousel/cortinas5-1100.webp";
+import cortina5_480 from "../assets/CortinasEstores/carousel/cortinas5-480.webp";
+import cortina5_768 from "../assets/CortinasEstores/carousel/cortinas5-768.webp";
+
+import cortina6_1100 from "../assets/CortinasEstores/carousel/cortinas6-1100.webp";
+import cortina6_480 from "../assets/CortinasEstores/carousel/cortinas6-480.webp";
+import cortina6_768 from "../assets/CortinasEstores/carousel/cortinas6-768.webp";
+
+/* =========================
+   INSPIRACIÓN (480/768/1100)
+========================= */
+import blackout_1100 from "../assets/CortinasEstores/inspiracion/blackout-1100.webp";
+import blackout_480 from "../assets/CortinasEstores/inspiracion/blackout-480.webp";
+import blackout_768 from "../assets/CortinasEstores/inspiracion/blackout-768.webp";
+
+import chenille_1100 from "../assets/CortinasEstores/inspiracion/chenille-1100.webp";
+import chenille_480 from "../assets/CortinasEstores/inspiracion/chenille-480.webp";
+import chenille_768 from "../assets/CortinasEstores/inspiracion/chenille-768.webp";
+
+import linen_1100 from "../assets/CortinasEstores/inspiracion/linen-1100.webp";
+import linen_480 from "../assets/CortinasEstores/inspiracion/linen-480.webp";
+import linen_768 from "../assets/CortinasEstores/inspiracion/linen-768.webp";
+
+import patterned_1100 from "../assets/CortinasEstores/inspiracion/patterned-1100.webp";
+import patterned_480 from "../assets/CortinasEstores/inspiracion/patterned-480.webp";
+import patterned_768 from "../assets/CortinasEstores/inspiracion/patterned-768.webp";
+
+import sheer_1100 from "../assets/CortinasEstores/inspiracion/sheer-1100.webp";
+import sheer_480 from "../assets/CortinasEstores/inspiracion/sheer-480.webp";
+import sheer_768 from "../assets/CortinasEstores/inspiracion/sheer-768.webp";
+
+import velvet_1100 from "../assets/CortinasEstores/inspiracion/velvet-1100.webp";
+import velvet_480 from "../assets/CortinasEstores/inspiracion/velvet-480.webp";
+import velvet_768 from "../assets/CortinasEstores/inspiracion/velvet-768.webp";
 
 /* =========================
    PAGE
@@ -36,7 +78,6 @@ import ComplementosVentana from "../components/ventanas/ComplementosVentana";
 const Page = styled.main`
   width: 100%;
   background: #fff;
-
   color: #151515;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
     "Helvetica Neue", sans-serif;
@@ -49,16 +90,12 @@ const Page = styled.main`
 const Hero = styled.section`
   position: relative;
   margin-top: 3.5rem;
-
-  /* Control hero size across screens */
   height: clamp(360px, 45vh, 560px);
-
   display: grid;
   place-items: center;
   padding: 0 2rem;
   text-align: center;
   color: #fff;
-
   overflow: hidden;
 
   @media (max-width: 768px) {
@@ -66,6 +103,7 @@ const Hero = styled.section`
     padding: 0 1.5rem;
   }
 `;
+
 const HeroMedia = styled.div`
   position: absolute;
   inset: 0;
@@ -80,8 +118,6 @@ const HeroImg = styled.img`
   object-fit: cover;
   object-position: center 85%;
   transform: translateZ(0) scale(1.04);
-  backface-visibility: hidden;
-  will-change: transform;
 
   @media (max-width: 768px) {
     object-position: center 75%;
@@ -94,6 +130,7 @@ const HeroOverlay = styled.div`
   inset: 0;
   background: linear-gradient(rgba(10, 0, 0, 0.35), rgba(0, 0, 0, 0.25));
 `;
+
 const HeroInner = styled.div`
   position: relative;
   z-index: 1;
@@ -128,8 +165,9 @@ const HeroText = styled.p`
   line-height: 1.7;
   opacity: 0.9;
 `;
+
 /* =========================
-   FEATURE STRIP (MATCH SCREENSHOT)
+   FEATURE STRIP
 ========================= */
 
 const Features = styled.section`
@@ -137,7 +175,6 @@ const Features = styled.section`
   border-top: 1px solid rgba(17, 17, 17, 0.08);
   border-bottom: 1px solid rgba(17, 17, 17, 0.08);
 
-  /* Hide this strip on very large screens */
   @media (min-width: 1400px) {
     display: none;
   }
@@ -147,7 +184,6 @@ const FeaturesGrid = styled.div`
   max-width: 1180px;
   margin: 0 auto;
   padding: clamp(10px, 2vw, 18px);
-
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 
@@ -160,15 +196,12 @@ const Feature = styled.article`
   text-align: center;
   padding: 16px 10px;
 
-  /* Vertical dividers always (desktop + mobile) */
   &:not(:first-child) {
     border-left: 1px solid rgba(17, 17, 17, 0.12);
   }
 
   @media (max-width: 900px) {
     padding: 14px 8px;
-
-    /* dividers slightly softer on mobile */
     &:not(:first-child) {
       border-left: 1px solid rgba(17, 17, 17, 0.1);
     }
@@ -224,23 +257,20 @@ const FeatureText = styled.p`
 const CarouselSection = styled.section`
   padding: 4rem 0rem;
   margin-top: -2rem;
-  /* Slick dots – match homepage (primary color) */
+
   .slick-dots {
     position: relative;
     margin-top: 1.25rem;
   }
-
   .slick-dots li {
     margin: 0 4px;
   }
-
   .slick-dots li button:before {
-    font-size: 8px; /* controls bullet size */
+    font-size: 8px;
     opacity: 0.35;
     color: rgba(17, 17, 17, 0.55);
     transition: transform 180ms ease, opacity 180ms ease, color 180ms ease;
   }
-
   .slick-dots li.slick-active button:before {
     opacity: 0.95;
     transform: scale(1.15);
@@ -254,7 +284,7 @@ const CarouselSection = styled.section`
 `;
 
 /* =========================
-   FABRICS / HANDMADE SECTION
+   FABRICS / HANDMADE
 ========================= */
 
 const FabricsSection = styled.section`
@@ -363,7 +393,7 @@ const HandmadeNote = styled.div`
 `;
 
 /* =========================
-   FAQ (UI)
+   FAQ
 ========================= */
 
 const FAQSection = styled.section`
@@ -380,9 +410,6 @@ const FAQInner = styled.div`
     width: min(1120px, calc(100% - 2rem));
   }
 `;
-/* =========================
-   SHARED SECTION HEADERS (match AutomatizacionIndividual)
-========================= */
 
 const SectionTop = styled.div`
   max-width: 860px;
@@ -411,7 +438,6 @@ const Kicker = styled.p`
   }
 `;
 
-/* Same idea as your other pages: primary pink touch via span */
 const SectionTitle = styled.h2`
   margin: 0;
   font-size: 2.15rem;
@@ -435,8 +461,9 @@ const SectionLead = styled.p`
   color: rgba(17, 17, 17, 0.62);
   max-width: 70ch;
 `;
+
 /* =========================
-   STATIC DATA (avoid rebuild every render)
+   STATIC DATA
 ========================= */
 
 const FAQ_ITEMS = [
@@ -551,10 +578,7 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
         url: `${baseUrl}/`,
         telephone: CONTACT.phoneLandline,
         email: CONTACT.email,
-        address: {
-          "@type": "PostalAddress",
-          ...CONTACT.address,
-        },
+        address: { "@type": "PostalAddress", ...CONTACT.address },
       },
     }),
     [baseUrl, canonical, siteName, description]
@@ -565,7 +589,6 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
     [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd]
   );
 
-  // ✅ memoized settings (so SlickCarouselLazy can stay stable)
   const sliderSettings = useMemo(
     () => ({
       dots: true,
@@ -578,11 +601,36 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
     []
   );
 
-  // ✅ memoized images list
+  // ✅ Now pass rich objects so SlickCarouselLazy can render srcSet
   const images = useMemo(
-    () => [cortina2, cortina3, cortina4, cortina5, cortina6],
+    () => [
+      {
+        src: cortina2_768,
+        srcSet: `${cortina2_480} 480w, ${cortina2_768} 768w, ${cortina2_1100} 1100w`,
+      },
+      {
+        src: cortina3_768,
+        srcSet: `${cortina3_480} 480w, ${cortina3_768} 768w, ${cortina3_1100} 1100w`,
+      },
+      {
+        src: cortina4_768,
+        srcSet: `${cortina4_480} 480w, ${cortina4_768} 768w, ${cortina4_1100} 1100w`,
+      },
+      {
+        src: cortina5_768,
+        srcSet: `${cortina5_480} 480w, ${cortina5_768} 768w, ${cortina5_1100} 1100w`,
+      },
+      {
+        src: cortina6_768,
+        srcSet: `${cortina6_480} 480w, ${cortina6_768} 768w, ${cortina6_1100} 1100w`,
+      },
+    ],
     []
   );
+
+  // Used by “Inspiración” images
+  const fabricSizes =
+    "(max-width: 900px) calc(100vw - 3rem), (max-width: 1200px) 30vw, 340px";
 
   return (
     <Page>
@@ -592,8 +640,14 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
 
-        {/* ✅ Preload hero bg (no visual change, helps LCP) */}
-        <link rel="preload" as="image" href={heroImg} fetchpriority="high" />
+        {/* ✅ Preload hero responsively (prevents mobile preloading a huge file) */}
+        <link
+          rel="preload"
+          as="image"
+          href={hero_1280}
+          imagesrcset={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+          imagesizes="100vw"
+        />
 
         {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
@@ -612,7 +666,6 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:image:alt" content={ogImageAlt} />
 
-        {/* JSON-LD */}
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
@@ -620,10 +673,15 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
       <Hero>
         <HeroMedia aria-hidden="true">
           <HeroImg
-            src={heroImg}
+            src={hero_1280}
+            srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+            sizes="100vw"
+            width="1920"
+            height="1080"
             alt=""
+            aria-hidden="true"
             loading="eager"
-            decoding="sync"
+            decoding="async"
             fetchpriority="high"
           />
           <HeroOverlay />
@@ -640,13 +698,21 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
           </HeroText>
         </HeroInner>
       </Hero>
+
       <Features>
         <FeaturesGrid>
           <Feature>
             <FeatureIcon aria-hidden="true">
-              <img src={cortinaM} alt="" />
+              <img
+                src={cortinaM}
+                alt=""
+                aria-hidden="true"
+                width="52"
+                height="52"
+                loading="lazy"
+                decoding="async"
+              />
             </FeatureIcon>
-
             <FeatureTitle>Cortinas a Medida</FeatureTitle>
             <FeatureText>
               Diseños personalizados y tejidos de calidad
@@ -655,7 +721,15 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
 
           <Feature>
             <FeatureIcon aria-hidden="true">
-              <img src={estorM} alt="" />
+              <img
+                src={estorM}
+                alt=""
+                aria-hidden="true"
+                width="52"
+                height="52"
+                loading="lazy"
+                decoding="async"
+              />
             </FeatureIcon>
             <FeatureTitle>Estores Motorizados</FeatureTitle>
             <FeatureText>Estores eléctricos y automatizados</FeatureText>
@@ -663,7 +737,15 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
 
           <Feature>
             <FeatureIcon aria-hidden="true">
-              <img src={customerM} alt="" />
+              <img
+                src={customerM}
+                alt=""
+                aria-hidden="true"
+                width="52"
+                height="52"
+                loading="lazy"
+                decoding="async"
+              />
             </FeatureIcon>
             <FeatureTitle>Asesoramiento Profesional</FeatureTitle>
             <FeatureText>Expertos en decoración de interiores</FeatureText>
@@ -690,7 +772,11 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             <FabricItem>
               <FabricImageWrapper>
                 <FabricImage
-                  src={linenImg}
+                  src={linen_768}
+                  srcSet={`${linen_480} 480w, ${linen_768} 768w, ${linen_1100} 1100w`}
+                  sizes={fabricSizes}
+                  width="1100"
+                  height="733"
                   alt="Cortinas de lino a medida"
                   loading="lazy"
                   decoding="async"
@@ -706,7 +792,11 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             <FabricItem>
               <FabricImageWrapper>
                 <FabricImage
-                  src={sheerImg}
+                  src={sheer_768}
+                  srcSet={`${sheer_480} 480w, ${sheer_768} 768w, ${sheer_1100} 1100w`}
+                  sizes={fabricSizes}
+                  width="1100"
+                  height="733"
                   alt="Visillos a medida"
                   loading="lazy"
                   decoding="async"
@@ -722,7 +812,11 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             <FabricItem>
               <FabricImageWrapper>
                 <FabricImage
-                  src={velvetImg}
+                  src={velvet_768}
+                  srcSet={`${velvet_480} 480w, ${velvet_768} 768w, ${velvet_1100} 1100w`}
+                  sizes={fabricSizes}
+                  width="1100"
+                  height="733"
                   alt="Cortinas de terciopelo a medida"
                   loading="lazy"
                   decoding="async"
@@ -738,7 +832,11 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             <FabricItem>
               <FabricImageWrapper>
                 <FabricImage
-                  src={blackoutImg}
+                  src={blackout_768}
+                  srcSet={`${blackout_480} 480w, ${blackout_768} 768w, ${blackout_1100} 1100w`}
+                  sizes={fabricSizes}
+                  width="1100"
+                  height="733"
                   alt="Cortinas térmicas y blackout a medida"
                   loading="lazy"
                   decoding="async"
@@ -754,7 +852,11 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             <FabricItem>
               <FabricImageWrapper>
                 <FabricImage
-                  src={patternedImg}
+                  src={patterned_768}
+                  srcSet={`${patterned_480} 480w, ${patterned_768} 768w, ${patterned_1100} 1100w`}
+                  sizes={fabricSizes}
+                  width="1100"
+                  height="733"
                   alt="Cortinas con tejidos estampados"
                   loading="lazy"
                   decoding="async"
@@ -770,7 +872,11 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             <FabricItem>
               <FabricImageWrapper>
                 <FabricImage
-                  src={chenilleImg}
+                  src={chenille_768}
+                  srcSet={`${chenille_480} 480w, ${chenille_768} 768w, ${chenille_1100} 1100w`}
+                  sizes={fabricSizes}
+                  width="1100"
+                  height="733"
                   alt="Cortinas técnicas y chenille"
                   loading="lazy"
                   decoding="async"
@@ -797,11 +903,10 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
 
       <ContactCTA onOpenAsesoramiento={onOpenAsesoramiento} />
 
-      {/* SISTEMAS + ENFOQUE */}
       <ComplementosVentana id="sistemas" />
       <EnfoqueSlider onOpenAsesoramiento={onOpenAsesoramiento} />
 
-      {/* ✅ CAROUSEL (Lazy-loaded Slick wrapper) */}
+      {/* CAROUSEL */}
       <CarouselSection>
         <SlickCarouselLazy images={images} settings={sliderSettings} />
       </CarouselSection>

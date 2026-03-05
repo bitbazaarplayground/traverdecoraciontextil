@@ -4,10 +4,22 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import domoticaControl from "../../assets/Automatizacion/heroBMini.webp";
-import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanelMini.webp";
-import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatioMini.webp";
-import venecianasImg from "../../assets/venecianas/oficina2Mini.webp";
+/* responsive images */
+import domotica320 from "../../assets/Automatizacion/heroB-320.webp";
+import domotica640 from "../../assets/Automatizacion/heroB-640.webp";
+import domotica960 from "../../assets/Automatizacion/heroB-960.webp";
+
+import panel320 from "../../assets/panelJapones/bedroomDarkPanel-320.webp";
+import panel640 from "../../assets/panelJapones/bedroomDarkPanel-640.webp";
+import panel960 from "../../assets/panelJapones/bedroomDarkPanel-960.webp";
+
+import mosquitera320 from "../../assets/servicios/mosquiteras/mosquiteraPatio-320.webp";
+import mosquitera640 from "../../assets/servicios/mosquiteras/mosquiteraPatio-640.webp";
+import mosquitera960 from "../../assets/servicios/mosquiteras/mosquiteraPatio-960.webp";
+
+import venecianas320 from "../../assets/venecianas/oficina2-320.webp";
+import venecianas640 from "../../assets/venecianas/oficina2-640.webp";
+import venecianas960 from "../../assets/venecianas/oficina2-960.webp";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 14 },
@@ -35,25 +47,45 @@ const DEFAULT_ITEMS = [
   {
     title: "Panel japonés",
     desc: "Ideal para puertas correderas y grandes ventanales.",
-    img: panelJaponesImg,
+    img: {
+      src: panel640,
+      srcSet: `${panel320} 320w, ${panel640} 640w, ${panel960} 960w`,
+      width: 278,
+      height: 185,
+    },
     to: "/panel-japones",
   },
   {
     title: "Venecianas",
     desc: "Control solar preciso con privacidad regulable.",
-    img: venecianasImg,
+    img: {
+      src: venecianas640,
+      srcSet: `${venecianas320} 320w, ${venecianas640} 640w, ${venecianas960} 960w`,
+      width: 267,
+      height: 178,
+    },
     to: "/venecianas",
   },
   {
     title: "Automatización",
     desc: "Sistemas motorizados y control inteligente del hogar.",
-    img: domoticaControl,
+    img: {
+      src: domotica640,
+      srcSet: `${domotica320} 320w, ${domotica640} 640w, ${domotica960} 960w`,
+      width: 267,
+      height: 178,
+    },
     to: "/automatizacion",
   },
   {
     title: "Mosquiteras",
     desc: "Ventila sin insectos. Discretas y resistentes.",
-    img: mosquiteraPatio,
+    img: {
+      src: mosquitera640,
+      srcSet: `${mosquitera320} 320w, ${mosquitera640} 640w, ${mosquitera960} 960w`,
+      width: 267,
+      height: 178,
+    },
     to: "/mosquiteras",
   },
 ];
@@ -102,7 +134,11 @@ export default function ComplementosVentana({
               >
                 <Media>
                   <Img
-                    src={it.img}
+                    src={it.img.src}
+                    srcSet={it.img.srcSet}
+                    sizes="(max-width: 768px) 82vw, (max-width: 1120px) 25vw, 260px"
+                    width={it.img.width}
+                    height={it.img.height}
                     alt={it.title}
                     loading="lazy"
                     decoding="async"
@@ -226,7 +262,6 @@ const Lead = styled.p`
   max-width: 70ch;
 `;
 
-/* ✅ Auto-fit: mejor si cambias el nº de items */
 const Cards = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -236,7 +271,6 @@ const Cards = styled(motion.div)`
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 
-  /* Mobile: swipeable row */
   @media (max-width: 768px) {
     grid-template-columns: unset;
     display: flex;
