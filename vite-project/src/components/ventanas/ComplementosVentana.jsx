@@ -4,10 +4,10 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import domoticaControl from "../../assets/Automatizacion/heroB.webp";
-import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanel.webp";
-import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
-import venecianasImg from "../../assets/venecianas/oficina2.webp";
+import domoticaControl from "../../assets/Automatizacion/heroBMini.webp";
+import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanelMini.webp";
+import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatioMini.webp";
+import venecianasImg from "../../assets/venecianas/oficina2Mini.webp";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 14 },
