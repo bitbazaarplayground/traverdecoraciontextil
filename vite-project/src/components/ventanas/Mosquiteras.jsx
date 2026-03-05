@@ -29,7 +29,7 @@ import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.
 
 // Reusamos imágenes que ya tienes en el proyecto como “contexto ventana”
 import domoticaControl from "../../assets/Automatizacion/heroB.webp";
-import cortinasEstoresImg from "../../assets/CortinasEstores/carousel/cortinas2.webp";
+import cortinasEstoresImg from "../../assets/CortinasEstores/carousel/cortinas2-1100.webp";
 import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanel.webp";
 import officeVenecianas from "../../assets/venecianas/oficina2.webp";
 

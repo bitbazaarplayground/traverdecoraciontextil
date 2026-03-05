@@ -21,7 +21,7 @@ import venecianaMaderaOficina from "../../assets/venecianas/venecianaMaderaOfici
 
 /* Complementos (cross-sell) */
 import domoticaControl from "../../assets/Automatizacion/heroB.webp";
-import cortinasEstoresImg from "../../assets/CortinasEstores/carousel/cortinas2.webp";
+import cortinasEstoresImg from "../../assets/CortinasEstores/carousel/cortinas2-1100.webp";
 import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanel.webp";
 import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
 
