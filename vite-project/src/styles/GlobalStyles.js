@@ -7,6 +7,11 @@ const GlobalStyles = createGlobalStyle`
   font-weight: 600;
   font-style: normal;
   font-display: swap;
+
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+  size-adjust: 102%;
 }
 
 @font-face {
@@ -15,6 +20,11 @@ const GlobalStyles = createGlobalStyle`
   font-weight: 600;
   font-style: italic;
   font-display: swap;
+
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+  size-adjust: 102%;
 }
 
 /* existing font */
