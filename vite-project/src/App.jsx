@@ -10,9 +10,9 @@ import ScrollToTop from "./components/ScrollToTop";
 import HomePage from "./pages/HomePage";
 
 // ✅ Lazy load modal (only when opened)
-const AsesoramientoModal = lazy(() =>
-  import("./components/AsesoramientoModalSupabase")
-);
+// const AsesoramientoModal = lazy(() =>
+//   import("./components/AsesoramientoModalSupabase")
+// );
 
 // ✅ Public pages (lazy)
 const Propuestas = lazy(() => import("./pages/Propuestas"));
