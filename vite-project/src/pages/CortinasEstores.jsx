@@ -1,4 +1,4 @@
-// CortinasEstores.jsx (rewritten with responsive images + better hero LCP hints)
+// CortinasEstores.jsx
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import styled from "styled-components";

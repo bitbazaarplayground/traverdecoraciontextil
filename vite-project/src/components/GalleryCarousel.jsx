@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
+import "swiper/css";
+import "swiper/css/pagination";
 import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -99,7 +101,6 @@ function useIsMobile(breakpointPx = 768) {
 
     apply();
 
-    // Safari <14 uses addListener/removeListener
     if (mq.addEventListener) mq.addEventListener("change", apply);
     else mq.addListener(apply);
 
@@ -116,7 +117,6 @@ export default function GalleryCarousel() {
   const swiperRef = useRef(null);
   const isMobile = useIsMobile(768);
 
-  // ✅ Only include Autoplay module when we actually use it
   const modules = useMemo(
     () => (isMobile ? [Pagination] : [Pagination, Autoplay]),
     [isMobile]
