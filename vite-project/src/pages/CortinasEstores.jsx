@@ -11,14 +11,14 @@ import SlickCarouselLazy from "../components/SlickCarouselLazy";
 import FaqAccordion from "../components/faq/FaqAccordion";
 import ComplementosVentana from "../components/ventanas/ComplementosVentana";
 import { CONTACT } from "../config/contact";
+import { getComplementosItems } from "../data/complementosVentana";
 import StickyCtaButton from "../mobile/StickyCtaButton";
-
 /* =========================
    HERO (use 768/1280/1920)
 ========================= */
-import hero_1280 from "../assets/CortinasEstores/carousel/cortinas1-1280.webp";
-import hero_1920 from "../assets/CortinasEstores/carousel/cortinas1-1920.webp";
-import hero_768 from "../assets/CortinasEstores/carousel/cortinas1-768.webp";
+const hero_768 = "/cortinas-estores/hero-768.webp";
+const hero_1280 = "/cortinas-estores/hero-1280.webp";
+const hero_1920 = "/cortinas-estores/hero-1920.webp";
 
 /* =========================
    CAROUSEL IMAGES (480/768/1100)
@@ -117,11 +117,9 @@ const HeroImg = styled.img`
   height: 100%;
   object-fit: cover;
   object-position: center 85%;
-  transform: translateZ(0) scale(1.04);
 
   @media (max-width: 768px) {
     object-position: center 75%;
-    transform: scale(1.01);
   }
 `;
 
@@ -627,7 +625,7 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
     ],
     []
   );
-
+  const complementosItems = getComplementosItems("cortinas-estores");
   // Used by “Inspiración” images
   const fabricSizes =
     "(max-width: 900px) calc(100vw - 3rem), (max-width: 1200px) 30vw, 340px";
@@ -682,7 +680,7 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             aria-hidden="true"
             loading="eager"
             decoding="async"
-            fetchpriority="high"
+            fetchPriority="high"
           />
           <HeroOverlay />
         </HeroMedia>
@@ -903,7 +901,16 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
 
       <ContactCTA onOpenAsesoramiento={onOpenAsesoramiento} />
 
-      <ComplementosVentana id="sistemas" />
+      <ComplementosVentana
+        id="sistemas"
+        items={complementosItems}
+        title={
+          <>
+            Otros productos <span>para tu ventana</span>
+          </>
+        }
+        lead="Complementos que combinan con cortinas y estores para resolver luz, privacidad y confort."
+      />
       <EnfoqueSlider onOpenAsesoramiento={onOpenAsesoramiento} />
 
       {/* CAROUSEL */}
