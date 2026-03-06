@@ -122,10 +122,15 @@
       }
     </script>
 
-    <!-- Google tag (gtag.js) -->
-    <!-- Google Analytics (delayed for performance) -->
+    <!-- Google Analytics (production only, delayed for performance) -->
     <script>
       (function () {
+        var isProd =
+          location.hostname === "www.traverdecoraciontextil.es" ||
+          location.hostname === "traverdecoraciontextil.es";
+
+        if (!isProd) return;
+
         var GA_ID = "G-LD3K2K63QX";
         var loaded = false;
 
@@ -149,8 +154,6 @@
           document.head.appendChild(s);
         }
 
-        // Desktop: load after idle (fast enough, low impact)
-        // Mobile: wait for first interaction OR 4s timeout (whichever first)
         var isMobile =
           window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
 
@@ -164,13 +167,9 @@
         }
 
         var onFirstInput = function () {
-          window.removeEventListener("pointerdown", onFirstInput, {
-            passive: true,
-          });
+          window.removeEventListener("pointerdown", onFirstInput);
           window.removeEventListener("keydown", onFirstInput);
-          window.removeEventListener("touchstart", onFirstInput, {
-            passive: true,
-          });
+          window.removeEventListener("touchstart", onFirstInput);
           loadGA();
         };
 
@@ -178,10 +177,10 @@
         window.addEventListener("touchstart", onFirstInput, { passive: true });
         window.addEventListener("keydown", onFirstInput);
 
-        // Safety net: still load GA eventually
         setTimeout(loadGA, 4000);
       })();
     </script>
+
     <!-- Performance: Hero LCP image -->
     <link
       rel="preload"
@@ -189,6 +188,7 @@
       href="/Hero/1-mobile.webp"
       media="(max-width: 768px)"
       fetchpriority="high"
+      crossorigin
     />
     <link
       rel="preload"
@@ -196,6 +196,7 @@
       href="/Hero/1.webp"
       media="(min-width: 769px)"
       fetchpriority="high"
+      crossorigin
     />
     <!-- Performance: Fonts -->
     <link

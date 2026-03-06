@@ -19,7 +19,7 @@ import mEnrollable from "../../assets/servicios/mosquiteras/enrollable.webp";
 import mExtensible from "../../assets/servicios/mosquiteras/extensible.webp";
 import mFija from "../../assets/servicios/mosquiteras/fija.webp";
 
-/* Real images (puedes repetir si no tienes más) */
+/* images */
 import cocinaM from "../../assets/servicios/mosquiteras/carousel/cocinaM.webp";
 import habitacionM from "../../assets/servicios/mosquiteras/carousel/habitacionM.webp";
 import habitacionMo from "../../assets/servicios/mosquiteras/carousel/habitacionMo.webp";
@@ -27,12 +27,22 @@ import salonM from "../../assets/servicios/mosquiteras/carousel/salonM.webp";
 import salonMo from "../../assets/servicios/mosquiteras/carousel/salonMo.webp";
 import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
 
-// Reusamos imágenes que ya tienes en el proyecto como “contexto ventana”
-import domoticaControl from "../../assets/Automatizacion/heroB.webp";
-import cortinasEstoresImg from "../../assets/CortinasEstores/carousel/cortinas2-1100.webp";
-import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanel.webp";
-import officeVenecianas from "../../assets/venecianas/oficina2.webp";
+// ComplementosVentana
+import domotica320 from "../../assets/Automatizacion/heroB-320.webp";
+import domotica640 from "../../assets/Automatizacion/heroB-640.webp";
+import domotica960 from "../../assets/Automatizacion/heroB-960.webp";
 
+import cortinasEstores480 from "../../assets/servicios/CortinasServicios-320.webp";
+import cortinasEstores768 from "../../assets/servicios/CortinasServicios-640.webp";
+import cortinasEstores1100 from "../../assets/servicios/CortinasServicios-960.webp";
+
+import panel320 from "../../assets/panelJapones/bedroomDarkPanel-320.webp";
+import panel640 from "../../assets/panelJapones/bedroomDarkPanel-640.webp";
+import panel960 from "../../assets/panelJapones/bedroomDarkPanel-960.webp";
+
+import venecianas320 from "../../assets/venecianas/oficina2-320.webp";
+import venecianas640 from "../../assets/venecianas/oficina2-640.webp";
+import venecianas960 from "../../assets/venecianas/oficina2-960.webp";
 /* =========================
    SEO helpers
 ========================= */
@@ -816,25 +826,49 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
       {
         title: "Cortinas y estores",
         desc: "Textiles a medida para controlar luz y privacidad.",
-        img: cortinasEstoresImg,
+        img: {
+          src: cortinasEstores768,
+          srcSet: `${cortinasEstores480} 320w, ${cortinasEstores768} 640w, ${cortinasEstores1100} 960w`,
+          width: 1100,
+          height: 733,
+          alt: "Cortinas y estores a medida",
+        },
         to: "/cortinas-estores",
       },
       {
         title: "Panel japonés",
         desc: "Ideal para puertas correderas y grandes ventanales.",
-        img: panelJaponesImg,
+        img: {
+          src: panel640,
+          srcSet: `${panel320} 320w, ${panel640} 640w, ${panel960} 960w`,
+          width: 278,
+          height: 185,
+          alt: "Panel japonés en dormitorio",
+        },
         to: "/panel-japones",
       },
       {
         title: "Venecianas",
         desc: "Control solar preciso con privacidad regulable.",
-        img: officeVenecianas,
+        img: {
+          src: venecianas640,
+          srcSet: `${venecianas320} 320w, ${venecianas640} 640w, ${venecianas960} 960w`,
+          width: 267,
+          height: 178,
+          alt: "Venecianas en oficina",
+        },
         to: "/venecianas",
       },
       {
         title: "Automatización",
         desc: "Sistemas motorizados y control inteligente del hogar.",
-        img: domoticaControl,
+        img: {
+          src: domotica640,
+          srcSet: `${domotica320} 320w, ${domotica640} 640w, ${domotica960} 960w`,
+          width: 267,
+          height: 178,
+          alt: "Automatización del hogar",
+        },
         to: "/automatizacion",
       },
     ],

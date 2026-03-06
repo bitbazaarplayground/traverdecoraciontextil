@@ -23,39 +23,10 @@ import office from "../../assets/panelJapones/office1.webp";
 import waitingroom from "../../assets/panelJapones/waitingroom1.webp";
 
 // Complementos Ventana
-import domoticaControl from "../../assets/Automatizacion/heroB.webp";
-import cortinasEstoresImg from "../../assets/CortinasEstores/carousel/cortinas2-1100.webp";
-import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
-import venecianasImg from "../../assets/venecianas/oficina2.webp";
 
 import ComplementosVentana from "../../components/ventanas/ComplementosVentana";
+import { getComplementosItems } from "../../data/complementosVentana";
 
-const panelJaponesComplementos = [
-  {
-    title: "Mosquiteras",
-    desc: "Ventila sin insectos. Discretas y resistentes.",
-    img: mosquiteraPatio,
-    to: "/mosquiteras",
-  },
-  {
-    title: "Automatización",
-    desc: "Sistemas motorizados y control inteligente del hogar.",
-    img: domoticaControl,
-    to: "/automatizacion",
-  },
-  {
-    title: "Venecianas",
-    desc: "Control solar preciso con privacidad regulable.",
-    img: venecianasImg,
-    to: "/venecianas",
-  },
-  {
-    title: "Cortinas y estores",
-    desc: "Textiles a medida para regular luz, privacidad y estilo.",
-    img: cortinasEstoresImg,
-    to: "/cortinas-estores",
-  },
-];
 /* =========================
    PAGE
 ========================= */
@@ -710,6 +681,7 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
     ],
     []
   );
+  const panelJaponesComplementos = getComplementosItems("panel-japones");
 
   const PACK_LABEL = "Panel Japonés";
   const PACK_QUERY = "panel-japones";

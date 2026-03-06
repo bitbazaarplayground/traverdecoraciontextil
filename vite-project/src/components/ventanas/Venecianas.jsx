@@ -19,12 +19,8 @@ import oficina1 from "../../assets/venecianas/oficina1.webp";
 import oficina2 from "../../assets/venecianas/oficina2.webp";
 import venecianaMaderaOficina from "../../assets/venecianas/venecianaMaderaOficina.webp";
 
-/* Complementos (cross-sell) */
-import domoticaControl from "../../assets/Automatizacion/heroB.webp";
-import cortinasEstoresImg from "../../assets/CortinasEstores/carousel/cortinas2-1100.webp";
-import panelJaponesImg from "../../assets/panelJapones/bedroomDarkPanel.webp";
-import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
-
+// ComplementosVentana
+import { getComplementosItems } from "../../data/complementosVentana";
 /* =========================
    PAGE
 ========================= */
@@ -663,36 +659,8 @@ export default function Venecianas({ onOpenAsesoramiento }) {
     []
   );
 
-  // Complementos “alrededor” de venecianas (evitamos auto-link a /venecianas)
-  const complementosItems = useMemo(
-    () => [
-      {
-        title: "Panel japonés",
-        desc: "Ideal para puertas correderas y grandes ventanales.",
-        img: panelJaponesImg,
-        to: "/panel-japones",
-      },
-      {
-        title: "Cortinas y estores",
-        desc: "Tejidos a medida para controlar luz y estilo.",
-        img: cortinasEstoresImg,
-        to: "/cortinas-estores",
-      },
-      {
-        title: "Automatización",
-        desc: "Motores y control inteligente para tu hogar.",
-        img: domoticaControl,
-        to: "/automatizacion",
-      },
-      {
-        title: "Mosquiteras",
-        desc: "Ventila sin insectos. Discretas y resistentes.",
-        img: mosquiteraPatio,
-        to: "/mosquiteras",
-      },
-    ],
-    []
-  );
+  // Complementos
+  const complementosItems = getComplementosItems("venecianas");
 
   const PACK_LABEL = "Venecianas";
   const PACK_QUERY = "venecianas";

@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-/* responsive images */
+/* default responsive images */
 import domotica320 from "../../assets/Automatizacion/heroB-320.webp";
 import domotica640 from "../../assets/Automatizacion/heroB-640.webp";
 import domotica960 from "../../assets/Automatizacion/heroB-960.webp";
@@ -35,10 +35,10 @@ const STORAGE_KEY = "scroll-positions:v4";
 const saveScrollNow = () => {
   try {
     const store = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "{}");
-    const k =
+    const key =
       window.location.pathname + window.location.search + window.location.hash;
 
-    store[k] = window.scrollY;
+    store[key] = window.scrollY;
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(store));
   } catch {}
 };
@@ -52,6 +52,7 @@ const DEFAULT_ITEMS = [
       srcSet: `${panel320} 320w, ${panel640} 640w, ${panel960} 960w`,
       width: 278,
       height: 185,
+      alt: "Panel japonés en dormitorio",
     },
     to: "/panel-japones",
   },
@@ -63,6 +64,7 @@ const DEFAULT_ITEMS = [
       srcSet: `${venecianas320} 320w, ${venecianas640} 640w, ${venecianas960} 960w`,
       width: 267,
       height: 178,
+      alt: "Venecianas en oficina",
     },
     to: "/venecianas",
   },
@@ -74,6 +76,7 @@ const DEFAULT_ITEMS = [
       srcSet: `${domotica320} 320w, ${domotica640} 640w, ${domotica960} 960w`,
       width: 267,
       height: 178,
+      alt: "Automatización del hogar",
     },
     to: "/automatizacion",
   },
@@ -85,10 +88,50 @@ const DEFAULT_ITEMS = [
       srcSet: `${mosquitera320} 320w, ${mosquitera640} 640w, ${mosquitera960} 960w`,
       width: 267,
       height: 178,
+      alt: "Mosquitera instalada en ventana",
     },
     to: "/mosquiteras",
   },
 ];
+
+function normalizeImage(img, fallbackAlt = "") {
+  if (!img) {
+    return {
+      src: "",
+      srcSet: undefined,
+      sizes: undefined,
+      width: undefined,
+      height: undefined,
+      alt: fallbackAlt,
+    };
+  }
+
+  if (typeof img === "string") {
+    return {
+      src: img,
+      srcSet: undefined,
+      sizes: undefined,
+      width: undefined,
+      height: undefined,
+      alt: fallbackAlt,
+    };
+  }
+
+  const hasSrcSet = Boolean(img.srcSet);
+
+  return {
+    src: img.src || "",
+    srcSet: img.srcSet,
+    sizes:
+      img.sizes ||
+      (hasSrcSet
+        ? "(max-width: 768px) 82vw, (max-width: 1120px) 25vw, 260px"
+        : undefined),
+    width: img.width,
+    height: img.height,
+    alt: img.alt || fallbackAlt,
+  };
+}
 
 export default function ComplementosVentana({
   id = "sistemas",
@@ -120,45 +163,49 @@ export default function ComplementosVentana({
           whileInView="show"
           viewport={{ once: true, amount: 0.35 }}
         >
-          {items.map((it, i) => (
-            <Card
-              key={it.to || it.title}
-              as={motion.div}
-              variants={fadeUp}
-              custom={i}
-            >
-              <CardLink
-                to={it.to}
-                aria-label={`Ver ${it.title}`}
-                onClick={saveScrollNow}
+          {items.map((item, i) => {
+            const image = normalizeImage(item.img, item.title);
+
+            return (
+              <Card
+                key={item.to || item.title}
+                as={motion.div}
+                variants={fadeUp}
+                custom={i}
               >
-                <Media>
-                  <Img
-                    src={it.img.src}
-                    srcSet={it.img.srcSet}
-                    sizes="(max-width: 768px) 82vw, (max-width: 1120px) 25vw, 260px"
-                    width={it.img.width}
-                    height={it.img.height}
-                    alt={it.title}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <Overlay />
-                </Media>
+                <CardLink
+                  to={item.to}
+                  aria-label={`Ver ${item.title}`}
+                  onClick={saveScrollNow}
+                >
+                  <Media>
+                    <Img
+                      src={image.src}
+                      srcSet={image.srcSet}
+                      sizes={image.sizes}
+                      width={image.width}
+                      height={image.height}
+                      alt={image.alt}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <Overlay />
+                  </Media>
 
-                <Body>
-                  <CardTitle>{it.title}</CardTitle>
-                  <CardDesc>{it.desc}</CardDesc>
+                  <Body>
+                    <CardTitle>{item.title}</CardTitle>
+                    <CardDesc>{item.desc}</CardDesc>
 
-                  <More>
-                    Ver más <ArrowRight size={16} />
-                  </More>
-                </Body>
+                    <More>
+                      Ver más <ArrowRight size={16} />
+                    </More>
+                  </Body>
 
-                <Sheen aria-hidden="true" />
-              </CardLink>
-            </Card>
-          ))}
+                  <Sheen aria-hidden="true" />
+                </CardLink>
+              </Card>
+            );
+          })}
         </Cards>
       </Container>
     </Section>
@@ -281,6 +328,7 @@ const Cards = styled(motion.div)`
     -webkit-overflow-scrolling: touch;
 
     scrollbar-width: none;
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -315,7 +363,7 @@ const CardLink = styled(Link)`
   }
 
   &:active {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 
   &:focus-visible {
@@ -327,6 +375,7 @@ const CardLink = styled(Link)`
 const Media = styled.div`
   position: relative;
   height: 130px;
+  background: #f4f4f4;
 
   @media (max-width: 768px) {
     height: 150px;
