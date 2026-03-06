@@ -15,8 +15,10 @@ import StickyCtaButton from "../mobile/StickyCtaButton";
 import imgEssential from "../assets/propuestas/dormitorioMain.png";
 import imgBalance from "../assets/propuestas/salonComedor.png";
 
-const imgHero =
-  "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=2400&q=80";
+// Hero
+const hero_768 = "/propuestas/propuestaHero-768.webp";
+const hero_1280 = "/propuestas/propuestaHero-1280.webp";
+const hero_1920 = "/propuestas/propuestaHero-1920.webp";
 
 // Tiles
 import imgBano from "../assets/propuestas/bathroomMain.png";
@@ -51,15 +53,23 @@ const Hero = styled.section`
   }
 `;
 
-const HeroBg = styled.div`
+const HeroMedia = styled.div`
   position: absolute;
   inset: 0;
-  background-image: url(${imgHero});
-  background-size: cover;
-  background-position: center;
-  filter: saturate(0.95) contrast(1.05);
-  transform: scale(1.03);
   z-index: 0;
+`;
+
+const HeroImg = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(0.95) contrast(1.05);
+  transform: translateZ(0) scale(1.03);
+  backface-visibility: hidden;
+  will-change: transform;
 `;
 
 const HeroOverlay = styled.div`
@@ -728,6 +738,14 @@ export default function Propuestas({ onOpenAsesoramiento }) {
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
 
+        <link
+          rel="preload"
+          as="image"
+          href={hero_1280}
+          imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+          imageSizes="100vw"
+          fetchPriority="high"
+        />
         {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
         <meta property="og:type" content="website" />
@@ -753,7 +771,19 @@ export default function Propuestas({ onOpenAsesoramiento }) {
 
       {/* HERO */}
       <Hero>
-        <HeroBg />
+        <HeroMedia aria-hidden="true">
+          <HeroImg
+            src={hero_1280}
+            srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+            sizes="100vw"
+            width="1920"
+            height="1080"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            alt=""
+          />
+        </HeroMedia>
         <HeroOverlay />
         <HeroInner>
           <Eyebrow>Soluciones · Traver Decoración Textil</Eyebrow>

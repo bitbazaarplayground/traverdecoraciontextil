@@ -18,7 +18,10 @@ import cocina1 from "../../assets/venecianas/cocina1.webp";
 import oficina1 from "../../assets/venecianas/oficina1.webp";
 import oficina2 from "../../assets/venecianas/oficina2.webp";
 import venecianaMaderaOficina from "../../assets/venecianas/venecianaMaderaOficina.webp";
-
+// Hero
+const hero_768 = "/venecianas/oficina2-768.webp";
+const hero_1280 = "/venecianas/oficina2-1280.webp";
+const hero_1920 = "/venecianas/oficina2-1920.webp";
 // ComplementosVentana
 import { getComplementosItems } from "../../data/complementosVentana";
 /* =========================
@@ -640,8 +643,6 @@ export default function Venecianas({ onOpenAsesoramiento }) {
     [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd]
   );
 
-  const heroImg = oficina2;
-
   const sliderSettings = useMemo(
     () => ({
       dots: true,
@@ -688,7 +689,14 @@ export default function Venecianas({ onOpenAsesoramiento }) {
         <link rel="canonical" href={canonical} />
 
         {/* Preload hero (LCP) */}
-        <link rel="preload" as="image" href={heroImg} fetchpriority="high" />
+        <link
+          rel="preload"
+          as="image"
+          href={hero_1280}
+          imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+          imageSizes="100vw"
+          fetchpriority="high"
+        />
 
         {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
@@ -714,7 +722,17 @@ export default function Venecianas({ onOpenAsesoramiento }) {
       {/* HERO */}
       <Hero>
         <HeroMedia aria-hidden="true">
-          <HeroImg src={heroImg} alt="" />
+          <HeroImg
+            src={hero_1280}
+            srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+            sizes="100vw"
+            width="1920"
+            height="1080"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            alt=""
+          />
           <HeroOverlay />
         </HeroMedia>
 

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import heroImg from "../assets/toldos/toldo2.webp";
+// import heroImg from "../assets/toldos/toldo2.webp";
 import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
 /* =========================
@@ -23,6 +23,12 @@ import pergolaImg from "../assets/toldos/pergola.webp";
 import toldoExtensibleImg from "../assets/toldos/toldo1.webp";
 import toldoVerticalImg from "../assets/toldos/toldos-verticales.webp";
 import sailImg from "../assets/toldos/vela.webp";
+/* =========================
+   HERO
+========================= */
+const hero_768 = "/toldosProteccionSolar/toldo2-768.webp";
+const hero_1280 = "/toldosProteccionSolar/toldo2-1280.webp";
+const hero_1920 = "/toldosProteccionSolar/toldo2-1920.webp";
 
 /* =========================
    IMAGES (extras toldos)
@@ -67,15 +73,23 @@ const Hero = styled.section`
   }
 `;
 
-const HeroBg = styled.div`
+const HeroMedia = styled.div`
   position: absolute;
   inset: 0;
-  background-image: url(${heroImg});
-  background-size: cover;
-  background-position: center;
-  transform: scale(1.02);
-  filter: saturate(1.02) contrast(1.03);
   z-index: 0;
+`;
+
+const HeroImg = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: translateZ(0) scale(1.02);
+  filter: saturate(1.02) contrast(1.03);
+  backface-visibility: hidden;
+  will-change: transform;
 `;
 
 const HeroOverlay = styled.div`
@@ -727,6 +741,15 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
 
+        <link
+          rel="preload"
+          as="image"
+          href={hero_1280}
+          imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+          imageSizes="100vw"
+          fetchPriority="high"
+        />
+
         <meta property="og:site_name" content={siteName} />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="es_ES" />
@@ -749,7 +772,19 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
 
       {/* HERO */}
       <Hero>
-        <HeroBg />
+        <HeroMedia aria-hidden="true">
+          <HeroImg
+            src={hero_1280}
+            srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+            sizes="100vw"
+            width="1920"
+            height="1080"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            alt=""
+          />
+        </HeroMedia>
         <HeroOverlay />
 
         <HeroContent>

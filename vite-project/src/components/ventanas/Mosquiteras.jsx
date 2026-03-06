@@ -26,6 +26,10 @@ import habitacionMo from "../../assets/servicios/mosquiteras/carousel/habitacion
 import salonM from "../../assets/servicios/mosquiteras/carousel/salonM.webp";
 import salonMo from "../../assets/servicios/mosquiteras/carousel/salonMo.webp";
 import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
+// Hero
+const hero_768 = "/mosquiteras/mosquiteraPatio-768.webp";
+const hero_1280 = "/mosquiteras/mosquiteraPatio-1280.webp";
+const hero_1920 = "/mosquiteras/mosquiteraPatio-1920.webp";
 
 // ComplementosVentana
 import domotica320 from "../../assets/Automatizacion/heroB-320.webp";
@@ -654,8 +658,6 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt = "Mosquiteras a medida — Traver Decoración Textil";
 
-  const heroImg = mosquiteraPatio;
-
   const tabs = useMemo(
     () => [
       {
@@ -934,7 +936,14 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         <link rel="canonical" href={canonical} />
 
         {/* Preload hero (LCP) */}
-        <link rel="preload" as="image" href={heroImg} fetchpriority="high" />
+        <link
+          rel="preload"
+          as="image"
+          href={hero_1280}
+          imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+          imageSizes="100vw"
+          fetchPriority="high"
+        />
 
         {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
@@ -961,7 +970,17 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
       {/* HERO */}
       <Hero>
         <HeroMedia aria-hidden="true">
-          <HeroImg src={heroImg} alt="" />
+          <HeroImg
+            src={hero_1280}
+            srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+            sizes="100vw"
+            width="1920"
+            height="1080"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            alt=""
+          />
           <HeroOverlay />
         </HeroMedia>
 
