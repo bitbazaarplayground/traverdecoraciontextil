@@ -16,9 +16,9 @@ import StickyCtaButton from "../mobile/StickyCtaButton";
 /* =========================
    HERO (use 768/1280/1920)
 ========================= */
-const hero_768 = "/cortinas-estores/hero-768.webp";
-const hero_1280 = "/cortinas-estores/hero-1280.webp";
-const hero_1920 = "/cortinas-estores/hero-1920.webp";
+const hero_768 = "/cortinas-estores/cortinas1-768.webp";
+const hero_1280 = "/cortinas-estores/cortinas1-1280.webp";
+const hero_1920 = "/cortinas-estores/cortinas1-1920.webp";
 
 /* =========================
    CAROUSEL IMAGES (480/768/1100)

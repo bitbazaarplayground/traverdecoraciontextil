@@ -11,8 +11,13 @@ import StickyCtaButton from "../mobile/StickyCtaButton";
    ASSETS
 ========================= */
 import welcome from "../assets/Automatizacion/ctaAuto.png";
-import domoticaControl from "../assets/Automatizacion/domotica1.webp";
+// import domoticaControl from "../assets/Automatizacion/domotica1.webp";
 import packBackground from "../assets/Automatizacion/heroB.webp";
+
+// HERO
+const hero_768 = "/automatizacion/domotica1-768.webp";
+const hero_1280 = "/automatizacion/domotica1-1280.webp";
+const hero_1920 = "/automatizacion/domotica1-1920.webp";
 
 const formatEUR = (value) =>
   new Intl.NumberFormat("es-ES", {
@@ -23,8 +28,14 @@ const formatEUR = (value) =>
 
 const WhatsAppLink = ({ phone, message, className, children }) => {
   const href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
   return (
-    <a className={className} href={href} target="_blank" rel="noreferrer">
+    <a
+      className={className}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {children}
     </a>
   );
@@ -244,7 +255,14 @@ export default function Auto({ onOpenAsesoramiento }) {
           <meta name="description" content={description} />
           <meta name="robots" content="index,follow" />
           <link rel="canonical" href={canonical} />
-
+          <link
+            rel="preload"
+            as="image"
+            href={hero_1280}
+            imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+            imageSizes="100vw"
+            fetchPriority="high"
+          />
           <meta property="og:site_name" content={siteName} />
           <meta property="og:type" content="website" />
           <meta property="og:locale" content="es_ES" />
@@ -267,10 +285,19 @@ export default function Auto({ onOpenAsesoramiento }) {
 
         {/* HERO*/}
         <Hero>
-          <HeroBg>
-            <HeroImg src={domoticaControl} alt="" aria-hidden="true" />
+          <HeroBg aria-hidden="true">
+            <HeroImg
+              src={hero_1280}
+              srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+              sizes="100vw"
+              width="1920"
+              height="1080"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              alt=""
+            />
             <HeroOverlay />
-
             <HeroScan />
             <HeroGlow />
           </HeroBg>
@@ -704,7 +731,9 @@ const HeroImg = styled.img`
   height: 100%;
   object-fit: cover;
   filter: saturate(0.95) contrast(1.06);
-  transform: scale(1.06);
+  transform: translateZ(0) scale(1.06);
+  backface-visibility: hidden;
+  will-change: transform;
 `;
 
 const HeroOverlay = styled.div`
@@ -801,52 +830,6 @@ const HeroLead = styled.p`
   font-size: 1.12rem;
   line-height: 1.75;
   color: rgba(244, 244, 245, 0.78);
-`;
-
-const HeroActions = styled.div`
-  margin-top: 1.7rem;
-  display: flex;
-  gap: 0.9rem;
-  flex-wrap: wrap;
-  align-items: center;
-`;
-
-const PrimaryLink = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  justify-content: center;
-  padding: 0.95rem 1.7rem;
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: #0b0c0f;
-  font-weight: 860;
-  text-decoration: none;
-  transition: transform 180ms ease, opacity 180ms ease;
-
-  &:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
-  }
-`;
-
-const SecondaryLink = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.95rem 1.6rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(244, 244, 245, 0.92);
-  font-weight: 740;
-  text-decoration: none;
-  transition: transform 180ms ease, background 180ms ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    background: rgba(255, 255, 255, 0.09);
-  }
 `;
 
 const HeroMicro = styled.div`
@@ -1128,34 +1111,7 @@ const PackGrid = styled.div`
 const Section = styled.section`
   padding: 54px 0;
 `;
-// const SectionAlt = styled(Section)`
-//   position: relative;
-//   background: #111;
-//   overflow: hidden;
 
-//   &::before {
-//     content: "";
-//     position: absolute;
-//     inset: 0;
-//     background-image: url(${packBackground});
-//     background-size: cover;
-//     background-position: center;
-//     background-repeat: no-repeat;
-//     opacity: 0.22; /* subtle */
-//     transform: scale(1.05);
-//   }
-
-//   &::after {
-//     content: "";
-//     position: absolute;
-//     inset: 0;
-//   }
-
-//   > * {
-//     position: relative;
-//     z-index: 1;
-//   }
-// `;
 const SectionAlt = styled(Section)`
   position: relative;
   background: #111;

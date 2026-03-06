@@ -46,13 +46,13 @@ const Venecianas = lazy(() => import("./components/ventanas/Venecianas"));
 const Mosquiteras = lazy(() => import("./components/ventanas/Mosquiteras"));
 
 // ✅ ADMIN (lazy) — this is where Supabase weight gets removed from main bundle
-const AdminLayout = lazy(() => import("./pages/Admin/AdminLayout"));
-const AdminDashboard = lazy(() => import("./pages/Admin/AdminDashboard"));
-const AdminBookings = lazy(() => import("./pages/Admin/AdminBookings"));
-const AdminCalendar = lazy(() => import("./pages/Admin/AdminCalendar"));
-const AdminClients = lazy(() => import("./pages/Admin/AdminClientes"));
-const AdminCustomer = lazy(() => import("./pages/Admin/AdminCustomer"));
-const AdminSettings = lazy(() => import("./pages/Admin/AdminSettings"));
+// const AdminLayout = lazy(() => import("./pages/Admin/AdminLayout"));
+// const AdminDashboard = lazy(() => import("./pages/Admin/AdminDashboard"));
+// const AdminBookings = lazy(() => import("./pages/Admin/AdminBookings"));
+// const AdminCalendar = lazy(() => import("./pages/Admin/AdminCalendar"));
+// const AdminClients = lazy(() => import("./pages/Admin/AdminClientes"));
+// const AdminCustomer = lazy(() => import("./pages/Admin/AdminCustomer"));
+// const AdminSettings = lazy(() => import("./pages/Admin/AdminSettings"));
 
 export default function App() {
   // const [isAsesoramientoOpen, setIsAsesoramientoOpen] = useState(false);

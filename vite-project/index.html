@@ -186,29 +186,11 @@
       (function () {
         var path = location.pathname.replace(/\/$/, "") || "/";
 
-        if (path === "/") {
-          var homeMobile = document.createElement("link");
-          homeMobile.rel = "preload";
-          homeMobile.as = "image";
-          homeMobile.href = "/Hero/1-mobile.webp";
-          homeMobile.media = "(max-width: 768px)";
-          homeMobile.setAttribute("fetchpriority", "high");
-          document.head.appendChild(homeMobile);
-
-          var homeDesktop = document.createElement("link");
-          homeDesktop.rel = "preload";
-          homeDesktop.as = "image";
-          homeDesktop.href = "/Hero/1.webp";
-          homeDesktop.media = "(min-width: 769px)";
-          homeDesktop.setAttribute("fetchpriority", "high");
-          document.head.appendChild(homeDesktop);
-        }
-
-        if (path === "/cortinas-estores") {
+        function preloadImage(mobileSrc, desktopSrc) {
           var mobile = document.createElement("link");
           mobile.rel = "preload";
           mobile.as = "image";
-          mobile.href = "/cortinas-estores/hero-768.webp";
+          mobile.href = mobileSrc;
           mobile.media = "(max-width: 768px)";
           mobile.setAttribute("fetchpriority", "high");
           document.head.appendChild(mobile);
@@ -216,10 +198,77 @@
           var desktop = document.createElement("link");
           desktop.rel = "preload";
           desktop.as = "image";
-          desktop.href = "/cortinas-estores/hero-1280.webp";
+          desktop.href = desktopSrc;
           desktop.media = "(min-width: 769px)";
           desktop.setAttribute("fetchpriority", "high");
           document.head.appendChild(desktop);
+        }
+
+        if (path === "/") {
+          preloadImage("/Hero/1-mobile.webp", "/Hero/1.webp");
+        }
+
+        if (path === "/cortinas-estores") {
+          preloadImage(
+            "/cortinas-estores/hero-768.webp",
+            "/cortinas-estores/hero-1280.webp"
+          );
+        }
+
+        if (path === "/venecianas") {
+          preloadImage(
+            "/venecianas/oficina2-768.webp",
+            "/venecianas/oficina2-1280.webp"
+          );
+        }
+
+        if (path === "/mosquiteras") {
+          preloadImage(
+            "/mosquiteras/mosquiteraPatio-768.webp",
+            "/mosquiteras/mosquiteraPatio-1280.webp"
+          );
+        }
+
+        if (path === "/panel-japones") {
+          preloadImage(
+            "/panelJapones/livingroom2-768.webp",
+            "/panelJapones/livingroom2-1280.webp"
+          );
+        }
+
+        if (path === "/toldos-proteccion-solar") {
+          preloadImage(
+            "/toldosProteccionSolar/toldo2-768.webp",
+            "/toldosProteccionSolar/toldo2-1280.webp"
+          );
+        }
+
+        if (path === "/propuestas") {
+          preloadImage(
+            "/propuestas/propuestaHero-768.webp",
+            "/propuestas/propuestaHero-1280.webp"
+          );
+        }
+
+        if (path === "/automatizacion") {
+          preloadImage(
+            "/automatizacion/domotica1-768.webp",
+            "/automatizacion/domotica1-1280.webp"
+          );
+        }
+
+        if (path === "/automatizacion/individual") {
+          preloadImage(
+            "/automatizacion/benefit1-768.webp",
+            "/automatizacion/benefit1-1280.webp"
+          );
+        }
+
+        if (path === "/automatizacion/completa") {
+          preloadImage(
+            "/automatizacion/domotica1-768.webp",
+            "/automatizacion/domotica1-1280.webp"
+          );
         }
       })();
     </script>

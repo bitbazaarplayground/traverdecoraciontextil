@@ -21,7 +21,10 @@ import livingroom1 from "../../assets/panelJapones/livingroom1.webp";
 import livingroom2 from "../../assets/panelJapones/livingroom2.webp";
 import office from "../../assets/panelJapones/office1.webp";
 import waitingroom from "../../assets/panelJapones/waitingroom1.webp";
-
+// Hero
+const hero_768 = "/panelJapones/livingroom2-768.webp";
+const hero_1280 = "/panelJapones/livingroom2-1280.webp";
+const hero_1920 = "/panelJapones/livingroom2-1920.webp";
 // Complementos Ventana
 
 import ComplementosVentana from "../../components/ventanas/ComplementosVentana";
@@ -653,8 +656,6 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
     [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd]
   );
 
-  const heroImg = livingroom2;
-
   const sliderSettings = useMemo(
     () => ({
       dots: true,
@@ -712,7 +713,14 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
         <link rel="canonical" href={canonical} />
 
         {/* Preload hero (LCP) */}
-        <link rel="preload" as="image" href={heroImg} fetchpriority="high" />
+        <link
+          rel="preload"
+          as="image"
+          href={hero_1280}
+          imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+          imageSizes="100vw"
+          fetchPriority="high"
+        />
 
         {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
@@ -738,7 +746,17 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
       {/* HERO */}
       <Hero>
         <HeroMedia aria-hidden="true">
-          <HeroImg src={heroImg} alt="" />
+          <HeroImg
+            src={hero_1280}
+            srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+            sizes="100vw"
+            width="1920"
+            height="1080"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            alt=""
+          />
           <HeroOverlay />
         </HeroMedia>
 
@@ -903,7 +921,7 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
               </PrimaryCTA>
 
               <SecondaryCTA
-                href={`tel:${CONTACT.phoneLandline}`}
+                href={`tel:${CONTACT.phoneLandlineTel}`}
                 onClick={handleCall}
               >
                 Llamar
