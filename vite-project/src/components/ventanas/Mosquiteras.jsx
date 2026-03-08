@@ -574,7 +574,7 @@ const CarouselInner = styled.div`
 
 const SectionTop = styled.div`
   max-width: 980px;
-  margin: 0 auto 1.5rem;
+  margin: 0 0 1.35rem 0;
   text-align: left;
 `;
 

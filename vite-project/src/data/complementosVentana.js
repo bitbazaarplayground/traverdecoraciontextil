@@ -6,10 +6,6 @@ import cortinas320 from "../assets/servicios/CortinasServicios-320.webp";
 import cortinas640 from "../assets/servicios/CortinasServicios-640.webp";
 import cortinas960 from "../assets/servicios/CortinasServicios-960.webp";
 
-import mosquitera320 from "../assets/servicios/mosquiteras/mosquiteraPatio-320.webp";
-import mosquitera640 from "../assets/servicios/mosquiteras/mosquiteraPatio-640.webp";
-import mosquitera960 from "../assets/servicios/mosquiteras/mosquiteraPatio-960.webp";
-
 import panel320 from "../assets/panelJapones/bedroomDarkPanel-320.webp";
 import panel640 from "../assets/panelJapones/bedroomDarkPanel-640.webp";
 import panel960 from "../assets/panelJapones/bedroomDarkPanel-960.webp";
@@ -17,6 +13,10 @@ import panel960 from "../assets/panelJapones/bedroomDarkPanel-960.webp";
 import venecianas320 from "../assets/venecianas/oficina2-320.webp";
 import venecianas640 from "../assets/venecianas/oficina2-640.webp";
 import venecianas960 from "../assets/venecianas/oficina2-960.webp";
+
+import toldoCofre320 from "../assets/toldos/cofre-320.webp";
+import toldoCofre640 from "../assets/toldos/cofre-640.webp";
+import toldoCofre960 from "../assets/toldos/cofre-960.webp";
 
 export const PRODUCTOS_VENTANA = [
   {
@@ -72,16 +72,16 @@ export const PRODUCTOS_VENTANA = [
     },
   },
   {
-    key: "mosquiteras",
-    title: "Mosquiteras",
-    desc: "Ventila sin insectos. Discretas y resistentes.",
-    to: "/mosquiteras",
+    key: "toldos-proteccion-solar",
+    title: "Toldos",
+    desc: "Protección solar exterior para ganar sombra y confort.",
+    to: "/toldos-proteccion-solar",
     img: {
-      src: mosquitera640,
-      srcSet: `${mosquitera320} 320w, ${mosquitera640} 640w, ${mosquitera960} 960w`,
+      src: toldoCofre640,
+      srcSet: `${toldoCofre320} 320w, ${toldoCofre640} 640w, ${toldoCofre960} 960w`,
       width: 267,
       height: 178,
-      alt: "Mosquitera instalada en ventana",
+      alt: "Toldo cofre instalado en terraza o exterior",
     },
   },
 ];
