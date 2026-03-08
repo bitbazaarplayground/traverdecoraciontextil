@@ -21,6 +21,10 @@ import venecianas320 from "../../assets/venecianas/oficina2-320.webp";
 import venecianas640 from "../../assets/venecianas/oficina2-640.webp";
 import venecianas960 from "../../assets/venecianas/oficina2-960.webp";
 
+import toldoCofre320 from "../../assets/toldos/cofre-320.webp";
+import toldoCofre640 from "../../assets/toldos/cofre-640.webp";
+import toldoCofre960 from "../../assets/toldos/cofre-960.webp";
+
 const fadeUp = {
   hidden: { opacity: 0, y: 14 },
   show: (i = 0) => ({
@@ -92,6 +96,18 @@ const DEFAULT_ITEMS = [
     },
     to: "/mosquiteras",
   },
+  {
+    title: "Toldos",
+    desc: "Protección solar exterior para ganar sombra y confort.",
+    img: {
+      src: toldoCofre640,
+      srcSet: `${toldoCofre320} 320w, ${toldoCofre640} 640w, ${toldoCofre960} 960w`,
+      width: 267,
+      height: 178,
+      alt: "Toldo cofre instalado en terraza o exterior",
+    },
+    to: "/toldos-proteccion-solar",
+  },
 ];
 
 function normalizeImage(img, fallbackAlt = "") {
@@ -152,10 +168,6 @@ export default function ComplementosVentana({
             <Title>{title}</Title>
             <Lead>{lead}</Lead>
           </Heading>
-
-          <Hint>
-            Desliza en móvil <span aria-hidden="true">→</span>
-          </Hint>
         </Top>
 
         <Cards
@@ -339,12 +351,16 @@ const Card = styled.div`
   @media (max-width: 768px) {
     min-width: min(82vw, 360px);
     scroll-snap-align: start;
+    display: flex;
   }
 `;
 
 const CardLink = styled(Link)`
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
   border-radius: 18px;
   overflow: hidden;
   text-decoration: none;
@@ -403,8 +419,10 @@ const Overlay = styled.div`
 
 const Body = styled.div`
   padding: 0.95rem 0.95rem 1.05rem;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.35rem;
+  flex: 1;
 `;
 
 const CardTitle = styled.h3`
@@ -422,7 +440,7 @@ const CardDesc = styled.p`
 `;
 
 const More = styled.div`
-  margin-top: 0.25rem;
+  margin-top: auto;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;

@@ -500,11 +500,6 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
                 <Sheen aria-hidden="true" />
               </BenefitCard>
             </BenefitsGrid>
-
-            <MicroProof>
-              <strong>Consejo Traver:</strong> empezamos por lo que más se nota
-              (luz + privacidad) y escalamos cuando lo disfrutas.
-            </MicroProof>
           </Section>
           {/* SECTION: SCENES (interactive, “premium”) */}
           <Section id="escenas" data-reveal="out">
@@ -1544,7 +1539,7 @@ const SceneMeta = styled.p`
 `;
 
 /* =========================
-   BENEFITS (kept)
+   BENEFITS
 ========================= */
 const BenefitsGrid = styled.div`
   margin-top: 1.4rem;
@@ -1648,6 +1643,10 @@ const BenefitParagraph = styled.p`
   font-size: 0.92rem;
   line-height: 1.55;
   color: rgba(17, 17, 17, 0.62);
+
+  @media (max-width: 768px) {
+    min-height: 4.8rem;
+  }
 `;
 
 const BenefitHint = styled.div`

@@ -2,9 +2,9 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-// import heroImg from "../assets/toldos/toldo2.webp";
 import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
+
 /* =========================
    COMPONENTS
 ========================= */
@@ -15,7 +15,7 @@ import SectionIntro from "../components/ui/SectionIntro";
 import { CONTACT } from "../config/contact";
 
 /* =========================
-   IMAGES (local assets)
+   IMAGES
 ========================= */
 import toldoCofreImg from "../assets/toldos/cofre.webp";
 import hosteleriaImg from "../assets/toldos/hosteleria.webp";
@@ -23,25 +23,22 @@ import pergolaImg from "../assets/toldos/pergola.webp";
 import toldoExtensibleImg from "../assets/toldos/toldo1.webp";
 import toldoVerticalImg from "../assets/toldos/toldos-verticales.webp";
 import sailImg from "../assets/toldos/vela.webp";
-/* =========================
-   HERO
-========================= */
+
+/* HERO */
 const hero_768 = "/toldosProteccionSolar/toldo2-768.webp";
 const hero_1280 = "/toldosProteccionSolar/toldo2-1280.webp";
 const hero_1920 = "/toldosProteccionSolar/toldo2-1920.webp";
 
-/* =========================
-   IMAGES (extras toldos)
-========================= */
+/* extras */
 import lightSensorImg from "../assets/toldos/extrasToldo/LightSensor.webp";
 import calentadorImg from "../assets/toldos/extrasToldo/calentador.webp";
 import tahomaImg from "../assets/toldos/extrasToldo/tahoma.webp";
 import toldoLEDImg from "../assets/toldos/extrasToldo/toldoLED.webp";
 import windSensorImg from "../assets/toldos/extrasToldo/windSensor.webp";
-/* =========================
-   CTA
-========================= */
+
+/* CTA */
 import ctaImg from "../assets/Automatizacion/cortinaMotorizada.webp";
+
 /* =========================
    STYLES
 ========================= */
@@ -52,9 +49,7 @@ const Page = styled.main`
   color: #111;
 `;
 
-/* =========================
-   HERO
-========================= */
+/* HERO */
 
 const Hero = styled.section`
   position: relative;
@@ -86,10 +81,8 @@ const HeroImg = styled.img`
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transform: translateZ(0) scale(1.02);
+  transform: scale(1.02);
   filter: saturate(1.02) contrast(1.03);
-  backface-visibility: hidden;
-  will-change: transform;
 `;
 
 const HeroOverlay = styled.div`
@@ -113,7 +106,7 @@ const HeroContent = styled.div`
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 1100px;
+  max-width: 920px;
   text-align: center;
 `;
 
@@ -158,6 +151,17 @@ const HeroActions = styled.div`
   flex-wrap: wrap;
 `;
 
+const sharedButtonFocus = `
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.18);
+  }
+
+  @media (max-width: 520px) {
+    width: 100%;
+  }
+`;
+
 const PrimaryButton = styled(Link)`
   display: inline-flex;
   align-items: center;
@@ -174,6 +178,8 @@ const PrimaryButton = styled(Link)`
     opacity: 0.92;
     transform: translateY(-1px);
   }
+
+  ${sharedButtonFocus}
 `;
 
 const SecondaryButton = styled.a`
@@ -193,7 +199,10 @@ const SecondaryButton = styled.a`
     background: rgba(255, 255, 255, 0.1);
     transform: translateY(-1px);
   }
+
+  ${sharedButtonFocus}
 `;
+
 const BlockSpacer = styled.div`
   margin-top: 3.25rem;
 
@@ -202,9 +211,7 @@ const BlockSpacer = styled.div`
   }
 `;
 
-/* =========================
-   SECTION SHELL
-========================= */
+/* SECTION SHELL */
 
 const Section = styled.section`
   padding: 5.5rem 2rem;
@@ -219,26 +226,6 @@ const SectionInner = styled.div`
   margin: 0 auto;
 `;
 
-const Kicker = styled.p`
-  margin: 0 0 0.55rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  font-size: 0.82rem;
-  color: rgba(17, 17, 17, 0.55);
-  position: relative;
-  display: inline-block;
-  padding-bottom: 0.55rem;
-
-  &:after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0.1rem;
-    width: 48px;
-    height: 1px;
-    background: rgba(196, 151, 98, 0.65);
-  }
-`;
 const IntroHeader = styled.div`
   max-width: 720px;
   margin: 0 auto 2.4rem;
@@ -271,12 +258,11 @@ const IntroText = styled.p`
   line-height: 1.7;
   color: rgba(17, 17, 17, 0.62);
 `;
-/* =========================
-   BENEFITS STRIP
-========================= */
+
+/* BENEFITS */
 
 const BenefitsStrip = styled.div`
-  margin: 2rem auto 2.25rem; /* was: 2rem auto 0 */
+  margin: 2rem auto 2.25rem;
   max-width: 980px;
   padding: 1.25rem 1.2rem;
   border-radius: 18px;
@@ -304,9 +290,7 @@ const Benefit = styled.p`
   }
 `;
 
-/* =========================
-   GRID (premium cards)
-========================= */
+/* GRID */
 
 const Grid = styled.div`
   display: grid;
@@ -342,11 +326,12 @@ const CardMedia = styled.div`
   }
 `;
 
-const CardImg = styled.div`
+const CardImage = styled.img`
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   transform: scale(1.01);
   transition: transform 0.6s ease;
 
@@ -409,12 +394,13 @@ const CardText = styled.p`
 `;
 
 const SectionTight = styled(Section)`
-  padding-top: 3.25rem; /* was 5.5rem */
+  padding-top: 3.25rem;
 
   @media (max-width: 768px) {
-    padding-top: 2.6rem; /* was 3.8rem */
+    padding-top: 2.6rem;
   }
 `;
+
 const AccessoriesWrap = styled.div`
   margin-top: 3.25rem;
 
@@ -422,9 +408,9 @@ const AccessoriesWrap = styled.div`
     margin-top: 2.4rem;
   }
 `;
-/* =========================
-   CTA
-========================= */
+
+/* CTA */
+
 const AutomationCTA = styled.section`
   padding: 0 2rem 5rem;
 
@@ -437,13 +423,10 @@ const AutomationCTAInner = styled.div`
   position: relative;
   max-width: 1120px;
   margin: 0 auto;
-
   border-radius: 24px;
-  overflow: hidden; /* clips bg + overlay perfectly */
-
+  overflow: hidden;
   border: 1px solid rgba(17, 17, 17, 0.08);
   box-shadow: 0 26px 70px rgba(0, 0, 0, 0.12);
-
   display: grid;
   gap: 1.6rem;
   padding: 2.2rem 2rem;
@@ -469,16 +452,13 @@ const AutomationCTABg = styled.div`
 
 const AutomationCTAOverlay = styled.div`
   position: absolute;
-  inset: -2px; /* removes 1px seams */
-
-  /* Darker, premium */
+  inset: -2px;
   background: radial-gradient(
       1100px 600px at 35% 35%,
       rgba(0, 0, 0, 0.35),
       rgba(0, 0, 0, 0.86)
     ),
     linear-gradient(to bottom, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.25));
-
   z-index: 1;
   pointer-events: none;
 `;
@@ -544,7 +524,6 @@ const AutomationButtons = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.85rem;
-
   align-items: stretch;
 
   @media (max-width: 979px) {
@@ -562,14 +541,11 @@ const AutomationPrimary = styled(Link)`
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-
   padding: 0.95rem 1.6rem;
   min-width: 220px;
   border-radius: 999px;
-
   background: ${({ theme }) => theme.colors.primary};
   color: #0b0c0f;
-
   font-weight: 900;
   text-decoration: none;
   transition: transform 0.25s ease, opacity 0.25s ease;
@@ -582,21 +558,24 @@ const AutomationPrimary = styled(Link)`
     opacity: 0.92;
     transform: translateY(-1px);
   }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+  }
 `;
+
 const AutomationSecondary = styled(Link)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-
   padding: 0.95rem 1.6rem;
   min-width: 220px;
   border-radius: 999px;
-
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.16);
   color: rgba(255, 255, 255, 0.92);
-
   font-weight: 750;
   text-decoration: none;
   transition: transform 0.25s ease, background 0.25s ease;
@@ -609,10 +588,14 @@ const AutomationSecondary = styled(Link)`
     background: rgba(255, 255, 255, 0.12);
     transform: translateY(-1px);
   }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+  }
 `;
-/* =========================
-   DATA
-========================= */
+
+/* DATA */
 
 const FAQ_ITEMS = [
   {
@@ -647,9 +630,61 @@ const FAQ_ITEMS = [
   },
 ];
 
-/* =========================
-   PAGE
-========================= */
+const CARD_ITEMS = [
+  {
+    badge: "Terrazas",
+    title: "Toldos extensibles",
+    value: "Sombra regulable con estética ligera.",
+    text: "Ideales para terrazas y balcones. Permiten ajustar la proyección según el momento del día y el uso del espacio.",
+    image: toldoExtensibleImg,
+    alt: "Toldo extensible instalado en terraza",
+  },
+  {
+    badge: "Alta protección",
+    title: "Toldos cofre",
+    value: "Acabado limpio, mecanismo protegido.",
+    text: "Sistemas robustos y duraderos. El tejido y los brazos quedan resguardados, cuidando el conjunto y alargando su vida útil.",
+    image: toldoCofreImg,
+    alt: "Toldo cofre instalado en fachada",
+  },
+  {
+    badge: "Privacidad",
+    title: "Toldos verticales / screen",
+    value: "Control solar y privacidad con discreción.",
+    text: "Perfectos para porches, cerramientos y grandes ventanales. Filtran la luz, reducen el calor y aumentan el confort.",
+    image: toldoVerticalImg,
+    alt: "Toldo vertical o screen en exterior",
+  },
+  {
+    badge: "Negocio",
+    title: "Toldos para hostelería",
+    value: "Resistencia, presencia y funcionalidad.",
+    text: "Soluciones para terrazas comerciales con tejidos y estructuras pensadas para el uso intensivo y la imagen del local.",
+    image: hosteleriaImg,
+    alt: "Toldo para hostelería en terraza comercial",
+  },
+];
+
+const SECONDARY_ITEMS = [
+  {
+    badge: "Estructura",
+    title: "Pérgolas",
+    value: "Arquitectura exterior con presencia.",
+    text: "Estructuras elegantes para crear espacios exteriores habitables, con soluciones adaptadas a cada entorno.",
+    image: pergolaImg,
+    alt: "Pérgola instalada en exterior",
+  },
+  {
+    badge: "Ligereza",
+    title: "Velas de sombra",
+    value: "Diseño contemporáneo y sombra flexible.",
+    text: "Soluciones ligeras para jardines y zonas abiertas, con un resultado limpio y moderno.",
+    image: sailImg,
+    alt: "Vela de sombra en jardín",
+  },
+];
+
+/* PAGE */
 
 export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
   const baseUrl = (
@@ -736,19 +771,11 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
     <Page>
       <Helmet>
         <title>{title}</title>
-
         <meta name="description" content={description} />
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
 
-        <link
-          rel="preload"
-          as="image"
-          href={hero_1280}
-          imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-          imageSizes="100vw"
-          fetchPriority="high"
-        />
+        {/* Hero preload is already handled in index.html */}
 
         <meta property="og:site_name" content={siteName} />
         <meta property="og:type" content="website" />
@@ -770,7 +797,6 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
-      {/* HERO */}
       <Hero>
         <HeroMedia aria-hidden="true">
           <HeroImg
@@ -818,7 +844,6 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
         </HeroContent>
       </Hero>
 
-      {/* INTRO + BENEFITS */}
       <Section id="tipos">
         <SectionInner>
           <IntroHeader>
@@ -847,82 +872,28 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
           </BenefitsStrip>
 
           <Grid>
-            <Card>
-              <CardMedia>
-                <CardImg
-                  style={{ backgroundImage: `url(${toldoExtensibleImg})` }}
-                />
-                <CardOverlay />
-                <CardBadge>Terrazas</CardBadge>
-              </CardMedia>
+            {CARD_ITEMS.map((item) => (
+              <Card key={item.title}>
+                <CardMedia>
+                  <CardImage
+                    src={item.image}
+                    alt={item.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <CardOverlay />
+                  <CardBadge>{item.badge}</CardBadge>
+                </CardMedia>
 
-              <CardContent>
-                <CardTitle>Toldos extensibles</CardTitle>
-                <ValueLine>Sombra regulable con estética ligera.</ValueLine>
-                <CardText>
-                  Ideales para terrazas y balcones. Permiten ajustar la
-                  proyección según el momento del día y el uso del espacio.
-                </CardText>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardMedia>
-                <CardImg style={{ backgroundImage: `url(${toldoCofreImg})` }} />
-                <CardOverlay />
-                <CardBadge>Alta protección</CardBadge>
-              </CardMedia>
-
-              <CardContent>
-                <CardTitle>Toldos cofre</CardTitle>
-                <ValueLine>Acabado limpio, mecanismo protegido.</ValueLine>
-                <CardText>
-                  Sistemas robustos y duraderos. El tejido y los brazos quedan
-                  resguardados, cuidando el conjunto y alargando su vida útil.
-                </CardText>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardMedia>
-                <CardImg
-                  style={{ backgroundImage: `url(${toldoVerticalImg})` }}
-                />
-                <CardOverlay />
-                <CardBadge>Privacidad</CardBadge>
-              </CardMedia>
-
-              <CardContent>
-                <CardTitle>Toldos verticales / screen</CardTitle>
-                <ValueLine>
-                  Control solar y privacidad con discreción.
-                </ValueLine>
-                <CardText>
-                  Perfectos para porches, cerramientos y grandes ventanales.
-                  Filtran la luz, reducen el calor y aumentan el confort.
-                </CardText>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardMedia>
-                <CardImg style={{ backgroundImage: `url(${hosteleriaImg})` }} />
-                <CardOverlay />
-                <CardBadge>Negocio</CardBadge>
-              </CardMedia>
-
-              <CardContent>
-                <CardTitle>Toldos para hostelería</CardTitle>
-                <ValueLine>Resistencia, presencia y funcionalidad.</ValueLine>
-                <CardText>
-                  Soluciones para terrazas comerciales con tejidos y estructuras
-                  pensadas para el uso intensivo y la imagen del local.
-                </CardText>
-              </CardContent>
-            </Card>
+                <CardContent>
+                  <CardTitle>{item.title}</CardTitle>
+                  <ValueLine>{item.value}</ValueLine>
+                  <CardText>{item.text}</CardText>
+                </CardContent>
+              </Card>
+            ))}
           </Grid>
 
-          {/* SECONDARY */}
           <BlockSpacer>
             <SectionIntro
               kicker="Complementos"
@@ -939,42 +910,30 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
               }
             />
           </BlockSpacer>
+
           <Grid>
-            <Card>
-              <CardMedia>
-                <CardImg style={{ backgroundImage: `url(${pergolaImg})` }} />
-                <CardOverlay />
-                <CardBadge>Estructura</CardBadge>
-              </CardMedia>
+            {SECONDARY_ITEMS.map((item) => (
+              <Card key={item.title}>
+                <CardMedia>
+                  <CardImage
+                    src={item.image}
+                    alt={item.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <CardOverlay />
+                  <CardBadge>{item.badge}</CardBadge>
+                </CardMedia>
 
-              <CardContent>
-                <CardTitle>Pérgolas</CardTitle>
-                <ValueLine>Arquitectura exterior con presencia.</ValueLine>
-                <CardText>
-                  Estructuras elegantes para crear espacios exteriores
-                  habitables, con soluciones adaptadas a cada entorno.
-                </CardText>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardMedia>
-                <CardImg style={{ backgroundImage: `url(${sailImg})` }} />
-                <CardOverlay />
-                <CardBadge>Ligereza</CardBadge>
-              </CardMedia>
-
-              <CardContent>
-                <CardTitle>Velas de sombra</CardTitle>
-                <ValueLine>Diseño contemporáneo y sombra flexible.</ValueLine>
-                <CardText>
-                  Soluciones ligeras para jardines y zonas abiertas, con un
-                  resultado limpio y moderno.
-                </CardText>
-              </CardContent>
-            </Card>
+                <CardContent>
+                  <CardTitle>{item.title}</CardTitle>
+                  <ValueLine>{item.value}</ValueLine>
+                  <CardText>{item.text}</CardText>
+                </CardContent>
+              </Card>
+            ))}
           </Grid>
-          {/* ACCESSORIES */}
+
           <BlockSpacer>
             <SectionIntro
               kicker="Accesorios"
@@ -1027,7 +986,6 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
         </SectionInner>
       </Section>
 
-      {/* CTA — Automatización */}
       <AutomationCTA aria-label="CTA automatización">
         <AutomationCTAInner>
           <AutomationCTABg aria-hidden="true" />
@@ -1106,6 +1064,7 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
           />
         </SectionInner>
       </SectionTight>
+
       <StickyCtaButton message="Hola, quiero una propuesta para toldos. ¿Podemos agendar una visita?" />
     </Page>
   );

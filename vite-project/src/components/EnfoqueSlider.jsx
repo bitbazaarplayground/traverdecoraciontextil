@@ -454,10 +454,6 @@ export default function EnfoqueSlider({ onOpenAsesoramiento }) {
 
         <RailWrap>
           <RailHeader>
-            <Hint>
-              Desliza en móvil <span aria-hidden="true">→</span>
-            </Hint>
-
             <Nav aria-label="Navegación de pasos">
               <NavBtn
                 type="button"
