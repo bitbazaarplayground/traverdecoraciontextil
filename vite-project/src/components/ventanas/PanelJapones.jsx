@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import ServiceHero from "../../components/heroes/ServiceHero";
 import { CONTACT } from "../../config/contact";
 import { trackEvent } from "../../lib/analytics";
 
@@ -40,88 +41,6 @@ const Page = styled.main`
   color: #151515;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
     "Helvetica Neue", sans-serif;
-`;
-
-/* =========================
-   HERO (premium)
-========================= */
-
-const Hero = styled.section`
-  position: relative;
-  margin-top: 3.5rem;
-  height: clamp(360px, 46vh, 590px);
-  display: grid;
-  place-items: center;
-  padding: 0 2rem;
-  text-align: center;
-  color: #fff;
-  overflow: hidden;
-
-  @media (max-width: 768px) {
-    height: clamp(320px, 50vh, 520px);
-    padding: 0 1.5rem;
-  }
-`;
-
-const HeroMedia = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-`;
-
-const HeroImg = styled.img`
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: translateZ(0) scale(1.05);
-  backface-visibility: hidden;
-  will-change: transform;
-`;
-
-const HeroOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(rgba(10, 0, 0, 0.38), rgba(0, 0, 0, 0.28));
-`;
-
-const HeroInner = styled.div`
-  position: relative;
-  z-index: 1;
-  max-width: 920px;
-`;
-
-const HeroEyebrow = styled.p`
-  font-size: 0.85rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.9;
-  margin-bottom: 1.15rem;
-`;
-
-const HeroTitle = styled.h1`
-  margin: 0;
-  font-size: 3.35rem;
-  font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-
-  span {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-
-  @media (max-width: 768px) {
-    font-size: 2.25rem;
-  }
-`;
-
-const HeroText = styled.p`
-  margin: 1.1rem auto 0;
-  max-width: 72ch;
-  font-size: 1.15rem;
-  line-height: 1.7;
-  opacity: 0.92;
 `;
 
 /* =========================
@@ -711,16 +630,6 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
 
-        {/* Preload hero (LCP) */}
-        <link
-          rel="preload"
-          as="image"
-          href={hero_1280}
-          imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-          imageSizes="100vw"
-          fetchPriority="high"
-        />
-
         {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
         <meta property="og:type" content="website" />
@@ -743,34 +652,18 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
       </Helmet>
 
       {/* HERO */}
-      <Hero>
-        <HeroMedia aria-hidden="true">
-          <HeroImg
-            src={hero_1280}
-            srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-            sizes="100vw"
-            width="1920"
-            height="1080"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-            alt=""
-          />
-          <HeroOverlay />
-        </HeroMedia>
-
-        <HeroInner>
-          <HeroEyebrow>Solución arquitectónica · Textil a medida</HeroEyebrow>
-          <HeroTitle>
+      <ServiceHero
+        eyebrow="Solución arquitectónica · Textil a medida"
+        title={
+          <>
             Panel <span>japonés</span>
-          </HeroTitle>
-          <HeroText>
-            Líneas limpias, caída recta y control de luz por paneles. Perfecto
-            para ventanales grandes y puertas correderas, con tejidos
-            seleccionados y una instalación impecable.
-          </HeroText>
-        </HeroInner>
-      </Hero>
+          </>
+        }
+        subtitle="Líneas limpias, caída recta y control de luz por paneles. Perfecto para ventanales grandes y puertas correderas, con tejidos seleccionados y una instalación impecable."
+        hero768={hero_768}
+        hero1280={hero_1280}
+        hero1920={hero_1920}
+      />
 
       {/* FEATURES */}
       <Features>

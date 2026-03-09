@@ -2,9 +2,9 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import ServiceHero from "../components/heroes/ServiceHero";
 import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
-
 /* =========================
    COMPONENTS
 ========================= */
@@ -50,158 +50,6 @@ const Page = styled.main`
 `;
 
 /* HERO */
-
-const Hero = styled.section`
-  position: relative;
-  min-height: 45vh;
-  display: flex;
-  margin-top: 3.5rem;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 5rem 2rem;
-  color: #fff;
-  overflow: hidden;
-
-  @media (max-width: 768px) {
-    padding: 4rem 1.5rem;
-  }
-`;
-
-const HeroMedia = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-`;
-
-const HeroImg = styled.img`
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  transform: scale(1.02);
-  filter: saturate(1.02) contrast(1.03);
-`;
-
-const HeroOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-      1200px 700px at 50% 35%,
-      rgba(0, 0, 0, 0.06),
-      rgba(0, 0, 0, 0.45)
-    ),
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.22) 0%,
-      rgba(0, 0, 0, 0.48) 55%,
-      rgba(0, 0, 0, 0.58) 100%
-    );
-  z-index: 1;
-`;
-
-const HeroContent = styled.div`
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 920px;
-  text-align: center;
-`;
-
-const Eyebrow = styled.p`
-  margin: 0 0 0.9rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.72);
-`;
-
-const HeroTitle = styled.h1`
-  font-size: 3.2rem;
-  font-weight: 650;
-  line-height: 1.06;
-  margin: 0 0 1.1rem;
-
-  span {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-
-  @media (max-width: 768px) {
-    font-size: 2.35rem;
-    line-height: 1.1;
-  }
-`;
-
-const HeroSubtitle = styled.p`
-  margin: 0 auto;
-  max-width: 68ch;
-  font-size: 1.12rem;
-  line-height: 1.75;
-  color: rgba(255, 255, 255, 0.78);
-`;
-
-const HeroActions = styled.div`
-  margin-top: 1.9rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.9rem;
-  flex-wrap: wrap;
-`;
-
-const sharedButtonFocus = `
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(255,255,255,0.18);
-  }
-
-  @media (max-width: 520px) {
-    width: 100%;
-  }
-`;
-
-const PrimaryButton = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.95rem 2.1rem;
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: #0b0c0f;
-  font-weight: 850;
-  text-decoration: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-
-  &:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
-  }
-
-  ${sharedButtonFocus}
-`;
-
-const SecondaryButton = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.95rem 2.05rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: rgba(255, 255, 255, 0.92);
-  font-weight: 650;
-  text-decoration: none;
-  transition: transform 0.25s ease, background 0.25s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-1px);
-  }
-
-  ${sharedButtonFocus}
-`;
 
 const BlockSpacer = styled.div`
   margin-top: 3.25rem;
@@ -445,8 +293,6 @@ const AutomationCTABg = styled.div`
   background-image: url(${ctaImg});
   background-size: cover;
   background-position: center;
-  transform: scale(1.04);
-  filter: saturate(1.03) contrast(1.03);
   z-index: 0;
 `;
 
@@ -691,7 +537,7 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
 
-  const canonical = `${baseUrl}/toldos-proteccionsolar`;
+  const canonical = `${baseUrl}/toldos-proteccion-solar`;
   const siteName = CONTACT.siteName;
 
   const title =
@@ -797,52 +643,24 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
-      <Hero>
-        <HeroMedia aria-hidden="true">
-          <HeroImg
-            src={hero_1280}
-            srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-            sizes="100vw"
-            width="1920"
-            height="1080"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-            alt=""
-          />
-        </HeroMedia>
-        <HeroOverlay />
-
-        <HeroContent>
-          <Eyebrow>Protección solar · Exterior</Eyebrow>
-          <HeroTitle>
+      <ServiceHero
+        eyebrow="Protección solar · Exterior"
+        title={
+          <>
             Toldos & <span>Sombra a medida</span>
-          </HeroTitle>
-          <HeroSubtitle>
-            Confort térmico, estética y durabilidad. Soluciones que mejoran el
-            uso real de terrazas, jardines y fachadas sin comprometer el diseño.
-          </HeroSubtitle>
-
-          <HeroActions>
-            <PrimaryButton
-              to="/contact"
-              onClick={(e) => {
-                e.preventDefault();
-
-                trackEvent("open_quick_enquiry", {
-                  source: "toldos_proteccion_solar",
-                  pack: "Toldos",
-                });
-
-                onOpenAsesoramiento?.("Toldos", "toldos_proteccion_solar");
-              }}
-            >
-              Solicitar propuesta
-            </PrimaryButton>
-            <SecondaryButton href="#tipos">Ver tipos de toldos</SecondaryButton>
-          </HeroActions>
-        </HeroContent>
-      </Hero>
+          </>
+        }
+        subtitle="Confort térmico, estética y durabilidad. Soluciones que mejoran el uso real de terrazas, jardines y fachadas sin comprometer el diseño."
+        hero768={hero_768}
+        hero1280={hero_1280}
+        hero1920={hero_1920}
+        primaryLabel="Solicitar propuesta"
+        primaryTrackSource="toldos_proteccion_solar"
+        primaryPack="Toldos"
+        secondaryLabel="Ver tipos de toldos"
+        secondaryHref="#tipos"
+        onOpenAsesoramiento={onOpenAsesoramiento}
+      />
 
       <Section id="tipos">
         <SectionInner>
