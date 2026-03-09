@@ -110,39 +110,52 @@ const CTAButton = styled(motion.a)`
   }
 `;
 
-export default function ContactCTA({ onOpenAsesoramiento }) {
+export default function ContactCTA({
+  onOpenAsesoramiento,
+  pack = "Cortinas",
+  source = "cortinas_estores_cta",
+  buttonText = "Reserva Ahora",
+  eyebrow = "EQUIPO DE DISEÑO Y ATENCIÓN AL CLIENTE DE PRIMERA",
+  title = "Nos encargamos de todo:\ndiseño, medición e instalación.",
+}) {
   const reduceMotion = useReducedMotion();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.65 });
   const animate = reduceMotion ? true : inView;
 
+  const lines = title.split("\n");
+
   return (
     <Section>
       <Content>
-        <HeadingSmall>
-          EQUIPO DE DISEÑO Y ATENCIÓN AL CLIENTE DE PRIMERA
-        </HeadingSmall>
+        <HeadingSmall>{eyebrow}</HeadingSmall>
 
         <HeadingLarge ref={ref}>
           <FillWrap>
-            {/* Light base text */}
             <LightText>
-              Nos encargamos de todo:
-              <br /> diseño, medición e instalación.
+              {lines.map((line, index) => (
+                <span key={index}>
+                  {line}
+                  {index < lines.length - 1 && <br />}
+                </span>
+              ))}
             </LightText>
 
-            {/* Filled overlay – slides LEFT → RIGHT */}
             <RevealViewport>
               <FilledText
                 initial={{ x: "-100%" }}
                 animate={animate ? { x: "0%" } : { x: "-100%" }}
                 transition={{
                   duration: 1.6,
-                  ease: [0.22, 1, 0.36, 1], // smooth, studio-grade
+                  ease: [0.22, 1, 0.36, 1],
                 }}
               >
-                Nos encargamos de todo:
-                <br /> diseño, medición e instalación.
+                {lines.map((line, index) => (
+                  <span key={index}>
+                    {line}
+                    {index < lines.length - 1 && <br />}
+                  </span>
+                ))}
               </FilledText>
             </RevealViewport>
           </FillWrap>
@@ -156,14 +169,14 @@ export default function ContactCTA({ onOpenAsesoramiento }) {
             e.preventDefault();
 
             trackEvent("open_quick_enquiry", {
-              source: "cortinas_estores_cta",
-              pack: "Cortinas",
+              source,
+              pack,
             });
 
-            onOpenAsesoramiento?.("Cortinas", "cortinas_estores_cta");
+            onOpenAsesoramiento?.(pack, source);
           }}
         >
-          Reserva Ahora
+          {buttonText}
         </CTAButton>
       </Content>
     </Section>

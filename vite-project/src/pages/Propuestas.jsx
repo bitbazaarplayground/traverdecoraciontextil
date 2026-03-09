@@ -15,12 +15,18 @@ import StickyCtaButton from "../mobile/StickyCtaButton";
 
 // Packs
 import imgEssential1200 from "../assets/propuestas/dormitorioMain-1200.webp";
+import imgEssential400 from "../assets/propuestas/dormitorioMain-400.webp";
+import imgEssential600 from "../assets/propuestas/dormitorioMain-600.webp";
 import imgEssential800 from "../assets/propuestas/dormitorioMain-800.webp";
 
 import imgBalance1200 from "../assets/propuestas/salonComedor-1200.webp";
+import imgBalance400 from "../assets/propuestas/salonComedor-400.webp";
+import imgBalance600 from "../assets/propuestas/salonComedor-600.webp";
 import imgBalance800 from "../assets/propuestas/salonComedor-800.webp";
 
 import imgFuncionaSola1200 from "../assets/propuestas/smartLivingRoom-1200.webp";
+import imgFuncionaSola400 from "../assets/propuestas/smartLivingRoom-400.webp";
+import imgFuncionaSola600 from "../assets/propuestas/smartLivingRoom-600.webp";
 import imgFuncionaSola800 from "../assets/propuestas/smartLivingRoom-800.webp";
 
 // Hero
@@ -30,21 +36,33 @@ const hero_1920 = "/propuestas/propuestaHero-1920.webp";
 
 // Tiles
 import imgBano1200 from "../assets/propuestas/bathroomMain-1200.webp";
+import imgBano400 from "../assets/propuestas/bathroomMain-400.webp";
+import imgBano600 from "../assets/propuestas/bathroomMain-600.webp";
 import imgBano800 from "../assets/propuestas/bathroomMain-800.webp";
 
 import imgDormitorio1200 from "../assets/propuestas/bedroomMain-1200.webp";
+import imgDormitorio400 from "../assets/propuestas/bedroomMain-400.webp";
+import imgDormitorio600 from "../assets/propuestas/bedroomMain-600.webp";
 import imgDormitorio800 from "../assets/propuestas/bedroomMain-800.webp";
 
 import imgCocina1200 from "../assets/propuestas/cocinaMain-1200.webp";
+import imgCocina400 from "../assets/propuestas/cocinaMain-400.webp";
+import imgCocina600 from "../assets/propuestas/cocinaMain-600.webp";
 import imgCocina800 from "../assets/propuestas/cocinaMain-800.webp";
 
 import imgInfantil1200 from "../assets/propuestas/infantilMain-1200.webp";
+import imgInfantil400 from "../assets/propuestas/infantilMain-400.webp";
+import imgInfantil600 from "../assets/propuestas/infantilMain-600.webp";
 import imgInfantil800 from "../assets/propuestas/infantilMain-800.webp";
 
 import imgSalon1200 from "../assets/propuestas/livingroomMain-1200.webp";
+import imgSalon400 from "../assets/propuestas/livingroomMain-400.webp";
+import imgSalon600 from "../assets/propuestas/livingroomMain-600.webp";
 import imgSalon800 from "../assets/propuestas/livingroomMain-800.webp";
 
 import imgToldos1200 from "../assets/propuestas/terrazaMain-1200.webp";
+import imgToldos400 from "../assets/propuestas/terrazaMain-400.webp";
+import imgToldos600 from "../assets/propuestas/terrazaMain-600.webp";
 import imgToldos800 from "../assets/propuestas/terrazaMain-800.webp";
 
 /* =========================
@@ -52,9 +70,10 @@ import imgToldos800 from "../assets/propuestas/terrazaMain-800.webp";
 ========================= */
 
 const CARD_IMAGE_SIZES =
-  "(min-width: 1120px) 360px, (min-width: 980px) 33vw, calc(100vw - 3rem)";
+  "(min-width: 1120px) 357px, (min-width: 980px) calc((100vw - 5rem) / 3), calc(100vw - 3rem)";
 
-const getSrcSet = (img800, img1200) => `${img800} 800w, ${img1200} 1200w`;
+const getSrcSet = (img400, img600, img800, img1200) =>
+  `${img400} 400w, ${img600} 600w, ${img800} 800w, ${img1200} 1200w`;
 
 /* =========================
    PAGE
@@ -220,10 +239,10 @@ const PackCard = styled.article`
 `;
 
 const PackMedia = styled.div`
-  height: 210px;
   position: relative;
   overflow: hidden;
   background: #ececec;
+  aspect-ratio: 16 / 9;
 `;
 
 const PackImage = styled(MediaImage)`
@@ -548,6 +567,8 @@ const PACKS = [
     price: "499€",
     desc: "Un dormitorio donde todo encaja: luz, textura y descanso. Diseñamos un ambiente sereno y funcional, pensado para dormir mejor y disfrutarlo cada día.",
     note: "Perfecto para: dormitorio principal o juvenil",
+    img400: imgEssential400,
+    img600: imgEssential600,
     img800: imgEssential800,
     img1200: imgEssential1200,
     packValue: "Dormitorio",
@@ -568,6 +589,8 @@ const PACKS = [
     price: "799€",
     desc: "El corazón de la casa merece equilibrio entre estética y uso real. Creamos un conjunto coherente que mejora la luz, el confort térmico y la sensación de hogar.",
     note: "Perfecto para: salón y comedor integrados",
+    img400: imgBalance400,
+    img600: imgBalance600,
     img800: imgBalance800,
     img1200: imgBalance1200,
     packValue: "Salón / Comedor",
@@ -588,6 +611,8 @@ const PACKS = [
     price: "1.490€",
     desc: "Confort sin esfuerzo. Integración discreta y tecnología que se adapta a tu ritmo, no al revés. Una experiencia completa de control, luz y privacidad.",
     note: "Perfecto para: vivienda completa o reforma integral",
+    img400: imgFuncionaSola400,
+    img600: imgFuncionaSola600,
     img800: imgFuncionaSola800,
     img1200: imgFuncionaSola1200,
     packValue: "Confort + Automatización",
@@ -607,36 +632,48 @@ const TILES = [
   {
     title: "Dormitorio",
     text: "Privacidad, descanso y caída perfecta. La mejora más inmediata.",
+    img400: imgDormitorio400,
+    img600: imgDormitorio600,
     img800: imgDormitorio800,
     img1200: imgDormitorio1200,
   },
   {
     title: "Salón",
     text: "Luz, textura y coherencia estética. Donde más se vive la casa.",
+    img400: imgSalon400,
+    img600: imgSalon600,
     img800: imgSalon800,
     img1200: imgSalon1200,
   },
   {
     title: "Cocina",
     text: "Screen, estores y soluciones fáciles de mantener para el día a día.",
+    img400: imgCocina400,
+    img600: imgCocina600,
     img800: imgCocina800,
     img1200: imgCocina1200,
   },
   {
     title: "Baño",
     text: "Privacidad sin perder luz. Materiales pensados para humedad.",
+    img400: imgBano400,
+    img600: imgBano600,
     img800: imgBano800,
     img1200: imgBano1200,
   },
   {
     title: "Infantil / Juvenil",
     text: "Oscuridad, seguridad y tejidos resistentes. Fácil de vivir.",
+    img400: imgInfantil400,
+    img600: imgInfantil600,
     img800: imgInfantil800,
     img1200: imgInfantil1200,
   },
   {
     title: "Exterior",
     text: "Sombra, temperatura y uso real de terraza o balcón.",
+    img400: imgToldos400,
+    img600: imgToldos600,
     img800: imgToldos800,
     img1200: imgToldos1200,
   },
@@ -781,8 +818,13 @@ export default function Propuestas({ onOpenAsesoramiento }) {
               <PackCard key={pack.id} id={pack.id}>
                 <PackMedia>
                   <PackImage
-                    src={pack.img1200}
-                    srcSet={getSrcSet(pack.img800, pack.img1200)}
+                    src={pack.img600}
+                    srcSet={getSrcSet(
+                      pack.img400,
+                      pack.img600,
+                      pack.img800,
+                      pack.img1200
+                    )}
                     sizes={CARD_IMAGE_SIZES}
                     alt=""
                     loading="lazy"
@@ -851,8 +893,13 @@ export default function Propuestas({ onOpenAsesoramiento }) {
             {TILES.map((tile) => (
               <Tile key={tile.title}>
                 <TileImg
-                  src={tile.img1200}
-                  srcSet={getSrcSet(tile.img800, tile.img1200)}
+                  src={tile.img600}
+                  srcSet={getSrcSet(
+                    tile.img400,
+                    tile.img600,
+                    tile.img800,
+                    tile.img1200
+                  )}
                   sizes={CARD_IMAGE_SIZES}
                   alt=""
                   loading="lazy"

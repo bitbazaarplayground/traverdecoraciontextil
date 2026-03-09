@@ -147,15 +147,21 @@ export default function App() {
             }
           />
           <Route
-            path="/toldos-proteccionsolar"
+            path="/toldos-proteccion-solar"
             element={
               <ToldosProteccionSolar
                 onOpenAsesoramiento={onOpenAsesoramiento}
               />
             }
           />
-          <Route path="/mosquiteras" element={<Mosquiteras />} />
-          <Route path="/services" element={<Servicios />} />
+          <Route
+            path="/mosquiteras"
+            element={<Mosquiteras onOpenAsesoramiento={onOpenAsesoramiento} />}
+          />
+          <Route
+            path="/services"
+            element={<Servicios onOpenAsesoramiento={onOpenAsesoramiento} />}
+          />
 
           {/* LEGALES */}
           <Route path="/aviso-legal" element={<AvisoLegal />} />

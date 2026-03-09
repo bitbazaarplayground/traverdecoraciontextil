@@ -899,7 +899,12 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
         </FabricsInner>
       </FabricsSection>
 
-      <ContactCTA onOpenAsesoramiento={onOpenAsesoramiento} />
+      <ContactCTA
+        onOpenAsesoramiento={onOpenAsesoramiento}
+        pack="Cortinas"
+        source="cortinas_estores_cta"
+        buttonText="Solicitar información"
+      />
 
       <ComplementosVentana
         id="sistemas"
