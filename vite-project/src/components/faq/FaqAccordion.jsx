@@ -1,4 +1,11 @@
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Helmet } from "react-helmet-async";
 import styled from "styled-components";
 
@@ -14,19 +21,16 @@ export default function FaqAccordion({
 }) {
   const baseId = useId();
   const [openIndex, setOpenIndex] = useState(defaultOpenIndex);
-
-  const panelRefs = useRef([]);
-  const [panelHeights, setPanelHeights] = useState({});
+  const [openHeight, setOpenHeight] = useState(0);
+  const openPanelInnerRef = useRef(null);
 
   // Keep state in sync when items or defaultOpenIndex change
   useEffect(() => {
-    // if defaultOpenIndex is -1 => all closed
     if (defaultOpenIndex === -1) {
       setOpenIndex(-1);
       return;
     }
 
-    // if defaultOpenIndex is valid => open that one
     if (
       Number.isInteger(defaultOpenIndex) &&
       defaultOpenIndex >= 0 &&
@@ -36,26 +40,35 @@ export default function FaqAccordion({
       return;
     }
 
-    // otherwise => safe fallback (all closed)
     setOpenIndex(-1);
   }, [defaultOpenIndex, items?.length]);
 
-  useEffect(() => {
-    if (!items?.length) return;
+  useLayoutEffect(() => {
+    if (openIndex === -1 || !openPanelInnerRef.current) {
+      setOpenHeight(0);
+      return;
+    }
 
-    const measure = () => {
-      const next = {};
-      panelRefs.current.forEach((el, idx) => {
-        if (!el) return;
-        next[idx] = el.scrollHeight || 0;
-      });
-      setPanelHeights(next);
+    const el = openPanelInnerRef.current;
+
+    const updateHeight = () => {
+      setOpenHeight(el.scrollHeight || 0);
     };
 
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [items]);
+    updateHeight();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateHeight();
+    });
+
+    resizeObserver.observe(el);
+    window.addEventListener("resize", updateHeight);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateHeight);
+    };
+  }, [openIndex, items]);
 
   const schema = useMemo(() => {
     if (!withSchema || !items?.length) return null;
@@ -104,7 +117,6 @@ export default function FaqAccordion({
           const isOpen = idx === openIndex;
           const buttonId = `${baseId}-faq-btn-${idx}`;
           const panelId = `${baseId}-faq-panel-${idx}`;
-          const measured = panelHeights[idx] || 0;
 
           return (
             <Item key={`${idx}-${it.q}`} $open={isOpen}>
@@ -126,13 +138,9 @@ export default function FaqAccordion({
                 role="region"
                 aria-labelledby={buttonId}
                 $open={isOpen}
-                style={{ maxHeight: isOpen ? `${measured}px` : "0px" }}
+                style={{ maxHeight: isOpen ? `${openHeight}px` : "0px" }}
               >
-                <PanelInner
-                  ref={(el) => {
-                    panelRefs.current[idx] = el;
-                  }}
-                >
+                <PanelInner ref={isOpen ? openPanelInnerRef : null}>
                   <Answer>
                     {typeof it.a === "string" ? <p>{it.a}</p> : it.a}
                   </Answer>

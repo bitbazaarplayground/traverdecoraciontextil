@@ -1125,7 +1125,12 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
       </Section>
 
       {/* CONTACT CTA */}
-      <ContactCTA onOpenAsesoramiento={onOpenAsesoramiento} />
+      <ContactCTA
+        onOpenAsesoramiento={onOpenAsesoramiento}
+        pack={PACK_LABEL}
+        source={CTA_SOURCE}
+        buttonText="Solicitar información"
+      />
 
       {/* COMPLEMENTOS */}
       <ComplementosVentana

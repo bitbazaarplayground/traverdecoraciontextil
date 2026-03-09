@@ -10,6 +10,7 @@ import panelJaponesImg from "../assets/servicios/panelJapones.webp";
 import toldosProteccionSolar from "../assets/servicios/toldoServicios.webp";
 import venecianasImg from "../assets/servicios/venecianas.webp";
 import { CONTACT } from "../config/contact";
+import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
 /* =========================
    Small scroll-reveal helper (no deps)
@@ -615,27 +616,6 @@ const MediaBadge = styled.div`
   color: rgba(17, 17, 17, 0.75);
 `;
 
-const MediaCenter = styled.div`
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  z-index: 2;
-`;
-
-const PlayButton = styled.div`
-  width: 72px;
-  height: 72px;
-  border-radius: 20px;
-  display: grid;
-  place-items: center;
-  font-weight: 900;
-  color: #111;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.2);
-  transform: translateY(-8px);
-`;
-
 const MediaBottom = styled.div`
   position: absolute;
   left: 0;
@@ -666,7 +646,7 @@ const MediaText = styled.p`
    COMPONENT
 ========================= */
 
-export default function Servicios() {
+export default function Servicios({ onOpenAsesoramiento }) {
   // SEO base
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
@@ -914,7 +894,20 @@ export default function Servicios() {
                 <ConsultStrong>Sin obligación. Sin presión.</ConsultStrong>
 
                 <ConsultActions>
-                  <ConsultPrimary to="/contact">
+                  <ConsultPrimary
+                    type="button"
+                    onClick={() => {
+                      trackEvent("open_quick_enquiry", {
+                        source: "servicios_consult_cta",
+                        pack: "Asesoramiento personalizado",
+                      });
+
+                      onOpenAsesoramiento?.(
+                        "Asesoramiento personalizado",
+                        "servicios_consult_cta"
+                      );
+                    }}
+                  >
                     Solicitar asesoramiento
                   </ConsultPrimary>
                   <ConsultSecondary
@@ -940,17 +933,13 @@ export default function Servicios() {
                   />
                   <MediaOverlay />
 
-                  <MediaBadge>Estudio</MediaBadge>
-
-                  <MediaCenter>
-                    <PlayButton aria-hidden="true">▶</PlayButton>
-                  </MediaCenter>
+                  <MediaBadge>Asesoramiento</MediaBadge>
 
                   <MediaBottom>
-                    <MediaTitle>Hablamos de tu espacio</MediaTitle>
+                    <MediaTitle>Te ayudamos a decidir bien</MediaTitle>
                     <MediaText>
-                      Luz, privacidad, caída, tejidos y sistemas — con criterio
-                      y una propuesta realista.
+                      Estudiamos luz, privacidad, tejidos, sistemas y medidas
+                      para proponerte una solución coherente y realista.
                     </MediaText>
                   </MediaBottom>
                 </MediaTile>
