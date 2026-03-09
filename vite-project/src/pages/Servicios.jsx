@@ -10,7 +10,7 @@ import panelJaponesImg from "../assets/servicios/panelJapones.webp";
 import toldosProteccionSolar from "../assets/servicios/toldoServicios.webp";
 import venecianasImg from "../assets/servicios/venecianas.webp";
 import { CONTACT } from "../config/contact";
-
+import StickyCtaButton from "../mobile/StickyCtaButton";
 /* =========================
    Small scroll-reveal helper (no deps)
 ========================= */
@@ -959,6 +959,7 @@ export default function Servicios() {
           </Reveal>
         </Container>
       </ConsultSection>
+      <StickyCtaButton message="Hola, quiero una propuesta a medida. ¿Podemos concertar una visita para medir y definir tejidos, sistemas y acabados?" />
     </Page>
   );
 }
