@@ -75,7 +75,7 @@ const Hero = styled.section`
   overflow: hidden;
 
   @media (max-width: 768px) {
-    padding: 5.5rem 1.5rem 3.5rem;
+    padding: 4.5rem 1.5rem 3.5rem;
   }
 `;
 
@@ -161,45 +161,56 @@ const HeroActions = styled.div`
   flex-wrap: wrap;
 `;
 
+const sharedButtonFocus = `
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.18);
+  }
+
+  @media (max-width: 520px) {
+    width: 100%;
+  }
+`;
+
 const PrimaryButton = styled(Link)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.95rem 2.25rem;
+  padding: 0.95rem 2.1rem;
   border-radius: 999px;
   background: ${({ theme }) => theme.colors.primary};
   color: #0b0c0f;
-  font-weight: 800;
+  font-weight: 850;
   text-decoration: none;
   transition: transform 0.25s ease, opacity 0.25s ease;
 
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      opacity: 0.92;
-      transform: translateY(-1px);
-    }
+  &:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
   }
+
+  ${sharedButtonFocus}
 `;
 
 const SecondaryButton = styled.a`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.95rem 2.15rem;
+  padding: 0.95rem 2.05rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(244, 244, 245, 0.92);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
   font-weight: 650;
   text-decoration: none;
   transition: transform 0.25s ease, background 0.25s ease;
 
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: rgba(255, 255, 255, 0.09);
-      transform: translateY(-1px);
-    }
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
   }
+
+  ${sharedButtonFocus}
 `;
 
 const MicroLine = styled.p`
