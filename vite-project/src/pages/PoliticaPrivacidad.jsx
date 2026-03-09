@@ -19,8 +19,8 @@ export default function PoliticaPrivacidad() {
 
   // Datos legales (confirmados por ti)
   const legal = {
-    holder: "Zenaida Zorita Vallés",
-    nif: "18945550-J",
+    holder: "TRAVER TOLDOS Y ENROLLABLES SL",
+    nif: "B72908809",
     address: "Carrer de Sant Felip, 67, 12550 Almassora, Castellón, Spain",
     legalEmail: CONTACT.email,
   };
