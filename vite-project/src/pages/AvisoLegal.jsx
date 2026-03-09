@@ -27,8 +27,8 @@ export default function AvisoLegal() {
     "Aviso legal del sitio web de Traver Decoración Textil. Información del titular, condiciones de uso y datos de contacto.";
 
   // Datos del titular (autónomo)
-  const titular = "Zenaida Zorita Vallés";
-  const nif = "18945550-J";
+  const titular = "TRAVER TOLDOS Y ENROLLABLES SL";
+  const nif = "B72908809";
 
   return (
     <Page>

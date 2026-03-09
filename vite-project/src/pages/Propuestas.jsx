@@ -3,17 +3,24 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-// import AsesoramientoForm from "../components/AsesoramientoFormSupabase";
-// import AsesoramientoModal from "../components/AsesoramientoModalSupabase";
 import FaqAccordion from "../components/faq/FaqAccordion";
 import { CONTACT } from "../config/contact";
 import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
+
 /* =========================
-   QUICK ASSETS (placeholders)
+   RESPONSIVE ASSETS
 ========================= */
-import imgEssential from "../assets/propuestas/dormitorioMain.png";
-import imgBalance from "../assets/propuestas/salonComedor.png";
+
+// Packs
+import imgEssential1200 from "../assets/propuestas/dormitorioMain-1200.webp";
+import imgEssential800 from "../assets/propuestas/dormitorioMain-800.webp";
+
+import imgBalance1200 from "../assets/propuestas/salonComedor-1200.webp";
+import imgBalance800 from "../assets/propuestas/salonComedor-800.webp";
+
+import imgFuncionaSola1200 from "../assets/propuestas/smartLivingRoom-1200.webp";
+import imgFuncionaSola800 from "../assets/propuestas/smartLivingRoom-800.webp";
 
 // Hero
 const hero_768 = "/propuestas/propuestaHero-768.webp";
@@ -21,13 +28,32 @@ const hero_1280 = "/propuestas/propuestaHero-1280.webp";
 const hero_1920 = "/propuestas/propuestaHero-1920.webp";
 
 // Tiles
-import imgBano from "../assets/propuestas/bathroomMain.png";
-import imgDormitorio from "../assets/propuestas/bedroomMain.png";
-import imgCocina from "../assets/propuestas/cocinaMain.png";
-import imgInfantil from "../assets/propuestas/infantilMain.png";
-import imgSalon from "../assets/propuestas/livingroomMain.png";
-import imgFuncionaSola from "../assets/propuestas/smartLivingRoom.png";
-import imgToldos from "../assets/propuestas/terrazaMain.png";
+import imgBano1200 from "../assets/propuestas/bathroomMain-1200.webp";
+import imgBano800 from "../assets/propuestas/bathroomMain-800.webp";
+
+import imgDormitorio1200 from "../assets/propuestas/bedroomMain-1200.webp";
+import imgDormitorio800 from "../assets/propuestas/bedroomMain-800.webp";
+
+import imgCocina1200 from "../assets/propuestas/cocinaMain-1200.webp";
+import imgCocina800 from "../assets/propuestas/cocinaMain-800.webp";
+
+import imgInfantil1200 from "../assets/propuestas/infantilMain-1200.webp";
+import imgInfantil800 from "../assets/propuestas/infantilMain-800.webp";
+
+import imgSalon1200 from "../assets/propuestas/livingroomMain-1200.webp";
+import imgSalon800 from "../assets/propuestas/livingroomMain-800.webp";
+
+import imgToldos1200 from "../assets/propuestas/terrazaMain-1200.webp";
+import imgToldos800 from "../assets/propuestas/terrazaMain-800.webp";
+
+/* =========================
+   IMAGE HELPERS
+========================= */
+
+const CARD_IMAGE_SIZES =
+  "(min-width: 1120px) 360px, (min-width: 980px) 33vw, calc(100vw - 3rem)";
+
+const getSrcSet = (img800, img1200) => `${img800} 800w, ${img1200} 1200w`;
 
 /* =========================
    PAGE
@@ -69,7 +95,6 @@ const HeroImg = styled.img`
   filter: saturate(0.95) contrast(1.05);
   transform: translateZ(0) scale(1.03);
   backface-visibility: hidden;
-  will-change: transform;
 `;
 
 const HeroOverlay = styled.div`
@@ -148,9 +173,11 @@ const PrimaryButton = styled(Link)`
   text-decoration: none;
   transition: transform 0.25s ease, opacity 0.25s ease;
 
-  &:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
   }
 `;
 
@@ -167,9 +194,11 @@ const SecondaryButton = styled.a`
   text-decoration: none;
   transition: transform 0.25s ease, background 0.25s ease;
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.09);
-    transform: translateY(-1px);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: rgba(255, 255, 255, 0.09);
+      transform: translateY(-1px);
+    }
   }
 `;
 
@@ -226,6 +255,7 @@ const Lead = styled.p`
   color: rgba(17, 17, 17, 0.68);
   margin: 0;
 `;
+
 const SectionTop = styled.div`
   margin-bottom: 2.2rem;
 `;
@@ -269,14 +299,26 @@ const SectionTitle = styled.h2`
 `;
 
 const SectionLead = styled.p`
-  margin: 0.75rem 0 0; /* ✅ IMPORTANT: no auto */
+  margin: 0.75rem 0 0;
   font-size: 1.08rem;
   line-height: 1.7;
   color: rgba(17, 17, 17, 0.62);
   max-width: 70ch;
 `;
+
 /* =========================
-   PACKS GRID (premium cards)
+   SHARED MEDIA
+========================= */
+
+const MediaImage = styled.img`
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+/* =========================
+   PACKS GRID
 ========================= */
 
 const PacksGrid = styled.div`
@@ -296,24 +338,28 @@ const PackCard = styled.article`
   background: #fff;
   border: 1px solid rgba(17, 17, 17, 0.08);
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.08);
-  transform: translateY(0);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-
   display: flex;
   flex-direction: column;
   height: 100%;
 
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 40px 110px rgba(0, 0, 0, 0.12);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 40px 110px rgba(0, 0, 0, 0.12);
+    }
   }
 `;
 
 const PackMedia = styled.div`
   height: 210px;
-  background-size: cover;
-  background-position: center;
   position: relative;
+  overflow: hidden;
+  background: #ececec;
+`;
+
+const PackImage = styled(MediaImage)`
+  transform: scale(1.01);
 `;
 
 const PackBadge = styled.div`
@@ -332,7 +378,6 @@ const PackBadge = styled.div`
 
 const PackBody = styled.div`
   padding: 1.6rem 1.5rem 1.5rem;
-
   flex: 1;
 `;
 
@@ -349,6 +394,7 @@ const PackDesc = styled.p`
   color: rgba(17, 17, 17, 0.68);
   margin: 0 0 1.15rem 0;
 `;
+
 const PackPrice = styled.p`
   margin: 0 0 0.85rem 0;
   font-size: 1.05rem;
@@ -405,7 +451,6 @@ const PackFooter = styled.div`
   justify-content: space-between;
   gap: 0.8rem;
   border-top: 1px solid rgba(17, 17, 17, 0.08);
-
   margin-top: auto;
 `;
 
@@ -415,7 +460,7 @@ const Note = styled.p`
   color: rgba(17, 17, 17, 0.55);
 `;
 
-const PackCTA = styled(Link)`
+const PackCTA = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -427,10 +472,13 @@ const PackCTA = styled(Link)`
   font-weight: 700;
   text-decoration: none;
   transition: transform 0.25s ease, background 0.25s ease;
+  cursor: pointer;
 
-  &:hover {
-    background: rgba(17, 17, 17, 0.09);
-    transform: translateY(-1px);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: rgba(17, 17, 17, 0.09);
+      transform: translateY(-1px);
+    }
   }
 `;
 
@@ -482,8 +530,7 @@ const Tiles = styled.div`
   }
 `;
 
-const Tile = styled(Link)`
-  text-decoration: none;
+const Tile = styled.article`
   color: inherit;
   border-radius: 22px;
   overflow: hidden;
@@ -495,23 +542,29 @@ const Tile = styled(Link)`
   align-content: end;
   transition: transform 0.25s ease, background 0.25s ease;
 
-  &:hover {
-    transform: translateY(-4px);
-    background: rgba(255, 255, 255, 0.06);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.06);
+    }
   }
 `;
 
-const TileBg = styled.div`
+const TileImg = styled(MediaImage)`
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
   transform: scale(1.02);
 `;
 
 const TileOverlay = styled.div`
   position: absolute;
   inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.76) 0%,
+    rgba(0, 0, 0, 0.28) 48%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
 `;
 
 const TileBody = styled.div`
@@ -530,7 +583,7 @@ const TileText = styled.p`
   margin: 0;
   font-size: 0.98rem;
   line-height: 1.6;
-  color: rgba(244, 244, 245, 0.72);
+  color: rgba(244, 244, 245, 0.78);
 `;
 
 /* =========================
@@ -576,44 +629,17 @@ const TrustCTA = styled(Link)`
   text-decoration: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
 
-  &:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
   }
 `;
 
 /* =========================
-   FAQ (simple, premium)
+   FAQ
 ========================= */
-
-const InlineFormWrap = styled.div`
-  margin-top: 0.9rem;
-  padding: 1rem 1rem 1.15rem;
-  border-radius: 18px;
-  background: rgba(17, 17, 17, 0.02);
-  border: 1px solid rgba(17, 17, 17, 0.08);
-`;
-
-const ContextPill = styled.div`
-  margin-bottom: 0.75rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  padding: 0.45rem 0.75rem;
-  border-radius: 999px;
-
-  background: rgba(17, 17, 17, 0.05);
-  border: 1px solid rgba(17, 17, 17, 0.08);
-
-  font-size: 0.85rem;
-  color: rgba(17, 17, 17, 0.7);
-
-  strong {
-    color: rgba(17, 17, 17, 0.9);
-    font-weight: 800;
-  }
-`;
 
 const FAQ_ITEMS = [
   {
@@ -643,11 +669,116 @@ const FAQ_ITEMS = [
 ];
 
 /* =========================
+   DATA
+========================= */
+
+const PACKS = [
+  {
+    id: "pack-dormitorio",
+    badge: "Dormitorio",
+    title: "Descanso bien resuelto",
+    price: "499€",
+    desc: "Un dormitorio donde todo encaja: luz, textura y descanso. Diseñamos un ambiente sereno y funcional, pensado para dormir mejor y disfrutarlo cada día.",
+    note: "Perfecto para: dormitorio principal o juvenil",
+    img800: imgEssential800,
+    img1200: imgEssential1200,
+    packValue: "Dormitorio",
+    source: "propuestas_pack_dormitorio",
+    ticks: [
+      "Visita técnica y toma de medidas",
+      "Cortinas o estor a medida",
+      "Papel pintado para pared principal",
+      "Cabecero o solución textil coordinada",
+      "Opción de colchón según necesidades",
+      "Instalación profesional y ajuste final",
+    ],
+  },
+  {
+    id: "pack-salon",
+    badge: "Salón / Comedor",
+    title: "Espacio que se vive",
+    price: "799€",
+    desc: "El corazón de la casa merece equilibrio entre estética y uso real. Creamos un conjunto coherente que mejora la luz, el confort térmico y la sensación de hogar.",
+    note: "Perfecto para: salón y comedor integrados",
+    img800: imgBalance800,
+    img1200: imgBalance1200,
+    packValue: "Salón / Comedor",
+    source: "propuestas_pack_salon",
+    ticks: [
+      "Asesoramiento decorativo global",
+      "Cortinas y/o estores a medida",
+      "Papel pintado para pared focal",
+      "Alfombra decorativa coordinada",
+      "Sistemas de control solar según orientación",
+      "Instalación limpia y precisa",
+    ],
+  },
+  {
+    id: "pack-automatizacion",
+    badge: "Confort + Automatización",
+    title: "La casa funciona sola",
+    price: "1.490€",
+    desc: "Confort sin esfuerzo. Integración discreta y tecnología que se adapta a tu ritmo, no al revés. Una experiencia completa de control, luz y privacidad.",
+    note: "Perfecto para: vivienda completa o reforma integral",
+    img800: imgFuncionaSola800,
+    img1200: imgFuncionaSola1200,
+    packValue: "Confort + Automatización",
+    source: "propuestas_pack_automatizacion",
+    ticks: [
+      "Estudio técnico y asesoramiento completo",
+      "Cortinas y estores motorizados",
+      "Toldos motorizados (si aplica)",
+      "Automatización Somfy y escenas personalizadas",
+      "Control por app, mando o programaciones",
+      "Puesta en marcha y soporte post-instalación",
+    ],
+  },
+];
+
+const TILES = [
+  {
+    title: "Dormitorio",
+    text: "Privacidad, descanso y caída perfecta. La mejora más inmediata.",
+    img800: imgDormitorio800,
+    img1200: imgDormitorio1200,
+  },
+  {
+    title: "Salón",
+    text: "Luz, textura y coherencia estética. Donde más se vive la casa.",
+    img800: imgSalon800,
+    img1200: imgSalon1200,
+  },
+  {
+    title: "Cocina",
+    text: "Screen, estores y soluciones fáciles de mantener para el día a día.",
+    img800: imgCocina800,
+    img1200: imgCocina1200,
+  },
+  {
+    title: "Baño",
+    text: "Privacidad sin perder luz. Materiales pensados para humedad.",
+    img800: imgBano800,
+    img1200: imgBano1200,
+  },
+  {
+    title: "Infantil / Juvenil",
+    text: "Oscuridad, seguridad y tejidos resistentes. Fácil de vivir.",
+    img800: imgInfantil800,
+    img1200: imgInfantil1200,
+  },
+  {
+    title: "Exterior",
+    text: "Sombra, temperatura y uso real de terraza o balcón.",
+    img800: imgToldos800,
+    img1200: imgToldos1200,
+  },
+];
+
+/* =========================
    COMPONENT
 ========================= */
 
 export default function Propuestas({ onOpenAsesoramiento }) {
-  // SEO base
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
@@ -662,19 +793,6 @@ export default function Propuestas({ onOpenAsesoramiento }) {
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt = "Propuestas a medida de Traver Decoración Textil";
 
-  // const [openPack, setOpenPack] = useState(null);
-  // const [modalPack, setModalPack] = useState(null);
-
-  // const packLabel =
-  //   openPack === "dormitorio"
-  //     ? "Dormitorio"
-  //     : openPack === "salon"
-  //     ? "Salón / Comedor"
-  //     : openPack === "automatizacion"
-  //     ? "Confort + Automatización"
-  //     : null;
-
-  // JSON-LD: CollectionPage + ItemList (proposal options)
   const packItems = useMemo(
     () => [
       {
@@ -733,7 +851,6 @@ export default function Propuestas({ onOpenAsesoramiento }) {
     <Page>
       <Helmet>
         <title>{title}</title>
-
         <meta name="description" content={description} />
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
@@ -746,7 +863,7 @@ export default function Propuestas({ onOpenAsesoramiento }) {
           imageSizes="100vw"
           fetchPriority="high"
         />
-        {/* Open Graph */}
+
         <meta property="og:site_name" content={siteName} />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="es_ES" />
@@ -758,18 +875,15 @@ export default function Propuestas({ onOpenAsesoramiento }) {
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
 
-        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:image:alt" content={ogImageAlt} />
 
-        {/* JSON-LD */}
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
-      {/* HERO */}
       <Hero>
         <HeroMedia aria-hidden="true">
           <HeroImg
@@ -784,14 +898,18 @@ export default function Propuestas({ onOpenAsesoramiento }) {
             alt=""
           />
         </HeroMedia>
+
         <HeroOverlay />
+
         <HeroInner>
           <Eyebrow>Soluciones · Traver Decoración Textil</Eyebrow>
+
           <HeroTitle>
             Elige tu punto de <span>entrada</span>.
             <br />
             Nosotros hacemos el resto.
           </HeroTitle>
+
           <HeroSubtitle>
             Tres propuestas claras para empezar con seguridad. Desde un primer
             paso con impacto hasta una experiencia completa de confort,
@@ -814,6 +932,7 @@ export default function Propuestas({ onOpenAsesoramiento }) {
             >
               Solicitar propuesta
             </PrimaryButton>
+
             <SecondaryButton href="#propuestas">Ver propuestas</SecondaryButton>
           </HeroActions>
 
@@ -824,7 +943,6 @@ export default function Propuestas({ onOpenAsesoramiento }) {
         </HeroInner>
       </Hero>
 
-      {/* PROPOSALS */}
       <LightSection id="propuestas">
         <LightInner>
           <CenterHeader>
@@ -838,177 +956,58 @@ export default function Propuestas({ onOpenAsesoramiento }) {
           </CenterHeader>
 
           <PacksGrid>
-            {/* DORMITORIO */}
-            <PackCard id="pack-dormitorio">
-              <PackMedia style={{ backgroundImage: `url(${imgEssential})` }}>
-                <PackBadge>Dormitorio</PackBadge>
-              </PackMedia>
-              <PackBody>
-                <PackTitle>Descanso bien resuelto</PackTitle>
-                <PackPrice>
-                  <span>Desde</span>499€
-                </PackPrice>
-                <PackDesc>
-                  Un dormitorio donde todo encaja: luz, textura y descanso.
-                  Diseñamos un ambiente sereno y funcional, pensado para dormir
-                  mejor y disfrutarlo cada día.
-                </PackDesc>
-                <TickList>
-                  <Tick>Visita técnica y toma de medidas</Tick>
-                  <Tick>Cortinas o estor a medida</Tick>
-                  <Tick>Papel pintado para pared principal</Tick>
-                  <Tick>Cabecero o solución textil coordinada</Tick>
-                  <Tick>Opción de colchón según necesidades</Tick>
-                  <Tick>Instalación profesional y ajuste final</Tick>
-                </TickList>
-              </PackBody>
-              <PackFooter>
-                <Note>Perfecto para: dormitorio principal o juvenil</Note>
-                <PackCTA
-                  as="button"
-                  type="button"
-                  onClick={() => {
-                    trackEvent("open_quick_enquiry", {
-                      source: "propuestas_pack_dormitorio",
-                      pack: "Dormitorio",
-                    });
-                    onOpenAsesoramiento?.(
-                      "Dormitorio",
-                      "propuestas_pack_dormitorio"
-                    );
-                  }}
-                >
-                  Solicitar propuesta
-                </PackCTA>
-              </PackFooter>
-              {/* {openPack === "dormitorio" && (
-                <InlineFormWrap>
-                  <ContextPill>
-                    Solicitud: <strong>Dormitorio</strong>
-                  </ContextPill>
-
-                  <AsesoramientoForm
-                    packLabel="Dormitorio"
-                    onSuccess={() => setTimeout(() => setOpenPack(null), 1200)}
+            {PACKS.map((pack) => (
+              <PackCard key={pack.id} id={pack.id}>
+                <PackMedia>
+                  <PackImage
+                    src={pack.img1200}
+                    srcSet={getSrcSet(pack.img800, pack.img1200)}
+                    sizes={CARD_IMAGE_SIZES}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
                   />
-                </InlineFormWrap>
-              )} */}
-            </PackCard>
+                  <PackBadge>{pack.badge}</PackBadge>
+                </PackMedia>
 
-            {/* SALÓN / COMEDOR */}
-            <PackCard id="pack-salon">
-              <PackMedia style={{ backgroundImage: `url(${imgBalance})` }}>
-                <PackBadge>Salón / Comedor</PackBadge>
-              </PackMedia>
-              <PackBody>
-                <PackTitle>Espacio que se vive</PackTitle>
-                <PackPrice>
-                  <span>Desde</span>799€
-                </PackPrice>
-                <PackDesc>
-                  El corazón de la casa merece equilibrio entre estética y uso
-                  real. Creamos un conjunto coherente que mejora la luz, el
-                  confort térmico y la sensación de hogar.
-                </PackDesc>
-                <TickList>
-                  <Tick>Asesoramiento decorativo global</Tick>
-                  <Tick>Cortinas y/o estores a medida</Tick>
-                  <Tick>Papel pintado para pared focal</Tick>
-                  <Tick>Alfombra decorativa coordinada</Tick>
-                  <Tick>Sistemas de control solar según orientación</Tick>
-                  <Tick>Instalación limpia y precisa</Tick>
-                </TickList>
-              </PackBody>
-              <PackFooter>
-                <Note>Perfecto para: salón y comedor integrados</Note>
-                <PackCTA
-                  as="button"
-                  type="button"
-                  onClick={() => {
-                    trackEvent("open_quick_enquiry", {
-                      source: "propuestas_pack_salon",
-                      pack: "Salón / Comedor",
-                    });
-                    onOpenAsesoramiento?.(
-                      "Salón / Comedor",
-                      "propuestas_pack_salon"
-                    );
-                  }}
-                >
-                  Solicitar propuesta
-                </PackCTA>
-              </PackFooter>
-              {/* {openPack === "salon" && (
-                <InlineFormWrap>
-                  <ContextPill>
-                    Solicitud: <strong>Salón / Comedor</strong>
-                  </ContextPill>
+                <PackBody>
+                  <PackTitle>{pack.title}</PackTitle>
 
-                  <AsesoramientoForm
-                    packLabel="Salón / Comedor"
-                    onSuccess={() => setTimeout(() => setOpenPack(null), 1200)}
-                  />
-                </InlineFormWrap>
-              )} */}
-            </PackCard>
+                  <PackPrice>
+                    <span>Desde</span>
+                    {pack.price}
+                  </PackPrice>
 
-            {/* CONFORT + AUTOMATIZACIÓN */}
-            <PackCard id="pack-automatizacion">
-              <PackMedia style={{ backgroundImage: `url(${imgFuncionaSola})` }}>
-                <PackBadge>Confort + Automatización</PackBadge>
-              </PackMedia>
-              <PackBody>
-                <PackTitle>La casa funciona sola</PackTitle>
-                <PackPrice>
-                  <span>Desde</span>1.490€
-                </PackPrice>
-                <PackDesc>
-                  Confort sin esfuerzo. Integración discreta y tecnología que se
-                  adapta a tu ritmo, no al revés. Una experiencia completa de
-                  control, luz y privacidad.
-                </PackDesc>
-                <TickList>
-                  <Tick>Estudio técnico y asesoramiento completo</Tick>
-                  <Tick>Cortinas y estores motorizados</Tick>
-                  <Tick>Toldos motorizados (si aplica)</Tick>
-                  <Tick>Automatización Somfy y escenas personalizadas</Tick>
-                  <Tick>Control por app, mando o programaciones</Tick>
-                  <Tick>Puesta en marcha y soporte post-instalación</Tick>
-                </TickList>
-              </PackBody>
-              <PackFooter>
-                <Note>Perfecto para: vivienda completa o reforma integral</Note>
-                <PackCTA
-                  as="button"
-                  type="button"
-                  onClick={() => {
-                    trackEvent("open_quick_enquiry", {
-                      source: "propuestas_pack_automatizacion",
-                      pack: "Confort + Automatización",
-                    });
-                    onOpenAsesoramiento?.(
-                      "Confort + Automatización",
-                      "propuestas_pack_automatizacion"
-                    );
-                  }}
-                >
-                  Solicitar propuesta
-                </PackCTA>
-              </PackFooter>
-              {/* {openPack === "automatizacion" && (
-                <InlineFormWrap>
-                  <ContextPill>
-                    Solicitud: <strong>Confort + Automatización</strong>
-                  </ContextPill>
+                  <PackDesc>{pack.desc}</PackDesc>
 
-                  <AsesoramientoForm
-                    packLabel="Confort + Automatización"
-                    onSuccess={() => setTimeout(() => setOpenPack(null), 1200)}
-                  />
-                </InlineFormWrap>
-              )} */}
-            </PackCard>
+                  <TickList>
+                    {pack.ticks.map((tick) => (
+                      <Tick key={tick}>{tick}</Tick>
+                    ))}
+                  </TickList>
+                </PackBody>
+
+                <PackFooter>
+                  <Note>{pack.note}</Note>
+
+                  <PackCTA
+                    type="button"
+                    onClick={() => {
+                      trackEvent("open_quick_enquiry", {
+                        source: pack.source,
+                        pack: pack.packValue,
+                      });
+
+                      onOpenAsesoramiento?.(pack.packValue, pack.source);
+                    }}
+                  >
+                    Solicitar propuesta
+                  </PackCTA>
+                </PackFooter>
+              </PackCard>
+            ))}
           </PacksGrid>
+
           <AdjustNote>
             Se puede ajustar: estas propuestas son un punto de partida.
             Adaptamos medidas, tejidos, sistemas y acabados según tu espacio,
@@ -1017,7 +1016,6 @@ export default function Propuestas({ onOpenAsesoramiento }) {
         </LightInner>
       </LightSection>
 
-      {/* CATEGORIES */}
       <DarkSection>
         <DarkInner>
           <DarkHeader>
@@ -1029,73 +1027,23 @@ export default function Propuestas({ onOpenAsesoramiento }) {
           </DarkHeader>
 
           <Tiles>
-            <Tile aria-label="Dormitorio">
-              <TileBg style={{ backgroundImage: `url(${imgDormitorio})` }} />
-              <TileOverlay />
-              <TileBody>
-                <TileTitle>Dormitorio</TileTitle>
-                <TileText>
-                  Privacidad, descanso y caída perfecta. La mejora más
-                  inmediata.
-                </TileText>
-              </TileBody>
-            </Tile>
-
-            <Tile aria-label="Salón">
-              <TileBg style={{ backgroundImage: `url(${imgSalon})` }} />
-              <TileOverlay />
-              <TileBody>
-                <TileTitle>Salón</TileTitle>
-                <TileText>
-                  Luz, textura y coherencia estética. Donde más se vive la casa.
-                </TileText>
-              </TileBody>
-            </Tile>
-
-            <Tile aria-label="Cocina">
-              <TileBg style={{ backgroundImage: `url(${imgCocina})` }} />
-              <TileOverlay />
-              <TileBody>
-                <TileTitle>Cocina</TileTitle>
-                <TileText>
-                  Screen, estores y soluciones fáciles de mantener para el día a
-                  día.
-                </TileText>
-              </TileBody>
-            </Tile>
-
-            <Tile aria-label="Baño">
-              <TileBg style={{ backgroundImage: `url(${imgBano})` }} />
-              <TileOverlay />
-              <TileBody>
-                <TileTitle>Baño</TileTitle>
-                <TileText>
-                  Privacidad sin perder luz. Materiales pensados para humedad.
-                </TileText>
-              </TileBody>
-            </Tile>
-
-            <Tile aria-label="Habitación infantil">
-              <TileBg style={{ backgroundImage: `url(${imgInfantil})` }} />
-              <TileOverlay />
-              <TileBody>
-                <TileTitle>Infantil / Juvenil</TileTitle>
-                <TileText>
-                  Oscuridad, seguridad y tejidos resistentes. Fácil de vivir.
-                </TileText>
-              </TileBody>
-            </Tile>
-
-            <Tile aria-label="Exterior">
-              <TileBg style={{ backgroundImage: `url(${imgToldos})` }} />
-              <TileOverlay />
-              <TileBody>
-                <TileTitle>Exterior</TileTitle>
-                <TileText>
-                  Sombra, temperatura y uso real de terraza o balcón.
-                </TileText>
-              </TileBody>
-            </Tile>
+            {TILES.map((tile) => (
+              <Tile key={tile.title}>
+                <TileImg
+                  src={tile.img1200}
+                  srcSet={getSrcSet(tile.img800, tile.img1200)}
+                  sizes={CARD_IMAGE_SIZES}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                <TileOverlay />
+                <TileBody>
+                  <TileTitle>{tile.title}</TileTitle>
+                  <TileText>{tile.text}</TileText>
+                </TileBody>
+              </Tile>
+            ))}
           </Tiles>
 
           <TrustStrip>
@@ -1104,6 +1052,7 @@ export default function Propuestas({ onOpenAsesoramiento }) {
               la provincia y alrededores. Si quieres, te orientamos en 10
               minutos y te decimos el mejor punto de partida.
             </TrustText>
+
             <TrustCTA
               to="/contact"
               onClick={(e) => {
@@ -1123,7 +1072,6 @@ export default function Propuestas({ onOpenAsesoramiento }) {
         </DarkInner>
       </DarkSection>
 
-      {/* FAQ */}
       <LightSection>
         <LightInner>
           <SectionTop>
@@ -1147,11 +1095,6 @@ export default function Propuestas({ onOpenAsesoramiento }) {
         </LightInner>
       </LightSection>
 
-      {/* <AsesoramientoModal
-        open={!!modalPack}
-        packLabel={modalPack}
-        onClose={() => setModalPack(null)}
-      /> */}
       <StickyCtaButton message="Hola, quiero una propuesta a medida. ¿Podemos concertar una visita para medir y definir tejidos, sistemas y acabados?" />
     </Page>
   );
