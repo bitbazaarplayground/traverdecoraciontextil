@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import FaqAccordion from "../components/faq/FaqAccordion";
+import ServiceHero from "../components/heroes/ServiceHero";
 import { CONTACT } from "../config/contact";
 import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
@@ -68,150 +69,6 @@ const Page = styled.main`
 /* =========================
    HERO
 ========================= */
-
-const Hero = styled.section`
-  position: relative;
-  padding: 6.5rem 2rem 4.5rem;
-  overflow: hidden;
-
-  @media (max-width: 768px) {
-    padding: 4.5rem 1.5rem 3.5rem;
-  }
-`;
-
-const HeroMedia = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-`;
-
-const HeroImg = styled.img`
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  filter: saturate(0.95) contrast(1.05);
-  transform: translateZ(0) scale(1.03);
-  backface-visibility: hidden;
-`;
-
-const HeroOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-      1200px 700px at 50% 25%,
-      rgba(0, 0, 0, 0.12),
-      rgba(0, 0, 0, 0.72)
-    ),
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.25) 0%,
-      rgba(0, 0, 0, 0.88) 72%,
-      rgba(11, 12, 15, 1) 100%
-    );
-  z-index: 1;
-`;
-
-const HeroInner = styled.div`
-  position: relative;
-  z-index: 2;
-  max-width: 1120px;
-  margin: 0 auto;
-`;
-
-const Eyebrow = styled.p`
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  color: rgba(244, 244, 245, 0.72);
-  margin: 0 0 0.9rem 0;
-`;
-
-const HeroTitle = styled.h1`
-  font-size: 3.25rem;
-  font-weight: 600;
-  line-height: 1.05;
-  margin: 0 0 1.1rem 0;
-
-  span {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-
-  @media (max-width: 768px) {
-    font-size: 2.35rem;
-    line-height: 1.1;
-  }
-`;
-
-const HeroSubtitle = styled.p`
-  max-width: 62ch;
-  font-size: 1.1rem;
-  line-height: 1.75;
-  color: rgba(244, 244, 245, 0.78);
-  margin: 0;
-`;
-
-const HeroActions = styled.div`
-  margin-top: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  flex-wrap: wrap;
-`;
-
-const sharedButtonFocus = `
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(255,255,255,0.18);
-  }
-
-  @media (max-width: 520px) {
-    width: 100%;
-  }
-`;
-
-const PrimaryButton = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.95rem 2.1rem;
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: #0b0c0f;
-  font-weight: 850;
-  text-decoration: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-
-  &:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
-  }
-
-  ${sharedButtonFocus}
-`;
-
-const SecondaryButton = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.95rem 2.05rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: rgba(255, 255, 255, 0.92);
-  font-weight: 650;
-  text-decoration: none;
-  transition: transform 0.25s ease, background 0.25s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-1px);
-  }
-
-  ${sharedButtonFocus}
-`;
 
 const MicroLine = styled.p`
   margin-top: 1.35rem;
@@ -866,15 +723,6 @@ export default function Propuestas({ onOpenAsesoramiento }) {
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
 
-        <link
-          rel="preload"
-          as="image"
-          href={hero_1280}
-          imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-          imageSizes="100vw"
-          fetchPriority="high"
-        />
-
         <meta property="og:site_name" content={siteName} />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="es_ES" />
@@ -895,64 +743,26 @@ export default function Propuestas({ onOpenAsesoramiento }) {
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
-      <Hero>
-        <HeroMedia aria-hidden="true">
-          <HeroImg
-            src={hero_1280}
-            srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-            sizes="100vw"
-            width="1920"
-            height="1080"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-            alt=""
-          />
-        </HeroMedia>
-
-        <HeroOverlay />
-
-        <HeroInner>
-          <Eyebrow>Soluciones · Traver Decoración Textil</Eyebrow>
-
-          <HeroTitle>
+      <ServiceHero
+        eyebrow="Soluciones · Traver Decoración Textil"
+        title={
+          <>
             Elige tu punto de <span>entrada</span>.
             <br />
             Nosotros hacemos el resto.
-          </HeroTitle>
-
-          <HeroSubtitle>
-            Tres propuestas claras para empezar con seguridad. Desde un primer
-            paso con impacto hasta una experiencia completa de confort,
-            automatización y acabado impecable.
-          </HeroSubtitle>
-
-          <HeroActions>
-            <PrimaryButton
-              to="/contact"
-              onClick={(e) => {
-                e.preventDefault();
-
-                trackEvent("open_quick_enquiry", {
-                  source: "propuestas_primary",
-                  pack: "Propuestas",
-                });
-
-                onOpenAsesoramiento?.("Propuestas", "propuestas_primary");
-              }}
-            >
-              Solicitar propuesta
-            </PrimaryButton>
-
-            <SecondaryButton href="#propuestas">Ver propuestas</SecondaryButton>
-          </HeroActions>
-
-          <MicroLine>
-            +30 años de oficio. Asesoramiento real, instalación precisa y un
-            resultado que se nota todos los días.
-          </MicroLine>
-        </HeroInner>
-      </Hero>
+          </>
+        }
+        subtitle="Tres propuestas claras para empezar con seguridad. Desde un primer paso con impacto hasta una experiencia completa de confort, automatización y acabado impecable."
+        hero768={hero_768}
+        hero1280={hero_1280}
+        hero1920={hero_1920}
+        primaryLabel="Solicitar propuesta"
+        primaryTrackSource="propuestas_primary"
+        primaryPack="Propuestas"
+        secondaryLabel="Ver propuestas"
+        secondaryHref="#propuestas"
+        onOpenAsesoramiento={onOpenAsesoramiento}
+      />
 
       <LightSection id="propuestas">
         <LightInner>
