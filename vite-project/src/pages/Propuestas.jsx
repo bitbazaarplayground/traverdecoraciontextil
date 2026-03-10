@@ -17,11 +17,13 @@ import StickyCtaButton from "../mobile/StickyCtaButton";
 import imgEssential1200 from "../assets/propuestas/dormitorioMain-1200.webp";
 import imgEssential400 from "../assets/propuestas/dormitorioMain-400.webp";
 import imgEssential600 from "../assets/propuestas/dormitorioMain-600.webp";
+import imgEssential700 from "../assets/propuestas/dormitorioMain-700.webp";
 import imgEssential800 from "../assets/propuestas/dormitorioMain-800.webp";
 
 import imgBalance1200 from "../assets/propuestas/salonComedor-1200.webp";
 import imgBalance400 from "../assets/propuestas/salonComedor-400.webp";
 import imgBalance600 from "../assets/propuestas/salonComedor-600.webp";
+import imgBalance700 from "../assets/propuestas/salonComedor-700.webp";
 import imgBalance800 from "../assets/propuestas/salonComedor-800.webp";
 
 import imgFuncionaSola1200 from "../assets/propuestas/smartLivingRoom-1200.webp";
@@ -30,6 +32,7 @@ import imgFuncionaSola600 from "../assets/propuestas/smartLivingRoom-600.webp";
 import imgFuncionaSola800 from "../assets/propuestas/smartLivingRoom-800.webp";
 
 // Hero
+const hero_480 = "/propuestas/propuestaHero-480.webp";
 const hero_768 = "/propuestas/propuestaHero-768.webp";
 const hero_1280 = "/propuestas/propuestaHero-1280.webp";
 const hero_1920 = "/propuestas/propuestaHero-1920.webp";
@@ -73,7 +76,7 @@ const CARD_IMAGE_SIZES =
   "(min-width: 1120px) 357px, (min-width: 980px) calc((100vw - 5rem) / 3), calc(100vw - 3rem)";
 
 const getSrcSet = (img400, img600, img800, img1200) =>
-  `${img400} 400w, ${img600} 600w, ${img800} 800w, ${img1200} 1200w`;
+  `${img400} 400w, ${img600} 600w,${img700} 700w, ${img800} 800w, ${img1200} 1200w`;
 
 /* =========================
    PAGE
@@ -86,15 +89,8 @@ const Page = styled.main`
 `;
 
 /* =========================
-   HERO
+   HERO- ServiceHero.jsx
 ========================= */
-
-const MicroLine = styled.p`
-  margin-top: 1.35rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: rgba(244, 244, 245, 0.6);
-`;
 
 /* =========================
    SECTION SHELL (light)
@@ -569,6 +565,7 @@ const PACKS = [
     note: "Perfecto para: dormitorio principal o juvenil",
     img400: imgEssential400,
     img600: imgEssential600,
+    img700: imgEssential700,
     img800: imgEssential800,
     img1200: imgEssential1200,
     packValue: "Dormitorio",
@@ -591,6 +588,7 @@ const PACKS = [
     note: "Perfecto para: salón y comedor integrados",
     img400: imgBalance400,
     img600: imgBalance600,
+    img700: imgBalance700,
     img800: imgBalance800,
     img1200: imgBalance1200,
     packValue: "Salón / Comedor",
@@ -790,6 +788,7 @@ export default function Propuestas({ onOpenAsesoramiento }) {
           </>
         }
         subtitle="Tres propuestas claras para empezar con seguridad. Desde un primer paso con impacto hasta una experiencia completa de confort, automatización y acabado impecable."
+        hero480={hero_480}
         hero768={hero_768}
         hero1280={hero_1280}
         hero1920={hero_1920}
@@ -822,6 +821,7 @@ export default function Propuestas({ onOpenAsesoramiento }) {
                     srcSet={getSrcSet(
                       pack.img400,
                       pack.img600,
+                      pack.img700,
                       pack.img800,
                       pack.img1200
                     )}
