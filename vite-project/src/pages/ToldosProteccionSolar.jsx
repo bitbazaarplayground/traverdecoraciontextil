@@ -5,6 +5,7 @@ import styled from "styled-components";
 import ServiceHero from "../components/heroes/ServiceHero";
 import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
+
 /* =========================
    COMPONENTS
 ========================= */
@@ -17,14 +18,38 @@ import { CONTACT } from "../config/contact";
 /* =========================
    IMAGES
 ========================= */
-import toldoCofreImg from "../assets/toldos/cofre.webp";
-import hosteleriaImg from "../assets/toldos/hosteleria.webp";
-import pergolaImg from "../assets/toldos/pergola.webp";
-import toldoExtensibleImg from "../assets/toldos/toldo1.webp";
-import toldoVerticalImg from "../assets/toldos/toldos-verticales.webp";
-import sailImg from "../assets/toldos/vela.webp";
+import toldoCofre1200 from "../assets/toldos/cofre-1200.webp";
+import toldoCofre400 from "../assets/toldos/cofre-400.webp";
+import toldoCofre600 from "../assets/toldos/cofre-600.webp";
+import toldoCofre800 from "../assets/toldos/cofre-800.webp";
+
+import hosteleria1200 from "../assets/toldos/hosteleria-1200.webp";
+import hosteleria400 from "../assets/toldos/hosteleria-400.webp";
+import hosteleria600 from "../assets/toldos/hosteleria-600.webp";
+import hosteleria800 from "../assets/toldos/hosteleria-800.webp";
+
+import pergola1200 from "../assets/toldos/pergola-1200.webp";
+import pergola400 from "../assets/toldos/pergola-400.webp";
+import pergola600 from "../assets/toldos/pergola-600.webp";
+import pergola800 from "../assets/toldos/pergola-800.webp";
+
+import toldoExtensible1200 from "../assets/toldos/toldo1-1200.webp";
+import toldoExtensible400 from "../assets/toldos/toldo1-400.webp";
+import toldoExtensible600 from "../assets/toldos/toldo1-600.webp";
+import toldoExtensible800 from "../assets/toldos/toldo1-800.webp";
+
+import toldoVertical1200 from "../assets/toldos/toldos-verticales-1200.webp";
+import toldoVertical400 from "../assets/toldos/toldos-verticales-400.webp";
+import toldoVertical600 from "../assets/toldos/toldos-verticales-600.webp";
+import toldoVertical800 from "../assets/toldos/toldos-verticales-800.webp";
+
+import sail1200 from "../assets/toldos/vela-1200.webp";
+import sail400 from "../assets/toldos/vela-400.webp";
+import sail600 from "../assets/toldos/vela-600.webp";
+import sail800 from "../assets/toldos/vela-800.webp";
 
 /* HERO */
+const hero_480 = "/toldosProteccionSolar/toldo2-480.webp";
 const hero_768 = "/toldosProteccionSolar/toldo2-768.webp";
 const hero_1280 = "/toldosProteccionSolar/toldo2-1280.webp";
 const hero_1920 = "/toldosProteccionSolar/toldo2-1920.webp";
@@ -38,6 +63,55 @@ import windSensorImg from "../assets/toldos/extrasToldo/windSensor.webp";
 
 /* CTA */
 import ctaImg from "../assets/Automatizacion/cortinaMotorizada.webp";
+
+/* =========================
+   IMAGE HELPERS
+========================= */
+
+const responsiveImages = {
+  toldoCofre: {
+    400: toldoCofre400,
+    600: toldoCofre600,
+    800: toldoCofre800,
+    1200: toldoCofre1200,
+  },
+  hosteleria: {
+    400: hosteleria400,
+    600: hosteleria600,
+    800: hosteleria800,
+    1200: hosteleria1200,
+  },
+  pergola: {
+    400: pergola400,
+    600: pergola600,
+    800: pergola800,
+    1200: pergola1200,
+  },
+  toldoExtensible: {
+    400: toldoExtensible400,
+    600: toldoExtensible600,
+    800: toldoExtensible800,
+    1200: toldoExtensible1200,
+  },
+  toldoVertical: {
+    400: toldoVertical400,
+    600: toldoVertical600,
+    800: toldoVertical800,
+    1200: toldoVertical1200,
+  },
+  sail: {
+    400: sail400,
+    600: sail600,
+    800: sail800,
+    1200: sail1200,
+  },
+};
+
+const getSrcSet = (images) =>
+  `${images[400]} 400w, ${images[600]} 600w, ${images[800]} 800w, ${images[1200]} 1200w`;
+
+const CARD_IMAGE_SIZES =
+  "(max-width: 767px) 100vw, (max-width: 979px) 50vw, 540px";
 
 /* =========================
    STYLES
@@ -482,7 +556,7 @@ const CARD_ITEMS = [
     title: "Toldos extensibles",
     value: "Sombra regulable con estética ligera.",
     text: "Ideales para terrazas y balcones. Permiten ajustar la proyección según el momento del día y el uso del espacio.",
-    image: toldoExtensibleImg,
+    images: responsiveImages.toldoExtensible,
     alt: "Toldo extensible instalado en terraza",
   },
   {
@@ -490,7 +564,7 @@ const CARD_ITEMS = [
     title: "Toldos cofre",
     value: "Acabado limpio, mecanismo protegido.",
     text: "Sistemas robustos y duraderos. El tejido y los brazos quedan resguardados, cuidando el conjunto y alargando su vida útil.",
-    image: toldoCofreImg,
+    images: responsiveImages.toldoCofre,
     alt: "Toldo cofre instalado en fachada",
   },
   {
@@ -498,7 +572,7 @@ const CARD_ITEMS = [
     title: "Toldos verticales / screen",
     value: "Control solar y privacidad con discreción.",
     text: "Perfectos para porches, cerramientos y grandes ventanales. Filtran la luz, reducen el calor y aumentan el confort.",
-    image: toldoVerticalImg,
+    images: responsiveImages.toldoVertical,
     alt: "Toldo vertical o screen en exterior",
   },
   {
@@ -506,7 +580,7 @@ const CARD_ITEMS = [
     title: "Toldos para hostelería",
     value: "Resistencia, presencia y funcionalidad.",
     text: "Soluciones para terrazas comerciales con tejidos y estructuras pensadas para el uso intensivo y la imagen del local.",
-    image: hosteleriaImg,
+    images: responsiveImages.hosteleria,
     alt: "Toldo para hostelería en terraza comercial",
   },
 ];
@@ -517,7 +591,7 @@ const SECONDARY_ITEMS = [
     title: "Pérgolas",
     value: "Arquitectura exterior con presencia.",
     text: "Estructuras elegantes para crear espacios exteriores habitables, con soluciones adaptadas a cada entorno.",
-    image: pergolaImg,
+    images: responsiveImages.pergola,
     alt: "Pérgola instalada en exterior",
   },
   {
@@ -525,7 +599,7 @@ const SECONDARY_ITEMS = [
     title: "Velas de sombra",
     value: "Diseño contemporáneo y sombra flexible.",
     text: "Soluciones ligeras para jardines y zonas abiertas, con un resultado limpio y moderno.",
-    image: sailImg,
+    images: responsiveImages.sail,
     alt: "Vela de sombra en jardín",
   },
 ];
@@ -651,6 +725,7 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
           </>
         }
         subtitle="Confort térmico, estética y durabilidad. Soluciones que mejoran el uso real de terrazas, jardines y fachadas sin comprometer el diseño."
+        hero480={hero_480}
         hero768={hero_768}
         hero1280={hero_1280}
         hero1920={hero_1920}
@@ -694,7 +769,9 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
               <Card key={item.title}>
                 <CardMedia>
                   <CardImage
-                    src={item.image}
+                    src={item.images[600]}
+                    srcSet={getSrcSet(item.images)}
+                    sizes={CARD_IMAGE_SIZES}
                     alt={item.alt}
                     loading="lazy"
                     decoding="async"
@@ -734,7 +811,9 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
               <Card key={item.title}>
                 <CardMedia>
                   <CardImage
-                    src={item.image}
+                    src={item.images[600]}
+                    srcSet={getSrcSet(item.images)}
+                    sizes={CARD_IMAGE_SIZES}
                     alt={item.alt}
                     loading="lazy"
                     decoding="async"
