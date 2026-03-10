@@ -682,7 +682,7 @@ export default function Servicios({ onOpenAsesoramiento }) {
         text: "Soluciones sólidas y discretas para terrazas, jardines y fachadas: confort térmico, durabilidad y estética.",
         img: toldosProteccionSolar,
         alt: "Toldos y protección solar a medida",
-        primaryTo: "/toldos-proteccionsolar",
+        primaryTo: "/toldos-proteccion-solar",
         primaryLabel: "Ver detalles",
       },
       {
