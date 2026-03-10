@@ -75,7 +75,7 @@ import imgToldos800 from "../assets/propuestas/terrazaMain-800.webp";
 const CARD_IMAGE_SIZES =
   "(min-width: 1120px) 357px, (min-width: 980px) calc((100vw - 5rem) / 3), calc(100vw - 3rem)";
 
-const getSrcSet = (img400, img600, img800, img1200) =>
+const getSrcSet = (img400, img700, img600, img800, img1200) =>
   `${img400} 400w, ${img600} 600w,${img700} 700w, ${img800} 800w, ${img1200} 1200w`;
 
 /* =========================
