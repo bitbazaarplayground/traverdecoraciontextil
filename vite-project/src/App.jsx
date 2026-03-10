@@ -9,6 +9,7 @@ import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
 import HomePage from "./pages/HomePage";
 import Propuestas from "./pages/Propuestas";
+import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
 
 // ✅ Lazy load modal (only when opened)
 // const AsesoramientoModal = lazy(() =>
@@ -21,9 +22,6 @@ const Automatizacion = lazy(() => import("./pages/Automatizacion"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const CortinasEstores = lazy(() => import("./pages/CortinasEstores"));
 const Servicios = lazy(() => import("./pages/Servicios"));
-const ToldosProteccionSolar = lazy(() =>
-  import("./pages/ToldosProteccionSolar")
-);
 
 const AvisoLegal = lazy(() => import("./pages/AvisoLegal"));
 const PoliticaPrivacidad = lazy(() => import("./pages/PoliticaPrivacidad"));
