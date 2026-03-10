@@ -450,9 +450,7 @@ export default function Auto({ onOpenAsesoramiento }) {
             <PackGrid>
               {packs.map((p) => {
                 const priceLabel = p.priceRange
-                  ? `Desde ${formatEUR(p.priceRange[0])} · hasta ${formatEUR(
-                      p.priceRange[1]
-                    )}`
+                  ? `Desde ${formatEUR(p.priceRange[0])}`
                   : `Desde ${formatEUR(p.priceFrom)}`;
 
                 const waMessage = `Hola, me interesa el pack "${p.name}". ¿Podéis darme una propuesta para mi vivienda y una visita sin compromiso?`;

@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
 import HomePage from "./pages/HomePage";
+import Propuestas from "./pages/Propuestas";
 
 // ✅ Lazy load modal (only when opened)
 // const AsesoramientoModal = lazy(() =>
@@ -15,7 +16,7 @@ import HomePage from "./pages/HomePage";
 // );
 
 // ✅ Public pages (lazy)
-const Propuestas = lazy(() => import("./pages/Propuestas"));
+
 const Automatizacion = lazy(() => import("./pages/Automatizacion"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const CortinasEstores = lazy(() => import("./pages/CortinasEstores"));
