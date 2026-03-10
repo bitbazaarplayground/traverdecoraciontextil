@@ -34,7 +34,6 @@ const HeroImg = styled.img`
   object-fit: cover;
   object-position: ${({ $objectPosition }) => $objectPosition || "center"};
   transform: scale(1.02);
-  filter: saturate(1.02) contrast(1.03);
 `;
 
 const HeroOverlay = styled.div`
@@ -206,7 +205,7 @@ export default function ServiceHero({
     <Hero>
       <HeroMedia aria-hidden="true">
         <HeroImg
-          src={hero768}
+          src={hero1280 || hero768 || hero480}
           srcSet={heroSrcSet}
           sizes="100vw"
           width="1920"
