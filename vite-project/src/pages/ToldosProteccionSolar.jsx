@@ -236,6 +236,12 @@ const Card = styled.article`
     transform: translateY(-4px);
     box-shadow: 0 34px 95px rgba(0, 0, 0, 0.12);
   }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 34px 95px rgba(0, 0, 0, 0.12);
+    }
+  }
 `;
 
 const CardMedia = styled.div`

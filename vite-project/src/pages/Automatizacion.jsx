@@ -9,12 +9,75 @@ import { trackEvent } from "../lib/analytics";
 /* =========================
    ASSETS
 ========================= */
-import benefit1 from "../assets/Automatizacion/benefit1.webp";
-import automatizacionPackImg from "../assets/Automatizacion/domoticaInd.webp";
-import programaHorarios from "../assets/Automatizacion/programa.webp";
-import vacaciones from "../assets/Automatizacion/vacaciones.webp";
-import Img3 from "../assets/Home/HeroImg/img3.webp";
+import benefit11200 from "../assets/Automatizacion/benefit1-1200.webp";
+import benefit1400 from "../assets/Automatizacion/benefit1-400.webp";
+import benefit1600 from "../assets/Automatizacion/benefit1-600.webp";
+import benefit1800 from "../assets/Automatizacion/benefit1-800.webp";
+
+import automatizacionPack1200 from "../assets/Automatizacion/domoticaInd-1200.webp";
+import automatizacionPack400 from "../assets/Automatizacion/domoticaInd-400.webp";
+import automatizacionPack600 from "../assets/Automatizacion/domoticaInd-600.webp";
+import automatizacionPack800 from "../assets/Automatizacion/domoticaInd-800.webp";
+
+import programaHorarios1200 from "../assets/Automatizacion/programa-1200.webp";
+import programaHorarios400 from "../assets/Automatizacion/programa-400.webp";
+import programaHorarios600 from "../assets/Automatizacion/programa-600.webp";
+import programaHorarios800 from "../assets/Automatizacion/programa-800.webp";
+
+import vacaciones1200 from "../assets/Automatizacion/vacaciones-1200.webp";
+import vacaciones400 from "../assets/Automatizacion/vacaciones-400.webp";
+import vacaciones600 from "../assets/Automatizacion/vacaciones-600.webp";
+import vacaciones800 from "../assets/Automatizacion/vacaciones-800.webp";
+
+import img31200 from "../assets/Home/HeroImg/img3-1200.webp";
+import img3400 from "../assets/Home/HeroImg/img3-400.webp";
+import img3600 from "../assets/Home/HeroImg/img3-600.webp";
+import img3800 from "../assets/Home/HeroImg/img3-800.webp";
+// Video hero
 import heroVideo from "../assets/video1.mp4";
+
+/* =========================
+   IMAGE HELPERS
+========================= */
+const responsiveImages = {
+  benefit1: {
+    400: benefit1400,
+    600: benefit1600,
+    800: benefit1800,
+    1200: benefit11200,
+  },
+  automatizacionPack: {
+    400: automatizacionPack400,
+    600: automatizacionPack600,
+    800: automatizacionPack800,
+    1200: automatizacionPack1200,
+  },
+  programaHorarios: {
+    400: programaHorarios400,
+    600: programaHorarios600,
+    800: programaHorarios800,
+    1200: programaHorarios1200,
+  },
+  vacaciones: {
+    400: vacaciones400,
+    600: vacaciones600,
+    800: vacaciones800,
+    1200: vacaciones1200,
+  },
+  img3: {
+    400: img3400,
+    600: img3600,
+    800: img3800,
+    1200: img31200,
+  },
+};
+const MEDIA_IMAGE_SIZES = "(max-width: 980px) 100vw, 42vw";
+const PATH_IMAGE_SIZES = "(max-width: 900px) 100vw, 50vw";
+const BENEFIT_IMAGE_SIZES =
+  "(max-width: 768px) 86vw, (max-width: 1024px) 50vw, 33vw";
+
+const getSrcSet = (images) =>
+  `${images[400]} 400w, ${images[600]} 600w, ${images[800]} 800w, ${images[1200]} 1200w`;
 /* =========================
    PAGE
 ========================= */
@@ -294,9 +357,12 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
 
               <MediaCard aria-label="Automatización residencial discreta y elegante">
                 <MediaImage
-                  src={automatizacionPackImg}
+                  src={responsiveImages.automatizacionPack[600]}
+                  srcSet={getSrcSet(responsiveImages.automatizacionPack)}
+                  sizes={MEDIA_IMAGE_SIZES}
                   alt="Automatización residencial discreta y elegante"
                   loading="lazy"
+                  decoding="async"
                 />
                 <MediaTint />
                 <MediaLabel>
@@ -349,7 +415,12 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
               >
                 <PathMedia>
                   <PathImg
-                    style={{ backgroundImage: `url(${automatizacionPackImg})` }}
+                    src={responsiveImages.automatizacionPack[600]}
+                    srcSet={getSrcSet(responsiveImages.automatizacionPack)}
+                    sizes={PATH_IMAGE_SIZES}
+                    alt="Automatización integral del hogar"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <PathOverlay />
                   <PathBadge>Integral</PathBadge>
@@ -376,7 +447,14 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
                 aria-label="Automatización por zonas"
               >
                 <PathMedia>
-                  <PathImg style={{ backgroundImage: `url(${Img3})` }} />
+                  <PathImg
+                    src={responsiveImages.img3[600]}
+                    srcSet={getSrcSet(responsiveImages.img3)}
+                    sizes={PATH_IMAGE_SIZES}
+                    alt="Automatización por zonas"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <PathOverlay />
                   <PathBadge>Por zonas</PathBadge>
                 </PathMedia>
@@ -427,7 +505,9 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
               <BenefitCard>
                 <BenefitMedia>
                   <BenefitImg
-                    src={benefit1}
+                    src={responsiveImages.benefit1[600]}
+                    srcSet={getSrcSet(responsiveImages.benefit1)}
+                    sizes={BENEFIT_IMAGE_SIZES}
                     alt="Luz natural regulada"
                     loading="lazy"
                     decoding="async"
@@ -453,9 +533,12 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
               <BenefitCard>
                 <BenefitMedia>
                   <BenefitImg
-                    src={vacaciones}
+                    src={responsiveImages.vacaciones[600]}
+                    srcSet={getSrcSet(responsiveImages.vacaciones)}
+                    sizes={BENEFIT_IMAGE_SIZES}
                     alt="Control del hogar durante vacaciones"
                     loading="lazy"
+                    decoding="async"
                   />
                   <BenefitOverlay />
                 </BenefitMedia>
@@ -478,9 +561,12 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
               <BenefitCard>
                 <BenefitMedia>
                   <BenefitImg
-                    src={programaHorarios}
+                    src={responsiveImages.programaHorarios[600]}
+                    srcSet={getSrcSet(responsiveImages.programaHorarios)}
+                    sizes={BENEFIT_IMAGE_SIZES}
                     alt="Programación de horarios"
                     loading="lazy"
+                    decoding="async"
                   />
                   <BenefitOverlay />
                 </BenefitMedia>
@@ -1290,11 +1376,13 @@ const PathMedia = styled.div`
   }
 `;
 
-const PathImg = styled.div`
+const PathImg = styled.img`
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   transform: scale(1.01);
   transition: transform 700ms ease;
 

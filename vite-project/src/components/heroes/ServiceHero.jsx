@@ -212,7 +212,7 @@ export default function ServiceHero({
           height="1080"
           loading="eager"
           decoding="async"
-          fetchPriority="high"
+          fetchpriority="high"
           alt=""
           $objectPosition={objectPosition}
         />

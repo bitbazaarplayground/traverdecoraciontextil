@@ -9,17 +9,63 @@ import { trackEvent } from "../../lib/analytics";
 import StickyCtaButton from "../../mobile/StickyCtaButton";
 
 // IMAGES
-import persianasImg from "../../assets/Automatizacion/benefit1.webp";
-import cortinasImg from "../../assets/Automatizacion/domotica1.webp";
-import toldosImg from "../../assets/Automatizacion/toldoInd.webp";
+import persianas1200 from "../../assets/Automatizacion/benefit1-1200.webp";
+import persianas400 from "../../assets/Automatizacion/benefit1-400.webp";
+import persianas600 from "../../assets/Automatizacion/benefit1-600.webp";
+import persianas800 from "../../assets/Automatizacion/benefit1-800.webp";
+
+import cortinas1200 from "../../assets/Automatizacion/domotica1-1200.webp";
+import cortinas400 from "../../assets/Automatizacion/domotica1-400.webp";
+import cortinas600 from "../../assets/Automatizacion/domotica1-600.webp";
+import cortinas800 from "../../assets/Automatizacion/domotica1-800.webp";
+
+import toldos1200 from "../../assets/Automatizacion/toldoInd-1200.webp";
+import toldos400 from "../../assets/Automatizacion/toldoInd-400.webp";
+import toldos600 from "../../assets/Automatizacion/toldoInd-600.webp";
+import toldos800 from "../../assets/Automatizacion/toldoInd-800.webp";
 
 import AutomationFaq from "../../components/automatizacion/AutomationFaq";
 
 // Hero
-const hero_768 = "/automatizacion/benefit1-768.webp";
-const hero_1280 = "/automatizacion/benefit1-1280.webp";
-const hero_1920 = "/automatizacion/benefit1-1920.webp";
 
+const heroImages = {
+  400: "/automatizacion/heroInd-400.webp",
+  600: "/automatizacion/heroInd-600.webp",
+  800: "/automatizacion/heroInd-800.webp",
+  1200: "/automatizacion/heroInd-1200.webp",
+};
+
+const getSrcSet = (images) =>
+  `${images[400]} 400w, ${images[600]} 600w, ${images[800]} 800w, ${images[1200]} 1200w`;
+
+const HERO_SIZES = "100vw";
+
+/* =========================
+   IMAGE HELPERS
+========================= */
+const responsiveImages = {
+  persianas: {
+    400: persianas400,
+    600: persianas600,
+    800: persianas800,
+    1200: persianas1200,
+  },
+  cortinas: {
+    400: cortinas400,
+    600: cortinas600,
+    800: cortinas800,
+    1200: cortinas1200,
+  },
+  toldos: {
+    400: toldos400,
+    600: toldos600,
+    800: toldos800,
+    1200: toldos1200,
+  },
+};
+
+const PACK_IMAGE_SIZES =
+  "(max-width: 859px) calc(100vw - 2.4rem), (max-width: 1120px) 33vw, 360px";
 /* =========================
    MOTION (subtle, premium)
 ========================= */
@@ -55,10 +101,6 @@ const Page = styled.div`
       transparent 55%
     ),
     #f5f4f2;
-
-  color: #151515;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
-    "Helvetica Neue", sans-serif;
 `;
 
 /* =========================
@@ -98,10 +140,10 @@ const HeroOverlay = styled.div`
   inset: 0;
   background: radial-gradient(
       900px 520px at 50% 18%,
-      rgba(255, 255, 255, 0.06),
-      rgba(0, 0, 0, 0.46)
+      rgba(255, 255, 255, 0.02),
+      rgba(0, 0, 0, 0.55)
     ),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.06), rgba(11, 12, 15, 0.22));
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45));
 `;
 
 const scan = keyframes`
@@ -116,19 +158,19 @@ const HeroScan = styled.div`
   right: 0;
   height: 220px;
   top: 0;
-  opacity: 0.25;
+  opacity: 0.12;
   background: linear-gradient(
     to bottom,
     transparent,
-    rgba(196, 151, 98, 0.22),
+    rgba(0, 0, 0, 0.12),
     transparent
   );
-  animation: ${scan} 4.8s ease-in-out infinite;
+  animation: ${scan} 5.6s ease-in-out infinite;
   pointer-events: none;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
-    opacity: 0.12;
+    opacity: 0.08;
   }
 `;
 
@@ -137,12 +179,12 @@ const HeroGlow = styled.div`
   inset: 0;
   background: radial-gradient(
       900px 520px at 18% 10%,
-      rgba(196, 151, 98, 0.16),
+      rgba(0, 0, 0, 0.12),
       transparent 55%
     ),
     radial-gradient(
       900px 520px at 82% 20%,
-      rgba(229, 0, 126, 0.14),
+      rgba(0, 0, 0, 0.08),
       transparent 60%
     );
   pointer-events: none;
@@ -577,7 +619,7 @@ export default function AutomatizacionIndividual({
         ],
         whatsappMsg:
           "Hola, me gustaría más información sobre cortinas y estores motorizados. ¿Podemos agendar una visita?",
-        imageSrc: cortinasImg,
+        images: responsiveImages.cortinas,
         imageAlt: "Cortinas y estores motorizados en interior luminoso",
         finePrint:
           "*El precio final puede variar según medidas, tejidos y número de motores.",
@@ -595,7 +637,7 @@ export default function AutomatizacionIndividual({
         ],
         whatsappMsg:
           "Hola, me gustaría más información sobre persianas y screens motorizados. ¿Podemos agendar una visita?",
-        imageSrc: persianasImg,
+        images: responsiveImages.persianas,
         imageAlt: "Screen enrollable con luz suave y diseño limpio",
         finePrint:
           "*El precio final depende de medidas, tejidos y configuración.",
@@ -616,7 +658,7 @@ export default function AutomatizacionIndividual({
         ],
         whatsappMsg:
           "Hola, me gustaría más información sobre toldos motorizados con WiFi y app. ¿Podemos agendar una visita?",
-        imageSrc: toldosImg,
+        images: responsiveImages.toldos,
         imageAlt: "Toldo motorizado en terraza exterior",
         finePrint:
           "*Instalación eléctrica sujeta a condiciones. El precio final puede variar según medidas y extras.",
@@ -709,10 +751,10 @@ export default function AutomatizacionIndividual({
         <link
           rel="preload"
           as="image"
-          href={hero_1280}
-          imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-          imageSizes="100vw"
-          fetchPriority="high"
+          href={heroImages[800]}
+          imageSrcSet={getSrcSet(heroImages)}
+          imageSizes={HERO_SIZES}
+          fetchpriority="high"
         />
 
         <meta property="og:site_name" content={siteName} />
@@ -738,14 +780,14 @@ export default function AutomatizacionIndividual({
       <Hero>
         <HeroBg aria-hidden="true">
           <HeroImg
-            src={hero_1280}
-            srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-            sizes="100vw"
-            width="1920"
-            height="1080"
+            src={heroImages[800]}
+            srcSet={getSrcSet(heroImages)}
+            sizes={HERO_SIZES}
+            width="1200"
+            height="675"
             loading="eager"
             decoding="async"
-            fetchPriority="high"
+            fetchpriority="high"
             alt=""
           />
           <HeroOverlay />
@@ -838,7 +880,14 @@ export default function AutomatizacionIndividual({
                 return (
                   <PackCard key={s.id}>
                     <PackMedia>
-                      <img src={s.imageSrc} alt={s.imageAlt} loading="lazy" />
+                      <img
+                        src={s.images[600]}
+                        srcSet={getSrcSet(s.images)}
+                        sizes={PACK_IMAGE_SIZES}
+                        alt={s.imageAlt}
+                        loading="lazy"
+                        decoding="async"
+                      />
                       <PackMediaOverlay />
                       <PackBadge>{s.id}</PackBadge>
                       <PackMediaLabel>{s.title}</PackMediaLabel>
