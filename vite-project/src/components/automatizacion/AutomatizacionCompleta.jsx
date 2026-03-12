@@ -292,7 +292,7 @@ export default function Auto({ onOpenAsesoramiento }) {
             href={heroImages[800]}
             imageSrcSet={getSrcSet(heroImages)}
             imageSizes={HERO_SIZES}
-            fetchpriority="high"
+            fetchPriority="high"
           />
           <meta property="og:site_name" content={siteName} />
           <meta property="og:type" content="website" />
@@ -328,7 +328,6 @@ export default function Auto({ onOpenAsesoramiento }) {
               alt=""
             />
             <HeroOverlay />
-            <HeroScan />
             <HeroGlow />
           </HeroBg>
 
@@ -731,23 +730,6 @@ const scan = keyframes`
   to { transform: translateY(120%); opacity: 0; }
 `;
 
-const HeroScan = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 220px;
-  top: 0;
-  opacity: 0.25;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(196, 151, 98, 0.22),
-    transparent
-  );
-  animation: ${scan} 4.8s ease-in-out infinite;
-  pointer-events: none;
-`;
-
 const HeroGlow = styled.div`
   position: absolute;
   inset: 0;
@@ -999,8 +981,12 @@ const ValueCard = styled.div`
     border-color: rgba(229, 0, 126, 0.14);
   }
 
-  @media (max-width: 619px) {
-    padding: 0.95rem 0.95rem 0.9rem;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(17, 17, 17, 0.07);
+      border-color: rgba(229, 0, 126, 0.14);
+    }
   }
 `;
 
