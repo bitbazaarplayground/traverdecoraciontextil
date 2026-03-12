@@ -2,7 +2,7 @@
 import { lazy, Suspense, useMemo, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
-import AutomatizacionCompleta from "./components/automatizacion/AutomatizacionCompleta";
+
 import AutomatizacionIndividual from "./components/automatizacion/AutomatizacionIndividual";
 import NetlifyFormsRegistry from "./components/contact/NetlifyFormsRegistry";
 import QuickEnquiryModal from "./components/contact/QuickEnquiryModal";
@@ -35,6 +35,9 @@ const AdminResetPassword = lazy(() =>
   import("./pages/Admin/AdminResetPassword")
 );
 
+const AutomatizacionCompleta = lazy(() =>
+  import("./components/automatizacion/AutomatizacionCompleta")
+);
 const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
 
 // ✅ ADMIN (lazy) — this is where Supabase weight gets removed from main bundle
