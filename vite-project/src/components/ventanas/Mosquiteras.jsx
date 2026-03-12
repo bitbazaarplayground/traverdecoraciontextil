@@ -1,4 +1,5 @@
 // src/pages/servicios/Mosquiteras.jsx
+
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useLocation } from "react-router-dom";
@@ -14,22 +15,130 @@ import ComplementosVentana from "../../components/ventanas/ComplementosVentana";
 import StickyCtaButton from "../../mobile/StickyCtaButton";
 
 /* Tabs icons (tipo) */
-import mPuerta from "../../assets/servicios/mosquiteras/correderaPuerta.webp";
-import mEnrollable from "../../assets/servicios/mosquiteras/enrollable.webp";
-import mExtensible from "../../assets/servicios/mosquiteras/extensible.webp";
-import mFija from "../../assets/servicios/mosquiteras/fija.webp";
+import mPuerta1200 from "../../assets/servicios/mosquiteras/correderaPuerta-1200.webp";
+import mPuerta400 from "../../assets/servicios/mosquiteras/correderaPuerta-400.webp";
+import mPuerta600 from "../../assets/servicios/mosquiteras/correderaPuerta-600.webp";
+import mPuerta800 from "../../assets/servicios/mosquiteras/correderaPuerta-800.webp";
+
+import mEnrollable1200 from "../../assets/servicios/mosquiteras/enrollable-1200.webp";
+import mEnrollable400 from "../../assets/servicios/mosquiteras/enrollable-400.webp";
+import mEnrollable600 from "../../assets/servicios/mosquiteras/enrollable-600.webp";
+import mEnrollable800 from "../../assets/servicios/mosquiteras/enrollable-800.webp";
+
+import mExtensible1200 from "../../assets/servicios/mosquiteras/extensible-1200.webp";
+import mExtensible400 from "../../assets/servicios/mosquiteras/extensible-400.webp";
+import mExtensible600 from "../../assets/servicios/mosquiteras/extensible-600.webp";
+import mExtensible800 from "../../assets/servicios/mosquiteras/extensible-800.webp";
+
+import mFija1200 from "../../assets/servicios/mosquiteras/fija-1200.webp";
+import mFija400 from "../../assets/servicios/mosquiteras/fija-400.webp";
+import mFija600 from "../../assets/servicios/mosquiteras/fija-600.webp";
+import mFija800 from "../../assets/servicios/mosquiteras/fija-800.webp";
 
 /* images */
-import cocinaM from "../../assets/servicios/mosquiteras/carousel/cocinaM.webp";
-import habitacionM from "../../assets/servicios/mosquiteras/carousel/habitacionM.webp";
-import habitacionMo from "../../assets/servicios/mosquiteras/carousel/habitacionMo.webp";
-import salonM from "../../assets/servicios/mosquiteras/carousel/salonM.webp";
-import salonMo from "../../assets/servicios/mosquiteras/carousel/salonMo.webp";
-import mosquiteraPatio from "../../assets/servicios/mosquiteras/mosquiteraPatio.webp";
+import cocinaM1200 from "../../assets/servicios/mosquiteras/carousel/cocinaM-1200.webp";
+import cocinaM400 from "../../assets/servicios/mosquiteras/carousel/cocinaM-400.webp";
+import cocinaM600 from "../../assets/servicios/mosquiteras/carousel/cocinaM-600.webp";
+import cocinaM800 from "../../assets/servicios/mosquiteras/carousel/cocinaM-800.webp";
+
+import habitacionM1200 from "../../assets/servicios/mosquiteras/carousel/habitacionM-1200.webp";
+import habitacionM400 from "../../assets/servicios/mosquiteras/carousel/habitacionM-400.webp";
+import habitacionM600 from "../../assets/servicios/mosquiteras/carousel/habitacionM-600.webp";
+import habitacionM800 from "../../assets/servicios/mosquiteras/carousel/habitacionM-800.webp";
+
+import habitacionMo1200 from "../../assets/servicios/mosquiteras/carousel/habitacionMo-1200.webp";
+import habitacionMo400 from "../../assets/servicios/mosquiteras/carousel/habitacionMo-400.webp";
+import habitacionMo600 from "../../assets/servicios/mosquiteras/carousel/habitacionMo-600.webp";
+import habitacionMo800 from "../../assets/servicios/mosquiteras/carousel/habitacionMo-800.webp";
+
+import mosquiteraPatio1200 from "../../assets/servicios/mosquiteras/carousel/mosquiteraPatio-1200.webp";
+import mosquiteraPatio400 from "../../assets/servicios/mosquiteras/carousel/mosquiteraPatio-400.webp";
+import mosquiteraPatio600 from "../../assets/servicios/mosquiteras/carousel/mosquiteraPatio-600.webp";
+import mosquiteraPatio800 from "../../assets/servicios/mosquiteras/carousel/mosquiteraPatio-800.webp";
+
+import salonM1200 from "../../assets/servicios/mosquiteras/carousel/salonM-1200.webp";
+import salonM400 from "../../assets/servicios/mosquiteras/carousel/salonM-400.webp";
+import salonM600 from "../../assets/servicios/mosquiteras/carousel/salonM-600.webp";
+import salonM800 from "../../assets/servicios/mosquiteras/carousel/salonM-800.webp";
+
+import salonMo1200 from "../../assets/servicios/mosquiteras/carousel/salonMo-1200.webp";
+import salonMo400 from "../../assets/servicios/mosquiteras/carousel/salonMo-400.webp";
+import salonMo600 from "../../assets/servicios/mosquiteras/carousel/salonMo-600.webp";
+import salonMo800 from "../../assets/servicios/mosquiteras/carousel/salonMo-800.webp";
+
 // Hero
 const hero_768 = "/mosquiteras/mosquiteraPatio-768.webp";
 const hero_1280 = "/mosquiteras/mosquiteraPatio-1280.webp";
 const hero_1920 = "/mosquiteras/mosquiteraPatio-1920.webp";
+
+const responsiveImages = {
+  mPuerta: {
+    400: mPuerta400,
+    600: mPuerta600,
+    800: mPuerta800,
+    1200: mPuerta1200,
+  },
+  mEnrollable: {
+    400: mEnrollable400,
+    600: mEnrollable600,
+    800: mEnrollable800,
+    1200: mEnrollable1200,
+  },
+  mExtensible: {
+    400: mExtensible400,
+    600: mExtensible600,
+    800: mExtensible800,
+    1200: mExtensible1200,
+  },
+  mFija: {
+    400: mFija400,
+    600: mFija600,
+    800: mFija800,
+    1200: mFija1200,
+  },
+  cocinaM: {
+    400: cocinaM400,
+    600: cocinaM600,
+    800: cocinaM800,
+    1200: cocinaM1200,
+  },
+  habitacionM: {
+    400: habitacionM400,
+    600: habitacionM600,
+    800: habitacionM800,
+    1200: habitacionM1200,
+  },
+  habitacionMo: {
+    400: habitacionMo400,
+    600: habitacionMo600,
+    800: habitacionMo800,
+    1200: habitacionMo1200,
+  },
+  mosquiteraPatio: {
+    400: mosquiteraPatio400,
+    600: mosquiteraPatio600,
+    800: mosquiteraPatio800,
+    1200: mosquiteraPatio1200,
+  },
+  salonM: {
+    400: salonM400,
+    600: salonM600,
+    800: salonM800,
+    1200: salonM1200,
+  },
+  salonMo: {
+    400: salonMo400,
+    600: salonMo600,
+    800: salonMo800,
+    1200: salonMo1200,
+  },
+};
+
+const getSrcSet = (images) =>
+  `${images[400]} 400w, ${images[600]} 600w, ${images[800]} 800w, ${images[1200]} 1200w`;
+
+const HERO_SIZES = "100vw";
+const PANEL_IMAGE_SIZES = "(max-width: 979px) 100vw, 50vw";
 
 // ComplementosVentana
 import domotica320 from "../../assets/Automatizacion/heroB-320.webp";
@@ -86,8 +195,6 @@ const Page = styled.main`
   width: 100%;
   background: #fff;
   color: #151515;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
-    "Helvetica Neue", sans-serif;
 `;
 
 const Container = styled.div`
@@ -664,8 +771,7 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         id: "enrollables",
         label: "Enrollables",
         title: "Mosquiteras enrollables a medida",
-        icon: mEnrollable,
-        bg: mosquiteraPatio,
+        images: responsiveImages.mEnrollable,
         value: "Apertura práctica y estética discreta para uso diario.",
         text: "Ideales para ventanas: se recogen cuando no las necesitas y mantienen una línea limpia en el hueco.",
         bullets: [
@@ -678,8 +784,7 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         id: "correderas",
         label: "Correderas",
         title: "Mosquiteras correderas para puertas y ventanales",
-        icon: mPuerta,
-        bg: mosquiteraPatio,
+        images: responsiveImages.mPuerta,
         value: "Perfectas para aperturas laterales y balconeras.",
         text: "Se deslizan suavemente sobre carriles y son una solución robusta para grandes superficies acristaladas.",
         bullets: [
@@ -692,8 +797,7 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         id: "extensibles",
         label: "Extensibles",
         title: "Mosquiteras extensibles",
-        icon: mExtensible,
-        bg: mosquiteraPatio,
+        images: responsiveImages.mExtensible,
         value: "Solución simple y funcional para usos puntuales.",
         text: "Prácticas para segundas residencias o espacios donde buscas una opción flexible y rápida.",
         bullets: [
@@ -706,8 +810,7 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         id: "fijas",
         label: "Fijas",
         title: "Mosquiteras fijas",
-        icon: mFija,
-        bg: mosquiteraPatio,
+        images: responsiveImages.mFija,
         value: "Protección permanente con diseño limpio.",
         text: "Recomendadas para ventanas de uso constante cuando no necesitas apertura de la mosquitera.",
         bullets: [
@@ -813,12 +916,12 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
   // 5 imágenes: puedes repetir sin problema
   const carouselImages = useMemo(
     () => [
-      mosquiteraPatio,
-      salonM,
-      habitacionM,
-      cocinaM,
-      salonMo,
-      habitacionMo,
+      responsiveImages.mosquiteraPatio[1200],
+      responsiveImages.salonM[1200],
+      responsiveImages.habitacionM[1200],
+      responsiveImages.cocinaM[1200],
+      responsiveImages.salonMo[1200],
+      responsiveImages.habitacionMo[1200],
     ],
     []
   );
@@ -1061,7 +1164,9 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
           >
             <Media>
               <Img
-                src={current.icon}
+                src={current.images[800]}
+                srcSet={getSrcSet(current.images)}
+                sizes={PANEL_IMAGE_SIZES}
                 alt={current.title}
                 loading="lazy"
                 decoding="async"

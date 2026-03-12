@@ -11,20 +11,81 @@ import ContactCTA from "../../components/ContactCTA";
 import SlickCarouselLazy from "../../components/SlickCarouselLazy";
 import FaqAccordion from "../../components/faq/FaqAccordion";
 import ComplementosVentana from "../../components/ventanas/ComplementosVentana";
+import { getComplementosItems } from "../../data/complementosVentana";
 import StickyCtaButton from "../../mobile/StickyCtaButton";
 
 /* IMAGES (venecianas) */
-import bano1 from "../../assets/venecianas/bano1.webp";
-import cocina1 from "../../assets/venecianas/cocina1.webp";
-import oficina1 from "../../assets/venecianas/oficina1.webp";
-import oficina2 from "../../assets/venecianas/oficina2.webp";
-import venecianaMaderaOficina from "../../assets/venecianas/venecianaMaderaOficina.webp";
+import bano11200 from "../../assets/venecianas/bano1-1200.webp";
+import bano1400 from "../../assets/venecianas/bano1-400.webp";
+import bano1600 from "../../assets/venecianas/bano1-600.webp";
+import bano1800 from "../../assets/venecianas/bano1-800.webp";
+
+import cocina11200 from "../../assets/venecianas/cocina1-1200.webp";
+import cocina1400 from "../../assets/venecianas/cocina1-400.webp";
+import cocina1600 from "../../assets/venecianas/cocina1-600.webp";
+import cocina1800 from "../../assets/venecianas/cocina1-800.webp";
+
+import oficina11200 from "../../assets/venecianas/oficina1-1200.webp";
+import oficina1400 from "../../assets/venecianas/oficina1-400.webp";
+import oficina1600 from "../../assets/venecianas/oficina1-600.webp";
+import oficina1800 from "../../assets/venecianas/oficina1-800.webp";
+
+import oficina21200 from "../../assets/venecianas/oficina2-1200.webp";
+import oficina2400 from "../../assets/venecianas/oficina2-400.webp";
+import oficina2600 from "../../assets/venecianas/oficina2-600.webp";
+import oficina2800 from "../../assets/venecianas/oficina2-800.webp";
+
+import venecianaMaderaOficina1200 from "../../assets/venecianas/venecianaMaderaOficina-1200.webp";
+import venecianaMaderaOficina400 from "../../assets/venecianas/venecianaMaderaOficina-400.webp";
+import venecianaMaderaOficina600 from "../../assets/venecianas/venecianaMaderaOficina-600.webp";
+import venecianaMaderaOficina800 from "../../assets/venecianas/venecianaMaderaOficina-800.webp";
+
 // Hero
-const hero_768 = "/venecianas/oficina2-768.webp";
-const hero_1280 = "/venecianas/oficina2-1280.webp";
-const hero_1920 = "/venecianas/oficina2-1920.webp";
-// ComplementosVentana
-import { getComplementosItems } from "../../data/complementosVentana";
+const heroImages = {
+  400: "/venecianas/oficina2-400.webp",
+  600: "/venecianas/oficina2-600.webp",
+  800: "/venecianas/oficina2-800.webp",
+  1200: "/venecianas/oficina2-1200.webp",
+};
+const responsiveImages = {
+  bano1: {
+    400: bano1400,
+    600: bano1600,
+    800: bano1800,
+    1200: bano11200,
+  },
+  cocina1: {
+    400: cocina1400,
+    600: cocina1600,
+    800: cocina1800,
+    1200: cocina11200,
+  },
+  oficina1: {
+    400: oficina1400,
+    600: oficina1600,
+    800: oficina1800,
+    1200: oficina11200,
+  },
+  oficina2: {
+    400: oficina2400,
+    600: oficina2600,
+    800: oficina2800,
+    1200: oficina21200,
+  },
+  venecianaMaderaOficina: {
+    400: venecianaMaderaOficina400,
+    600: venecianaMaderaOficina600,
+    800: venecianaMaderaOficina800,
+    1200: venecianaMaderaOficina1200,
+  },
+};
+
+const getSrcSet = (images) =>
+  `${images[400]} 400w, ${images[600]} 600w, ${images[800]} 800w, ${images[1200]} 1200w`;
+
+const HERO_SIZES = "100vw";
+const SPLIT_IMAGE_SIZES = "(max-width: 980px) 100vw, 50vw";
+
 /* =========================
    PAGE
 ========================= */
@@ -33,8 +94,6 @@ const Page = styled.main`
   width: 100%;
   background: #fff;
   color: #151515;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
-    "Helvetica Neue", sans-serif;
 `;
 
 /* =========================
@@ -574,7 +633,13 @@ export default function Venecianas({ onOpenAsesoramiento }) {
   );
 
   const carouselImages = useMemo(
-    () => [venecianaMaderaOficina, oficina1, oficina2, cocina1, bano1],
+    () => [
+      responsiveImages.venecianaMaderaOficina[800],
+      responsiveImages.oficina1[800],
+      responsiveImages.oficina2[800],
+      responsiveImages.cocina1[800],
+      responsiveImages.bano1[800],
+    ],
     []
   );
 
@@ -636,9 +701,10 @@ export default function Venecianas({ onOpenAsesoramiento }) {
           </>
         }
         subtitle="Regulación precisa: orientas las lamas para filtrar luz, reducir reflejos y ajustar privacidad sin perder claridad. Perfectas en oficinas, cocinas y baños por su mantenimiento y orden visual."
-        hero768={hero_768}
-        hero1280={hero_1280}
-        hero1920={hero_1920}
+        hero480={heroImages[400]}
+        hero768={heroImages[600]}
+        hero1280={heroImages[800]}
+        hero1920={heroImages[1200]}
         objectPosition="center 55%"
       />
 
@@ -715,7 +781,9 @@ export default function Venecianas({ onOpenAsesoramiento }) {
         <SplitInner>
           <SplitMedia>
             <SplitImg
-              src={venecianaMaderaOficina}
+              src={responsiveImages.venecianaMaderaOficina[600]}
+              srcSet={getSrcSet(responsiveImages.venecianaMaderaOficina)}
+              sizes={SPLIT_IMAGE_SIZES}
               alt="Veneciana de madera en oficina: calidez y control de luz"
               loading="lazy"
               decoding="async"
