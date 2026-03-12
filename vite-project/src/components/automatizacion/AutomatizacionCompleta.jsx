@@ -435,6 +435,8 @@ export default function Auto({ onOpenAsesoramiento }) {
                     key={i}
                     type="button"
                     $active={i === activeIndex}
+                    aria-label={`Ir a la tarjeta ${i + 1}`}
+                    aria-pressed={i === activeIndex}
                     onClick={() => {
                       const el = gridRef.current;
                       if (!el) return;
@@ -955,21 +957,23 @@ const CarouselDots = styled.div`
 `;
 
 const Dot = styled.button`
-  width: 7px;
-  height: 7px;
+  width: ${({ $active }) => ($active ? "18px" : "12px")};
+  height: 12px;
+  min-width: 12px;
+  min-height: 12px;
   border-radius: 999px;
   border: none;
   padding: 0;
   background: ${({ $active, theme }) =>
-    $active ? theme.colors.primary : "rgba(17,17,17,0.2)"};
+    $active ? theme.colors.primary : "rgba(17,17,17,0.28)"};
   transition: all 200ms ease;
 
-  ${({ $active }) =>
-    $active &&
-    `
-    width: 18px;
-    border-radius: 999px;
-  `}
+  @media (pointer: coarse) {
+    width: ${({ $active }) => ($active ? "24px" : "18px")};
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+  }
 `;
 
 const ValueCard = styled.div`
