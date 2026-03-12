@@ -1,11 +1,10 @@
 // src/App.jsx
 import { lazy, Suspense, useMemo, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import "./App.css";
 
+import AutomatizacionCompleta from "./components/automatizacion/AutomatizacionCompleta";
 import AutomatizacionIndividual from "./components/automatizacion/AutomatizacionIndividual";
 import NetlifyFormsRegistry from "./components/contact/NetlifyFormsRegistry";
-import QuickEnquiryModal from "./components/contact/QuickEnquiryModal";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
@@ -15,6 +14,10 @@ import Automatizacion from "./pages/Automatizacion";
 import HomePage from "./pages/HomePage";
 import Propuestas from "./pages/Propuestas";
 import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
+// import QuickEnquiryModal from "./components/contact/QuickEnquiryModal";
+const QuickEnquiryModal = lazy(() =>
+  import("./components/contact/QuickEnquiryModal")
+);
 // ✅ Lazy load modal (only when opened)
 // const AsesoramientoModal = lazy(() =>
 //   import("./components/AsesoramientoModalSupabase")
@@ -35,9 +38,6 @@ const AdminResetPassword = lazy(() =>
   import("./pages/Admin/AdminResetPassword")
 );
 
-const AutomatizacionCompleta = lazy(() =>
-  import("./components/automatizacion/AutomatizacionCompleta")
-);
 const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
 
 // ✅ ADMIN (lazy) — this is where Supabase weight gets removed from main bundle
@@ -192,12 +192,16 @@ export default function App() {
           />
         </Suspense>
       )} */}
-      <QuickEnquiryModal
-        open={enquiryOpen}
-        onClose={() => setEnquiryOpen(false)}
-        packLabel={enquiryPack}
-        source={enquirySource}
-      />
+      {enquiryOpen && (
+        <Suspense fallback={null}>
+          <QuickEnquiryModal
+            open={enquiryOpen}
+            onClose={() => setEnquiryOpen(false)}
+            packLabel={enquiryPack}
+            source={enquirySource}
+          />
+        </Suspense>
+      )}
       {!isAdminRoute && <Footer />}
     </>
   );
