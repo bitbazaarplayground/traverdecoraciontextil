@@ -6,6 +6,7 @@ import { CONTACT } from "../../config/contact";
 import useRevealOnScroll from "../../hooks/useReveal";
 import { trackEvent } from "../../lib/analytics";
 import StickyCtaButton from "../../mobile/StickyCtaButton";
+import AutomationCta from "./AutomationCta";
 import AutomationFaq from "./AutomationFaq";
 /* =========================
    ASSETS
@@ -592,59 +593,10 @@ export default function Auto({ onOpenAsesoramiento }) {
         </ProcessSection>
 
         {/* CTA */}
-        <AfterPacksCTA id="cta">
-          <AfterCTAInner>
-            <AfterCTALeft>
-              <AfterKicker>Estamos aquí para ayudarte</AfterKicker>
-              <AfterTitle>¿Lo vemos en tu casa sin compromiso?</AfterTitle>
-              <AfterText>
-                Medimos, proponemos y te damos un rango claro. Te recomendamos
-                lo que tiene sentido según orientación, uso y estética.
-              </AfterText>
-
-              <AfterProof>
-                <Check size={16} />
-                Visita + propuesta sin coste · instalación profesional · escenas
-                configuradas
-              </AfterProof>
-            </AfterCTALeft>
-
-            <AfterCTARight>
-              <AfterButtons>
-                <AfterPrimary
-                  href="/contact"
-                  onClick={(e) => {
-                    e.preventDefault();
-
-                    trackEvent("open_quick_enquiry", {
-                      source: "automatizacion_completa_cta",
-                      pack: "Automatización Completa",
-                    });
-
-                    onOpenAsesoramiento?.(
-                      "Automatización Completa",
-                      "automatizacion_completa_cta"
-                    );
-                  }}
-                >
-                  Pedir asesoramiento <ArrowRight size={16} />
-                </AfterPrimary>
-
-                <AfterSecondary
-                  as={WhatsAppLink}
-                  phone={WA_PHONE}
-                  message={`Hola, quiero una propuesta de automatización integral. ¿Podemos agendar una visita?`}
-                >
-                  WhatsApp
-                </AfterSecondary>
-              </AfterButtons>
-
-              <AfterMini>
-                Respuesta rápida en horario comercial · Castellón y Valencia
-              </AfterMini>
-            </AfterCTARight>
-          </AfterCTAInner>
-        </AfterPacksCTA>
+        <AutomationCta
+          waPhone={WA_PHONE}
+          onOpenAsesoramiento={onOpenAsesoramiento}
+        />
         {/* FAQ */}
 
         <AutomationFaq
@@ -1029,7 +981,7 @@ const ValueCard = styled.div`
     rgba(17, 17, 17, 0.01)
   );
   border: 1px solid rgba(17, 17, 17, 0.1);
-  box-shadow: 0 18px 60px rgba(17, 17, 17, 0.06);
+
   transition: transform 180ms ease, box-shadow 180ms ease,
     border-color 180ms ease;
 
@@ -1404,196 +1356,3 @@ const ProcessContent = styled.div`
     color: rgba(0, 0, 0, 0.6);
   }
 `;
-// CTA
-const AfterPacksCTA = styled.section`
-  margin-top: 32px;
-  position: relative;
-  border-radius: 28px;
-  overflow: hidden;
-
-  background-image: url(${welcome600});
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  @media (min-width: 768px) {
-    background-image: url(${welcome800});
-  }
-
-  @media (min-width: 1200px) {
-    background-image: url(${welcome1200});
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      rgba(11, 12, 15, 0.88) 0%,
-      rgba(11, 12, 15, 0.75) 35%,
-      rgba(11, 12, 15, 0.45) 60%,
-      rgba(11, 12, 15, 0.25) 100%
-    );
-    z-index: 0;
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-        800px 420px at 15% 10%,
-        rgba(229, 0, 126, 0.18),
-        transparent 55%
-      ),
-      radial-gradient(
-        800px 420px at 80% 40%,
-        rgba(196, 151, 98, 0.16),
-        transparent 60%
-      );
-    z-index: 0;
-  }
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.45);
-
-  > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  @media (max-width: 899px) {
-    background-position: center 100%;
-  }
-`;
-
-const AfterCTAInner = styled.div`
-  padding: 18px;
-  display: grid;
-  gap: 14px;
-
-  @media (min-width: 900px) {
-    grid-template-columns: 1.2fr 0.8fr;
-    align-items: center;
-    padding: 22px;
-  }
-`;
-
-const AfterCTALeft = styled.div``;
-
-const AfterKicker = styled.p`
-  margin: 0 0 8px 0;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-  color: rgba(244, 244, 245, 0.72);
-`;
-
-const AfterTitle = styled.h3`
-  margin: 0;
-  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
-  letter-spacing: -0.02em;
-  color: rgba(244, 244, 245, 0.98);
-`;
-
-const AfterText = styled.p`
-  margin: 8px 0 0;
-  line-height: 1.7;
-  color: rgba(244, 244, 245, 0.74);
-  max-width: 62ch;
-`;
-
-const AfterProof = styled.div`
-  margin-top: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(244, 244, 245, 0.88);
-  font-weight: 750;
-
-  svg {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-  /* Mobile: don't show AfterProof */
-  @media (max-width: 899px) {
-    display: none;
-  }
-`;
-const AfterCTARight = styled.div`
-  display: grid;
-  gap: 10px;
-
-  @media (min-width: 900px) {
-    justify-items: end;
-    text-align: right;
-  }
-`;
-
-const AfterButtons = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-
-  @media (max-width: 899px) {
-    display: none;
-  }
-`;
-
-const AfterPrimary = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  padding: 12px 14px;
-  border-radius: 14px;
-
-  background: ${({ theme }) => theme.colors.primary};
-  color: #0b0c0f;
-  font-weight: 900;
-  text-decoration: none;
-
-  transition: transform 0.15s ease, opacity 0.15s ease;
-
-  &:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
-  }
-`;
-
-const AfterSecondary = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 12px 14px;
-  border-radius: 14px;
-
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(244, 244, 245, 0.95);
-  font-weight: 850;
-  text-decoration: none;
-
-  transition: transform 0.15s ease, background 0.15s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    background: rgba(255, 255, 255, 0.1);
-  }
-`;
-
-const AfterMini = styled.div`
-  color: rgba(244, 244, 245, 0.62);
-  font-size: 0.92rem;
-  @media (max-width: 899px) {
-    display: none;
-  }
-`;
-
-// FaqItem.defaultProps = { "data-open": "false" };
