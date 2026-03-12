@@ -325,6 +325,7 @@ export default function Auto({ onOpenAsesoramiento }) {
               height="675"
               loading="eager"
               decoding="async"
+              fetchPriority="high"
               alt=""
             />
             <HeroOverlay />
