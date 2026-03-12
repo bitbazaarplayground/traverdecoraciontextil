@@ -4,7 +4,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 
 import AutomatizacionCompleta from "./components/automatizacion/AutomatizacionCompleta";
 import AutomatizacionIndividual from "./components/automatizacion/AutomatizacionIndividual";
-import NetlifyFormsRegistry from "./components/contact/NetlifyFormsRegistry";
+// import NetlifyFormsRegistry from "./components/contact/NetlifyFormsRegistry";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
@@ -81,7 +81,7 @@ export default function App() {
     <>
       <ScrollToTop />
       {!isAdminRoute && <Navbar />}
-      <NetlifyFormsRegistry />
+      {/* <NetlifyFormsRegistry /> */}
       {/* ✅ One Suspense boundary for all lazy routes */}
       <Suspense fallback={null}>
         <Routes>
@@ -202,6 +202,7 @@ export default function App() {
           />
         </Suspense>
       )}
+
       {!isAdminRoute && <Footer />}
     </>
   );
