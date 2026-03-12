@@ -9,6 +9,8 @@ import QuickEnquiryModal from "./components/contact/QuickEnquiryModal";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
+import Mosquiteras from "./components/ventanas/Mosquiteras";
+import Venecianas from "./components/ventanas/Venecianas";
 import Automatizacion from "./pages/Automatizacion";
 import HomePage from "./pages/HomePage";
 import Propuestas from "./pages/Propuestas";
@@ -34,8 +36,6 @@ const AdminResetPassword = lazy(() =>
 );
 
 const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
-const Venecianas = lazy(() => import("./components/ventanas/Venecianas"));
-const Mosquiteras = lazy(() => import("./components/ventanas/Mosquiteras"));
 
 // ✅ ADMIN (lazy) — this is where Supabase weight gets removed from main bundle
 // const AdminLayout = lazy(() => import("./pages/Admin/AdminLayout"));
