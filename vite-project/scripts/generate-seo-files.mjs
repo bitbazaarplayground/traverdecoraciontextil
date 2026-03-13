@@ -14,7 +14,7 @@ const routes = [
   "/panel-japones",
   "/venecianas",
   "/cortinas-estores",
-  "/toldos-proteccionsolar",
+  "/toldos-proteccion-solar",
   "/mosquiteras",
   "/services",
   "/aviso-legal",
@@ -46,6 +46,7 @@ Sitemap: ${siteUrl}/sitemap.xml
 `;
 
 const publicDir = path.resolve("public");
+
 fs.writeFileSync(path.join(publicDir, "sitemap.xml"), sitemap);
 fs.writeFileSync(path.join(publicDir, "robots.txt"), robots);
 
