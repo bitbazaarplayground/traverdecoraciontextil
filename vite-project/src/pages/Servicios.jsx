@@ -13,7 +13,7 @@ import venecianasImg from "../assets/servicios/venecianas.webp";
 import { CONTACT } from "../config/contact";
 import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
-import limpiezaImg from "/limpieza/limpieza-1280.webp";
+const limpiezaImg = "/limpieza/limpieza-1280.webp";
 /* =========================
    Small scroll-reveal helper (no deps)
 ========================= */
