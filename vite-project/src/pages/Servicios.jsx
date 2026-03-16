@@ -6,12 +6,14 @@ import styled from "styled-components";
 import cortinasServicios from "../assets/servicios/CortinasServicios.webp";
 import proyecto from "../assets/servicios/ProyectoAMedida.webp";
 import somfyApp from "../assets/servicios/app2.webp";
+
 import panelJaponesImg from "../assets/servicios/panelJapones.webp";
 import toldosProteccionSolar from "../assets/servicios/toldoServicios.webp";
 import venecianasImg from "../assets/servicios/venecianas.webp";
 import { CONTACT } from "../config/contact";
 import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
+import limpiezaImg from "/limpieza/limpieza-1280.webp";
 /* =========================
    Small scroll-reveal helper (no deps)
 ========================= */
@@ -733,6 +735,17 @@ export default function Servicios({ onOpenAsesoramiento }) {
         img: venecianasImg,
         alt: "Mosquiteras a medida para ventanas y puertas",
         primaryTo: "/mosquiteras",
+        primaryLabel: "Ver detalles",
+      },
+      {
+        badge: "Servicios",
+        title: "Limpieza",
+        value:
+          "Textiles impecables, mantenimiento profesional y máxima comodidad.",
+        text: "Servicio de limpieza para cortinas, estores y textiles decorativos, con opciones de recogida, desmontaje y montaje según cada necesidad.",
+        img: limpiezaImg,
+        alt: "Servicio profesional de limpieza para cortinas y textiles decorativos",
+        primaryTo: "/limpieza",
         primaryLabel: "Ver detalles",
       },
     ],
