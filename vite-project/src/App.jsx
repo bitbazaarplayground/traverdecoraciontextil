@@ -13,6 +13,9 @@ import Venecianas from "./components/ventanas/Venecianas";
 import Automatizacion from "./pages/Automatizacion";
 import HomePage from "./pages/HomePage";
 import Propuestas from "./pages/Propuestas";
+
+import Limpieza from "./pages/Limpieza";
+import Limpieza2 from "./pages/Limpiezas2";
 import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
 
 const QuickEnquiryModal = lazy(() =>
@@ -131,7 +134,14 @@ export default function App() {
             path="/services"
             element={<Servicios onOpenAsesoramiento={onOpenAsesoramiento} />}
           />
-
+          <Route
+            path="/limpieza"
+            element={<Limpieza onOpenAsesoramiento={onOpenAsesoramiento} />}
+          />
+          <Route
+            path="/limpieza2"
+            element={<Limpieza2 onOpenAsesoramiento={onOpenAsesoramiento} />}
+          />
           {/* LEGALES */}
           <Route path="/aviso-legal" element={<AvisoLegal />} />
           <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
