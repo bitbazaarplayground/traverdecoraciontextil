@@ -104,6 +104,9 @@ const Features = styled.section`
   background: #f6f6f7;
   border-top: 1px solid rgba(17, 17, 17, 0.08);
   border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const FeaturesGrid = styled.div`

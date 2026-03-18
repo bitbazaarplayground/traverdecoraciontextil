@@ -293,6 +293,10 @@ const Features = styled.section`
   background: #f6f6f7;
   border-top: 1px solid rgba(17, 17, 17, 0.08);
   border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const FeaturesGrid = styled.div`
@@ -341,7 +345,83 @@ const FeatureText = styled.p`
   line-height: 1.45;
   color: rgba(17, 17, 17, 0.62);
 `;
+const DesktopTabsWrap = styled.div`
+  display: block;
 
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const MobileOptions = styled.div`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 1.4rem;
+  }
+`;
+
+const MobileOption = styled.article`
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 22px;
+  background: #fafafa;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+`;
+
+const MobileOptionTrigger = styled.button`
+  width: 100%;
+  appearance: none;
+  border: 0;
+  background: ${({ $active }) => ($active ? "rgba(0,0,0,0.02)" : "#fff")};
+  color: rgba(0, 0, 0, 0.88);
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding: 1rem;
+  text-align: left;
+
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  &:focus-visible {
+    outline: 3px solid rgba(0, 0, 0, 0.16);
+    outline-offset: 2px;
+  }
+`;
+
+const MobileOptionLabel = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+`;
+
+const MobileDot = styled.span`
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: ${({ $active, theme }) =>
+    $active ? theme.colors.primary : "rgba(0,0,0,0.18)"};
+  flex-shrink: 0;
+`;
+
+const MobileChevron = styled.span`
+  font-size: 1.1rem;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.45);
+`;
+
+const MobilePanel = styled.div`
+  padding: 0 0 1rem;
+`;
 /* ===== Tabs area ===== */
 
 const Section = styled.section`
@@ -352,22 +432,29 @@ const Section = styled.section`
 const TabsBar = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.65rem;
+  gap: 0.55rem;
   margin-top: 1.6rem;
+  margin-left: 4.4rem;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
 
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.05);
   border-radius: 999px;
-  padding: 0.45rem;
+  padding: 0.4rem;
 `;
-
 const TabButton = styled.button`
   appearance: none;
   border: 0;
   cursor: pointer;
 
-  padding: 0.7rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 1.15rem;
   border-radius: 999px;
 
   background: ${({ $active, theme }) =>
@@ -377,7 +464,8 @@ const TabButton = styled.button`
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 0.76rem;
+  font-size: 0.78rem;
+  line-height: 1;
 
   transition: transform 200ms ease, background 200ms ease, color 200ms ease,
     filter 200ms ease;
@@ -400,15 +488,16 @@ const Panel = styled.article`
   border-radius: 24px;
   overflow: hidden;
 
-  background: rgba(250, 250, 250, 0.95);
+  background: rgba(250, 250, 250, 0.98);
   border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 22px 65px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.07);
 
   display: grid;
   grid-template-columns: 1fr;
 
   @media (min-width: 980px) {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.05fr 1fr;
+    align-items: stretch;
   }
 `;
 
@@ -522,16 +611,22 @@ const Bullet = styled.li`
 
 const Actions = styled.div`
   margin-top: auto;
-  display: flex;
-  gap: 0.65rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Primary = styled(Link)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.82rem 1.15rem;
+  min-height: 48px;
+  width: 100%;
+  padding: 0.9rem 1rem;
   border-radius: 999px;
 
   background: rgba(0, 0, 0, 0.06);
@@ -542,7 +637,6 @@ const Primary = styled(Link)`
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.76rem;
-
   text-decoration: none;
   transition: transform 240ms ease, background 240ms ease;
 
@@ -556,7 +650,9 @@ const Secondary = styled(Link)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.82rem 1.15rem;
+  min-height: 48px;
+  width: 100%;
+  padding: 0.9rem 1rem;
   border-radius: 999px;
 
   background: ${({ theme }) => theme.colors.primary};
@@ -566,7 +662,6 @@ const Secondary = styled(Link)`
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.76rem;
-
   text-decoration: none;
   transition: transform 240ms ease, filter 240ms ease;
 
@@ -760,7 +855,7 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
 
   const title = `Mosquiteras a medida en Castellón y Valencia | ${siteName}`;
   const description =
-    "Mosquiteras a medida para ventanas y puertas: enrollables, correderas, extensibles y fijas. Servicio en Castellón y Valencia. Asesoramiento e instalación profesional.";
+    "Mosquiteras a medida para ventanas y puertas: enrollables, correderas, plisadas y fijas. Servicio en Castellón y Valencia. Asesoramiento e instalación profesional.";
 
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt = "Mosquiteras a medida — Traver Decoración Textil";
@@ -794,9 +889,9 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         ],
       },
       {
-        id: "extensibles",
-        label: "Extensibles",
-        title: "Mosquiteras extensibles",
+        id: "plisadas",
+        label: "Plisadas",
+        title: "Mosquiteras plisadas",
         images: responsiveImages.mExtensible,
         value: "Solución simple y funcional para usos puntuales.",
         text: "Prácticas para segundas residencias o espacios donde buscas una opción flexible y rápida.",
@@ -832,14 +927,29 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
     return match ? match.id : tabs[0].id;
   });
 
-  const current = tabs.find((t) => t.id === active) || tabs[0];
+  const current = tabs.find((t) => t.id === active) || null;
+
+  const handleToggleOption = (id) => {
+    setActive((prev) => (prev === id ? null : id));
+  };
 
   useEffect(() => {
+    if (!current) {
+      if (window.location.hash) {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + window.location.search
+        );
+      }
+      return;
+    }
+
     const nextHash = `#${toSlug(current.id)}`;
     if (window.location.hash !== nextHash) {
       window.history.replaceState(null, "", nextHash);
     }
-  }, [current.id]);
+  }, [current, location.pathname, location.search]);
 
   useEffect(() => {
     const hash = readHashTabId(location.hash);
@@ -1136,72 +1246,163 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
               honestidad (y sin sobredimensionar).
             </SectionLead>
 
-            <TabsBar
-              role="tablist"
-              aria-label="Opciones de mosquiteras a medida"
-            >
-              {tabs.map((t) => (
-                <TabButton
-                  key={t.id}
-                  type="button"
-                  onClick={() => setActive(t.id)}
-                  $active={t.id === active}
-                  role="tab"
-                  aria-selected={t.id === active}
-                  aria-controls={`panel-${t.id}`}
-                  id={`tab-${t.id}`}
-                >
-                  {t.label}
-                </TabButton>
-              ))}
-            </TabsBar>
+            {/* DESKTOP: tabs */}
+            <DesktopTabsWrap>
+              <TabsBar
+                role="tablist"
+                aria-label="Opciones de mosquiteras a medida"
+              >
+                {tabs.map((t) => (
+                  <TabButton
+                    key={t.id}
+                    type="button"
+                    onClick={() => setActive(t.id)}
+                    $active={t.id === active}
+                    role="tab"
+                    aria-selected={t.id === active}
+                    aria-controls={`panel-${t.id}`}
+                    id={`tab-${t.id}`}
+                  >
+                    {t.label}
+                  </TabButton>
+                ))}
+              </TabsBar>
+            </DesktopTabsWrap>
           </SectionTop>
 
-          <Panel
-            id={`panel-${current.id}`}
-            role="tabpanel"
-            aria-labelledby={`tab-${current.id}`}
-          >
-            <Media>
-              <Img
-                src={current.images[800]}
-                srcSet={getSrcSet(current.images)}
-                sizes={PANEL_IMAGE_SIZES}
-                alt={current.title}
-                loading="lazy"
-                decoding="async"
-              />
-              <Overlay />
-              <Badge>{current.label}</Badge>
-            </Media>
+          {/* DESKTOP: single panel */}
+          <DesktopTabsWrap>
+            {current && (
+              <Panel
+                id={`panel-${current.id}`}
+                role="tabpanel"
+                aria-labelledby={`tab-${current.id}`}
+              >
+                <Media>
+                  <Img
+                    src={current.images[800]}
+                    srcSet={getSrcSet(current.images)}
+                    sizes={PANEL_IMAGE_SIZES}
+                    alt={current.title}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <Overlay />
+                  <Badge>{current.label}</Badge>
+                </Media>
 
-            <Content>
-              <PanelTitle>{current.title}</PanelTitle>
-              <Value>{current.value}</Value>
-              <Text>{current.text}</Text>
+                <Content>
+                  <PanelTitle>{current.title}</PanelTitle>
+                  <Value>{current.value}</Value>
+                  <Text>{current.text}</Text>
 
-              <Bullets aria-label="Ventajas principales">
-                {current.bullets.map((b) => (
-                  <Bullet key={b}>{b}</Bullet>
-                ))}
-              </Bullets>
+                  <Bullets aria-label="Ventajas principales">
+                    {current.bullets.map((b) => (
+                      <Bullet key={b}>{b}</Bullet>
+                    ))}
+                  </Bullets>
 
-              <Actions>
-                <Primary
-                  to={`/contact?pack=${PACK_QUERY}`}
-                  onClick={handleOpenCta}
-                >
-                  Pedir propuesta
-                </Primary>
-                <Secondary
-                  to={`/contact?pack=${PACK_QUERY}`}
-                  onClick={handleOpenCta}
-                >
-                  Hablar con nosotros
-                </Secondary>
-              </Actions>
-            </Content>
-          </Panel>
+                  <Actions>
+                    <Primary
+                      to={`/contact?pack=${PACK_QUERY}`}
+                      onClick={handleOpenCta}
+                    >
+                      Pedir propuesta
+                    </Primary>
+                    <Secondary
+                      to={`/contact?pack=${PACK_QUERY}`}
+                      onClick={handleOpenCta}
+                    >
+                      Hablar con nosotros
+                    </Secondary>
+                  </Actions>
+                </Content>
+              </Panel>
+            )}
+          </DesktopTabsWrap>
+
+          {/* MOBILE: accordion cards */}
+          <MobileOptions aria-label="Opciones de mosquiteras para móvil">
+            {tabs.map((t) => {
+              const isOpen = t.id === active;
+
+              return (
+                <MobileOption key={t.id}>
+                  <MobileOptionTrigger
+                    type="button"
+                    onClick={() => handleToggleOption(t.id)}
+                    $active={isOpen}
+                    aria-expanded={isOpen}
+                    aria-controls={`mobile-panel-${t.id}`}
+                    id={`mobile-tab-${t.id}`}
+                  >
+                    <MobileOptionLabel>
+                      <MobileDot $active={isOpen} />
+                      {t.label}
+                    </MobileOptionLabel>
+
+                    <MobileChevron aria-hidden="true">
+                      {isOpen ? "−" : "+"}
+                    </MobileChevron>
+                  </MobileOptionTrigger>
+
+                  {isOpen && (
+                    <MobilePanel
+                      id={`mobile-panel-${t.id}`}
+                      role="region"
+                      aria-labelledby={`mobile-tab-${t.id}`}
+                    >
+                      <Panel
+                        as="div"
+                        style={{
+                          margin: "0",
+                          borderRadius: "0",
+                          borderLeft: "0",
+                          borderRight: "0",
+                          borderBottom: "0",
+                          boxShadow: "none",
+                        }}
+                      >
+                        <Media>
+                          <Img
+                            src={t.images[800]}
+                            srcSet={getSrcSet(t.images)}
+                            sizes="100vw"
+                            alt={t.title}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <Overlay />
+                          <Badge>{t.label}</Badge>
+                        </Media>
+
+                        <Content>
+                          <PanelTitle>{t.title}</PanelTitle>
+                          <Value>{t.value}</Value>
+                          <Text>{t.text}</Text>
+
+                          <Bullets aria-label={`Ventajas de ${t.label}`}>
+                            {t.bullets.map((b) => (
+                              <Bullet key={b}>{b}</Bullet>
+                            ))}
+                          </Bullets>
+
+                          <Actions>
+                            <Secondary
+                              to={`/contact?pack=${PACK_QUERY}`}
+                              onClick={handleOpenCta}
+                            >
+                              Solicitar información
+                            </Secondary>
+                          </Actions>
+                        </Content>
+                      </Panel>
+                    </MobilePanel>
+                  )}
+                </MobileOption>
+              );
+            })}
+          </MobileOptions>
 
           <HelpStrip aria-label="Ayuda y contacto">
             <HelpText>
