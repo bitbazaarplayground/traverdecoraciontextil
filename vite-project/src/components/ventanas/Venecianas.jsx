@@ -7,7 +7,6 @@ import ServiceHero from "../../components/heroes/ServiceHero";
 import { CONTACT } from "../../config/contact";
 import { trackEvent } from "../../lib/analytics";
 
-import ContactCTA from "../../components/ContactCTA";
 import SlickCarouselLazy from "../../components/SlickCarouselLazy";
 import FaqAccordion from "../../components/faq/FaqAccordion";
 import ComplementosVentana from "../../components/ventanas/ComplementosVentana";
@@ -39,6 +38,7 @@ import venecianaMaderaOficina1200 from "../../assets/venecianas/venecianaMaderaO
 import venecianaMaderaOficina400 from "../../assets/venecianas/venecianaMaderaOficina-400.webp";
 import venecianaMaderaOficina600 from "../../assets/venecianas/venecianaMaderaOficina-600.webp";
 import venecianaMaderaOficina800 from "../../assets/venecianas/venecianaMaderaOficina-800.webp";
+import VenecianasCTA from "../VenecianasCTA";
 
 // Hero
 const heroImages = {
@@ -816,21 +816,6 @@ export default function Venecianas({ onOpenAsesoramiento }) {
         </SplitInner>
       </SplitSection>
 
-      {/* CONTACT CTA */}
-      <ContactCTA onOpenAsesoramiento={onOpenAsesoramiento} />
-
-      {/* COMPLEMENTOS */}
-      <ComplementosVentana
-        id="sistemas"
-        items={complementosItems}
-        title={
-          <>
-            Otros productos <span>para tu ventana</span>
-          </>
-        }
-        lead="Complementos que combinan con venecianas para resolver luz, privacidad y confort."
-      />
-
       {/* CAROUSEL */}
       <CarouselSection>
         <CarouselInner>
@@ -851,38 +836,19 @@ export default function Venecianas({ onOpenAsesoramiento }) {
           />
         </CarouselInner>
       </CarouselSection>
-
-      {/* VALUE + CTA */}
-      <ValueSection>
-        <ValueInner>
-          <ValueCard>
-            <ValueTitle>
-              Te preparamos una <span>propuesta</span>
-            </ValueTitle>
-            <ValueText>
-              Te aconsejamos material (aluminio o madera), ancho de lama, color
-              y accionamiento. Medimos e instalamos en Castellón y Valencia para
-              que el resultado quede alineado, limpio y cómodo.
-            </ValueText>
-
-            <CtaRow>
-              <PrimaryCTA
-                to={`/contact?pack=${PACK_QUERY}`}
-                onClick={handleOpenCta}
-              >
-                Solicitar propuesta
-              </PrimaryCTA>
-
-              <SecondaryCTA
-                href={`tel:${CONTACT.phoneLandline}`}
-                onClick={handleCall}
-              >
-                Llamar
-              </SecondaryCTA>
-            </CtaRow>
-          </ValueCard>
-        </ValueInner>
-      </ValueSection>
+      {/* COMPLEMENTOS */}
+      <ComplementosVentana
+        id="sistemas"
+        items={complementosItems}
+        title={
+          <>
+            Otros productos <span>para tu ventana</span>
+          </>
+        }
+        lead="Complementos que combinan con venecianas para resolver luz, privacidad y confort."
+      />
+      {/* CONTACT CTA */}
+      <VenecianasCTA onOpenAsesoramiento={onOpenAsesoramiento} />
 
       {/* FAQ */}
       <FAQSection>

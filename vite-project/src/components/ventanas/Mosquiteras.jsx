@@ -8,7 +8,6 @@ import styled from "styled-components";
 import { CONTACT } from "../../config/contact";
 import { trackEvent } from "../../lib/analytics";
 
-import ContactCTA from "../../components/ContactCTA";
 import SlickCarouselLazy from "../../components/SlickCarouselLazy";
 import FaqAccordion from "../../components/faq/FaqAccordion";
 import ComplementosVentana from "../../components/ventanas/ComplementosVentana";
@@ -156,6 +155,7 @@ import panel960 from "../../assets/panelJapones/bedroomDarkPanel-960.webp";
 import venecianas320 from "../../assets/venecianas/oficina2-320.webp";
 import venecianas640 from "../../assets/venecianas/oficina2-640.webp";
 import venecianas960 from "../../assets/venecianas/oficina2-960.webp";
+
 /* =========================
    SEO helpers
 ========================= */
@@ -246,7 +246,12 @@ const HeroImg = styled.img`
 const HeroOverlay = styled.div`
   position: absolute;
   inset: 0;
-  background: linear-gradient(rgba(10, 0, 0, 0.38), rgba(0, 0, 0, 0.28));
+  background: linear-gradient(
+      135deg,
+      rgba(15, 23, 42, 0.54),
+      rgba(15, 23, 42, 0.34)
+    ),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.38));
 `;
 
 const HeroInner = styled.div`
@@ -284,7 +289,7 @@ const Sub = styled.p`
   margin: 1.1rem auto 0;
   font-size: 1.15rem;
   line-height: 1.7;
-  opacity: 0.92;
+  opacity: 0.94;
 `;
 
 /* ===== Feature strip ===== */
@@ -345,6 +350,7 @@ const FeatureText = styled.p`
   line-height: 1.45;
   color: rgba(17, 17, 17, 0.62);
 `;
+
 const DesktopTabsWrap = styled.div`
   display: block;
 
@@ -422,6 +428,7 @@ const MobileChevron = styled.span`
 const MobilePanel = styled.div`
   padding: 0 0 1rem;
 `;
+
 /* ===== Tabs area ===== */
 
 const Section = styled.section`
@@ -434,7 +441,7 @@ const TabsBar = styled.div`
   flex-wrap: wrap;
   gap: 0.55rem;
   margin-top: 1.6rem;
-  margin-left: 4.4rem;
+  margin-left: 1.4rem;
   align-items: center;
   width: fit-content;
   max-width: 100%;
@@ -445,6 +452,7 @@ const TabsBar = styled.div`
   border-radius: 999px;
   padding: 0.4rem;
 `;
+
 const TabButton = styled.button`
   appearance: none;
   border: 0;
@@ -841,6 +849,86 @@ const FAQInner = styled.div`
   }
 `;
 
+/* ===== Final CTA ===== */
+const FinalCtaSection = styled.section`
+  padding: 3.8rem 0 4.2rem;
+  background: #fff;
+`;
+
+const FinalCtaCard = styled.div`
+  border-radius: 28px;
+  padding: clamp(1.8rem, 4vw, 3rem);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.96),
+    rgba(15, 23, 42, 0.88)
+  );
+  box-shadow: 0 26px 90px rgba(15, 23, 42, 0.14);
+  text-align: center;
+`;
+
+const FinalCtaEyebrow = styled.p`
+  margin: 0 0 0.55rem;
+  color: rgba(243, 210, 162, 0.92);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+  font-weight: 800;
+`;
+
+const FinalCtaTitle = styled.h2`
+  margin: 0;
+  color: #fffdf9;
+  font-size: clamp(1.9rem, 3vw, 2.7rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const FinalCtaText = styled.p`
+  max-width: 720px;
+  margin: 1rem auto 0;
+  color: rgba(255, 248, 240, 0.82);
+  line-height: 1.8;
+  font-size: 1rem;
+`;
+
+const FinalCtaActions = styled.div`
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+`;
+
+const WhatsAppCta = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.9rem 1rem;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+  text-decoration: none;
+  transition: transform 240ms ease, background 240ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+  }
+`;
+
 /* =========================
    Component
 ========================= */
@@ -867,12 +955,13 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         label: "Enrollables",
         title: "Mosquiteras enrollables a medida",
         images: responsiveImages.mEnrollable,
-        value: "Apertura práctica y estética discreta para uso diario.",
-        text: "Ideales para ventanas: se recogen cuando no las necesitas y mantienen una línea limpia en el hueco.",
+        value: "La opción más práctica para ventanas de uso frecuente.",
+        text: "Discretas, cómodas y fáciles de recoger cuando no las necesitas. Son una solución muy equilibrada para dormitorios, cocinas y estancias donde buscas ventilación diaria sin perder limpieza visual.",
         bullets: [
-          "Recogida superior con muelle",
-          "Guías laterales para mejor cierre",
-          "Fabricación a medida",
+          "Ideales para ventanas de uso habitual",
+          "Recogida superior limpia y cómoda",
+          "Aspecto discreto e integrado",
+          "Buena combinación entre funcionalidad y estética",
         ],
       },
       {
@@ -880,12 +969,14 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         label: "Correderas",
         title: "Mosquiteras correderas para puertas y ventanales",
         images: responsiveImages.mPuerta,
-        value: "Perfectas para aperturas laterales y balconeras.",
-        text: "Se deslizan suavemente sobre carriles y son una solución robusta para grandes superficies acristaladas.",
+        value:
+          "Pensadas para balconeras y huecos correderos de paso frecuente.",
+        text: "Funcionan especialmente bien en puertas correderas y grandes ventanales, donde necesitas una apertura cómoda y un sistema resistente para un uso continuo.",
         bullets: [
-          "Deslizamiento cómodo",
-          "Ideales para correderas",
-          "Estructura resistente",
+          "Perfectas para balconeras y ventanales",
+          "Deslizamiento suave y cómodo",
+          "Estructura estable y duradera",
+          "Muy adecuadas para zonas de paso",
         ],
       },
       {
@@ -893,12 +984,14 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         label: "Plisadas",
         title: "Mosquiteras plisadas",
         images: responsiveImages.mExtensible,
-        value: "Solución simple y funcional para usos puntuales.",
-        text: "Prácticas para segundas residencias o espacios donde buscas una opción flexible y rápida.",
+        value:
+          "Una solución cómoda y elegante para puertas de terraza o patio.",
+        text: "Muy apreciadas por su apertura lateral y por lo bien que funcionan en accesos al exterior. Resultan prácticas, visualmente ligeras y muy cómodas en zonas de uso diario.",
         bullets: [
-          "Instalación sencilla",
-          "Buen equilibrio calidad/precio",
-          "Uso flexible",
+          "Apertura lateral cómoda",
+          "Muy útiles en puertas de terraza o patio",
+          "Poco invasivas visualmente",
+          "Buenas para uso intensivo y familiar",
         ],
       },
       {
@@ -906,12 +999,13 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         label: "Fijas",
         title: "Mosquiteras fijas",
         images: responsiveImages.mFija,
-        value: "Protección permanente con diseño limpio.",
-        text: "Recomendadas para ventanas de uso constante cuando no necesitas apertura de la mosquitera.",
+        value: "Protección permanente para huecos donde no necesitas apertura.",
+        text: "Una opción sencilla, estable y eficaz para ventanas con menor manipulación. Son muy recomendables cuando buscas una solución duradera, con poco mantenimiento y presencia discreta.",
         bullets: [
-          "Estructura estable",
+          "Protección continua todo el año",
+          "Estructura firme y estable",
           "Mantenimiento mínimo",
-          "Alta durabilidad",
+          "Muy adecuadas para huecos de poco acceso",
         ],
       },
     ],
@@ -1003,7 +1097,7 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
             "@type": "ListItem",
             position: 2,
             name: "Mosquiteras",
-            item: `${baseUrl}/mosquiteras`,
+            item: canonical,
           },
         ],
       },
@@ -1023,7 +1117,6 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
     []
   );
 
-  // 5 imágenes: puedes repetir sin problema
   const carouselImages = useMemo(
     () => [
       responsiveImages.mosquiteraPatio[1200],
@@ -1106,34 +1199,34 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
   const FAQ_ITEMS = useMemo(
     () => [
       {
-        q: "¿Qué tipo de mosquitera necesito?",
-        a: "Depende de la apertura y el uso: enrollable para ventanas de uso diario, corredera para balconeras y ventanales, fija para protección permanente y extensible para usos más puntuales.",
+        q: "¿Qué tipo de mosquitera es mejor para mi ventana o puerta?",
+        a: "Depende del tipo de apertura, del espacio disponible y de la frecuencia de uso. Las enrollables suelen funcionar muy bien en ventanas de uso diario; las correderas, en balconeras y ventanales; las plisadas, en accesos al exterior; y las fijas, en huecos donde no necesitas apertura de la mosquitera.",
         aText:
-          "Depende de la apertura y el uso: enrollable para ventanas de uso diario, corredera para balconeras y ventanales, fija para protección permanente y extensible para usos más puntuales.",
+          "Depende del tipo de apertura, del espacio disponible y de la frecuencia de uso. Las enrollables suelen funcionar muy bien en ventanas de uso diario; las correderas, en balconeras y ventanales; las plisadas, en accesos al exterior; y las fijas, en huecos donde no necesitas apertura de la mosquitera.",
       },
       {
-        q: "¿Se pueden instalar sin obras?",
-        a: "Sí. La mayoría de sistemas se instalan de forma limpia y rápida, ajustados al hueco y al tipo de carpintería.",
+        q: "¿Se pueden instalar sin hacer obra?",
+        a: "Sí. En la mayoría de los casos la instalación es limpia, rápida y sin obra, adaptando el sistema al hueco y al tipo de carpintería existente.",
         aText:
-          "Sí. La mayoría de sistemas se instalan de forma limpia y rápida, ajustados al hueco y al tipo de carpintería.",
+          "Sí. En la mayoría de los casos la instalación es limpia, rápida y sin obra, adaptando el sistema al hueco y al tipo de carpintería existente.",
       },
       {
-        q: "¿Son compatibles con persianas o ventanas oscilobatientes?",
-        a: "En muchos casos sí. Te recomendamos el sistema según el espacio disponible y el tipo de apertura para evitar roces y asegurar cierre correcto.",
+        q: "¿Son compatibles con persianas y ventanas oscilobatientes?",
+        a: "En muchos casos sí, pero depende del espacio disponible y del sistema existente. Por eso recomendamos revisar cada hueco antes de decidir la solución final.",
         aText:
-          "En muchos casos sí. Te recomendamos el sistema según el espacio disponible y el tipo de apertura para evitar roces y asegurar cierre correcto.",
+          "En muchos casos sí, pero depende del espacio disponible y del sistema existente. Por eso recomendamos revisar cada hueco antes de decidir la solución final.",
       },
       {
-        q: "¿Qué mantenimiento requieren?",
-        a: "Limpieza sencilla: aspirado suave o paño húmedo. Te aconsejamos el tejido/malla más adecuado si hay mascotas o mucho uso.",
+        q: "¿Qué mantenimiento necesitan?",
+        a: "Muy poco. Normalmente basta con una limpieza suave periódica para retirar polvo y mantener la malla en buen estado. Te indicamos también el sistema más adecuado si hay mascotas o uso intensivo.",
         aText:
-          "Limpieza sencilla: aspirado suave o paño húmedo. Te aconsejamos el tejido/malla más adecuado si hay mascotas o mucho uso.",
+          "Muy poco. Normalmente basta con una limpieza suave periódica para retirar polvo y mantener la malla en buen estado. Te indicamos también el sistema más adecuado si hay mascotas o uso intensivo.",
       },
       {
         q: "¿Hacéis medición e instalación en Castellón y Valencia?",
-        a: "Sí. Medimos y montamos para que el encaje sea perfecto, con un funcionamiento suave y remates discretos.",
+        a: "Sí. Realizamos medición e instalación profesional para asegurar un ajuste preciso, un funcionamiento cómodo y unos remates limpios.",
         aText:
-          "Sí. Medimos y montamos para que el encaje sea perfecto, con un funcionamiento suave y remates discretos.",
+          "Sí. Realizamos medición e instalación profesional para asegurar un ajuste preciso, un funcionamiento cómodo y unos remates limpios.",
       },
     ],
     []
@@ -1148,17 +1241,15 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
 
-        {/* Preload hero (LCP) */}
         <link
           rel="preload"
           as="image"
           href={hero_1280}
           imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-          imageSizes="100vw"
+          imageSizes={HERO_SIZES}
           fetchPriority="high"
         />
 
-        {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="es_ES" />
@@ -1170,7 +1261,6 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
 
-        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
@@ -1180,13 +1270,12 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
-      {/* HERO */}
       <Hero>
         <HeroMedia aria-hidden="true">
           <HeroImg
             src={hero_1280}
             srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-            sizes="100vw"
+            sizes={HERO_SIZES}
             width="1920"
             height="1080"
             loading="eager"
@@ -1198,55 +1287,58 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         </HeroMedia>
 
         <HeroInner>
-          <Eyebrow>Mosquiteras · Confort & ventilación</Eyebrow>
+          <Eyebrow>Mosquiteras a medida · confort diario</Eyebrow>
           <Title>
-            Mosquiteras <span>a medida</span>
+            Ventila con libertad, <span>sin renunciar</span> al confort
           </Title>
           <Sub>
-            Ventila sin insectos con una instalación limpia y ajuste perfecto.
-            Te recomendamos el sistema ideal según tu apertura y uso diario.
+            Mosquiteras a medida para ventanas, balconeras y puertas: soluciones
+            discretas, cómodas y bien acabadas para vivir con más ventilación,
+            más tranquilidad y un uso diario sin complicaciones.
           </Sub>
         </HeroInner>
       </Hero>
 
-      {/* FEATURE STRIP */}
       <Features>
         <FeaturesGrid>
           <Feature>
-            <FeatureTitle>Instalación limpia</FeatureTitle>
-            <FeatureText>
-              Sin complicaciones: encaje perfecto y remates discretos.
-            </FeatureText>
-          </Feature>
-          <Feature>
-            <FeatureTitle>Uso diario cómodo</FeatureTitle>
-            <FeatureText>
-              Enrollables y correderas pensadas para abrir/cerrar sin esfuerzo.
-            </FeatureText>
-          </Feature>
-          <Feature>
             <FeatureTitle>Hechas a medida</FeatureTitle>
             <FeatureText>
-              Para que cierre bien, dure y funcione suave.
+              Para que encajen bien, cierren correctamente y se integren con
+              discreción.
+            </FeatureText>
+          </Feature>
+          <Feature>
+            <FeatureTitle>Comodidad real de uso</FeatureTitle>
+            <FeatureText>
+              Sistemas pensados para abrir, cerrar y limpiar sin esfuerzo en el
+              día a día.
+            </FeatureText>
+          </Feature>
+          <Feature>
+            <FeatureTitle>Instalación profesional</FeatureTitle>
+            <FeatureText>
+              Medición precisa, montaje limpio y remates cuidados para un
+              resultado duradero.
             </FeatureText>
           </Feature>
         </FeaturesGrid>
       </Features>
 
-      {/* TABS + PANEL */}
       <Section aria-label="Tipos de mosquiteras">
         <Container>
           <SectionTop>
-            <Kicker>Tipos</Kicker>
+            <Kicker>Tipos de mosquiteras</Kicker>
             <SectionTitle>
-              Elige el sistema <span>adecuado</span>
+              Te ayudamos a elegir la opción <span>más adecuada</span>
             </SectionTitle>
             <SectionLead>
-              Si nos dices el tipo de ventana/puerta y el uso, te orientamos con
-              honestidad (y sin sobredimensionar).
+              No todas las aperturas necesitan el mismo sistema. Te orientamos
+              según el tipo de ventana o puerta, la frecuencia de uso y el nivel
+              de confort que buscas, para que la solución funcione bien de
+              verdad.
             </SectionLead>
 
-            {/* DESKTOP: tabs */}
             <DesktopTabsWrap>
               <TabsBar
                 role="tablist"
@@ -1270,7 +1362,6 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
             </DesktopTabsWrap>
           </SectionTop>
 
-          {/* DESKTOP: single panel */}
           <DesktopTabsWrap>
             {current && (
               <Panel
@@ -1307,13 +1398,13 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
                       to={`/contact?pack=${PACK_QUERY}`}
                       onClick={handleOpenCta}
                     >
-                      Pedir propuesta
+                      Solicitar asesoramiento
                     </Primary>
                     <Secondary
                       to={`/contact?pack=${PACK_QUERY}`}
                       onClick={handleOpenCta}
                     >
-                      Hablar con nosotros
+                      Pedir presupuesto
                     </Secondary>
                   </Actions>
                 </Content>
@@ -1321,7 +1412,6 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
             )}
           </DesktopTabsWrap>
 
-          {/* MOBILE: accordion cards */}
           <MobileOptions aria-label="Opciones de mosquiteras para móvil">
             {tabs.map((t) => {
               const isOpen = t.id === active;
@@ -1392,7 +1482,7 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
                               to={`/contact?pack=${PACK_QUERY}`}
                               onClick={handleOpenCta}
                             >
-                              Solicitar información
+                              Solicitar asesoramiento
                             </Secondary>
                           </Actions>
                         </Content>
@@ -1406,10 +1496,11 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
 
           <HelpStrip aria-label="Ayuda y contacto">
             <HelpText>
-              <strong>¿Te recomendamos el sistema ideal?</strong>
+              <strong>¿No sabes cuál elegir?</strong>
               <span>
-                Envíanos una foto y medidas aproximadas. Te orientamos y te
-                preparamos una propuesta ajustada.
+                Envíanos una foto del hueco y unas medidas aproximadas. Te
+                orientamos con honestidad y te recomendamos la solución más
+                práctica para tu caso.
               </span>
             </HelpText>
 
@@ -1430,15 +1521,27 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         </Container>
       </Section>
 
-      {/* CONTACT CTA */}
-      <ContactCTA
-        onOpenAsesoramiento={onOpenAsesoramiento}
-        pack={PACK_LABEL}
-        source={CTA_SOURCE}
-        buttonText="Solicitar información"
-      />
+      <CarouselSection>
+        <CarouselInner>
+          <SectionTop>
+            <Kicker>Inspiración</Kicker>
+            <SectionTitle>
+              Soluciones bien resueltas que <span>mejoran el día a día</span>
+            </SectionTitle>
+            <SectionLead>
+              Una buena mosquitera no solo protege: también debe integrarse
+              bien, funcionar con suavidad y mantener una estética limpia en la
+              ventana o la puerta.
+            </SectionLead>
+          </SectionTop>
 
-      {/* COMPLEMENTOS */}
+          <SlickCarouselLazy
+            images={carouselImages}
+            settings={sliderSettings}
+          />
+        </CarouselInner>
+      </CarouselSection>
+
       <ComplementosVentana
         id="sistemas"
         items={complementosItems}
@@ -1450,28 +1553,6 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         lead="Complementos que combinan con mosquiteras para resolver luz, privacidad y confort."
       />
 
-      {/* INSPIRACIÓN (carousel) */}
-      <CarouselSection>
-        <CarouselInner>
-          <SectionTop>
-            <Kicker>Inspiración</Kicker>
-            <SectionTitle>
-              Detalles que se <span>notan</span>
-            </SectionTitle>
-            <SectionLead>
-              Instalación limpia, malla bien tensada y un cierre correcto: eso
-              es lo que marca la diferencia.
-            </SectionLead>
-          </SectionTop>
-
-          <SlickCarouselLazy
-            images={carouselImages}
-            settings={sliderSettings}
-          />
-        </CarouselInner>
-      </CarouselSection>
-
-      {/* FAQ */}
       <FAQSection>
         <FAQInner>
           <SectionTop>
@@ -1480,7 +1561,8 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
               Preguntas <span>frecuentes</span>
             </SectionTitle>
             <SectionLead>
-              Antes de medir: compatibilidades, tipos y mantenimiento.
+              Compatibilidades, tipos de apertura, instalación y mantenimiento:
+              resolvemos las dudas más habituales antes de elegir tu sistema.
             </SectionLead>
           </SectionTop>
 
@@ -1493,6 +1575,31 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
           />
         </FAQInner>
       </FAQSection>
+
+      <FinalCtaSection>
+        <Container>
+          <FinalCtaCard>
+            <FinalCtaEyebrow>Estamos aquí para ayudarte</FinalCtaEyebrow>
+            <FinalCtaTitle>
+              Te ayudamos a elegir la mosquitera <span>adecuada</span>
+            </FinalCtaTitle>
+            <FinalCtaText>
+              Si nos envías una foto del hueco y unas medidas aproximadas, te
+              orientamos con honestidad y te preparamos una propuesta ajustada a
+              tu espacio y a tu forma de uso.
+            </FinalCtaText>
+
+            <FinalCtaActions>
+              <Secondary
+                to={`/contact?pack=${PACK_QUERY}`}
+                onClick={handleOpenCta}
+              >
+                Solicitar asesoramiento
+              </Secondary>
+            </FinalCtaActions>
+          </FinalCtaCard>
+        </Container>
+      </FinalCtaSection>
 
       <StickyCtaButton message="Hola, me gustaría información sobre mosquiteras a medida. Gracias." />
     </Page>
