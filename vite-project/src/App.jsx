@@ -1,5 +1,4 @@
-// // src/App.jsx
-import { lazy, Suspense, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 
 import AutomatizacionCompleta from "./components/automatizacion/AutomatizacionCompleta";
@@ -17,6 +16,9 @@ import Propuestas from "./pages/Propuestas";
 import Limpieza from "./pages/Limpieza";
 import Nosotros from "./pages/Nosotros";
 import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
+
+import CookieBanner from "./components/CookieBanner";
+import { initAnalyticsIfAllowed } from "./utils/loadAnalytics";
 
 const QuickEnquiryModal = lazy(() =>
   import("./components/contact/QuickEnquiryModal")
@@ -38,7 +40,6 @@ const AdminResetPassword = lazy(() =>
 const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
 
 export default function App() {
-  // Form
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const [enquiryPack, setEnquiryPack] = useState("General");
   const [enquirySource, setEnquirySource] = useState("cta");
@@ -49,17 +50,21 @@ export default function App() {
     [pathname]
   );
 
+  useEffect(() => {
+    initAnalyticsIfAllowed();
+  }, []);
+
   function onOpenAsesoramiento(packLabel = "General", source = "cta") {
     setEnquiryPack(packLabel);
     setEnquirySource(source);
     setEnquiryOpen(true);
   }
+
   return (
     <>
       <ScrollToTop />
       {!isAdminRoute && <Navbar />}
 
-      {/* ✅ One Suspense boundary for all lazy routes */}
       <Suspense fallback={null}>
         <Routes>
           <Route
@@ -67,13 +72,11 @@ export default function App() {
             element={<HomePage onOpenAsesoramiento={onOpenAsesoramiento} />}
           />
 
-          {/* PROPUESTAS */}
           <Route
             path="/propuestas"
             element={<Propuestas onOpenAsesoramiento={onOpenAsesoramiento} />}
           />
 
-          {/* AUTOMATIZACION */}
           <Route
             path="/automatizacion"
             element={
@@ -97,7 +100,6 @@ export default function App() {
             }
           />
 
-          {/* CONTACTO */}
           <Route
             path="/contact"
             element={<ContactPage onOpenAsesoramiento={onOpenAsesoramiento} />}
@@ -106,7 +108,7 @@ export default function App() {
             path="/nosotros"
             element={<Nosotros onOpenAsesoramiento={onOpenAsesoramiento} />}
           />
-          {/* SERVICIOS / CATEGORIAS */}
+
           <Route
             path="/panel-japones"
             element={<PanelJapones onOpenAsesoramiento={onOpenAsesoramiento} />}
@@ -142,12 +144,10 @@ export default function App() {
             element={<Limpieza onOpenAsesoramiento={onOpenAsesoramiento} />}
           />
 
-          {/* LEGALES */}
           <Route path="/aviso-legal" element={<AvisoLegal />} />
           <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
           <Route path="/politica-cookies" element={<PoliticaCookies />} />
 
-          {/* AUTH */}
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route
             path="/admin/reset-password"
@@ -156,16 +156,6 @@ export default function App() {
         </Routes>
       </Suspense>
 
-      {/* ✅ Modal only loads when needed */}
-      {/* {isAsesoramientoOpen && (
-        <Suspense fallback={null}>
-          <AsesoramientoModal
-            open={isAsesoramientoOpen}
-            packLabel={modalPack}
-            onClose={closeAsesoramiento}
-          />
-        </Suspense>
-      )} */}
       {enquiryOpen && (
         <Suspense fallback={null}>
           <QuickEnquiryModal
@@ -176,6 +166,8 @@ export default function App() {
           />
         </Suspense>
       )}
+
+      <CookieBanner />
 
       {!isAdminRoute && <Footer />}
     </>

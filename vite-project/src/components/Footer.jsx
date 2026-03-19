@@ -1,8 +1,9 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { CONTACT } from "../config/contact";
 import { trackEvent } from "../lib/analytics";
+import { openCookiePreferences } from "../utils/cookieConsent";
 
 export default function Footer({ onOpenAsesoramiento }) {
   const year = new Date().getFullYear();
@@ -107,6 +108,9 @@ export default function Footer({ onOpenAsesoramiento }) {
                 Política de privacidad
               </ColLink>
               <ColLink to="/politica-cookies">Política de cookies</ColLink>
+              <ColButton type="button" onClick={openCookiePreferences}>
+                Configurar cookies
+              </ColButton>
             </Col>
 
             <Col>
@@ -198,6 +202,9 @@ export default function Footer({ onOpenAsesoramiento }) {
                 <MobileLink to="/politica-cookies">
                   Política de cookies
                 </MobileLink>
+                <MobileButton type="button" onClick={openCookiePreferences}>
+                  Configurar cookies
+                </MobileButton>
               </AccBody>
             </Acc>
 
@@ -472,7 +479,7 @@ const ColTitle = styled.div`
   }
 `;
 
-const ColLink = styled(Link)`
+const BaseLinkStyles = css`
   position: relative;
   text-decoration: none;
   color: rgba(244, 244, 245, 0.86);
@@ -495,6 +502,7 @@ const ColLink = styled(Link)`
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
   }
+
   &:hover::after {
     width: 100%;
   }
@@ -504,6 +512,15 @@ const ColLink = styled(Link)`
     outline-offset: 3px;
     border-radius: 10px;
   }
+`;
+const ColLink = styled(Link)`
+  ${BaseLinkStyles}
+`;
+
+const ColButton = styled.button`
+  all: unset;
+  cursor: pointer;
+  ${BaseLinkStyles}
 `;
 
 const Divider = styled.div`
@@ -687,7 +704,43 @@ const MobileLink = styled(ColLink)`
     bottom: -2px;
   }
 `;
+const MobileButton = styled.button`
+  all: unset;
+  cursor: pointer;
 
+  position: relative;
+  text-decoration: none;
+  color: rgba(244, 244, 245, 0.86);
+  line-height: 1.55;
+  width: fit-content;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0%;
+    height: 2px;
+    border-radius: 999px;
+    background: ${({ theme }) => theme.colors.primary};
+    opacity: 0.85;
+    transition: width 220ms ease;
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(229, 0, 126, 0.28);
+    outline-offset: 3px;
+    border-radius: 10px;
+  }
+`;
 const MobileAction = styled(Action)`
   width: 100%;
   padding: 0.15rem 0;

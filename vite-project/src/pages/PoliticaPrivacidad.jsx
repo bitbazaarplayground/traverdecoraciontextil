@@ -17,15 +17,17 @@ export default function PoliticaPrivacidad() {
   const metaDescription =
     "Información sobre el tratamiento de datos personales, finalidades, base legal, conservación, destinatarios y derechos del usuario.";
 
-  // Datos legales (confirmados por ti)
   const legal = {
     holder: "TRAVER TOLDOS Y ENROLLABLES SL",
     nif: "B72908809",
-    address: "Carrer de Sant Felip, 67, 12550 Almassora, Castellón, Spain",
+    address:
+      typeof CONTACT.address === "string"
+        ? CONTACT.address
+        : `${CONTACT.address.streetAddress}, ${CONTACT.address.postalCode}, ${CONTACT.address.addressLocality}`,
     legalEmail: CONTACT.email,
+    phone: CONTACT.phoneLandline,
   };
 
-  // JSON-LD básico (página informativa)
   const webPageJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -45,13 +47,11 @@ export default function PoliticaPrivacidad() {
         <meta name="description" content={metaDescription} />
         <link rel="canonical" href={canonical} />
 
-        {/* Open Graph */}
         <meta property="og:title" content={metaTitle} />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={canonical} />
 
-        {/* Twitter */}
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content={metaTitle} />
         <meta name="twitter:description" content={metaDescription} />
@@ -68,8 +68,9 @@ export default function PoliticaPrivacidad() {
             Política de <span>privacidad</span>
           </Title>
           <Sub>
-            Aquí explicamos qué datos tratamos, con qué finalidad, durante
-            cuánto tiempo y cómo puedes ejercer tus derechos.
+            En esta página te explicamos cómo tratamos tus datos personales,
+            para qué los utilizamos, durante cuánto tiempo los conservamos y
+            cuáles son tus derechos.
           </Sub>
 
           <BackRow>
@@ -83,122 +84,177 @@ export default function PoliticaPrivacidad() {
           <Card>
             <CardInner>
               <H2>1. Responsable del tratamiento</H2>
-              <P>
-                <strong>Titular / Razón social:</strong> {legal.holder}
+              <P>El responsable del tratamiento de los datos personales es:</P>
+
+              <InfoBox>
+                <strong>{legal.holder}</strong>
                 <br />
                 <strong>NIF:</strong> {legal.nif}
                 <br />
-                <strong>Domicilio:</strong> {legal.address}
-                <br />
                 <strong>Email:</strong>{" "}
                 <A href={`mailto:${legal.legalEmail}`}>{legal.legalEmail}</A>
-              </P>
+                <br />
+                <strong>Teléfono:</strong> {legal.phone}
+                <br />
+                <strong>Dirección:</strong> {legal.address}
+              </InfoBox>
 
               <Divider />
 
               <H2>2. Datos personales que tratamos</H2>
               <P>
                 Podemos tratar los siguientes datos cuando el usuario los
-                facilita:
+                facilita voluntariamente:
               </P>
               <Ul>
                 <li>Nombre y apellidos</li>
                 <li>Correo electrónico</li>
                 <li>Número de teléfono</li>
                 <li>Dirección postal</li>
-                <li>Información incluida en mensajes o solicitudes</li>
+                <li>
+                  Información incluida en mensajes, formularios o solicitudes
+                </li>
               </Ul>
 
               <Divider />
 
               <H2>3. Finalidades del tratamiento</H2>
+              <P>
+                Los datos personales que nos facilites podrán utilizarse para:
+              </P>
               <Ul>
                 <li>
-                  Atender solicitudes de información, asesoramiento o
+                  Atender consultas realizadas por formulario, email o teléfono.
+                </li>
+                <li>
+                  Gestionar solicitudes de información, asesoramiento o
                   presupuesto.
+                </li>
+                <li>
+                  Contactar contigo para ofrecerte atención personalizada.
                 </li>
                 <li>
                   Gestionar citas y comunicaciones relacionadas con el servicio.
                 </li>
-                <li>Mejorar la calidad del servicio y la experiencia web.</li>
+                <li>
+                  Mejorar la experiencia de usuario y el funcionamiento de la
+                  web, incluyendo análisis estadístico, solo cuando proceda y
+                  exista consentimiento para ello.
+                </li>
               </Ul>
 
               <Divider />
 
               <H2>4. Base legal</H2>
+              <P>El tratamiento de tus datos se basa en:</P>
               <Ul>
                 <li>
-                  <strong>Consentimiento</strong> del usuario (p. ej., al enviar
-                  un formulario).
+                  <strong>Consentimiento</strong> del usuario al enviar
+                  formularios o contactar con nosotros.
                 </li>
                 <li>
-                  <strong>Medidas precontractuales</strong> (p. ej., preparar un
-                  presupuesto solicitado).
+                  <strong>Medidas precontractuales</strong> cuando solicitas
+                  información o presupuesto sobre nuestros servicios.
                 </li>
                 <li>
-                  <strong>Interés legítimo</strong>, cuando proceda (p. ej.,
-                  seguridad y prevención de abuso).
+                  <strong>Interés legítimo</strong>, cuando resulte aplicable,
+                  por ejemplo para garantizar la seguridad del sitio y prevenir
+                  usos indebidos.
                 </li>
               </Ul>
 
               <Divider />
 
-              <H2>5. Conservación</H2>
+              <H2>5. Conservación de los datos</H2>
               <P>
-                Conservaremos los datos durante el tiempo necesario para atender
-                la solicitud, mantener la relación comercial o cumplir
-                obligaciones legales. Posteriormente, se bloquearán o eliminarán
-                de forma segura.
+                Los datos personales se conservarán durante el tiempo necesario
+                para atender tu solicitud, mantener la relación comercial si
+                existiera y cumplir con las obligaciones legales aplicables.
+                Posteriormente, serán bloqueados o eliminados de forma segura.
               </P>
 
               <Divider />
 
-              <H2>6. Destinatarios y encargados</H2>
+              <H2>6. Destinatarios de los datos</H2>
+              <P>No se cederán datos a terceros salvo obligación legal.</P>
               <P>
-                Para prestar el servicio, podemos utilizar proveedores
-                tecnológicos que actúan como encargados del tratamiento:
+                No obstante, para la prestación del servicio podemos utilizar
+                proveedores tecnológicos que actúan como encargados del
+                tratamiento.
               </P>
               <Ul>
                 <li>
-                  <strong>Supabase</strong> (almacenamiento/gestión de datos).
+                  <strong>Supabase</strong> (almacenamiento y gestión de datos).
                 </li>
                 <li>
-                  <strong>Netlify</strong> (alojamiento y/o gestión de
+                  <strong>Netlify</strong> (alojamiento web y/o gestión de
                   formularios).
                 </li>
+                <li>
+                  <strong>Google Analytics</strong> o herramientas equivalentes
+                  de analítica, únicamente cuando el usuario haya dado su
+                  consentimiento.
+                </li>
               </Ul>
-              <P>No cedemos datos a terceros, salvo obligación legal.</P>
 
               <Divider />
 
               <H2>7. Derechos del usuario</H2>
+              <P>Tienes derecho a:</P>
+              <Ul>
+                <li>Acceder a tus datos personales</li>
+                <li>Solicitar la rectificación de datos inexactos</li>
+                <li>Solicitar su supresión</li>
+                <li>Oponerte al tratamiento</li>
+                <li>Solicitar la limitación del tratamiento</li>
+                <li>Solicitar la portabilidad de tus datos</li>
+              </Ul>
+
               <P>
-                Puedes ejercer tus derechos de acceso, rectificación, supresión,
-                oposición, limitación y portabilidad enviando un email a{" "}
+                Puedes ejercer estos derechos enviando un email a{" "}
                 <A href={`mailto:${legal.legalEmail}`}>{legal.legalEmail}</A>.
               </P>
+
               <P>
                 También puedes presentar una reclamación ante la Agencia
                 Española de Protección de Datos (AEPD) si consideras que tus
-                derechos no han sido atendidos.
+                derechos no han sido atendidos correctamente.
               </P>
 
               <Divider />
 
-              <H2>8. Seguridad</H2>
+              <H2>8. Seguridad de los datos</H2>
               <P>
                 Aplicamos medidas técnicas y organizativas razonables para
-                proteger los datos personales frente a accesos no autorizados,
-                pérdida o alteración.
+                garantizar la seguridad de los datos personales y evitar su
+                pérdida, alteración, acceso no autorizado o uso indebido.
               </P>
 
               <Divider />
 
-              <H2>9. Cambios</H2>
+              <H2>9. Cookies</H2>
               <P>
-                Podemos actualizar esta política para adaptarla a cambios
-                legales o técnicos. La fecha de la última actualización se
-                reflejará en esta página.
+                Esta web utiliza cookies técnicas necesarias para su
+                funcionamiento y, en su caso, cookies analíticas sujetas al
+                consentimiento del usuario.
+              </P>
+
+              <P>
+                Puedes consultar más información en nuestra{" "}
+                <StyledRouterLink to="/politica-cookies">
+                  Política de cookies
+                </StyledRouterLink>
+                .
+              </P>
+
+              <Divider />
+
+              <H2>10. Cambios en esta política</H2>
+              <P>
+                Podemos actualizar esta política de privacidad para adaptarla a
+                cambios legales, técnicos o de funcionamiento del sitio web. La
+                fecha de la última actualización se mostrará siempre en esta
+                página.
               </P>
 
               <FooterRow>
@@ -343,6 +399,25 @@ const A = styled.a`
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
   }
+`;
+
+const StyledRouterLink = styled(Link)`
+  color: rgba(0, 0, 0, 0.78);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const InfoBox = styled.div`
+  margin-top: 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.04);
+  color: rgba(0, 0, 0, 0.72);
+  line-height: 1.75;
 `;
 
 const Divider = styled.hr`
