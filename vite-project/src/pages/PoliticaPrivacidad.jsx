@@ -1,3 +1,5 @@
+// pages/PoliticaPrivacidad.jsx
+
 import { Helmet } from "react-helmet-async";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
