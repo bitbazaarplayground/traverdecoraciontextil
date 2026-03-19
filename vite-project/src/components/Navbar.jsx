@@ -248,7 +248,7 @@ export default function Navbar({ hidden }) {
               >
                 Propuestas
               </StyledLink>
-              <StyledLink to="/#about" $scrolled={scrolled} $isHome={isHome}>
+              <StyledLink to="/nosotros" $scrolled={scrolled} $isHome={isHome}>
                 Nosotros
               </StyledLink>
               <StyledLink to="/contact" $scrolled={scrolled} $isHome={isHome}>
@@ -309,7 +309,7 @@ export default function Navbar({ hidden }) {
               >
                 <MobileLink to="/services">Servicios</MobileLink>
                 <MobileLink to="/propuestas">Propuestas</MobileLink>
-                <MobileLink to="/about">Nosotros</MobileLink>
+                <MobileLink to="/nosotros">Nosotros</MobileLink>
                 <MobileLink to="/contact">Contacto</MobileLink>
               </Motion.motion.aside>
             </>
@@ -324,7 +324,7 @@ export default function Navbar({ hidden }) {
           <MobileMenuBase data-open={menuOpen ? "true" : "false"}>
             <MobileLink to="/services">Servicios</MobileLink>
             <MobileLink to="/propuestas">Propuestas</MobileLink>
-            <MobileLink to="/about">Nosotros</MobileLink>
+            <MobileLink to="/nosotros">Nosotros</MobileLink>
             <MobileLink to="/contact">Contacto</MobileLink>
           </MobileMenuBase>
         </>

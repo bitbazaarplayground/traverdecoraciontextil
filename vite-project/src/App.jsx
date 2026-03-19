@@ -15,6 +15,7 @@ import HomePage from "./pages/HomePage";
 import Propuestas from "./pages/Propuestas";
 
 import Limpieza from "./pages/Limpieza";
+import Nosotros from "./pages/Nosotros";
 import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
 
 const QuickEnquiryModal = lazy(() =>
@@ -101,7 +102,10 @@ export default function App() {
             path="/contact"
             element={<ContactPage onOpenAsesoramiento={onOpenAsesoramiento} />}
           />
-
+          <Route
+            path="/nosotros"
+            element={<Nosotros onOpenAsesoramiento={onOpenAsesoramiento} />}
+          />
           {/* SERVICIOS / CATEGORIAS */}
           <Route
             path="/panel-japones"

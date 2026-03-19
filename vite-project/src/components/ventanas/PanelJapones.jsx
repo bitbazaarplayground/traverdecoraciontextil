@@ -1,7 +1,6 @@
 // src/pages/servicios/PanelJapones.jsx
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import ServiceHero from "../../components/heroes/ServiceHero";
 import { CONTACT } from "../../config/contact";
@@ -325,106 +324,6 @@ const CarouselInner = styled.div`
 
   @media (max-width: 768px) {
     width: min(1120px, calc(100% - 2rem));
-  }
-`;
-
-/* =========================
-   VALUE / CTA CARD
-========================= */
-
-const ValueSection = styled.section`
-  padding: clamp(3.5rem, 5vw, 5.5rem) 0;
-  background: #fff;
-`;
-
-const ValueInner = styled.div`
-  width: min(1120px, calc(100% - 3rem));
-  margin: 0 auto;
-
-  @media (max-width: 768px) {
-    width: min(1120px, calc(100% - 2rem));
-  }
-`;
-
-const ValueCard = styled.div`
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.78);
-  padding: 2.6rem 2.3rem;
-  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-
-  @media (max-width: 520px) {
-    padding: 2.1rem 1.4rem;
-  }
-`;
-
-const ValueTitle = styled.h2`
-  margin: 0 0 0.9rem;
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: rgba(17, 17, 17, 0.95);
-
-  span {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.7rem;
-  }
-`;
-
-const ValueText = styled.p`
-  margin: 0;
-  max-width: 78ch;
-  font-size: 1.06rem;
-  line-height: 1.75;
-  color: rgba(17, 17, 17, 0.62);
-`;
-
-const CtaRow = styled.div`
-  display: flex;
-  gap: 0.9rem;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top: 1.7rem;
-`;
-
-const PrimaryCTA = styled(Link)`
-  display: inline-flex;
-  padding: 0.95rem 2.1rem;
-  border-radius: 999px;
-  background: #111;
-  color: #fff;
-  text-decoration: none;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    opacity: 0.92;
-  }
-`;
-
-const SecondaryCTA = styled.a`
-  display: inline-flex;
-  padding: 0.95rem 1.4rem;
-  border-radius: 999px;
-  background: rgba(17, 17, 17, 0.06);
-  color: rgba(17, 17, 17, 0.9);
-  text-decoration: none;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  transition: transform 0.25s ease, background 0.25s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    background: rgba(17, 17, 17, 0.085);
   }
 `;
 
@@ -770,9 +669,6 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
         </SplitInner>
       </SplitSection>
 
-      {/* CONTACT CTA (reutiliza tu componente) */}
-      <ContactCTA onOpenAsesoramiento={onOpenAsesoramiento} />
-
       {/* CAROUSEL */}
       <CarouselSection>
         <CarouselInner>
@@ -794,37 +690,6 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
         </CarouselInner>
       </CarouselSection>
 
-      {/* VALUE + CTA */}
-      <ValueSection>
-        <ValueInner>
-          <ValueCard>
-            <ValueTitle>
-              Una propuesta <span>a tu medida</span>
-            </ValueTitle>
-            <ValueText>
-              Te preparamos una recomendación completa: tejido, número de
-              paneles, solapes, sistema de riel y tipo de apertura, con medición
-              e instalación en Castellón y Valencia.
-            </ValueText>
-
-            <CtaRow>
-              <PrimaryCTA
-                to={`/contact?pack=${PACK_QUERY}`}
-                onClick={handleOpenCta}
-              >
-                Solicitar propuesta
-              </PrimaryCTA>
-
-              <SecondaryCTA
-                href={`tel:${CONTACT.phoneLandlineTel}`}
-                onClick={handleCall}
-              >
-                Llamar
-              </SecondaryCTA>
-            </CtaRow>
-          </ValueCard>
-        </ValueInner>
-      </ValueSection>
       <ComplementosVentana
         id="sistemas"
         items={panelJaponesComplementos}
@@ -835,6 +700,8 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
         }
         lead="Complementos que combinan con el panel japonés para cerrar un conjunto perfecto."
       />
+      {/* CONTACT CTA (reutiliza tu componente) */}
+      <ContactCTA onOpenAsesoramiento={onOpenAsesoramiento} />
       {/* FAQ */}
       <FAQSection>
         <FAQInner>
