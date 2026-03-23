@@ -700,8 +700,14 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
         }
         lead="Complementos que combinan con el panel japonés para cerrar un conjunto perfecto."
       />
-      {/* CONTACT CTA (reutiliza tu componente) */}
-      <ContactCTA onOpenAsesoramiento={onOpenAsesoramiento} />
+      {/* CONTACT CTA */}
+      <ContactCTA
+        onOpenAsesoramiento={onOpenAsesoramiento}
+        pack="Panel japonés"
+        source="panel_japones_cta"
+        buttonText="Solicitar información"
+        ctaName="solicitar_informacion"
+      />
       {/* FAQ */}
       <FAQSection>
         <FAQInner>

@@ -4,7 +4,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { trackEvent } from "../lib/analytics";
+import { trackCtaClick, trackOpenQuickEnquiry } from "../lib/analytics";
 
 /* =========================
    ENFOQUE SLIDER (Desktop-friendly)
@@ -509,10 +509,15 @@ export default function EnfoqueSlider({ onOpenAsesoramiento }) {
             onClick={(e) => {
               e.preventDefault();
 
-              trackEvent("open_quick_enquiry", {
-                source: "cortinas_estores_enfoque_slider",
-                pack: "Cortinas",
-              });
+              trackCtaClick(
+                "cortinas_estores_enfoque_slider",
+                "pedir_propuesta"
+              );
+
+              trackOpenQuickEnquiry(
+                "cortinas_estores_enfoque_slider",
+                "Cortinas"
+              );
 
               onOpenAsesoramiento?.(
                 "Cortinas",

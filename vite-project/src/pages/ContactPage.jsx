@@ -6,7 +6,13 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import { CONTACT } from "../config/contact";
-import { trackEvent } from "../lib/analytics";
+import {
+  trackCtaClick,
+  trackMapClick,
+  trackOpenQuickEnquiry,
+  trackPhoneClick,
+  trackWhatsAppClick,
+} from "../lib/analytics";
 
 const Page = styled.main`
   width: 100%;
@@ -204,7 +210,6 @@ const Item = styled.a`
 const ItemButton = styled.button`
   ${ItemBase}
   cursor: pointer;
-  border: 1px solid rgba(17, 17, 17, 0.06);
   text-align: left;
 `;
 
@@ -373,9 +378,8 @@ export default function ContactPage({ onOpenAsesoramiento }) {
   const openDrawerForm = () => {
     const pack = packLabel ?? "General";
 
-    trackEvent("open_quick_enquiry", {
-      source: "contact_page",
-      pack,
+    trackCtaClick("contact_page", "abrir_formulario_contacto");
+    trackOpenQuickEnquiry("contact_page", pack, {
       device: isMobile ? "mobile" : "desktop",
     });
 
@@ -434,9 +438,7 @@ export default function ContactPage({ onOpenAsesoramiento }) {
                 href={CONTACT.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() =>
-                  trackEvent("maps_click", { source: "contact_page" })
-                }
+                onClick={() => trackMapClick("contact_page")}
               >
                 Abrir en Google Maps →
               </MapLink>
@@ -487,12 +489,7 @@ export default function ContactPage({ onOpenAsesoramiento }) {
 
               <Item
                 href={`tel:${CONTACT.phoneLandlineTel}`}
-                onClick={() =>
-                  trackEvent("phone_click", {
-                    source: "contact_page",
-                    number: CONTACT.phoneLandlineTel,
-                  })
-                }
+                onClick={() => trackPhoneClick("contact_page")}
               >
                 <ItemLeft>
                   <Phone />
@@ -508,9 +505,7 @@ export default function ContactPage({ onOpenAsesoramiento }) {
                 href={CONTACT.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() =>
-                  trackEvent("whatsapp_click", { source: "contact_page" })
-                }
+                onClick={() => trackWhatsAppClick("contact_page")}
               >
                 <ItemLeft>
                   <MessageCircle />
@@ -537,9 +532,7 @@ export default function ContactPage({ onOpenAsesoramiento }) {
                 href={CONTACT.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() =>
-                  trackEvent("maps_click", { source: "contact_page" })
-                }
+                onClick={() => trackMapClick("contact_page")}
               >
                 <ItemLeft>
                   <MapPin />

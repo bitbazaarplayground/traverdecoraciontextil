@@ -1,11 +1,15 @@
 import { ArrowRight, Moon, Smartphone, Sun, Wind } from "lucide-react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AutomationFaq from "../components/automatizacion/AutomationFaq";
 import { CONTACT } from "../config/contact";
-import { trackEvent } from "../lib/analytics";
+import {
+  trackCtaClick,
+  trackOpenQuickEnquiry,
+  trackWhatsAppClick,
+} from "../lib/analytics";
 /* =========================
    ASSETS
 ========================= */
@@ -34,7 +38,7 @@ import img3400 from "../assets/Home/HeroImg/img3-400.webp";
 import img3600 from "../assets/Home/HeroImg/img3-600.webp";
 import img3800 from "../assets/Home/HeroImg/img3-800.webp";
 // Video hero
-import heroVideo from "../assets/video1.mp4";
+import heroVideo from "../assets/video1-web-safari-v2.mp4";
 
 /* =========================
    IMAGE HELPERS
@@ -134,7 +138,26 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
     ],
     [baseUrl, canonical, description, siteName, title]
   );
+  const videoRef = useRef(null);
+  // Video autoplay workaround for Safari (muted + playsInline + try/catch)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
 
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+
+    const tryPlay = async () => {
+      try {
+        await video.play();
+      } catch (error) {
+        console.error("Safari video play failed:", error);
+      }
+    };
+
+    tryPlay();
+  }, []);
   // Premium: cursor spotlight + subtle parallax tilt (no libs)
   useEffect(() => {
     const root = document.documentElement;
@@ -241,7 +264,20 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
 
       {/* HERO (DO NOT CHANGE) */}
       <Hero>
-        <HeroVideo src={heroVideo} autoPlay muted loop playsInline />
+        <HeroVideoWrap>
+          <HeroVideo
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster={img31200}
+            aria-hidden="true"
+          >
+            <source src={heroVideo} type="video/mp4" />
+          </HeroVideo>
+        </HeroVideoWrap>
         <HeroOverlay />
         <HeroContent>
           <Eyebrow>Automatización residencial · Somfy</Eyebrow>
@@ -260,10 +296,16 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
               href="/contact"
               onClick={(e) => {
                 e.preventDefault();
-                trackEvent("open_quick_enquiry", {
-                  source: "automatizacion_private",
-                  pack: "Automatización",
-                });
+
+                trackCtaClick(
+                  "automatizacion_private",
+                  "asesoramiento_privado"
+                );
+                trackOpenQuickEnquiry(
+                  "automatizacion_private",
+                  "Automatización"
+                );
+
                 onOpenAsesoramiento?.(
                   "Automatización",
                   "automatizacion_private"
@@ -338,10 +380,11 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
                     onClick={(e) => {
                       e.preventDefault();
 
-                      trackEvent("open_quick_enquiry", {
-                        source: "mini_primary_cta",
-                        pack: "Automatización",
-                      });
+                      trackCtaClick("mini_primary_cta", "solicitar_propuesta");
+                      trackOpenQuickEnquiry(
+                        "mini_primary_cta",
+                        "Automatización"
+                      );
 
                       onOpenAsesoramiento?.(
                         "Automatización",
@@ -666,10 +709,16 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
                     href="/contact"
                     onClick={(e) => {
                       e.preventDefault();
-                      trackEvent("open_quick_enquiry", {
-                        source: "automatizacion_primary",
-                        pack: "Automatización",
-                      });
+
+                      trackCtaClick(
+                        "automatizacion_primary",
+                        "pedir_asesoramiento"
+                      );
+                      trackOpenQuickEnquiry(
+                        "automatizacion_primary",
+                        "Automatización"
+                      );
+
                       onOpenAsesoramiento?.(
                         "Automatización",
                         "automatizacion_primary"
@@ -682,6 +731,7 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
                     href={CONTACT.whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick("automatizacion_primary")}
                   >
                     WhatsApp
                   </CTAButtonSecondary>
@@ -814,22 +864,7 @@ const HeroVideo = styled.video`
   height: 100%;
   object-fit: cover;
   object-position: center 22%;
-  transform: scale(1.06);
-  filter: saturate(0.95) contrast(1.05);
   z-index: 0;
-
-  @media (min-width: 1320px) {
-    transform: scale(1.12);
-  }
-  @media (min-width: 1400px) {
-    transform: scale(1.15);
-  }
-  @media (min-width: 1600px) {
-    transform: scale(1.18);
-  }
-  @media (min-width: 1800px) {
-    transform: scale(1.22);
-  }
 `;
 
 const HeroOverlay = styled.div`
@@ -848,7 +883,25 @@ const HeroOverlay = styled.div`
     );
   z-index: 1;
 `;
+const HeroVideoWrap = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
 
+  @media (min-width: 1320px) {
+    transform: scale(1.12);
+  }
+  @media (min-width: 1400px) {
+    transform: scale(1.15);
+  }
+  @media (min-width: 1600px) {
+    transform: scale(1.18);
+  }
+  @media (min-width: 1800px) {
+    transform: scale(1.22);
+  }
+`;
 const HeroContent = styled.div`
   position: relative;
   z-index: 2;

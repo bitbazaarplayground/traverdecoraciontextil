@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { trackEvent } from "../lib/analytics";
+import { trackCtaClick, trackOpenQuickEnquiry } from "../lib/analytics";
 
 /**
  * ✅ Images moved to /public/Hero/
@@ -404,10 +404,12 @@ export default function Hero({ onOpenAsesoramiento }) {
           <PrimaryAction
             type="button"
             onClick={() => {
-              trackEvent("open_quick_enquiry", {
-                source: "hero",
-                pack: "General",
-              });
+              // 1. Evento genérico
+              trackCtaClick("hero", "solicitar_asesoramiento");
+
+              // 2. Evento específico
+              trackOpenQuickEnquiry("hero", "General");
+
               onOpenAsesoramiento?.("General");
             }}
           >
