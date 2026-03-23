@@ -75,119 +75,115 @@ export default function CookieBanner() {
   if (!isVisible) return null;
 
   return (
-    <Overlay>
+    <Wrap>
       <Banner
         role="dialog"
         aria-modal="true"
         aria-label="Preferencias de cookies"
       >
-        <Content>
-          <Title>Cookies</Title>
+        <TopRow>
+          <TextBlock>
+            <Eyebrow>Privacidad</Eyebrow>
+            <Title>Cookies y medición</Title>
+            <Text>
+              Usamos cookies necesarias para el funcionamiento de la web y, solo
+              si lo aceptas, cookies analíticas para medir el uso del sitio.
+            </Text>
+            <InlineLinks>
+              <StyledLink to="/politica-cookies">
+                Política de cookies
+              </StyledLink>
+              <Dot>·</Dot>
+              <StyledLink to="/politica-privacidad">
+                Política de privacidad
+              </StyledLink>
+            </InlineLinks>
+          </TextBlock>
 
-          <Text>
-            Utilizamos cookies necesarias para el funcionamiento de la web y,
-            solo si lo aceptas, cookies analíticas y de marketing para medir el
-            uso del sitio y mejorar nuestras campañas.
-          </Text>
+          <Actions>
+            <SecondaryButton type="button" onClick={handleRejectAll}>
+              Rechazar
+            </SecondaryButton>
 
-          <Text>
-            Puedes aceptar, rechazar las no necesarias o configurar tus
-            preferencias. Para más información, consulta nuestra{" "}
-            <StyledLink to="/politica-cookies">Política de cookies</StyledLink>.
-          </Text>
+            {!showSettings ? (
+              <GhostButton type="button" onClick={() => setShowSettings(true)}>
+                Configurar
+              </GhostButton>
+            ) : (
+              <GhostButton type="button" onClick={() => setShowSettings(false)}>
+                Ocultar opciones
+              </GhostButton>
+            )}
 
-          {showSettings && (
-            <SettingsBox>
-              <SettingRow>
-                <SettingTextWrap>
-                  <SettingTitle>Cookies necesarias</SettingTitle>
-                  <SettingDescription>
-                    Siempre activas. Son necesarias para que la web funcione
-                    correctamente.
-                  </SettingDescription>
-                </SettingTextWrap>
+            <PrimaryButton type="button" onClick={handleAcceptAll}>
+              Aceptar
+            </PrimaryButton>
+          </Actions>
+        </TopRow>
 
-                <AlwaysActive>Permanentes</AlwaysActive>
-              </SettingRow>
+        {showSettings && (
+          <SettingsPanel>
+            <SettingCard>
+              <SettingHeader>
+                <SettingTitle>Necesarias</SettingTitle>
+                <AlwaysOn>Siempre activas</AlwaysOn>
+              </SettingHeader>
+              <SettingText>
+                Permiten la navegación, seguridad y funcionamiento básico del
+                sitio.
+              </SettingText>
+            </SettingCard>
 
-              <SettingRow>
-                <SettingTextWrap>
-                  <SettingTitle>Cookies analíticas</SettingTitle>
-                  <SettingDescription>
-                    Nos ayudan a entender cómo se usa la web para mejorar su
-                    rendimiento.
-                  </SettingDescription>
-                </SettingTextWrap>
-
-                <ToggleWrap>
-                  <ToggleInput
+            <SettingCard>
+              <SettingHeader>
+                <SettingTitle>Analíticas</SettingTitle>
+                <Switch>
+                  <input
                     type="checkbox"
                     checked={analytics}
-                    onChange={(event) => setAnalytics(event.target.checked)}
+                    onChange={(e) => setAnalytics(e.target.checked)}
                   />
-                </ToggleWrap>
-              </SettingRow>
+                  <span />
+                </Switch>
+              </SettingHeader>
+              <SettingText>
+                Nos ayudan a entender cómo se usa la web para mejorar contenido,
+                estructura y rendimiento.
+              </SettingText>
+            </SettingCard>
 
-              <SettingRow>
-                <SettingTextWrap>
-                  <SettingTitle>Cookies de marketing</SettingTitle>
-                  <SettingDescription>
-                    Permiten medir campañas y mostrar contenido promocional más
-                    relevante.
-                  </SettingDescription>
-                </SettingTextWrap>
-
-                <ToggleWrap>
-                  <ToggleInput
+            <SettingCard>
+              <SettingHeader>
+                <SettingTitle>Marketing</SettingTitle>
+                <Switch>
+                  <input
                     type="checkbox"
                     checked={marketing}
-                    onChange={(event) => setMarketing(event.target.checked)}
+                    onChange={(e) => setMarketing(e.target.checked)}
                   />
-                </ToggleWrap>
-              </SettingRow>
-            </SettingsBox>
-          )}
+                  <span />
+                </Switch>
+              </SettingHeader>
+              <SettingText>
+                Reservadas para futuras campañas o medición publicitaria. Ahora
+                mismo no las usamos activamente.
+              </SettingText>
+            </SettingCard>
 
-          <ButtonsRow>
-            {!showSettings ? (
-              <>
-                <SecondaryButton type="button" onClick={handleRejectAll}>
-                  Rechazar
-                </SecondaryButton>
+            <BottomRow>
+              <MutedText>
+                Puedes cambiar tu elección en cualquier momento desde
+                “Configurar cookies”.
+              </MutedText>
 
-                <SecondaryButton
-                  type="button"
-                  onClick={() => setShowSettings(true)}
-                >
-                  Configurar
-                </SecondaryButton>
-
-                <PrimaryButton type="button" onClick={handleAcceptAll}>
-                  Aceptar todas
-                </PrimaryButton>
-              </>
-            ) : (
-              <>
-                <SecondaryButton
-                  type="button"
-                  onClick={() => setShowSettings(false)}
-                >
-                  Volver
-                </SecondaryButton>
-
-                <SecondaryButton type="button" onClick={handleRejectAll}>
-                  Rechazar
-                </SecondaryButton>
-
-                <PrimaryButton type="button" onClick={handleSavePreferences}>
-                  Guardar preferencias
-                </PrimaryButton>
-              </>
-            )}
-          </ButtonsRow>
-        </Content>
+              <SaveButton type="button" onClick={handleSavePreferences}>
+                Guardar preferencias
+              </SaveButton>
+            </BottomRow>
+          </SettingsPanel>
+        )}
       </Banner>
-    </Overlay>
+    </Wrap>
   );
 }
 
@@ -195,130 +191,109 @@ export default function CookieBanner() {
    Styles
 ========================= */
 
-const Overlay = styled.div`
+const Wrap = styled.div`
   position: fixed;
-  inset: auto 0 0 0;
+  inset: auto 0 1rem 0;
   z-index: 9999;
-  padding: 1rem;
+  padding: 0 1rem;
+  pointer-events: none;
 `;
 
 const Banner = styled.div`
-  width: min(980px, 100%);
+  width: min(1080px, 100%);
   margin: 0 auto;
+  pointer-events: auto;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.16);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(14px);
   overflow: hidden;
 `;
 
-const Content = styled.div`
-  padding: clamp(1.1rem, 2.5vw, 1.7rem);
-`;
+const TopRow = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1rem 1rem 1.1rem;
 
-const Title = styled.h2`
-  margin: 0 0 0.75rem;
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: rgba(0, 0, 0, 0.92);
-`;
-
-const Text = styled.p`
-  margin: 0;
-  font-size: 0.98rem;
-  line-height: 1.7;
-  color: rgba(0, 0, 0, 0.7);
-
-  & + & {
-    margin-top: 0.8rem;
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+    align-items: start;
   }
 `;
 
+const TextBlock = styled.div`
+  min-width: 0;
+`;
+
+const Eyebrow = styled.div`
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.48);
+`;
+
+const Title = styled.h2`
+  margin: 0.35rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 850;
+  color: rgba(17, 17, 17, 0.92);
+`;
+
+const Text = styled.p`
+  margin: 0.45rem 0 0;
+  max-width: 70ch;
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: rgba(17, 17, 17, 0.66);
+`;
+
+const InlineLinks = styled.div`
+  margin-top: 0.6rem;
+  display: inline-flex;
+  gap: 0.55rem;
+  align-items: center;
+  flex-wrap: wrap;
+`;
+
 const StyledLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.primary};
-  font-weight: 700;
   text-decoration: none;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 0.92rem;
+  font-weight: 700;
 
   &:hover {
     text-decoration: underline;
   }
 `;
 
-const SettingsBox = styled.div`
-  margin-top: 1.25rem;
-  padding: 1rem;
-  border-radius: 18px;
-  background: rgba(0, 0, 0, 0.03);
-  display: grid;
-  gap: 0.95rem;
+const Dot = styled.span`
+  color: rgba(17, 17, 17, 0.28);
 `;
 
-const SettingRow = styled.div`
+const Actions = styled.div`
   display: flex;
-  gap: 1rem;
-  justify-content: space-between;
-  align-items: center;
+  gap: 0.7rem;
   flex-wrap: wrap;
-`;
-
-const SettingTextWrap = styled.div`
-  flex: 1 1 320px;
-`;
-
-const SettingTitle = styled.h3`
-  margin: 0 0 0.25rem;
-  font-size: 1rem;
-  font-weight: 800;
-  color: rgba(0, 0, 0, 0.88);
-`;
-
-const SettingDescription = styled.p`
-  margin: 0;
-  font-size: 0.94rem;
-  line-height: 1.6;
-  color: rgba(0, 0, 0, 0.66);
-`;
-
-const AlwaysActive = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 120px;
-  padding: 0.65rem 0.9rem;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.72);
-  background: rgba(0, 0, 0, 0.08);
-`;
-
-const ToggleWrap = styled.label`
-  display: inline-flex;
-  align-items: center;
-`;
-
-const ToggleInput = styled.input`
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-`;
-
-const ButtonsRow = styled.div`
-  display: flex;
-  gap: 0.8rem;
   justify-content: flex-end;
-  flex-wrap: wrap;
-  margin-top: 1.25rem;
+
+  @media (max-width: 860px) {
+    justify-content: flex-start;
+  }
 `;
 
 const BaseButton = styled.button`
-  border: 0;
+  min-height: 44px;
   border-radius: 999px;
-  padding: 0.9rem 1.15rem;
-  font-size: 0.95rem;
+  padding: 0.78rem 1.05rem;
+  border: 0;
+  font: inherit;
+  font-size: 0.94rem;
   font-weight: 800;
   cursor: pointer;
-  transition: transform 0.18s ease, opacity 0.18s ease;
+  transition: transform 0.18s ease, opacity 0.18s ease, border-color 0.18s ease;
 
   &:hover {
     transform: translateY(-1px);
@@ -331,6 +306,119 @@ const PrimaryButton = styled(BaseButton)`
 `;
 
 const SecondaryButton = styled(BaseButton)`
-  background: rgba(0, 0, 0, 0.07);
-  color: rgba(0, 0, 0, 0.82);
+  background: rgba(17, 17, 17, 0.07);
+  color: rgba(17, 17, 17, 0.84);
+`;
+
+const GhostButton = styled(BaseButton)`
+  background: transparent;
+  color: rgba(17, 17, 17, 0.74);
+  border: 1px solid rgba(17, 17, 17, 0.1);
+`;
+
+const SettingsPanel = styled.div`
+  padding: 0 1rem 1rem 1rem;
+  display: grid;
+  gap: 0.85rem;
+`;
+
+const SettingCard = styled.div`
+  border-radius: 18px;
+  padding: 0.95rem 1rem;
+  background: rgba(17, 17, 17, 0.035);
+  border: 1px solid rgba(17, 17, 17, 0.06);
+`;
+
+const SettingHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+`;
+
+const SettingTitle = styled.h3`
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.88);
+`;
+
+const SettingText = styled.p`
+  margin: 0.45rem 0 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: rgba(17, 17, 17, 0.64);
+`;
+
+const AlwaysOn = styled.span`
+  display: inline-flex;
+  align-items: center;
+  padding: 0.42rem 0.72rem;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.08);
+  color: rgba(17, 17, 17, 0.72);
+  font-size: 0.8rem;
+  font-weight: 800;
+`;
+
+const Switch = styled.label`
+  position: relative;
+  display: inline-flex;
+  width: 54px;
+  height: 32px;
+  cursor: pointer;
+
+  input {
+    display: none;
+  }
+
+  span {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: rgba(17, 17, 17, 0.16);
+    transition: background 0.2s ease;
+  }
+
+  span::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease;
+  }
+
+  input:checked + span {
+    background: ${({ theme }) => theme.colors.primary};
+  }
+
+  input:checked + span::after {
+    transform: translateX(22px);
+  }
+`;
+
+const BottomRow = styled.div`
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding-top: 0.2rem;
+`;
+
+const MutedText = styled.p`
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: rgba(17, 17, 17, 0.58);
+`;
+
+const SaveButton = styled(BaseButton)`
+  background: ${({ theme }) => theme.colors.primary};
+  color: #fff;
 `;

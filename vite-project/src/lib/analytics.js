@@ -68,3 +68,11 @@ export function trackOpenQuickEnquiry(
     ...extraParams,
   });
 }
+
+// Facebook
+export function trackFacebookClick(location = "unknown") {
+  trackEvent("contact_facebook_click", {
+    contact_method: "facebook",
+    location,
+  });
+}
