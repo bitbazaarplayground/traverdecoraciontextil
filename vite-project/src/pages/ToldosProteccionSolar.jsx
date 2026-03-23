@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import ServiceHero from "../components/heroes/ServiceHero";
-import { trackEvent } from "../lib/analytics";
+import { trackCtaClick, trackOpenQuickEnquiry } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
 
 /* =========================
@@ -738,6 +738,7 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
         primaryLabel="Solicitar propuesta"
         primaryTrackSource="toldos_proteccion_solar"
         primaryPack="Toldos"
+        primaryCtaName="solicitar_propuesta"
         secondaryLabel="Ver tipos de toldos"
         secondaryHref="#tipos"
         onOpenAsesoramiento={onOpenAsesoramiento}
@@ -919,10 +920,15 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
                 onClick={(e) => {
                   e.preventDefault();
 
-                  trackEvent("open_quick_enquiry", {
-                    source: "toldos_proteccion_solar_primary",
-                    pack: "Toldos",
-                  });
+                  trackCtaClick(
+                    "toldos_proteccion_solar_primary",
+                    "pedir_asesoramiento"
+                  );
+
+                  trackOpenQuickEnquiry(
+                    "toldos_proteccion_solar_primary",
+                    "Toldos"
+                  );
 
                   onOpenAsesoramiento?.(
                     "Toldos",

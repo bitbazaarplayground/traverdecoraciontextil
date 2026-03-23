@@ -11,7 +11,11 @@ import panelJaponesImg from "../assets/servicios/panelJapones.webp";
 import toldosProteccionSolar from "../assets/servicios/toldoServicios.webp";
 import venecianasImg from "../assets/servicios/venecianas.webp";
 import { CONTACT } from "../config/contact";
-import { trackEvent } from "../lib/analytics";
+import {
+  trackCtaClick,
+  trackOpenQuickEnquiry,
+  trackWhatsAppClick,
+} from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
 const limpiezaImg = "/limpieza/limpieza-1280.webp";
 /* =========================
@@ -910,10 +914,17 @@ export default function Servicios({ onOpenAsesoramiento }) {
                   <ConsultPrimary
                     type="button"
                     onClick={() => {
-                      trackEvent("open_quick_enquiry", {
-                        source: "servicios_consult_cta",
-                        pack: "Asesoramiento personalizado",
-                      });
+                      // 1. Evento genérico
+                      trackCtaClick(
+                        "servicios_consult_cta",
+                        "solicitar_asesoramiento"
+                      );
+
+                      // 2. Evento específico
+                      trackOpenQuickEnquiry(
+                        "servicios_consult_cta",
+                        "Asesoramiento personalizado"
+                      );
 
                       onOpenAsesoramiento?.(
                         "Asesoramiento personalizado",
@@ -923,10 +934,12 @@ export default function Servicios({ onOpenAsesoramiento }) {
                   >
                     Solicitar asesoramiento
                   </ConsultPrimary>
+
                   <ConsultSecondary
                     href={CONTACT.whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick("servicios_consult_cta")}
                   >
                     WhatsApp
                   </ConsultSecondary>

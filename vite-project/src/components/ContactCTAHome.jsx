@@ -2,7 +2,7 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 import styled from "styled-components";
 import CTAHome from "../assets/CTAHome.webp";
-import { trackEvent } from "../lib/analytics";
+import { trackCtaClick, trackOpenQuickEnquiry } from "../lib/analytics";
 
 const Section = styled.section`
   width: 100%;
@@ -199,12 +199,13 @@ export default function ContactCTAHome({ onOpenAsesoramiento }) {
           <CTAButton
             type="button"
             onClick={() => {
-              trackEvent("open_quick_enquiry", {
-                source: "cta_home",
-                pack: "General",
-              });
+              // 1. Evento genérico (comparar CTAs)
+              trackCtaClick("cta_home", "solicitar_asesoramiento");
 
-              // Open the new Netlify form drawer
+              // 2. Evento específico (negocio)
+              trackOpenQuickEnquiry("cta_home", "General");
+
+              // Mantener source consistente
               onOpenAsesoramiento?.("General", "cta_home");
             }}
             whileHover={{ scale: 1.03 }}

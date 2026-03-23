@@ -904,6 +904,7 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
         pack="Cortinas"
         source="cortinas_estores_cta"
         buttonText="Solicitar información"
+        ctaName="solicitar_informacion"
       />
 
       <ComplementosVentana

@@ -1,7 +1,7 @@
 // src/components/heroes/ServiceHero.jsx
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { trackEvent } from "../../lib/analytics";
+import { trackCtaClick, trackOpenQuickEnquiry } from "../../lib/analytics";
 
 const Hero = styled.section`
   position: relative;
@@ -171,6 +171,7 @@ export default function ServiceHero({
   primaryTo = "/contact",
   primaryTrackSource,
   primaryPack,
+  primaryCtaName = "solicitar_propuesta",
   onOpenAsesoramiento,
   secondaryLabel,
   secondaryHref,
@@ -190,10 +191,8 @@ export default function ServiceHero({
   const handlePrimaryClick = (e) => {
     if (!primaryTrackSource || !primaryPack) return;
 
-    trackEvent("open_quick_enquiry", {
-      source: primaryTrackSource,
-      pack: primaryPack,
-    });
+    trackCtaClick(primaryTrackSource, primaryCtaName);
+    trackOpenQuickEnquiry(primaryTrackSource, primaryPack);
 
     if (typeof onOpenAsesoramiento === "function") {
       e.preventDefault();

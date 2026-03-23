@@ -2,7 +2,14 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { CONTACT } from "../config/contact";
-import { trackEvent } from "../lib/analytics";
+import {
+  trackCtaClick,
+  trackEmailClick,
+  trackMapClick,
+  trackOpenQuickEnquiry,
+  trackPhoneClick,
+  trackWhatsAppClick,
+} from "../lib/analytics";
 import { openCookiePreferences } from "../utils/cookieConsent";
 
 export default function Footer({ onOpenAsesoramiento }) {
@@ -120,6 +127,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                 <Action
                   href={`tel:${CONTACT.phoneLandlineTel}`}
                   aria-label="Llamar por teléfono"
+                  onClick={() => trackPhoneClick("footer")}
                 >
                   Llamar: {CONTACT.phoneLandline}
                 </Action>
@@ -131,6 +139,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Abrir WhatsApp"
+                  onClick={() => trackWhatsAppClick("footer")}
                 >
                   WhatsApp: +34 {CONTACT.whatsappNumber}
                 </Action>
@@ -140,6 +149,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                 <Action
                   href={`mailto:${CONTACT.email}`}
                   aria-label="Enviar email"
+                  onClick={() => trackEmailClick("footer")}
                 >
                   Email: {CONTACT.email}
                 </Action>
@@ -151,6 +161,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Abrir ubicación en Google Maps"
+                  onClick={() => trackMapClick("footer")}
                 >
                   {CONTACT.address.streetAddress}, {CONTACT.address.postalCode},{" "}
                   {CONTACT.address.addressLocality}
@@ -212,7 +223,10 @@ export default function Footer({ onOpenAsesoramiento }) {
               <AccSummary>Contacto</AccSummary>
               <AccBody>
                 <ActionRow>
-                  <MobileAction href={`tel:${CONTACT.phoneLandlineTel}`}>
+                  <MobileAction
+                    href={`tel:${CONTACT.phoneLandlineTel}`}
+                    onClick={() => trackPhoneClick("footer_mobile")}
+                  >
                     Llamar: {CONTACT.phoneLandline}
                   </MobileAction>
                 </ActionRow>
@@ -221,12 +235,16 @@ export default function Footer({ onOpenAsesoramiento }) {
                     href={CONTACT.whatsappUrl}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() => trackWhatsAppClick("footer_mobile")}
                   >
                     WhatsApp: +34 {CONTACT.whatsappNumber}
                   </MobileAction>
                 </ActionRow>
                 <ActionRow>
-                  <MobileAction href={`mailto:${CONTACT.email}`}>
+                  <MobileAction
+                    href={`mailto:${CONTACT.email}`}
+                    onClick={() => trackEmailClick("footer_mobile")}
+                  >
                     Email: {CONTACT.email}
                   </MobileAction>
                 </ActionRow>
@@ -235,6 +253,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                     href={CONTACT.mapsUrl}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() => trackMapClick("footer_mobile")}
                   >
                     {CONTACT.address.streetAddress},{" "}
                     {CONTACT.address.addressLocality}
@@ -255,8 +274,10 @@ export default function Footer({ onOpenAsesoramiento }) {
                     as="button"
                     type="button"
                     onClick={() => {
-                      trackEvent("open_asesoramiento", { source: "footer" });
-                      onOpenAsesoramiento?.("General");
+                      trackCtaClick("footer_mobile", "pedir_asesoramiento");
+                      trackOpenQuickEnquiry("footer_mobile", "General");
+
+                      onOpenAsesoramiento?.("General", "footer_mobile");
                     }}
                   >
                     Pedir asesoramiento
@@ -266,9 +287,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                     href={CONTACT.whatsappUrl}
                     target="_blank"
                     rel="noreferrer"
-                    onClick={() =>
-                      trackEvent("whatsapp_click", { source: "footer" })
-                    }
+                    onClick={() => trackWhatsAppClick("footer_mobile")}
                   >
                     WhatsApp
                   </CTAButtonGhost>

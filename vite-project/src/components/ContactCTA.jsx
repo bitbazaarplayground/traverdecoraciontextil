@@ -2,7 +2,7 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 import styled from "styled-components";
 import Img4 from "../assets/img4.webp";
-import { trackEvent } from "../lib/analytics";
+import { trackCtaClick, trackOpenQuickEnquiry } from "../lib/analytics";
 
 const Section = styled.section`
   width: 100%;
@@ -115,6 +115,7 @@ export default function ContactCTA({
   pack = "Cortinas",
   source = "cortinas_estores_cta",
   buttonText = "Reserva Ahora",
+  ctaName = "solicitar_informacion",
   eyebrow = "EQUIPO DE DISEÑO Y ATENCIÓN AL CLIENTE DE PRIMERA",
   title = "Nos encargamos de todo:\ndiseño, medición e instalación.",
 }) {
@@ -168,10 +169,8 @@ export default function ContactCTA({
           onClick={(e) => {
             e.preventDefault();
 
-            trackEvent("open_quick_enquiry", {
-              source,
-              pack,
-            });
+            trackCtaClick(source, ctaName);
+            trackOpenQuickEnquiry(source, pack);
 
             onOpenAsesoramiento?.(pack, source);
           }}

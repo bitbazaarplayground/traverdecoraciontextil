@@ -6,7 +6,7 @@ import styled from "styled-components";
 import FaqAccordion from "../components/faq/FaqAccordion";
 import ServiceHero from "../components/heroes/ServiceHero";
 import { CONTACT } from "../config/contact";
-import { trackEvent } from "../lib/analytics";
+import { trackCtaClick, trackOpenQuickEnquiry } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
 
 /* =========================
@@ -803,6 +803,7 @@ export default function Propuestas({ onOpenAsesoramiento }) {
         primaryLabel="Solicitar propuesta"
         primaryTrackSource="propuestas_primary"
         primaryPack="Propuestas"
+        primaryCtaName="solicitar_propuesta"
         secondaryLabel="Ver propuestas"
         secondaryHref="#propuestas"
         onOpenAsesoramiento={onOpenAsesoramiento}
@@ -864,10 +865,8 @@ export default function Propuestas({ onOpenAsesoramiento }) {
                   <PackCTA
                     type="button"
                     onClick={() => {
-                      trackEvent("open_quick_enquiry", {
-                        source: pack.source,
-                        pack: pack.packValue,
-                      });
+                      trackCtaClick(pack.source, "solicitar_propuesta");
+                      trackOpenQuickEnquiry(pack.source, pack.packValue);
 
                       onOpenAsesoramiento?.(pack.packValue, pack.source);
                     }}
@@ -935,10 +934,8 @@ export default function Propuestas({ onOpenAsesoramiento }) {
               onClick={(e) => {
                 e.preventDefault();
 
-                trackEvent("open_quick_enquiry", {
-                  source: "propuestas_trust_cta",
-                  pack: "Propuestas",
-                });
+                trackCtaClick("propuestas_trust_cta", "hablar_con_un_asesor");
+                trackOpenQuickEnquiry("propuestas_trust_cta", "Propuestas");
 
                 onOpenAsesoramiento?.("Propuestas", "propuestas_trust_cta");
               }}
