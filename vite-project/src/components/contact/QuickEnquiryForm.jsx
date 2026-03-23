@@ -1,6 +1,7 @@
 // src/components/contact/QuickEnquiryForm.jsx
 import { useMemo, useState } from "react";
 import styled from "styled-components";
+import { trackFormSubmit } from "../../lib/analytics";
 
 const Form = styled.form`
   display: grid;
@@ -191,7 +192,7 @@ export default function QuickEnquiryForm({
       });
 
       if (!res.ok) throw new Error("Netlify submit failed");
-
+      trackFormSubmit("quick-enquiry", source || "cta");
       setStatus("success");
       form.reset();
       onSuccess?.();

@@ -1,5 +1,5 @@
 import { ArrowRight, Moon, Smartphone, Sun, Wind } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -89,7 +89,24 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
   const baseUrl = (
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
+  const videoRef = useRef(null);
+  const [videoFailed, setVideoFailed] = useState(false);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleError = () => setVideoFailed(true);
+    const handleStalled = () => setVideoFailed(true);
+
+    video.addEventListener("error", handleError);
+    video.addEventListener("stalled", handleStalled);
+
+    return () => {
+      video.removeEventListener("error", handleError);
+      video.removeEventListener("stalled", handleStalled);
+    };
+  }, []);
   const canonical = `${baseUrl}/automatizacion`;
   const siteName = CONTACT.siteName || "Traver Decoración Textil";
 
@@ -138,7 +155,7 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
     ],
     [baseUrl, canonical, description, siteName, title]
   );
-  const videoRef = useRef(null);
+
   // Video autoplay workaround for Safari (muted + playsInline + try/catch)
   useEffect(() => {
     const video = videoRef.current;
@@ -265,18 +282,22 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
       {/* HERO (DO NOT CHANGE) */}
       <Hero>
         <HeroVideoWrap>
-          <HeroVideo
-            ref={videoRef}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster={img31200}
-            aria-hidden="true"
-          >
-            <source src={heroVideo} type="video/mp4" />
-          </HeroVideo>
+          {videoFailed ? (
+            <HeroPoster src={img31200} alt="" aria-hidden="true" />
+          ) : (
+            <HeroVideo
+              ref={videoRef}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={img31200}
+              aria-hidden="true"
+            >
+              <source src={heroVideo} type="video/mp4" />
+            </HeroVideo>
+          )}
         </HeroVideoWrap>
         <HeroOverlay />
         <HeroContent>
@@ -907,6 +928,15 @@ const HeroContent = styled.div`
   z-index: 2;
   width: 100%;
   max-width: 1100px;
+`;
+const HeroPoster = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  z-index: 0;
 `;
 
 const Eyebrow = styled.p`

@@ -5,6 +5,7 @@ import { CONTACT } from "../config/contact";
 import {
   trackCtaClick,
   trackEmailClick,
+  trackFacebookClick,
   trackMapClick,
   trackOpenQuickEnquiry,
   trackPhoneClick,
@@ -174,6 +175,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Abrir Facebook"
+                  onClick={() => trackFacebookClick("footer")}
                 >
                   Facebook
                 </Action>
@@ -264,6 +266,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                     href={CONTACT.facebookUrl}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() => trackFacebookClick("footer_mobile")}
                   >
                     Facebook
                   </MobileAction>
