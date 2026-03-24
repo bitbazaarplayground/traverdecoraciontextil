@@ -6,4 +6,4 @@ Disallow: /admin/
 Disallow: /auth
 Disallow: /auth/
 
-Sitemap: http://localhost:5173/sitemap.xml
+Sitemap: https://www.traverdecoraciontextil.es/sitemap.xml
