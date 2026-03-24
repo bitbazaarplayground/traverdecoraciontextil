@@ -1,48 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
   <url>
-    <loc>http://localhost:5173/</loc>
+    <loc>https://www.traverdecoraciontextil.es/</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/propuestas</loc>
+    <loc>https://www.traverdecoraciontextil.es/propuestas</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/automatizacion</loc>
+    <loc>https://www.traverdecoraciontextil.es/automatizacion</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/automatizacion/completa</loc>
+    <loc>https://www.traverdecoraciontextil.es/automatizacion/completa</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/automatizacion/individual</loc>
+    <loc>https://www.traverdecoraciontextil.es/automatizacion/individual</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/contact</loc>
+    <loc>https://www.traverdecoraciontextil.es/contact</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/panel-japones</loc>
+    <loc>https://www.traverdecoraciontextil.es/panel-japones</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/venecianas</loc>
+    <loc>https://www.traverdecoraciontextil.es/venecianas</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/cortinas-estores</loc>
+    <loc>https://www.traverdecoraciontextil.es/cortinas-estores</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/toldos-proteccionsolar</loc>
+    <loc>https://www.traverdecoraciontextil.es/toldos-proteccionsolar</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/mosquiteras</loc>
+    <loc>https://www.traverdecoraciontextil.es/mosquiteras</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/services</loc>
+    <loc>https://www.traverdecoraciontextil.es/services</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/aviso-legal</loc>
+    <loc>https://www.traverdecoraciontextil.es/nosotros</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/politica-privacidad</loc>
+    <loc>https://www.traverdecoraciontextil.es/limpieza</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
   <url>
-    <loc>http://localhost:5173/politica-cookies</loc>
+    <loc>https://www.traverdecoraciontextil.es/aviso-legal</loc>
+    <lastmod>2026-03-24</lastmod>
   </url>
+
+  <url>
+    <loc>https://www.traverdecoraciontextil.es/politica-privacidad</loc>
+    <lastmod>2026-03-24</lastmod>
+  </url>
+
+  <url>
+    <loc>https://www.traverdecoraciontextil.es/politica-cookies</loc>
+    <lastmod>2026-03-24</lastmod>
+  </url>
+
 </urlset>
