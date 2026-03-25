@@ -36,7 +36,20 @@ const Header = styled.div`
   max-width: 760px;
   margin: 0 auto 3.2rem;
 `;
+const SeoIntro = styled.p`
+  margin: 1.5rem auto 0;
+  max-width: 720px;
 
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.68);
+  text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
+    max-width: 36ch;
+  }
+`;
 const Eyebrow = styled.p`
   margin: 0 0 0.9rem;
   letter-spacing: 0.18em;
@@ -73,8 +86,7 @@ const Grid = styled.div`
 
   @media (min-width: 980px) {
     grid-template-columns: 1.1fr 0.9fr;
-    gap: 1.25rem;
-    align-items: start;
+    align-items: stretch;
   }
 `;
 
@@ -83,6 +95,9 @@ const MapCard = styled.div`
   overflow: hidden;
   border: 1px solid rgba(17, 17, 17, 0.08);
   background: #fafafa;
+
+  display: flex;
+  flex-direction: column;
 `;
 
 const MapTop = styled.div`
@@ -112,13 +127,11 @@ const MapLink = styled.a`
 `;
 
 const MapFrame = styled.div`
-  height: 360px;
-  background: #eee;
-
+  flex: 1; /* 🔥 hace que iguale altura */
+  min-height: 320px;
   @media (max-width: 768px) {
     height: 280px;
   }
-
   iframe {
     width: 100%;
     height: 100%;
@@ -132,6 +145,9 @@ const Panel = styled.aside`
   background: #fff;
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+
+  display: flex; /* 🔥 */
+  flex-direction: column; /* 🔥 */
 `;
 
 const PanelTop = styled.div`
@@ -205,6 +221,8 @@ const Item = styled.a`
   ${ItemBase}
   text-decoration: none;
   cursor: pointer;
+
+  will-change: transform;
 `;
 
 const ItemButton = styled.button`
@@ -271,10 +289,10 @@ export default function ContactPage({ onOpenAsesoramiento }) {
 
   const siteName = CONTACT.siteName;
 
-  const title = `Contacto | ${CONTACT.siteName} en ${CONTACT.address.addressLocality} (${CONTACT.address.addressRegion})`;
+  // SEO
+  const title = "Contacto | Cortinas, toldos y automatización en Castellón";
   const description =
-    "Contacta con Traver Decoración Textil: asesoramiento, visita técnica y propuesta sin compromiso. Estamos en Almassora y trabajamos en Castellón y Valencia.";
-
+    "Contacta con Traver Decoración Textil para cortinas, toldos y automatización en Castellón. Asesoramiento, medición e instalación profesional sin compromiso.";
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt = `Contacto ${CONTACT.siteName} en ${CONTACT.address.addressLocality} (${CONTACT.address.addressRegion})`;
 
@@ -297,42 +315,48 @@ export default function ContactPage({ onOpenAsesoramiento }) {
       description,
       inLanguage: "es-ES",
       isPartOf: {
-        "@type": "WebSite",
         "@id": `${baseUrl}/#website`,
-        url: `${baseUrl}/`,
-        name: siteName,
       },
-      about: { "@id": `${baseUrl}/#business` },
-      mainEntity: {
-        "@type": "Organization",
+      about: {
         "@id": `${baseUrl}/#business`,
-        name: siteName,
-        url: `${baseUrl}/`,
-        telephone,
-        address,
-        contactPoint: [
-          {
-            "@type": "ContactPoint",
-            telephone,
-            contactType: "customer support",
-            availableLanguage: ["es"],
-          },
-          {
-            "@type": "ContactPoint",
-            telephone: `+${whatsappNumber.slice(0, 2)} ${whatsappNumber.slice(
-              2,
-              5
-            )} ${whatsappNumber.slice(5, 8)} ${whatsappNumber.slice(8)}`,
-            contactType: "customer support",
-            availableLanguage: ["es"],
-            url: whatsappUrl,
-          },
-        ],
-        sameAs: [CONTACT.facebookUrl],
       },
     };
 
-    return [contactPageJsonLd];
+    const localBusinessJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "@id": `${baseUrl}/#business`,
+      name: siteName,
+      url: `${baseUrl}/`,
+      telephone,
+      address,
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          telephone,
+          contactType: "customer support",
+          availableLanguage: ["es"],
+        },
+        {
+          "@type": "ContactPoint",
+          telephone: `+${whatsappNumber.slice(0, 2)} ${whatsappNumber.slice(
+            2,
+            5
+          )} ${whatsappNumber.slice(5, 8)} ${whatsappNumber.slice(8)}`,
+          contactType: "customer support",
+          availableLanguage: ["es"],
+          url: whatsappUrl,
+        },
+      ],
+      sameAs: [CONTACT.facebookUrl],
+      areaServed: [
+        { "@type": "City", name: "Almassora" },
+        { "@type": "City", name: "Castellón de la Plana" },
+        { "@type": "AdministrativeArea", name: "Castellón" },
+      ],
+    };
+
+    return [contactPageJsonLd, localBusinessJsonLd];
   }, [
     canonical,
     title,
@@ -425,8 +449,8 @@ export default function ContactPage({ onOpenAsesoramiento }) {
             Hablemos de tu <span>proyecto</span>.
           </Title>
           <Subtitle>
-            Cortinas, estores, toldos y automatización. Te orientamos con
-            honestidad y preparamos una propuesta ajustada a tu espacio.
+            Cortinas, estores, toldos y automatización a medida en Castellón. Te
+            asesoramos y preparamos una propuesta adaptada a tu espacio.
           </Subtitle>
         </Header>
 
@@ -549,6 +573,11 @@ export default function ContactPage({ onOpenAsesoramiento }) {
             </List>
           </Panel>
         </Grid>
+        <SeoIntro>
+          Trabajamos en Almassora y toda la provincia de Castellón, ofreciendo
+          soluciones de cortinas, toldos y decoración textil para viviendas y
+          negocios, con medición e instalación profesional.
+        </SeoIntro>
       </Wrap>
     </Page>
   );

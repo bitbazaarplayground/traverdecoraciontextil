@@ -1,7 +1,6 @@
 // src/pages/Propuestas.jsx
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import FaqAccordion from "../components/faq/FaqAccordion";
 import ServiceHero from "../components/heroes/ServiceHero";
@@ -502,7 +501,7 @@ const TrustText = styled.p`
   line-height: 1.7;
 `;
 
-const TrustCTA = styled(Link)`
+const TrustCTA = styled.button`
   justify-self: start;
 
   @media (min-width: 900px) {
@@ -519,6 +518,8 @@ const TrustCTA = styled(Link)`
   font-weight: 850;
   text-decoration: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
+  border: 0;
+  cursor: pointer;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -534,10 +535,10 @@ const TrustCTA = styled(Link)`
 
 const FAQ_ITEMS = [
   {
-    q: "¿Esto son precios cerrados?",
-    a: "No. Son propuestas orientativas para decidir el enfoque. Cada vivienda cambia por medidas, tejidos, sistemas y acabados. Te damos una propuesta ajustada tras la visita técnica.",
+    q: "¿Qué incluye exactamente una visita técnica?",
+    a: "Revisamos el espacio, tomamos medidas, valoramos luz, privacidad, uso diario y estilo, y te orientamos sobre tejidos, sistemas y acabados para proponerte una solución realista.",
     aText:
-      "No. Son propuestas orientativas para decidir el enfoque. Cada vivienda cambia por medidas, tejidos, sistemas y acabados. Te damos una propuesta ajustada tras la visita técnica.",
+      "Revisamos el espacio, tomamos medidas, valoramos luz, privacidad, uso diario y estilo, y te orientamos sobre tejidos, sistemas y acabados para proponerte una solución realista.",
   },
   {
     q: "¿Puedo empezar por una sola estancia?",
@@ -557,6 +558,12 @@ const FAQ_ITEMS = [
     aText:
       "Principalmente Castellón y alrededores, y proyectos seleccionados en Valencia según alcance. Cuéntanos tu ubicación y te diremos disponibilidad real.",
   },
+  {
+    q: "¿Esto son precios cerrados?",
+    a: "No. Son propuestas orientativas para decidir el enfoque. Cada vivienda cambia por medidas, tejidos, sistemas y acabados. Te damos una propuesta ajustada tras la visita técnica.",
+    aText:
+      "No. Son propuestas orientativas para decidir el enfoque. Cada vivienda cambia por medidas, tejidos, sistemas y acabados. Te damos una propuesta ajustada tras la visita técnica.",
+  },
 ];
 
 /* =========================
@@ -571,6 +578,7 @@ const PACKS = [
     price: "499€",
     desc: "Un dormitorio donde todo encaja: luz, textura y descanso. Diseñamos un ambiente sereno y funcional, pensado para dormir mejor y disfrutarlo cada día.",
     note: "Perfecto para: dormitorio principal o juvenil",
+    alt: "Propuesta de dormitorio a medida con cortinas, textiles y ambiente de descanso",
     img400: imgEssential400,
     img600: imgEssential600,
     img700: imgEssential700,
@@ -594,6 +602,7 @@ const PACKS = [
     price: "799€",
     desc: "El corazón de la casa merece equilibrio entre estética y uso real. Creamos un conjunto coherente que mejora la luz, el confort térmico y la sensación de hogar.",
     note: "Perfecto para: salón y comedor integrados",
+    alt: "Propuesta de salón y comedor a medida con cortinas, alfombra y soluciones decorativas coordinadas",
     img400: imgBalance400,
     img600: imgBalance600,
     img700: imgBalance700,
@@ -615,8 +624,9 @@ const PACKS = [
     badge: "Confort + Automatización",
     title: "La casa funciona sola",
     price: "1.490€",
-    desc: "Confort sin esfuerzo. Integración discreta y tecnología que se adapta a tu ritmo, no al revés. Una experiencia completa de control, luz y privacidad.",
-    note: "Perfecto para: vivienda completa o reforma integral",
+    desc: "Integración de cortinas, estores y toldos motorizados con escenas, control y automatización pensada para mejorar luz, privacidad y confort diario sin esfuerzo.",
+    note: "Ideal para vivienda completa o zonas clave · precio orientativo según alcance",
+    alt: "Propuesta de automatización con cortinas, estores y toldos motorizados en salón",
     img400: imgFuncionaSola400,
     img600: imgFuncionaSola600,
     img800: imgFuncionaSola800,
@@ -638,6 +648,7 @@ const TILES = [
   {
     title: "Dormitorio",
     text: "Privacidad, descanso y caída perfecta. La mejora más inmediata.",
+    alt: "Dormitorio con solución textil a medida para luz y privacidad",
     img400: imgDormitorio400,
     img600: imgDormitorio600,
     img800: imgDormitorio800,
@@ -646,6 +657,7 @@ const TILES = [
   {
     title: "Salón",
     text: "Luz, textura y coherencia estética. Donde más se vive la casa.",
+    alt: "Salón con cortinas y soluciones decorativas para control de luz",
     img400: imgSalon400,
     img600: imgSalon600,
     img800: imgSalon800,
@@ -654,6 +666,7 @@ const TILES = [
   {
     title: "Cocina",
     text: "Screen, estores y soluciones fáciles de mantener para el día a día.",
+    alt: "Cocina con estores o screen pensados para el uso diario",
     img400: imgCocina400,
     img600: imgCocina600,
     img800: imgCocina800,
@@ -662,6 +675,7 @@ const TILES = [
   {
     title: "Baño",
     text: "Privacidad sin perder luz. Materiales pensados para humedad.",
+    alt: "Baño con solución de privacidad y entrada de luz",
     img400: imgBano400,
     img600: imgBano600,
     img800: imgBano800,
@@ -670,6 +684,7 @@ const TILES = [
   {
     title: "Infantil / Juvenil",
     text: "Oscuridad, seguridad y tejidos resistentes. Fácil de vivir.",
+    alt: "Habitación infantil o juvenil con textiles resistentes y control de luz",
     img400: imgInfantil400,
     img600: imgInfantil600,
     img800: imgInfantil800,
@@ -678,6 +693,7 @@ const TILES = [
   {
     title: "Exterior",
     text: "Sombra, temperatura y uso real de terraza o balcón.",
+    alt: "Terraza o balcón con solución de toldo y protección solar",
     img400: imgToldos400,
     img600: imgToldos600,
     img800: imgToldos800,
@@ -697,10 +713,9 @@ export default function Propuestas({ onOpenAsesoramiento }) {
   const siteName = CONTACT.siteName || "Traver Decoración Textil";
 
   const title =
-    "Propuestas a medida | Traver Decoración Textil en Castellón y Valencia";
+    "Propuestas a medida de cortinas, toldos y automatización en Castellón y Valencia";
   const description =
-    "Elige una propuesta para empezar: dormitorio, salón/comedor o confort con automatización. Asesoramiento, medición e instalación profesional en Castellón y Valencia.";
-
+    "Explora propuestas a medida para dormitorio, salón/comedor y confort con automatización. Cortinas, toldos, tejidos y sistemas con asesoramiento, medición e instalación profesional en Castellón y Valencia.";
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt = "Propuestas a medida de Traver Decoración Textil";
 
@@ -722,41 +737,63 @@ export default function Propuestas({ onOpenAsesoramiento }) {
     [canonical]
   );
 
-  const itemList = {
-    "@type": "ItemList",
-    itemListOrder: "https://schema.org/ItemListOrderAscending",
-    numberOfItems: packItems.length,
-    itemListElement: packItems.map((p, idx) => ({
-      "@type": "ListItem",
-      position: idx + 1,
-      name: p.name,
-      url: p.url,
-    })),
-  };
+  const jsonLd = useMemo(() => {
+    const itemList = {
+      "@type": "ItemList",
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      numberOfItems: packItems.length,
+      itemListElement: packItems.map((p, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        name: p.name,
+        url: p.url,
+      })),
+    };
 
-  const collectionPageJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "@id": `${canonical}#collectionpage`,
-    url: canonical,
-    name: title,
-    description,
-    inLanguage: "es-ES",
-    isPartOf: {
-      "@type": "WebSite",
-      "@id": `${baseUrl}/#website`,
-      url: `${baseUrl}/`,
-      name: siteName,
-    },
-    about: { "@id": `${baseUrl}/#business` },
-    mainEntity: itemList,
-    primaryImageOfPage: {
-      "@type": "ImageObject",
-      url: ogImage,
-    },
-  };
+    const collectionPageJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "@id": `${canonical}#collectionpage`,
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: "es-ES",
+      isPartOf: {
+        "@type": "WebSite",
+        "@id": `${baseUrl}/#website`,
+        url: `${baseUrl}/`,
+        name: siteName,
+      },
+      about: { "@id": `${baseUrl}/#business` },
+      mainEntity: itemList,
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: ogImage,
+      },
+    };
 
-  const jsonLd = [collectionPageJsonLd];
+    const breadcrumbJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "@id": `${canonical}#breadcrumb`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Inicio",
+          item: `${baseUrl}/`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Propuestas",
+          item: canonical,
+        },
+      ],
+    };
+
+    return [collectionPageJsonLd, breadcrumbJsonLd];
+  }, [baseUrl, canonical, description, ogImage, packItems, siteName, title]);
 
   return (
     <Page>
@@ -835,7 +872,7 @@ export default function Propuestas({ onOpenAsesoramiento }) {
                       pack.img1200
                     )}
                     sizes={CARD_IMAGE_SIZES}
-                    alt=""
+                    alt={pack.alt}
                     loading="lazy"
                     decoding="async"
                   />
@@ -909,7 +946,7 @@ export default function Propuestas({ onOpenAsesoramiento }) {
                     tile.img1200
                   )}
                   sizes={CARD_IMAGE_SIZES}
-                  alt=""
+                  alt={tile.alt}
                   loading="lazy"
                   decoding="async"
                 />
@@ -930,10 +967,8 @@ export default function Propuestas({ onOpenAsesoramiento }) {
             </TrustText>
 
             <TrustCTA
-              to="/contact"
-              onClick={(e) => {
-                e.preventDefault();
-
+              type="button"
+              onClick={() => {
                 trackCtaClick("propuestas_trust_cta", "hablar_con_un_asesor");
                 trackOpenQuickEnquiry("propuestas_trust_cta", "Propuestas");
 
