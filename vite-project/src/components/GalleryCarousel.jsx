@@ -53,7 +53,9 @@ const Title = styled.h2`
   font-weight: 600;
   color: #222;
   margin-bottom: 1rem;
-
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
   @media (max-width: 768px) {
     font-size: 1.7rem;
   }
@@ -124,7 +126,9 @@ export default function GalleryCarousel() {
 
   return (
     <SectionWrapper id="gallery">
-      <Title>Inspírate</Title>
+      <Title>
+        Ideas para <span>tu espacio</span>
+      </Title>
       <Subtitle>
         Descubre ideas y estilos que podemos adaptar a tu hogar, cuidando cada
         detalle.

@@ -111,10 +111,9 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
   const siteName = CONTACT.siteName || "Traver Decoración Textil";
 
   const title =
-    "Automatización Somfy | Cortinas, estores y toldos motorizados en Castellón y Valencia";
+    "Automatización Somfy en Castellón | Cortinas, estores, persianas y toldos motorizados";
   const description =
-    "Automatiza cortinas, estores, persianas y toldos con Somfy: sensores, escenas y control por app. Instalación profesional en Castellón y Valencia. Asesoramiento y propuesta a medida.";
-
+    "Automatización Somfy en Castellón para cortinas, estores, persianas y toldos motorizados. Sensores, escenas y control por app con instalación profesional y asesoramiento a medida.";
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt = "Automatización Somfy para cortinas y toldos a medida";
 
@@ -126,6 +125,11 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
         "@id": `${canonical}#service`,
         name: "Automatización Somfy",
         serviceType: "Automatización de cortinas, estores, persianas y toldos",
+        image: ogImage,
+        brand: {
+          "@type": "Brand",
+          name: "Somfy",
+        },
         provider: {
           "@type": "HomeAndConstructionBusiness",
           "@id": `${baseUrl}/#business`,
@@ -134,8 +138,9 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
           telephone: CONTACT.phoneLandline,
         },
         areaServed: [
+          { "@type": "City", name: "Almassora" },
+          { "@type": "City", name: "Castellón de la Plana" },
           { "@type": "AdministrativeArea", name: "Castellón" },
-          { "@type": "AdministrativeArea", name: "Valencia" },
         ],
         url: canonical,
         description,
@@ -150,12 +155,39 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
         inLanguage: "es-ES",
         isPartOf: { "@id": `${baseUrl}/#website` },
         about: { "@id": `${canonical}#service` },
-        primaryImageOfPage: { "@type": "ImageObject", url: ogImage },
+        primaryImageOfPage: {
+          "@type": "ImageObject",
+          url: ogImage,
+        },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "@id": `${canonical}#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Inicio",
+            item: `${baseUrl}/`,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Servicios",
+            item: `${baseUrl}/services`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: "Automatización",
+            item: canonical,
+          },
+        ],
       },
     ],
-    [baseUrl, canonical, description, siteName, title]
+    [baseUrl, canonical, description, ogImage, siteName, title]
   );
-
   // Video autoplay workaround for Safari (muted + playsInline + try/catch)
   useEffect(() => {
     const video = videoRef.current;
@@ -238,10 +270,22 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
           "No. Puedes empezar con app, mando o escenas simples. Si quieres integrar más adelante, lo dejamos preparado.",
       },
       {
-        q: "¿Qué gana el día a día (más allá del móvil)?",
-        a: "Confort real: luz y privacidad en el punto justo, escenas que se activan solas y un hogar que responde con calma.",
+        q: "¿Se puede automatizar una instalación que ya tengo en casa?",
+        a: "En muchos casos, sí. Estudiamos el tipo de cortina, estor, persiana o toldo existente y te proponemos la opción más adecuada para motorizarlo o renovarlo con una solución más completa.",
         aText:
-          "Confort real: luz y privacidad en el punto justo, escenas que se activan solas y un hogar que responde con calma.",
+          "En muchos casos, sí. Estudiamos el tipo de cortina, estor, persiana o toldo existente y te proponemos la opción más adecuada para motorizarlo o renovarlo con una solución más completa.",
+      },
+      {
+        q: "¿Hace falta obra para automatizar cortinas, estores o toldos?",
+        a: "No siempre. Depende del producto y de la instalación existente. En muchos casos podemos plantear una solución limpia y discreta, minimizando la intervención y respetando la estética del espacio.",
+        aText:
+          "No siempre. Depende del producto y de la instalación existente. En muchos casos podemos plantear una solución limpia y discreta, minimizando la intervención y respetando la estética del espacio.",
+      },
+      {
+        q: "¿Qué productos se pueden automatizar?",
+        a: "Trabajamos soluciones de automatización para cortinas, estores, persianas y toldos, adaptando motores, controles y escenas al uso real de cada espacio.",
+        aText:
+          "Trabajamos soluciones de automatización para cortinas, estores, persianas y toldos, adaptando motores, controles y escenas al uso real de cada espacio.",
       },
     ],
     []
@@ -309,7 +353,6 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
           <HeroSubtitle>
             Cortinas, estores y toldos que responden con precisión silenciosa a
             la luz, al clima y a tu rutina. Sin esfuerzo. Sin interrupciones.
-            Como debe ser.
           </HeroSubtitle>
 
           <HeroActions>
@@ -352,6 +395,12 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
         <Ambient aria-hidden="true" />
         <Noise aria-hidden="true" />
         <SurfaceInner>
+          <SeoIntro>
+            Diseñamos soluciones de automatización Somfy en Castellón para
+            cortinas, estores, persianas y toldos, integrando motores, sensores,
+            escenas y control inteligente en viviendas y proyectos
+            residenciales.
+          </SeoIntro>
           {/* SECTION: INTRO / ESSENCE */}
           <Section data-reveal="out">
             <SectionTop>
@@ -360,9 +409,9 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
                 La casa funciona <span>sola</span>
               </Title>
               <Lead>
-                Automatización elegante y discreta para que luz, privacidad y
-                confort respondan con calma a tu día. Sin ruido visual. Sin
-                fricción.
+                Automatización elegante y discreta para cortinas, estores,
+                persianas y toldos, pensada para mejorar la luz, la privacidad y
+                el confort diario con sensores, escenas y control inteligente.
               </Lead>
             </SectionTop>
 
@@ -467,8 +516,9 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
                 Dos formas de empezar a <span>automatizar</span>
               </Title>
               <Lead>
-                Puedes integrar todo el hogar desde el principio o comenzar por
-                una zona concreta y ampliar cuando lo disfrutes.
+                Puedes automatizar toda la vivienda desde el principio o empezar
+                por una zona concreta, como cortinas, estores o toldos, y
+                ampliar el sistema más adelante.
               </Lead>
             </SectionTop>
 
@@ -546,12 +596,14 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
                 anticipe sin que tú tengas que pensar.
               </QuoteText>
               <QuoteMeta>
-                <span>Traver</span> · Instalación profesional en Castellón y
-                Valencia
+                <span>Traver</span> · Instalación profesional en Castellón
               </QuoteMeta>
             </Quote>
           </Section>
-
+          <MicroProof>
+            <strong>Servicio en Castellón y alrededores.</strong> Asesoramiento,
+            medición, instalación y ajuste final a medida.
+          </MicroProof>
           {/* SECTION: BENEFITS */}
           <Section id="experiencia" data-reveal="out">
             <SectionTop>
@@ -713,53 +765,54 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
                 <SceneMeta>Wi-Fi · escenas</SceneMeta>
               </SceneTile>
             </ScenesGrid>
-
-            {/* FINAL CTA */}
-            <Section data-reveal="out">
-              <CTA>
-                <div>
-                  <CTATitle>¿Lo vemos en tu casa?</CTATitle>
-                  <CTAText>
-                    Te proponemos una solución clara y realista según tu
-                    espacio. Medición, propuesta y presupuesto sin compromiso.
-                  </CTAText>
-                </div>
-
-                <CTAButtons>
-                  <CTAButtonPrimary
-                    href="/contact"
-                    onClick={(e) => {
-                      e.preventDefault();
-
-                      trackCtaClick(
-                        "automatizacion_primary",
-                        "pedir_asesoramiento"
-                      );
-                      trackOpenQuickEnquiry(
-                        "automatizacion_primary",
-                        "Automatización"
-                      );
-
-                      onOpenAsesoramiento?.(
-                        "Automatización",
-                        "automatizacion_primary"
-                      );
-                    }}
-                  >
-                    Pedir asesoramiento
-                  </CTAButtonPrimary>
-                  <CTAButtonSecondary
-                    href={CONTACT.whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackWhatsAppClick("automatizacion_primary")}
-                  >
-                    WhatsApp
-                  </CTAButtonSecondary>
-                </CTAButtons>
-              </CTA>
-            </Section>
           </Section>
+          {/* FINAL CTA */}
+          <Section data-reveal="out">
+            <CTA>
+              <div>
+                <CTATitle>¿Lo vemos en tu casa?</CTATitle>
+                <CTAText>
+                  Te proponemos una solución de automatización clara y realista
+                  para tu espacio, con medición, propuesta y presupuesto sin
+                  compromiso.
+                </CTAText>
+              </div>
+
+              <CTAButtons>
+                <CTAButtonPrimary
+                  href="/contact"
+                  onClick={(e) => {
+                    e.preventDefault();
+
+                    trackCtaClick(
+                      "automatizacion_primary",
+                      "pedir_asesoramiento"
+                    );
+                    trackOpenQuickEnquiry(
+                      "automatizacion_primary",
+                      "Automatización"
+                    );
+
+                    onOpenAsesoramiento?.(
+                      "Automatización",
+                      "automatizacion_primary"
+                    );
+                  }}
+                >
+                  Pedir asesoramiento
+                </CTAButtonPrimary>
+                <CTAButtonSecondary
+                  href={CONTACT.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackWhatsAppClick("automatizacion_primary")}
+                >
+                  WhatsApp
+                </CTAButtonSecondary>
+              </CTAButtons>
+            </CTA>
+          </Section>
+
           {/* SECTION: PROCESS */}
           <Section data-reveal="out">
             <SectionTop>
@@ -1037,6 +1090,18 @@ const MicroLine = styled.p`
 /* =========================
    PREMIUM SURFACE + FX
 ========================= */
+const SeoIntro = styled.p`
+  max-width: 760px;
+  margin: 1.1rem auto 0;
+  font-size: 1rem;
+  line-height: 1.75;
+  text-align: center;
+  color: rgba(17, 17, 17, 0.68);
+
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
+  }
+`;
 const Surface = styled.section`
   position: relative;
   background: #f4f5f7;
@@ -1874,6 +1939,7 @@ const MicroProof = styled.p`
   color: rgba(17, 17, 17, 0.62);
   font-size: 0.95rem;
   line-height: 1.6;
+  text-align: "center";
 
   strong {
     color: rgba(17, 17, 17, 0.9);

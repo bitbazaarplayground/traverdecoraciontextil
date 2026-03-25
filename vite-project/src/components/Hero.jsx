@@ -387,7 +387,7 @@ export default function Hero({ onOpenAsesoramiento }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: "easeOut" }}
         >
-          Decoración textil · Protección solar · Domótica
+          Decoración textil · Protección solar · Automatización
         </MicroLine>
 
         <Title>Diseñamos&nbsp;espacios</Title>
@@ -404,12 +404,8 @@ export default function Hero({ onOpenAsesoramiento }) {
           <PrimaryAction
             type="button"
             onClick={() => {
-              // 1. Evento genérico
               trackCtaClick("hero", "solicitar_asesoramiento");
-
-              // 2. Evento específico
               trackOpenQuickEnquiry("hero", "General");
-
               onOpenAsesoramiento?.("General");
             }}
           >
@@ -417,7 +413,6 @@ export default function Hero({ onOpenAsesoramiento }) {
           </PrimaryAction>
         </Actions>
       </Content>
-
       <ScrollHint aria-hidden="true" />
     </HeroWrapper>
   );

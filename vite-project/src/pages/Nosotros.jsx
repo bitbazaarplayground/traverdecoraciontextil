@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import FaqAccordion from "../components/faq/FaqAccordion";
-
+import { CONTACT } from "../config/contact";
 // Images
 import welcome1200 from "../assets/Automatizacion/ctaAuto-1200.webp";
 import welcome400 from "../assets/Automatizacion/ctaAuto-400.webp";
@@ -28,13 +28,12 @@ export default function Nosotros() {
   ).replace(/\/$/, "");
 
   const canonical = `${baseUrl}/nosotros`;
-  const siteName = "Traver Decoración Textil";
+  const siteName = CONTACT.siteName || "Traver Decoración Textil";
 
   const title =
     "Nosotros | Traver Decoración Textil, tradición y detalle desde 1989";
   const description =
-    "Conoce Traver Decoración Textil, empresa fundada en 1989 especializada en toldos, cortinas, tapizados, papeles pintados y decoración textil para viviendas y espacios profesionales.";
-
+    "Conoce Traver Decoración Textil, empresa fundada en 1989 especializada en toldos, cortinas, tapizados, papeles pintados y decoración textil en Castellón. Soluciones a medida para viviendas y espacios profesionales.";
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt =
     "Traver Decoración Textil, tradición, detalle y diseño desde 1989";
@@ -63,6 +62,12 @@ export default function Nosotros() {
       a: "La experiencia de una empresa fundada en 1989, la atención cercana, el cuidado por el detalle y la combinación de funcionalidad con una estética elegante y duradera.",
       aText:
         "La experiencia de una empresa fundada en 1989, la atención cercana, el cuidado por el detalle y la combinación de funcionalidad con una estética elegante y duradera.",
+    },
+    {
+      q: "¿Dónde estamos y en qué zonas trabajamos?",
+      a: "Estamos en Almassora, Castellón, y trabajamos principalmente en Castellón y alrededores, además de proyectos seleccionados según alcance.",
+      aText:
+        "Estamos en Almassora, Castellón, y trabajamos principalmente en Castellón y alrededores, además de proyectos seleccionados según alcance.",
     },
   ];
 
@@ -102,15 +107,11 @@ export default function Nosotros() {
       logo: `${baseUrl}/favicon.png`,
       image: ogImage,
       foundingDate: "1989",
-      telephone: "+34 964 562 357",
-      email: "traverdecoraciontextil@gmail.com",
+      telephone: CONTACT.phoneLandline,
+      email: CONTACT.email,
       address: {
         "@type": "PostalAddress",
-        streetAddress: "Carrer de Sant Felip, 67",
-        addressLocality: "Almassora",
-        addressRegion: "Castellón",
-        postalCode: "12550",
-        addressCountry: "ES",
+        ...CONTACT.address,
       },
       description,
       areaServed: {
@@ -152,7 +153,10 @@ export default function Nosotros() {
     [baseUrl, canonical]
   );
 
-  const jsonLd = [aboutPageJsonLd, organizationJsonLd, breadcrumbJsonLd];
+  const jsonLd = useMemo(
+    () => [aboutPageJsonLd, organizationJsonLd, breadcrumbJsonLd],
+    [aboutPageJsonLd, organizationJsonLd, breadcrumbJsonLd]
+  );
 
   return (
     <>
@@ -222,12 +226,10 @@ export default function Nosotros() {
               <span>Tradición,</span> detalle y diseño para vestir cada espacio
             </HeroTitle>
             <HeroText>
-              En Traver Decoración Textil llevamos más de tres décadas ayudando
-              a transformar hogares y espacios profesionales con soluciones a
-              medida en toldos, cortinas, tapizados, papeles pintados y
-              decoración textil. Nuestro trabajo une experiencia, funcionalidad
-              y una estética cuidada para crear ambientes cómodos, elegantes y
-              duraderos.
+              En Traver Decoración Textil llevamos más de tres décadas creando
+              soluciones a medida en toldos, cortinas, tapizados, papeles
+              pintados y decoración textil para hogares y espacios
+              profesionales.
             </HeroText>
           </HeroContent>
         </HeroSection>

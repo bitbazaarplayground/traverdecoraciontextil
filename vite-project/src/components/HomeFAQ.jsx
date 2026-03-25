@@ -7,7 +7,6 @@ import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
 import FaqAccordion from "./faq/FaqAccordion";
 
-// ✅ keep data OUTSIDE the component
 const homeFaq = [
   {
     q: "¿El asesoramiento tiene algún coste u obligación?",
@@ -59,8 +58,9 @@ export default function HomeFAQ({ onOpenAsesoramiento }) {
             Preguntas frecuentes <span>antes de decidir</span>
           </Title>
           <Lead>
-            Respuestas claras para que sepas qué esperar: asesoramiento,
-            medición e instalación. Sin letra pequeña.
+            Respuestas claras sobre nuestros servicios de cortinas, toldos y
+            automatización en Castellón: asesoramiento, medición e instalación
+            sin sorpresas.
           </Lead>
         </Top>
 

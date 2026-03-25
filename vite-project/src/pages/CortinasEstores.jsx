@@ -1,6 +1,7 @@
 // CortinasEstores.jsx
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import cortinaM from "../assets/CortinasEstores/cortinaM.webp";
 import customerM from "../assets/CortinasEstores/customerM.webp";
@@ -379,7 +380,7 @@ const FabricDescription = styled.p`
 
 const HandmadeNote = styled.div`
   max-width: 820px;
-  margin: 7rem auto 1rem;
+  margin: 3.5rem auto 0;
   font-size: 1.05rem;
   line-height: 1.7;
   color: #444;
@@ -389,7 +390,60 @@ const HandmadeNote = styled.div`
     color: #222;
   }
 `;
+const SoftDivider = styled.div`
+  width: min(720px, 100%);
+  height: 1px;
+  margin: 2.25rem auto 0;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(17, 17, 17, 0.12),
+    transparent
+  );
+`;
+const BlockSpacer = styled.div`
+  margin-top: 3.25rem;
 
+  @media (max-width: 768px) {
+    margin-top: 2.4rem;
+  }
+`;
+
+const IntroHeader = styled.div`
+  max-width: 720px;
+  margin: 0 auto 2.4rem;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+  }
+`;
+
+const IntroText = styled.p`
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.62);
+`;
+
+const InlineSeoNote = styled.p`
+  max-width: 720px;
+  margin: 0 auto;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.68);
+  text-align: center;
+
+  a {
+    color: ${({ theme }) => theme.colors.primary};
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+`;
 /* =========================
    FAQ
 ========================= */
@@ -510,10 +564,9 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
   const siteName = CONTACT.siteName;
 
   const title =
-    "Cortinas y estores a medida | Traver Decoración Textil (Castellón y Valencia)";
+    "Cortinas y estores a medida en Castellón | Medición e instalación";
   const description =
-    "Cortinas y estores a medida en Almassora: tejidos seleccionados, caída impecable y control de luz y privacidad. Medición y instalación profesional en Castellón y Valencia.";
-
+    "Cortinas y estores a medida en Castellón: tejidos seleccionados, control de luz y privacidad, medición e instalación profesional para viviendas y negocios.";
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt = "Cortinas y estores a medida — Traver Decoración Textil";
 
@@ -567,8 +620,9 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
       name: "Cortinas y estores a medida",
       description,
       areaServed: [
+        { "@type": "City", name: "Almassora" },
+        { "@type": "City", name: "Castellón de la Plana" },
         { "@type": "AdministrativeArea", name: "Castellón" },
-        { "@type": "AdministrativeArea", name: "Valencia" },
       ],
       provider: {
         "@type": "LocalBusiness",
@@ -759,10 +813,10 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
               <span>Inspiración</span> que empieza en el tejido
             </FabricsTitle>
             <FabricsIntro>
-              Detrás de cada cortina hay una decisión, una textura y una forma
-              de entender la luz. Diseñamos y confeccionamos cada proyecto a
-              medida, cuidando cada detalle para lograr espacios equilibrados y
-              acogedores.
+              Diseñamos e instalamos cortinas y estores a medida en Castellón
+              para viviendas, dormitorios, salones y negocios. Seleccionamos
+              tejidos, confección y sistemas según la entrada de luz, la
+              privacidad y el estilo de cada espacio.
             </FabricsIntro>
           </FabricsHeader>
 
@@ -887,7 +941,7 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
               </FabricDescription>
             </FabricItem>
           </FabricsGrid>
-
+          <SoftDivider />
           <HandmadeNote>
             <strong>
               Cada cortina se confecciona a medida por personas, no por
@@ -896,9 +950,27 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             Por eso el ajuste, la caída y el acabado final marcan la diferencia
             frente a soluciones estándar.
           </HandmadeNote>
+          <SoftDivider />
+          <BlockSpacer>
+            <IntroHeader>
+              <FabricsTitle>
+                Instalación de <span>cortinas y estores a medida</span>
+              </FabricsTitle>
+              <IntroText>
+                Realizamos medición, asesoramiento e instalación profesional
+                para que cada cortina o estor encaje perfectamente en la ventana
+                y en la estética del espacio, con soluciones decorativas y
+                funcionales para viviendas y negocios.
+              </IntroText>
+            </IntroHeader>
+          </BlockSpacer>
+          <InlineSeoNote>
+            Si buscas una solución más avanzada, también puedes ver nuestras{" "}
+            <Link to="/automatizacion">opciones de automatización</Link> para
+            cortinas y estores.
+          </InlineSeoNote>
         </FabricsInner>
       </FabricsSection>
-
       <ContactCTA
         onOpenAsesoramiento={onOpenAsesoramiento}
         pack="Cortinas"

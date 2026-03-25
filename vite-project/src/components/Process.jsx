@@ -194,8 +194,8 @@ export default function Process() {
         </Title>
         <Intro>
           Acompañamos cada proyecto desde la idea inicial hasta el resultado
-          final, cuidando cada detalle para que el proceso sea sencillo y sin
-          preocupaciones.
+          final, con soluciones de cortinas, toldos y decoración textil
+          adaptadas a tu espacio.
         </Intro>
       </Header>
 

@@ -29,10 +29,9 @@ export default function HomePage({ onOpenAsesoramiento }) {
   const logo = `${baseUrl}/logo.png`;
 
   const title =
-    "Traver Decoración Textil | Cortinas, toldos y más en Castellón y Valencia";
+    "Cortinas, toldos y automatización en Castellón | Traver Decoración Textil";
   const description =
-    "Decoración textil y protección solar a medida en Castellón y Valencia: cortinas, estores, toldos, venecianas, panel japonés, automatización y mosquiteras. Medición e instalación profesional.";
-
+    "Cortinas, estores, toldos y automatización a medida en Castellón. Decoración textil y protección solar con medición, asesoramiento e instalación profesional.";
   const localBusinessJsonLd = {
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
@@ -49,8 +48,9 @@ export default function HomePage({ onOpenAsesoramiento }) {
       ...CONTACT.address,
     },
     areaServed: [
+      { "@type": "City", name: "Almassora" },
+      { "@type": "City", name: "Castellón de la Plana" },
       { "@type": "AdministrativeArea", name: "Castellón" },
-      { "@type": "AdministrativeArea", name: "Valencia" },
     ],
     contactPoint: [
       {

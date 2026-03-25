@@ -7,6 +7,8 @@ import cortinasServicios from "../assets/servicios/CortinasServicios.webp";
 import proyecto from "../assets/servicios/ProyectoAMedida.webp";
 import somfyApp from "../assets/servicios/app2.webp";
 
+import limpiezaImg from "../assets/servicios/limpieza/limpieza-800.webp";
+import mosquiterasImg from "../assets/servicios/mosquiteras/mosquiteraPatio.webp";
 import panelJaponesImg from "../assets/servicios/panelJapones.webp";
 import toldosProteccionSolar from "../assets/servicios/toldoServicios.webp";
 import venecianasImg from "../assets/servicios/venecianas.webp";
@@ -17,7 +19,7 @@ import {
   trackWhatsAppClick,
 } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
-const limpiezaImg = "/limpieza/limpieza-1280.webp";
+
 /* =========================
    Small scroll-reveal helper (no deps)
 ========================= */
@@ -158,7 +160,13 @@ const ServicesGrid = styled.div`
     gap: 1.25rem;
   }
 `;
-
+const SeoIntro = styled.p`
+  max-width: 74ch;
+  margin: 1rem 0 0;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(0, 0, 0, 0.62);
+`;
 const ServiceCard = styled.article`
   height: 100%;
   display: flex;
@@ -294,152 +302,6 @@ const PrimaryCTA = styled(Link)`
   }
 `;
 
-const TrustSection = styled.section`
-  padding: 0 0 clamp(3.2rem, 6vw, 4.8rem);
-`;
-
-const TrustCard = styled.div`
-  border-radius: 28px;
-  padding: 2.1rem 2rem;
-
-  background: rgba(255, 255, 255, 0.55);
-  box-shadow: 0 28px 85px rgba(0, 0, 0, 0.08);
-
-  display: grid;
-  gap: 1.2rem;
-
-  @media (min-width: 980px) {
-    grid-template-columns: 1.25fr 0.75fr;
-    align-items: center;
-    gap: 1.8rem;
-    padding: 2.25rem 2.2rem;
-  }
-`;
-
-const TrustTitle = styled.h2`
-  margin: 0 0 0.45rem;
-
-  font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-
-  font-size: 2rem;
-  line-height: 1.05;
-  color: rgba(0, 0, 0, 0.92);
-`;
-
-const TrustText = styled.p`
-  margin: 0;
-  color: rgba(0, 0, 0, 0.65);
-  line-height: 1.75;
-  font-size: 1.02rem;
-`;
-
-const TrustBullets = styled.div`
-  margin-top: 1rem;
-  display: grid;
-  gap: 0.55rem;
-`;
-
-const TrustBullet = styled.p`
-  margin: 0;
-  display: grid;
-  grid-template-columns: 16px 1fr;
-  gap: 0.65rem;
-  align-items: start;
-  font-size: 0.98rem;
-  line-height: 1.65;
-  color: rgba(0, 0, 0, 0.62);
-
-  &::before {
-    content: "✓";
-    font-weight: 900;
-    color: ${({ theme }) => theme.colors.primary};
-    line-height: 1.2;
-  }
-`;
-
-const TrustCTA = styled(Link)`
-  justify-self: start;
-
-  @media (min-width: 980px) {
-    justify-self: end;
-  }
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0.95rem 1.6rem;
-  border-radius: 999px;
-
-  background: ${({ theme }) => theme.colors.primary};
-  color: #fff;
-  font-weight: 850;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-
-  text-decoration: none;
-  transition: transform 240ms ease, filter 240ms ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    filter: brightness(0.98);
-  }
-`;
-
-const CTA = styled.section`
-  padding: clamp(3.4rem, 6vw, 5.1rem) 0;
-  text-align: center;
-`;
-
-const CTATitle = styled.h2`
-  margin: 0 0 1rem;
-
-  font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-
-  font-size: clamp(2rem, 3.2vw, 2.65rem);
-  line-height: 1.05;
-  color: rgba(0, 0, 0, 0.92);
-`;
-
-const CTAText = styled.p`
-  max-width: 70ch;
-  margin: 0 auto;
-  font-size: 1.05rem;
-  line-height: 1.75;
-  color: rgba(0, 0, 0, 0.64);
-`;
-
-const CTAButton = styled(Link)`
-  display: inline-flex;
-  margin-top: 2.05rem;
-
-  padding: 0.95rem 2.1rem;
-  border-radius: 999px;
-
-  background: rgba(0, 0, 0, 0.92);
-  color: #fff;
-
-  font-weight: 850;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-
-  text-decoration: none;
-  transition: transform 240ms ease, filter 240ms ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    filter: brightness(0.98);
-  }
-`;
-
 const RevealWrap = styled.div`
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transform: ${(p) => {
@@ -519,7 +381,7 @@ const ConsultActions = styled.div`
   align-items: center;
 `;
 
-const ConsultPrimary = styled(Link)`
+const ConsultPrimary = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -531,6 +393,8 @@ const ConsultPrimary = styled(Link)`
   background: ${({ theme }) => theme.colors.primary};
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.12);
   transition: transform 0.2s ease, filter 0.2s ease;
+  border: 0;
+  cursor: pointer;
 
   &:hover {
     transform: translateY(-2px);
@@ -658,13 +522,12 @@ export default function Servicios({ onOpenAsesoramiento }) {
     import.meta.env.VITE_SITE_URL || window.location.origin
   ).replace(/\/$/, "");
   const canonical = `${baseUrl}/services`;
-  const siteName = "Traver Decoración Textil";
+  const siteName = CONTACT.siteName || "Traver Decoración Textil";
 
   const title =
-    "Servicios | Cortinas, toldos y soluciones a medida en Castellón y Valencia";
+    "Servicios de cortinas, toldos, automatización y decoración textil en Castellón y Valencia";
   const description =
-    "Explora nuestros servicios: cortinas y estores, toldos y protección solar, venecianas, panel japonés, mosquiteras y automatización. Diseño, medición e instalación profesional.";
-
+    "Explora nuestros servicios de cortinas y estores, toldos, automatización, venecianas, panel japonés, mosquiteras y limpieza. Soluciones a medida con asesoramiento, medición e instalación profesional en Castellón y Valencia.";
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt =
     "Servicios de Traver Decoración Textil en Castellón y Valencia";
@@ -675,7 +538,7 @@ export default function Servicios({ onOpenAsesoramiento }) {
         badge: "Interior",
         title: "Cortinas & Estores",
         value: "La forma más elegante de controlar luz y privacidad.",
-        text: "Proyectos a medida para definir la atmósfera de cada estancia: tejidos, caída, confección y sistemas seleccionados con criterio.",
+        text: "Cortinas y estores a medida para definir la atmósfera de cada estancia, con tejidos, confección y sistemas seleccionados con criterio.",
         img: cortinasServicios,
         alt: "Cortinas y estores a medida en interior",
         primaryTo: "/cortinas-estores",
@@ -685,7 +548,7 @@ export default function Servicios({ onOpenAsesoramiento }) {
         badge: "Exterior",
         title: "Toldos & Protección Solar",
         value: "Sombra real, temperatura controlada, exterior utilizable.",
-        text: "Soluciones sólidas y discretas para terrazas, jardines y fachadas: confort térmico, durabilidad y estética.",
+        text: "Toldos y soluciones de protección solar a medida para terrazas, jardines y fachadas: confort térmico, durabilidad y una estética cuidada.",
         img: toldosProteccionSolar,
         alt: "Toldos y protección solar a medida",
         primaryTo: "/toldos-proteccion-solar",
@@ -705,7 +568,7 @@ export default function Servicios({ onOpenAsesoramiento }) {
         badge: "Estudio",
         title: "Proyectos a Medida",
         value: "Una visión coherente de principio a fin.",
-        text: "Asesoramiento, medición, confección e instalación. Creamos una línea estética consistente para que todo encaje en tu espacio.",
+        text: "Asesoramiento, medición, confección e instalación para proyectos de decoración textil y protección solar a medida, con una propuesta coherente para cada espacio.",
         img: proyecto,
         alt: "Proyectos a medida: asesoramiento, medición e instalación",
         primaryTo: "/propuestas",
@@ -736,7 +599,7 @@ export default function Servicios({ onOpenAsesoramiento }) {
         title: "Mosquiteras",
         value: "Aire fresco sin visitas indeseadas.",
         text: "Soluciones a medida para ventanas y puertas: discretas, resistentes y fáciles de usar.",
-        img: venecianasImg,
+        img: mosquiterasImg,
         alt: "Mosquiteras a medida para ventanas y puertas",
         primaryTo: "/mosquiteras",
         primaryLabel: "Ver detalles",
@@ -757,41 +620,63 @@ export default function Servicios({ onOpenAsesoramiento }) {
   );
 
   // JSON-LD: CollectionPage + ItemList
-  const itemList = {
-    "@type": "ItemList",
-    itemListOrder: "https://schema.org/ItemListOrderAscending",
-    numberOfItems: services.length,
-    itemListElement: services.map((s, idx) => ({
-      "@type": "ListItem",
-      position: idx + 1,
-      name: s.title,
-      url: `${baseUrl}${s.primaryTo}`,
-    })),
-  };
+  const jsonLd = useMemo(() => {
+    const itemList = {
+      "@type": "ItemList",
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      numberOfItems: services.length,
+      itemListElement: services.map((s, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        name: s.title,
+        url: `${baseUrl}${s.primaryTo}`,
+      })),
+    };
 
-  const collectionPageJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "@id": `${canonical}#collectionpage`,
-    url: canonical,
-    name: title,
-    description,
-    inLanguage: "es-ES",
-    isPartOf: {
-      "@type": "WebSite",
-      "@id": `${baseUrl}/#website`,
-      url: `${baseUrl}/`,
-      name: siteName,
-    },
-    about: { "@id": `${baseUrl}/#business` }, // links back to HomePage business id
-    mainEntity: itemList,
-    primaryImageOfPage: {
-      "@type": "ImageObject",
-      url: ogImage,
-    },
-  };
+    const collectionPageJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "@id": `${canonical}#collectionpage`,
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: "es-ES",
+      isPartOf: {
+        "@type": "WebSite",
+        "@id": `${baseUrl}/#website`,
+        url: `${baseUrl}/`,
+        name: siteName,
+      },
+      about: { "@id": `${baseUrl}/#business` },
+      mainEntity: itemList,
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: ogImage,
+      },
+    };
 
-  const jsonLd = [collectionPageJsonLd];
+    const breadcrumbJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "@id": `${canonical}#breadcrumb`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Inicio",
+          item: `${baseUrl}/`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Servicios",
+          item: canonical,
+        },
+      ],
+    };
+
+    return [collectionPageJsonLd, breadcrumbJsonLd];
+  }, [baseUrl, canonical, description, ogImage, services, siteName, title]);
 
   return (
     <Page>
@@ -836,10 +721,16 @@ export default function Servicios({ onOpenAsesoramiento }) {
           </HeroTitle>
           <HeroText>
             Diseñamos e instalamos soluciones de decoración textil, protección
-            solar y automatización que se sienten bien desde el primer día.
-            Materiales seleccionados, integración discreta y un resultado
-            coherente con tu espacio.
+            solar y automatización a medida en Castellón y Valencia. Cortinas,
+            estores, toldos, venecianas, mosquiteras y sistemas motorizados con
+            una integración cuidada y un resultado coherente con tu espacio.
           </HeroText>
+
+          <SeoIntro>
+            En esta página puedes explorar nuestros servicios de cortinas y
+            estores, toldos, automatización, panel japonés, venecianas,
+            mosquiteras, limpieza y propuestas a medida en Castellón y Valencia.
+          </SeoIntro>
           <MicroTrust>
             Visita técnica · Medición precisa · Instalación limpia · Garantía y
             soporte
@@ -870,7 +761,12 @@ export default function Servicios({ onOpenAsesoramiento }) {
                     <ServiceText>{s.text}</ServiceText>
 
                     <Actions>
-                      <PrimaryCTA to={s.primaryTo}>{s.primaryLabel}</PrimaryCTA>
+                      <PrimaryCTA
+                        to={s.primaryTo}
+                        onClick={() => trackCtaClick("servicios_card", s.title)}
+                      >
+                        {s.primaryLabel}
+                      </PrimaryCTA>
                     </Actions>
                   </ServiceContent>
                 </ServiceCard>
@@ -951,9 +847,7 @@ export default function Servicios({ onOpenAsesoramiento }) {
               </ConsultLeft>
 
               <ConsultRight>
-                <MediaTile>
-                  {/* Use any “premium” image you already have imported in Servicios.jsx */}
-                  {/* Example: cortinasServicios / proyecto / somfyApp / etc */}
+                <MediaTile aria-label="Asesoramiento personalizado en decoración textil y protección solar">
                   <MediaImage
                     style={{ backgroundImage: `url(${cortinasServicios})` }}
                   />

@@ -212,6 +212,48 @@ const Benefit = styled.p`
   }
 `;
 
+const InlineSeoNote = styled.p`
+  margin: 1.5rem 0 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.68);
+
+  a {
+    color: ${({ theme }) => theme.colors.primary};
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+`;
+
+const SeoBlock = styled.div`
+  margin-top: 1.4rem;
+  padding: 1.2rem 1.25rem;
+  border-radius: 22px;
+  background: rgba(17, 17, 17, 0.03);
+  border: 1px solid rgba(17, 17, 17, 0.06);
+`;
+
+const SeoTitle = styled.h2`
+  margin: 0 0 0.6rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.92);
+`;
+
+const SeoText = styled.p`
+  margin: 0;
+  line-height: 1.75;
+  color: rgba(17, 17, 17, 0.68);
+
+  & + & {
+    margin-top: 0.8rem;
+  }
+`;
+
 /* GRID */
 
 const Grid = styled.div`
@@ -621,10 +663,9 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
   const siteName = CONTACT.siteName;
 
   const title =
-    "Toldos y protección solar | Sombra a medida en Castellón y Valencia";
+    "Toldos en Castellón | Instalación de toldos y protección solar a medida";
   const description =
-    "Toldos a medida en Castellón y Valencia: extensibles, cofre, verticales/screen, hostelería, pérgolas y velas de sombra. Medición e instalación profesional.";
-
+    "Instalación de toldos en Castellón a medida: toldos extensibles, cofre, verticales, pérgolas y protección solar para terrazas, balcones y negocios. Visita e instalación profesional.";
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt =
     "Toldos y protección solar a medida — Traver Decoración Textil";
@@ -676,10 +717,13 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
       "@context": "https://schema.org",
       "@type": "Service",
       "@id": `${canonical}#service`,
-      name: "Toldos y protección solar a medida",
-      serviceType: "Toldos, protección solar y sistemas de sombra",
+      name: "Instalación de toldos y protección solar en Castellón",
+      serviceType:
+        "Instalación de toldos a medida, protección solar y sistemas de sombra",
       provider: { "@id": businessId },
       areaServed: [
+        { "@type": "City", name: "Almassora" },
+        { "@type": "City", name: "Castellón de la Plana" },
         { "@type": "AdministrativeArea", name: "Castellón" },
         { "@type": "AdministrativeArea", name: "Valencia" },
       ],
@@ -727,10 +771,10 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
         eyebrow="Protección solar · Exterior"
         title={
           <>
-            Toldos & <span>Sombra a medida</span>
+            Toldos & <span>Protección solar</span>
           </>
         }
-        subtitle="Confort térmico, estética y durabilidad. Soluciones que mejoran el uso real de terrazas, jardines y fachadas sin comprometer el diseño."
+        subtitle="Disfruta de tu terraza todo el año con soluciones de sombra elegantes, duraderas y adaptadas a tu espacio."
         hero480={hero_480}
         hero768={hero_768}
         hero1280={hero_1280}
@@ -750,26 +794,15 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
             <IntroTitle>
               Toldos <span>a medida</span>
             </IntroTitle>
+
             <IntroText>
-              Seleccionamos el sistema adecuado según orientación, uso y
-              arquitectura. Medimos, instalamos y ajustamos con precisión para
-              un resultado sólido y discreto.
+              Instalamos toldos en Castellón para terrazas, balcones, jardines,
+              fachadas y negocios. Te asesoramos para elegir entre toldos
+              extensibles, toldos cofre, sistemas verticales, pérgolas y otras
+              soluciones de protección solar según la orientación, el uso del
+              espacio y el resultado estético que buscas.
             </IntroText>
           </IntroHeader>
-
-          <BenefitsStrip>
-            <Benefit>
-              <strong>Confort térmico:</strong> menos calor, más sombra útil.
-            </Benefit>
-            <Benefit>
-              <strong>Instalación limpia:</strong> detalles cuidados y ajuste
-              final.
-            </Benefit>
-            <Benefit>
-              <strong>Durabilidad:</strong> sistemas preparados para el uso
-              real.
-            </Benefit>
-          </BenefitsStrip>
 
           <Grid>
             {CARD_ITEMS.map((item) => (
@@ -795,6 +828,23 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
               </Card>
             ))}
           </Grid>
+
+          <SectionInner>
+            <BlockSpacer>
+              <IntroHeader>
+                <IntroTitle>
+                  Instalación de <span>toldos en Castellón</span>
+                </IntroTitle>
+                <IntroText>
+                  Realizamos instalación de toldos en Castellón y alrededores,
+                  estudiando la orientación solar, el tipo de fachada y el uso
+                  del espacio para recomendar la solución más adecuada.
+                  Trabajamos tanto en viviendas como en negocios, con
+                  instalación segura, limpia y duradera.
+                </IntroText>
+              </IntroHeader>
+            </BlockSpacer>
+          </SectionInner>
 
           <BlockSpacer>
             <SectionIntro
@@ -837,7 +887,14 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
               </Card>
             ))}
           </Grid>
-
+          <InlineSeoNote>
+            Si buscas un sistema más avanzado, también puedes ver nuestras
+            soluciones de{" "}
+            <Link to="/automatizacion">
+              automatización para toldos y cortinas
+            </Link>
+            .
+          </InlineSeoNote>
           <BlockSpacer>
             <SectionIntro
               kicker="Accesorios"
@@ -908,8 +965,8 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
             </AutomationCopy>
 
             <AutomationProof>
-              ✓ Visita + propuesta sin coste · instalación profesional ·
-              configuración de escenas
+              ✓ Visita y medición en Castellón · instalación profesional ·
+              opciones de motor y sensores
             </AutomationProof>
           </AutomationLeft>
 

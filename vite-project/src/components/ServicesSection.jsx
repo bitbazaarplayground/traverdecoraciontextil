@@ -409,8 +409,9 @@ export default function ServicesSection() {
             <span>Soluciones</span> a medida, con resultado impecable
           </Title>
           <Intro>
-            Interior y exterior. Tejidos, sistemas y automatización elegidos con
-            criterio, medidos con precisión e instalados con un acabado limpio.
+            Cortinas, estores, toldos y automatización a medida para viviendas y
+            negocios en Castellón. Te asesoramos, medimos e instalamos cada
+            solución con precisión y un acabado impecable.
           </Intro>
         </Header>
 
