@@ -587,9 +587,7 @@ export default function AutomatizacionIndividual({
   contactTo = "/contact",
   onOpenAsesoramiento,
 }) {
-  const baseUrl = (
-    import.meta.env.VITE_SITE_URL || window.location.origin
-  ).replace(/\/$/, "");
+  const baseUrl = "https://www.traverdecoraciontextil.es";
   const canonical = `${baseUrl}/automatizacion/individual`;
   const siteName = CONTACT.siteName;
 

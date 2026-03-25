@@ -176,12 +176,7 @@ function readHashTabId(hash) {
   return clean || null;
 }
 
-function getBaseUrl() {
-  return (import.meta.env.VITE_SITE_URL || window.location.origin).replace(
-    /\/$/,
-    ""
-  );
-}
+const baseUrl = "https://www.traverdecoraciontextil.es";
 
 function getCanonical(baseUrl, pathname) {
   return `${baseUrl}${pathname}`;

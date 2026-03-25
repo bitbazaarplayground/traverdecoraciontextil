@@ -538,9 +538,7 @@ const FAQ_ITEMS = [
 ========================= */
 
 export default function Venecianas({ onOpenAsesoramiento }) {
-  const baseUrl = (
-    import.meta.env.VITE_SITE_URL || window.location.origin
-  ).replace(/\/$/, "");
+  const baseUrl = "https://www.traverdecoraciontextil.es";
 
   const canonical = `${baseUrl}/venecianas`;
   const siteName = CONTACT.siteName;

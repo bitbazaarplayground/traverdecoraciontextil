@@ -1,8 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const siteUrlRaw = process.env.VITE_SITE_URL || "http://localhost:5173";
-const siteUrl = siteUrlRaw.replace(/\/$/, "");
+const siteUrl = "https://www.traverdecoraciontextil.es";
 
 const routes = [
   "/",
@@ -17,9 +16,8 @@ const routes = [
   "/toldos-proteccion-solar",
   "/mosquiteras",
   "/services",
-  "/aviso-legal",
-  "/politica-privacidad",
-  "/politica-cookies",
+  "/limpieza",
+  "/nosotros",
 ];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
