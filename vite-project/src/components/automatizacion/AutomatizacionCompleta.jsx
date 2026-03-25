@@ -80,9 +80,7 @@ const Badge = ({ tone = "primary", children }) => {
 ========================= */
 
 export default function Auto({ onOpenAsesoramiento }) {
-  const baseUrl = (
-    import.meta.env.VITE_SITE_URL || window.location.origin
-  ).replace(/\/$/, "");
+  const baseUrl = "https://www.traverdecoraciontextil.es";
 
   const canonical = `${baseUrl}/automatizacion/completa`;
   const siteName = CONTACT.siteName || "Traver Decoración Textil";

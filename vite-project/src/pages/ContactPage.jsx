@@ -282,9 +282,7 @@ export default function ContactPage({ onOpenAsesoramiento }) {
   const location = useLocation();
 
   // SEO base
-  const baseUrl = (
-    import.meta.env.VITE_SITE_URL || window.location.origin
-  ).replace(/\/$/, "");
+  const baseUrl = "https://www.traverdecoraciontextil.es";
   const canonical = `${baseUrl}/contact`;
 
   const siteName = CONTACT.siteName;

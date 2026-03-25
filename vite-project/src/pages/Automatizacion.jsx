@@ -86,9 +86,7 @@ const getSrcSet = (images) =>
    PAGE
 ========================= */
 export default function Automatizacion({ onOpenAsesoramiento }) {
-  const baseUrl = (
-    import.meta.env.VITE_SITE_URL || window.location.origin
-  ).replace(/\/$/, "");
+  const baseUrl = "https://www.traverdecoraciontextil.es";
   const videoRef = useRef(null);
   const [videoFailed, setVideoFailed] = useState(false);
 

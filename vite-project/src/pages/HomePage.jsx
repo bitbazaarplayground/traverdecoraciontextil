@@ -17,9 +17,7 @@ const BrandLogos = lazy(() => import("../components/BrandLogos"));
 const HomeFAQ = lazy(() => import("../components/HomeFAQ"));
 
 export default function HomePage({ onOpenAsesoramiento }) {
-  const baseUrl = (
-    import.meta.env.VITE_SITE_URL || window.location.origin
-  ).replace(/\/$/, "");
+  const baseUrl = "https://www.traverdecoraciontextil.es";
   const canonical = `${baseUrl}/`;
 
   // Prefer centralized contact + brand data

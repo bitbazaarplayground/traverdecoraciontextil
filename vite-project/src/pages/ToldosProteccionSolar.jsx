@@ -655,9 +655,7 @@ const SECONDARY_ITEMS = [
 /* PAGE */
 
 export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
-  const baseUrl = (
-    import.meta.env.VITE_SITE_URL || window.location.origin
-  ).replace(/\/$/, "");
+  const baseUrl = "https://www.traverdecoraciontextil.es";
 
   const canonical = `${baseUrl}/toldos-proteccion-solar`;
   const siteName = CONTACT.siteName;
