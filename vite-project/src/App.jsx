@@ -54,6 +54,20 @@ export default function App() {
     initAnalyticsIfAllowed();
   }, []);
 
+  useEffect(() => {
+    const isBot =
+      navigator.userAgent.includes("facebookexternalhit") ||
+      navigator.userAgent.includes("Googlebot") ||
+      navigator.userAgent.includes("Twitterbot") ||
+      navigator.userAgent.includes("LinkedInBot");
+
+    if (isBot) {
+      setTimeout(() => {
+        document.dispatchEvent(new Event("prerender-ready"));
+      }, 1500);
+    }
+  }, []);
+
   function onOpenAsesoramiento(packLabel = "General", source = "cta") {
     setEnquiryPack(packLabel);
     setEnquirySource(source);
