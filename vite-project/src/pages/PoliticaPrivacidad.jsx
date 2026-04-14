@@ -7,7 +7,9 @@ import { CONTACT } from "../config/contact";
 
 function useCanonicalUrl() {
   const { pathname, search } = useLocation();
-  const base = import.meta?.env?.VITE_SITE_URL || window.location.origin;
+  const base =
+    import.meta?.env?.VITE_SITE_URL ||
+    (typeof window !== "undefined" ? window.location.origin : "");
   return `${base}${pathname}${search}`;
 }
 
@@ -41,7 +43,7 @@ export default function PoliticaPrivacidad() {
       url: import.meta?.env?.VITE_SITE_URL || window.location.origin,
     },
   };
-
+  const LAST_UPDATED = "13/04/2026";
   return (
     <Page>
       <Helmet>
@@ -96,7 +98,8 @@ export default function PoliticaPrivacidad() {
                 <strong>Email:</strong>{" "}
                 <A href={`mailto:${legal.legalEmail}`}>{legal.legalEmail}</A>
                 <br />
-                <strong>Teléfono:</strong> {legal.phone}
+                <strong>Teléfono:</strong>{" "}
+                <A href={`tel:${legal.phone}`}>{legal.phone}</A>
                 <br />
                 <strong>Dirección:</strong> {legal.address}
               </InfoBox>
@@ -148,20 +151,24 @@ export default function PoliticaPrivacidad() {
               <Divider />
 
               <H2>4. Base legal</H2>
-              <P>El tratamiento de tus datos se basa en:</P>
+              <P>El tratamiento de tus datos puede basarse en:</P>
               <Ul>
                 <li>
-                  <strong>Consentimiento</strong> del usuario al enviar
-                  formularios o contactar con nosotros.
+                  <strong>Medidas precontractuales</strong>, cuando solicitas
+                  información, asesoramiento o presupuesto sobre nuestros
+                  servicios.
                 </li>
                 <li>
-                  <strong>Medidas precontractuales</strong> cuando solicitas
-                  información o presupuesto sobre nuestros servicios.
+                  <strong>Consentimiento</strong>, cuando nos facilitas tus
+                  datos mediante formularios y aceptas expresamente la Política
+                  de Privacidad, o cuando sea necesario para tratamientos
+                  específicos.
                 </li>
                 <li>
                   <strong>Interés legítimo</strong>, cuando resulte aplicable,
-                  por ejemplo para garantizar la seguridad del sitio y prevenir
-                  usos indebidos.
+                  por ejemplo para garantizar la seguridad del sitio web,
+                  prevenir usos indebidos o atender adecuadamente la gestión
+                  técnica del servicio.
                 </li>
               </Ul>
 
@@ -182,21 +189,25 @@ export default function PoliticaPrivacidad() {
               <P>
                 No obstante, para la prestación del servicio podemos utilizar
                 proveedores tecnológicos que actúan como encargados del
-                tratamiento.
+                tratamiento, únicamente cuando resulte necesario para el
+                funcionamiento de la web, la gestión de formularios o la
+                analítica consentida.
               </P>
               <Ul>
-                <li>
-                  <strong>Supabase</strong> (almacenamiento y gestión de datos).
-                </li>
                 <li>
                   <strong>Netlify</strong> (alojamiento web y/o gestión de
                   formularios).
                 </li>
                 <li>
-                  <strong>Google Analytics</strong> o herramientas equivalentes
-                  de analítica, únicamente cuando el usuario haya dado su
-                  consentimiento.
+                  <strong>Google Analytics</strong> u otras herramientas
+                  equivalentes de analítica, únicamente cuando el usuario haya
+                  prestado su consentimiento.
                 </li>
+                <P>
+                  Cuando el tratamiento esté basado en tu consentimiento, podrás
+                  retirarlo en cualquier momento, sin que ello afecte a la
+                  licitud del tratamiento previo a su retirada.
+                </P>
               </Ul>
 
               <Divider />
@@ -261,8 +272,7 @@ export default function PoliticaPrivacidad() {
 
               <FooterRow>
                 <SmallText>
-                  Última actualización:{" "}
-                  <strong>{new Date().toLocaleDateString("es-ES")}</strong>
+                  Última actualización: <strong>{LAST_UPDATED}</strong>
                 </SmallText>
 
                 <MiniNav>

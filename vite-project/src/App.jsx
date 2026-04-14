@@ -15,6 +15,7 @@ import Propuestas from "./pages/Propuestas";
 
 import Limpieza from "./pages/Limpieza";
 import Nosotros from "./pages/Nosotros";
+import Toldos2 from "./pages/Toldos2";
 import ToldosProteccionSolar from "./pages/ToldosProteccionSolar";
 
 import CookieBanner from "./components/CookieBanner";
@@ -144,6 +145,10 @@ export default function App() {
                 onOpenAsesoramiento={onOpenAsesoramiento}
               />
             }
+          />
+          <Route
+            path="/toldos2"
+            element={<Toldos2 onOpenAsesoramiento={onOpenAsesoramiento} />}
           />
           <Route
             path="/mosquiteras"
