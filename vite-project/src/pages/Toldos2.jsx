@@ -63,6 +63,8 @@ import windSensorImg from "../assets/toldos/extrasToldo/windSensor.webp";
 
 /* CTA */
 import ctaImg from "../assets/Automatizacion/cortinaMotorizada.webp";
+import AutomationOptionsGrid from "../components/toldos/AutomationOptionsGrid";
+import ProcesoToldosSlider from "../components/toldos/ProcesoToldosSlider";
 
 /* =========================
    IMAGE HELPERS
@@ -123,23 +125,42 @@ const Page = styled.main`
   color: #111;
 `;
 
-/* HERO */
-
-const BlockSpacer = styled.div`
-  margin-top: 3.25rem;
-
-  @media (max-width: 768px) {
-    margin-top: 2.4rem;
-  }
-`;
-
-/* SECTION SHELL */
-
 const Section = styled.section`
   padding: 5.5rem 2rem;
 
   @media (max-width: 768px) {
     padding: 3.8rem 1.5rem;
+  }
+`;
+const TightSection = styled(Section)`
+  padding-top: 2.2rem;
+  padding-bottom: 5rem;
+
+  @media (max-width: 768px) {
+    padding-top: 1.6rem;
+    padding-bottom: 3.8rem;
+  }
+`;
+const SectionTight = styled(Section)`
+  padding-top: 0.25rem;
+
+  @media (max-width: 768px) {
+    padding-top: 2.6rem;
+  }
+`;
+
+const SoftSection = styled(Section)`
+  padding-top: 1.1rem;
+  padding-bottom: 4.25rem;
+  background: linear-gradient(
+    to bottom,
+    rgba(248, 248, 248, 0.7),
+    rgba(255, 255, 255, 1)
+  );
+
+  @media (max-width: 768px) {
+    padding-top: 1.2rem;
+    padding-bottom: 3.4rem;
   }
 `;
 
@@ -160,77 +181,115 @@ const IntroHeader = styled.div`
 
 const IntroTitle = styled.h2`
   margin: 0 0 1rem;
-  font-size: 2.2rem;
-  font-weight: 600;
+  font-size: 2.25rem;
+  font-weight: 700;
   line-height: 1.12;
   color: #121212;
+  letter-spacing: -0.02em;
 
   span {
     color: ${({ theme }) => theme.colors.primary};
   }
 
   @media (max-width: 768px) {
-    font-size: 1.8rem;
+    font-size: 1.82rem;
   }
 `;
 
 const IntroText = styled.p`
   margin: 0;
   font-size: 1.05rem;
-  line-height: 1.7;
-  color: rgba(17, 17, 17, 0.62);
+  line-height: 1.75;
+  color: rgba(17, 17, 17, 0.66);
 `;
 
-/* BENEFITS */
+const BlockSpacer = styled.div`
+  margin-top: 3.25rem;
 
-const BenefitsStrip = styled.div`
-  margin: 2rem auto 2.25rem;
-  max-width: 980px;
-  padding: 1.25rem 1.2rem;
-  border-radius: 18px;
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  background: #fafafa;
+  @media (max-width: 768px) {
+    margin-top: 2.4rem;
+  }
+`;
+
+const LocalHighlight = styled.div`
+  padding: 1.65rem 1.4rem;
+  border-radius: 26px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.94),
+    rgba(248, 248, 248, 0.96)
+  );
+  border: 1px solid rgba(17, 17, 17, 0.07);
+  box-shadow: 0 22px 60px rgba(17, 17, 17, 0.06);
+
+  @media (min-width: 980px) {
+    padding: 1.9rem 1.8rem;
+  }
+`;
+
+const LocalTop = styled.div`
+  margin-bottom: 1.15rem;
+`;
+
+const LocalEyebrow = styled.p`
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.5);
+`;
+
+const LocalTitle = styled.h3`
+  margin: 0;
+  font-size: clamp(1.35rem, 2.3vw, 1.8rem);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  color: rgba(17, 17, 17, 0.92);
+  font-weight: 750;
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const LocalGrid = styled.div`
   display: grid;
-  gap: 0.75rem;
+  gap: 1rem;
 
   @media (min-width: 900px) {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.1rem;
-    padding: 1.25rem 1.35rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
   }
 `;
 
-const Benefit = styled.p`
+const LocalText = styled.p`
   margin: 0;
-  font-size: 0.98rem;
-  line-height: 1.6;
-  color: rgba(17, 17, 17, 0.72);
-
-  strong {
-    color: rgba(17, 17, 17, 0.9);
-    font-weight: 750;
-  }
+  font-size: 1rem;
+  line-height: 1.78;
+  color: rgba(17, 17, 17, 0.68);
 `;
 
-const InlineSeoNote = styled.p`
-  margin: 1.5rem 0 0;
-  font-size: 1rem;
-  line-height: 1.7;
-  color: rgba(17, 17, 17, 0.68);
+const LocalMeta = styled.div`
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+`;
 
-  a {
-    color: ${({ theme }) => theme.colors.primary};
-    font-weight: 650;
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
+const LocalMetaItem = styled.span`
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.05);
+  border: 1px solid rgba(17, 17, 17, 0.07);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(17, 17, 17, 0.72);
 `;
 
 const SeoBlock = styled.div`
-  margin-top: 1.4rem;
+  margin-top: 1.5rem;
   padding: 1.2rem 1.25rem;
   border-radius: 22px;
   background: rgba(17, 17, 17, 0.03);
@@ -238,8 +297,8 @@ const SeoBlock = styled.div`
 `;
 
 const SeoTitle = styled.h2`
-  margin: 0 0 0.6rem;
-  font-size: 1.2rem;
+  margin: 0 0 0.55rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: rgba(17, 17, 17, 0.92);
 `;
@@ -252,9 +311,17 @@ const SeoText = styled.p`
   & + & {
     margin-top: 0.8rem;
   }
-`;
 
-/* GRID */
+  a {
+    color: ${({ theme }) => theme.colors.primary};
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+`;
 
 const Grid = styled.div`
   display: grid;
@@ -274,10 +341,6 @@ const Card = styled.article`
   transform: translateY(0);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 34px 95px rgba(0, 0, 0, 0.12);
-  }
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       transform: translateY(-4px);
@@ -330,7 +393,7 @@ const CardBadge = styled.div`
   font-size: 0.78rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   color: rgba(17, 17, 17, 0.75);
 `;
 
@@ -353,21 +416,45 @@ const ValueLine = styled.p`
   margin: 0 0 0.95rem;
   font-size: 1.02rem;
   font-weight: 650;
-  color: rgba(17, 17, 17, 0.8);
+  color: rgba(17, 17, 17, 0.82);
 `;
 
 const CardText = styled.p`
   margin: 0;
   font-size: 1.02rem;
-  line-height: 1.7;
+  line-height: 1.72;
   color: rgba(17, 17, 17, 0.68);
 `;
 
-const SectionTight = styled(Section)`
-  padding-top: 3.25rem;
+const CardActions = styled.div`
+  margin-top: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+`;
 
-  @media (max-width: 768px) {
-    padding-top: 2.6rem;
+const CardAction = styled.button`
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: ${({ theme }) => theme.colors.primary};
+  font-weight: 800;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const CardLink = styled(Link)`
+  color: ${({ theme }) => theme.colors.primary};
+  font-weight: 800;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 `;
 
@@ -379,7 +466,23 @@ const AccessoriesWrap = styled.div`
   }
 `;
 
-/* BENEFITS SECTION */
+const LinkCluster = styled.div`
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1rem;
+`;
+
+const TextLink = styled(Link)`
+  color: ${({ theme }) => theme.colors.primary};
+  font-weight: 750;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 const BenefitsSection = styled(Section)`
   padding-top: 1rem;
 `;
@@ -397,11 +500,6 @@ const BenefitLink = styled(Link)`
     text-decoration: underline;
   }
 `;
-
-const BenefitLinkLight = styled(BenefitLink)`
-  color: #fff;
-`;
-/* CTA */
 
 const AutomationCTA = styled.section`
   padding: 0 2rem 5rem;
@@ -585,110 +683,125 @@ const AutomationSecondary = styled(Link)`
   }
 `;
 
-/* DATA */
+/* =========================
+   DATA
+========================= */
 
 const FAQ_ITEMS = [
   {
     q: "¿Qué tipo de toldo necesito: extensible o cofre?",
-    a: "Depende de la exposición y del uso. El toldo cofre protege el tejido y el mecanismo cuando está recogido (más durabilidad y acabado limpio). El extensible es ideal si buscas ligereza y sombra regulable.",
+    a: "Depende de la exposición, del uso diario y del nivel de protección que busques. El toldo cofre protege el tejido y el mecanismo cuando está recogido, mientras que el extensible ofrece una solución ligera y muy versátil para terrazas y balcones.",
     aText:
-      "Depende de la exposición y del uso. El toldo cofre protege el tejido y el mecanismo cuando está recogido (más durabilidad y acabado limpio). El extensible es ideal si buscas ligereza y sombra regulable.",
+      "Depende de la exposición, del uso diario y del nivel de protección que busques. El toldo cofre protege el tejido y el mecanismo cuando está recogido, mientras que el extensible ofrece una solución ligera y muy versátil para terrazas y balcones.",
   },
   {
-    q: "¿Qué pasa si hace viento?",
-    a: "Podemos incluir sensor de viento para que el toldo se recoja automáticamente ante rachas. Así se reduce el riesgo de golpes y tensiones.",
+    q: "¿Instaláis toldos en viviendas y negocios?",
+    a: "Sí. Instalamos toldos a medida tanto en viviendas como en locales, restaurantes, cafeterías, terrazas comerciales y otros espacios exteriores que necesiten protección solar.",
     aText:
-      "Podemos incluir sensor de viento para que el toldo se recoja automáticamente ante rachas. Así se reduce el riesgo de golpes y tensiones.",
+      "Sí. Instalamos toldos a medida tanto en viviendas como en locales, restaurantes, cafeterías, terrazas comerciales y otros espacios exteriores que necesiten protección solar.",
   },
   {
     q: "¿Se puede motorizar un toldo?",
-    a: "Sí. Hay opciones con mando, app y escenas. Si quieres, lo dejamos preparado para automatización (sensores y control inteligente) desde el principio.",
+    a: "Sí. Podemos instalar toldos motorizados con mando, app, sensores de viento o sol y opciones de automatización. También te asesoramos si quieres integrar el sistema con otros productos del hogar o del negocio.",
     aText:
-      "Sí. Hay opciones con mando, app y escenas. Si quieres, lo dejamos preparado para automatización (sensores y control inteligente) desde el principio.",
+      "Sí. Podemos instalar toldos motorizados con mando, app, sensores de viento o sol y opciones de automatización. También te asesoramos si quieres integrar el sistema con otros productos del hogar o del negocio.",
   },
   {
     q: "¿Incluís visita, medición e instalación?",
-    a: "Sí. Medimos en tu espacio, te asesoramos y hacemos una instalación limpia con ajuste final para que el toldo funcione suave y seguro.",
+    a: "Sí. Realizamos visita, medición, propuesta y una instalación profesional adaptada al tipo de fachada, estructura o espacio exterior.",
     aText:
-      "Sí. Medimos en tu espacio, te asesoramos y hacemos una instalación limpia con ajuste final para que el toldo funcione suave y seguro.",
+      "Sí. Realizamos visita, medición, propuesta y una instalación profesional adaptada al tipo de fachada, estructura o espacio exterior.",
   },
   {
-    q: "¿Cuánto tarda el proceso?",
-    a: "Tras la visita y la elección, te confirmamos plazos reales de fabricación e instalación según sistema y tejido.",
+    q: "¿Qué pasa si hace viento?",
+    a: "Podemos incorporar sensores de viento para que el toldo se recoja automáticamente cuando detecta rachas, reduciendo riesgos y mejorando la protección del sistema.",
     aText:
-      "Tras la visita y la elección, te confirmamos plazos reales de fabricación e instalación según sistema y tejido.",
+      "Podemos incorporar sensores de viento para que el toldo se recoja automáticamente cuando detecta rachas, reduciendo riesgos y mejorando la protección del sistema.",
+  },
+  {
+    q: "¿Trabajáis en Castellón y alrededores?",
+    a: "Sí. Realizamos instalaciones de toldos en Castellón y zonas cercanas, estudiando cada caso para recomendar la solución más adecuada según orientación, uso y medidas.",
+    aText:
+      "Sí. Realizamos instalaciones de toldos en Castellón y zonas cercanas, estudiando cada caso para recomendar la solución más adecuada según orientación, uso y medidas.",
   },
 ];
 
 const CARD_ITEMS = [
   {
-    badge: "Terrazas",
+    badge: "Terrazas y balcones",
     title: "Toldos extensibles",
-    value: "Sombra regulable con estética ligera.",
-    text: "Ideales para terrazas y balcones. Permiten ajustar la proyección según el momento del día y el uso del espacio.",
+    value: "Sombra regulable y uso cómodo en el día a día.",
+    text: "Ideales para terrazas y balcones donde buscas una solución ligera, elegante y funcional. Permiten ajustar la proyección según la hora del día y el uso real del espacio.",
     images: responsiveImages.toldoExtensible,
-    alt: "Toldo extensible instalado en terraza",
+    alt: "Toldo extensible instalado en una terraza exterior en Castellón",
+    enquiryPack: "Toldos extensibles",
   },
   {
     badge: "Alta protección",
     title: "Toldos cofre",
-    value: "Acabado limpio, mecanismo protegido.",
-    text: "Sistemas robustos y duraderos. El tejido y los brazos quedan resguardados, cuidando el conjunto y alargando su vida útil.",
+    value: "Mecanismo protegido y acabado más limpio.",
+    text: "Una opción muy valorada cuando quieres cuidar el tejido y el sistema al máximo. Al quedar protegido cuando se recoge, el conjunto gana durabilidad y presencia estética.",
     images: responsiveImages.toldoCofre,
-    alt: "Toldo cofre instalado en fachada",
+    alt: "Toldo cofre instalado en una fachada de vivienda",
+    enquiryPack: "Toldos cofre",
   },
   {
-    badge: "Privacidad",
+    badge: "Privacidad y confort",
     title: "Toldos verticales / screen",
-    value: "Control solar y privacidad con discreción.",
-    text: "Perfectos para porches, cerramientos y grandes ventanales. Filtran la luz, reducen el calor y aumentan el confort.",
+    value: "Filtran luz, mejoran el confort y aportan privacidad.",
+    text: "Perfectos para porches, ventanas, cerramientos y zonas expuestas. Ayudan a controlar el calor y la luz sin perder ligereza visual.",
     images: responsiveImages.toldoVertical,
-    alt: "Toldo vertical o screen en exterior",
+    alt: "Toldo vertical screen para control solar exterior",
+    enquiryPack: "Toldos verticales",
   },
   {
-    badge: "Negocio",
+    badge: "Hostelería y negocio",
     title: "Toldos para hostelería",
-    value: "Resistencia, presencia y funcionalidad.",
-    text: "Soluciones para terrazas comerciales con tejidos y estructuras pensadas para el uso intensivo y la imagen del local.",
+    value: "Resistencia, imagen cuidada y funcionalidad comercial.",
+    text: "Soluciones diseñadas para terrazas de bares, restaurantes y negocios que necesitan protección solar, buena presencia y sistemas preparados para un uso intensivo.",
     images: responsiveImages.hosteleria,
     alt: "Toldo para hostelería en terraza comercial",
+    enquiryPack: "Toldos para hostelería",
   },
 ];
 
 const SECONDARY_ITEMS = [
   {
-    badge: "Estructura",
+    badge: "Exterior estructural",
     title: "Pérgolas",
-    value: "Arquitectura exterior con presencia.",
-    text: "Estructuras elegantes para crear espacios exteriores habitables, con soluciones adaptadas a cada entorno.",
+    value: "Espacios exteriores más habitables y con presencia.",
+    text: "Cuando el proyecto requiere más estructura, las pérgolas permiten crear zonas exteriores confortables y bien resueltas durante más meses del año.",
     images: responsiveImages.pergola,
-    alt: "Pérgola instalada en exterior",
+    alt: "Pérgola exterior instalada en vivienda",
+    enquiryPack: "Pérgolas",
   },
   {
-    badge: "Ligereza",
+    badge: "Ligereza visual",
     title: "Velas de sombra",
     value: "Diseño contemporáneo y sombra flexible.",
-    text: "Soluciones ligeras para jardines y zonas abiertas, con un resultado limpio y moderno.",
+    text: "Una alternativa ligera y moderna para jardines y espacios abiertos donde se busca protección solar con un resultado limpio y actual.",
     images: responsiveImages.sail,
-    alt: "Vela de sombra en jardín",
+    alt: "Vela de sombra en jardín exterior",
+    enquiryPack: "Velas de sombra",
   },
 ];
 
-/* PAGE */
+/* =========================
+   PAGE
+========================= */
 
-export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
+export default function Toldos2({ onOpenAsesoramiento }) {
   const baseUrl = "https://www.traverdecoraciontextil.es";
-
   const canonical = `${baseUrl}/toldos-proteccion-solar`;
   const siteName = CONTACT.siteName;
 
   const title =
-    "Toldos en Castellón | Instalación de toldos y protección solar a medida";
+    "Toldos en Castellón | Toldos a medida e instalación profesional";
   const description =
-    "Instalación de toldos en Castellón a medida: toldos extensibles, cofre, verticales, pérgolas y protección solar para terrazas, balcones y negocios. Visita e instalación profesional.";
+    "Instalamos toldos en Castellón y alrededores: toldos extensibles, cofre, verticales, pérgolas y soluciones de protección solar a medida para terrazas, balcones, jardines y negocios.";
   const ogImage = `${baseUrl}/og.png`;
   const ogImageAlt =
-    "Toldos y protección solar a medida — Traver Decoración Textil";
+    "Toldos a medida y protección solar en Castellón — Traver Decoración Textil";
 
   const businessId = `${baseUrl}/#business`;
 
@@ -722,12 +835,6 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
         {
           "@type": "ListItem",
           position: 2,
-          name: "Servicios",
-          item: `${baseUrl}/services`,
-        },
-        {
-          "@type": "ListItem",
-          position: 3,
           name: "Toldos y protección solar",
           item: canonical,
         },
@@ -737,15 +844,14 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
       "@context": "https://schema.org",
       "@type": "Service",
       "@id": `${canonical}#service`,
-      name: "Instalación de toldos y protección solar en Castellón",
+      name: "Instalación de toldos en Castellón",
       serviceType:
-        "Instalación de toldos a medida, protección solar y sistemas de sombra",
+        "Toldos a medida, instalación de toldos y protección solar exterior",
       provider: { "@id": businessId },
       areaServed: [
         { "@type": "City", name: "Almassora" },
         { "@type": "City", name: "Castellón de la Plana" },
         { "@type": "AdministrativeArea", name: "Castellón" },
-        { "@type": "AdministrativeArea", name: "Valencia" },
       ],
       offers: {
         "@type": "Offer",
@@ -757,6 +863,12 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
 
   const faqItems = useMemo(() => FAQ_ITEMS, []);
 
+  function openAdvice(pack = "Toldos", source = "toldos_proteccion_solar") {
+    trackCtaClick(source, "pedir_asesoramiento");
+    trackOpenQuickEnquiry(source, pack);
+    onOpenAsesoramiento?.(pack, source);
+  }
+
   return (
     <Page>
       <Helmet>
@@ -764,8 +876,6 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
         <meta name="description" content={description} />
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={canonical} />
-
-        {/* Hero preload is already handled in index.html */}
 
         <meta property="og:site_name" content={siteName} />
         <meta property="og:type" content="website" />
@@ -788,13 +898,13 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
       </Helmet>
 
       <ServiceHero
-        eyebrow="Protección solar · Exterior"
+        eyebrow="Toldos · Protección solar exterior"
         title={
           <>
-            Toldos & <span>Protección solar</span>
+            Toldos en <span>Castellón</span> y protección solar a medida
           </>
         }
-        subtitle="Disfruta de tu terraza todo el año con soluciones de sombra elegantes, duraderas y adaptadas a tu espacio."
+        subtitle="Instalamos toldos a medida para terrazas, balcones, jardines y negocios, con soluciones duraderas, elegantes y adaptadas a cada espacio."
         hero480={hero_480}
         hero768={hero_768}
         hero1280={hero_1280}
@@ -812,14 +922,13 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
         <SectionInner>
           <IntroHeader>
             <IntroTitle>
-              Toldos <span>motorizados en Castellón</span>
+              Tipos de <span>toldos</span> para cada espacio
             </IntroTitle>
             <IntroText>
-              Instalamos toldos motorizados en Castellón para terrazas, balcones
-              y jardines, con opciones de mando, app y sensores de viento o sol.
-              Si buscas más comodidad en el día a día, podemos preparar tu toldo
-              para una automatización completa o integrarlo con otros sistemas
-              del hogar.
+              Te ayudamos a elegir entre toldos extensibles, toldos cofre,
+              toldos verticales y otras soluciones de protección solar según la
+              orientación, el uso del espacio y el resultado que buscas para tu
+              vivienda o negocio.
             </IntroText>
           </IntroHeader>
 
@@ -843,44 +952,44 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
                   <CardTitle>{item.title}</CardTitle>
                   <ValueLine>{item.value}</ValueLine>
                   <CardText>{item.text}</CardText>
+
+                  <CardActions>
+                    <CardAction
+                      type="button"
+                      onClick={() =>
+                        openAdvice(
+                          item.enquiryPack,
+                          `toldos_tipo_${item.title
+                            .toLowerCase()
+                            .replace(/\s+/g, "_")}`
+                        )
+                      }
+                    >
+                      Pedir asesoramiento
+                    </CardAction>
+                  </CardActions>
                 </CardContent>
               </Card>
             ))}
           </Grid>
+        </SectionInner>
+      </Section>
 
-          <SectionInner>
-            <BlockSpacer>
-              <IntroHeader>
-                <IntroTitle>
-                  Instalación de <span>toldos en Castellón</span>
-                </IntroTitle>
-                <IntroText>
-                  Realizamos instalación de toldos en Castellón y alrededores,
-                  estudiando la orientación solar, el tipo de fachada y el uso
-                  del espacio para recomendar la solución más adecuada.
-                  Trabajamos tanto en viviendas como en negocios, con
-                  instalación segura, limpia y duradera.
-                </IntroText>
-              </IntroHeader>
-            </BlockSpacer>
-          </SectionInner>
+      <SoftSection aria-label="Proceso de trabajo">
+        <ProcesoToldosSlider onOpenAsesoramiento={onOpenAsesoramiento} />
+      </SoftSection>
 
-          <BlockSpacer>
-            <SectionIntro
-              kicker="Complementos"
-              title={
-                <>
-                  Otras <span>soluciones</span> de sombra
-                </>
-              }
-              lead={
-                <>
-                  Cuando el proyecto lo exige, combinamos toldos con sistemas
-                  estructurales para crear exterior habitable todo el año.
-                </>
-              }
-            />
-          </BlockSpacer>
+      <TightSection aria-label="Otras soluciones de sombra">
+        <SectionInner>
+          <SectionIntro
+            kicker="Más soluciones"
+            title={
+              <>
+                Otras <span>soluciones</span> para exterior
+              </>
+            }
+            lead="Cuando el proyecto lo requiere, completamos la protección solar con sistemas estructurales o alternativas ligeras adaptadas al espacio."
+          />
 
           <Grid>
             {SECONDARY_ITEMS.map((item) => (
@@ -902,111 +1011,49 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
                   <CardTitle>{item.title}</CardTitle>
                   <ValueLine>{item.value}</ValueLine>
                   <CardText>{item.text}</CardText>
+
+                  <CardActions>
+                    <CardAction
+                      type="button"
+                      onClick={() =>
+                        openAdvice(
+                          item.enquiryPack,
+                          `toldos_tipo_${item.title
+                            .toLowerCase()
+                            .replace(/\s+/g, "_")}`
+                        )
+                      }
+                    >
+                      Pedir asesoramiento
+                    </CardAction>
+                  </CardActions>
                 </CardContent>
               </Card>
             ))}
           </Grid>
-          <InlineSeoNote>
-            Si buscas un sistema más avanzado, también puedes ver nuestras
-            soluciones de{" "}
-            <Link to="/automatizacion">
-              automatización para toldos y cortinas
-            </Link>
-            .
-          </InlineSeoNote>
-          <BlockSpacer>
-            <SectionIntro
-              kicker="Accesorios"
-              title={
-                <>
-                  Accesorios <span>premium</span> para tu toldo
-                </>
-              }
-              lead="Sensores, iluminación y confort para una terraza perfecta."
-            />
-          </BlockSpacer>
-
-          <AccessoriesWrap>
-            <AwningAccessories
-              items={[
-                {
-                  key: "smart",
-                  title: "Tecnología inteligente",
-                  description: "Automatiza tu toldo con control avanzado.",
-                  image: tahomaImg,
-                  size: "big",
-                },
-                {
-                  key: "led",
-                  title: "LED ambiente",
-                  description: "Luz cálida integrada para noches exteriores.",
-                  image: toldoLEDImg,
-                },
-                {
-                  key: "wind",
-                  title: "Sensor de viento",
-                  description: "Se recoge automáticamente ante rachas.",
-                  image: windSensorImg,
-                },
-                {
-                  key: "heat",
-                  title: "Calefacción",
-                  description: "Confort exterior incluso en invierno.",
-                  image: calentadorImg,
-                },
-                {
-                  key: "sun",
-                  title: "Sensor solar",
-                  description: "Se adapta a la intensidad de la luz.",
-                  image: lightSensorImg,
-                },
-              ]}
-            />
-          </AccessoriesWrap>
         </SectionInner>
-      </Section>
-
-      {/* BENEFITS SECTION */}
-
-      <BenefitsSection aria-label="Ventajas de los toldos motorizados">
-        <SectionInner>
-          <SectionIntro
-            kicker="Toldos motorizados"
-            title={
-              <>
-                Más <span>comodidad</span>, más protección y una experiencia más
-                actual
-              </>
-            }
-            lead="Un toldo motorizado no solo aporta confort. También mejora la protección del sistema, la estética del espacio y la facilidad de uso en el día a día."
-          />
-
-          <BenefitLinkLight to="/automatizacion">
-            Ver opciones de automatización <span aria-hidden="true">→</span>
-          </BenefitLinkLight>
-        </SectionInner>
-      </BenefitsSection>
-
+      </TightSection>
       <AutomationCTA aria-label="CTA automatización">
         <AutomationCTAInner>
           <AutomationCTABg aria-hidden="true" />
           <AutomationCTAOverlay aria-hidden="true" />
 
           <AutomationLeft>
-            <AutomationKicker>Automatización</AutomationKicker>
+            <AutomationKicker>Motorización y automatización</AutomationKicker>
 
             <AutomationHeadline>
-              ¿Quieres que el toldo responda <span>solo</span>?
+              ¿Quieres un toldo que responda <span>solo</span>?
             </AutomationHeadline>
 
             <AutomationCopy>
-              Sensores de viento y sol, control por app y escenas programadas.
-              Confort exterior sin preocuparte por recogerlo a tiempo.
+              Podemos instalar motores, sensores de viento y sol, control por
+              app y escenas programadas para que el uso diario sea más cómodo y
+              el sistema esté mejor protegido.
             </AutomationCopy>
 
             <AutomationProof>
               ✓ Visita y medición en Castellón · instalación profesional ·
-              opciones de motor y sensores
+              opciones de motor, mando, app y sensores
             </AutomationProof>
           </AutomationLeft>
 
@@ -1016,33 +1063,94 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
                 to="/contact"
                 onClick={(e) => {
                   e.preventDefault();
-
-                  trackCtaClick(
-                    "toldos_proteccion_solar_primary",
-                    "pedir_asesoramiento"
-                  );
-
-                  trackOpenQuickEnquiry(
-                    "toldos_proteccion_solar_primary",
-                    "Toldos"
-                  );
-
-                  onOpenAsesoramiento?.(
-                    "Toldos",
-                    "toldos_proteccion_solar_primary"
-                  );
+                  openAdvice("Toldos motorizados", "toldos_automatizacion_cta");
                 }}
               >
                 Pedir asesoramiento
               </AutomationPrimary>
 
               <AutomationSecondary to="/automatizacion">
-                Ver automatización <span aria-hidden="true">→</span>
+                Ver motorización y automatización{" "}
+                <span aria-hidden="true">→</span>
               </AutomationSecondary>
             </AutomationButtons>
           </AutomationRight>
         </AutomationCTAInner>
       </AutomationCTA>
+
+      <SectionTight aria-label="Accesorios para toldos">
+        <SectionInner>
+          <SectionIntro
+            kicker="Accesorios"
+            title={
+              <>
+                Accesorios <span>premium</span> para completar tu toldo
+              </>
+            }
+            lead="Sensores, iluminación y confort exterior para sacar más partido a la terraza durante más horas y en más momentos del año."
+          />
+
+          <AccessoriesWrap>
+            <AwningAccessories
+              items={[
+                {
+                  key: "smart",
+                  title: "Tecnología inteligente",
+                  description:
+                    "Control avanzado por app, escenas y opciones de integración domótica.",
+                  image: tahomaImg,
+                  size: "big",
+                },
+                {
+                  key: "led",
+                  title: "Iluminación LED",
+                  description:
+                    "Luz integrada para crear ambiente en cenas, reuniones y noches de terraza.",
+                  image: toldoLEDImg,
+                },
+                {
+                  key: "wind",
+                  title: "Sensor de viento",
+                  description:
+                    "Protección automática para recoger el toldo ante rachas fuertes.",
+                  image: windSensorImg,
+                },
+                {
+                  key: "heat",
+                  title: "Calefacción exterior",
+                  description:
+                    "Más confort en entretiempo y durante los meses más frescos.",
+                  image: calentadorImg,
+                },
+                {
+                  key: "sun",
+                  title: "Sensor solar",
+                  description:
+                    "El toldo responde según la intensidad de la luz y mejora el confort diario.",
+                  image: lightSensorImg,
+                },
+              ]}
+            />
+          </AccessoriesWrap>
+        </SectionInner>
+      </SectionTight>
+
+      <BenefitsSection aria-label="Toldos motorizados y automatización">
+        <SectionInner>
+          <SectionIntro
+            kicker="Toldos motorizados"
+            title={
+              <>
+                Más <span>comodidad</span>, más protección y un control más
+                inteligente
+              </>
+            }
+            lead="Además de la instalación de toldos a medida, también trabajamos soluciones de motorización y automatización para que el sistema responda mejor al uso diario, al viento, al sol y al nivel de confort que buscas."
+          />
+
+          <AutomationOptionsGrid />
+        </SectionInner>
+      </BenefitsSection>
 
       <SectionTight aria-label="Preguntas frecuentes">
         <SectionInner>
@@ -1053,12 +1161,7 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
                 Preguntas <span>frecuentes</span>
               </>
             }
-            lead={
-              <>
-                Lo importante antes de decidir: viento, sistemas, motorización,
-                tiempos y montaje.
-              </>
-            }
+            lead="Lo más habitual antes de decidir: tipos de toldo, motorización, instalación, viento, uso comercial y zonas de trabajo."
           />
 
           <FaqAccordion
@@ -1066,12 +1169,12 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
             withSchema
             canonicalUrl={canonical}
             defaultOpenIndex={-1}
-            ariaLabel="Preguntas frecuentes sobre toldos y protección solar"
+            ariaLabel="Preguntas frecuentes sobre toldos en Castellón y protección solar"
           />
         </SectionInner>
       </SectionTight>
 
-      <StickyCtaButton message="Hola, quiero una propuesta para toldos. ¿Podemos agendar una visita?" />
+      <StickyCtaButton message="Hola, quiero una propuesta para toldos en Castellón. ¿Podemos agendar una visita?" />
     </Page>
   );
 }

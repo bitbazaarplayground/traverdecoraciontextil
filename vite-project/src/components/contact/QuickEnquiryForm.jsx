@@ -63,6 +63,48 @@ const TextArea = styled.textarea`
   font-size: 0.95rem;
   min-height: 120px;
   resize: vertical;
+
+  &:focus {
+    border-color: rgba(17, 17, 17, 0.22);
+    background: rgba(17, 17, 17, 0.03);
+  }
+`;
+
+const PrivacyNotice = styled.p`
+  margin: 0.25rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: rgba(17, 17, 17, 0.64);
+
+  a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+`;
+
+const CheckboxRow = styled.label`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(17, 17, 17, 0.72);
+  cursor: pointer;
+
+  a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+`;
+
+const Checkbox = styled.input`
+  margin-top: 0.15rem;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  accent-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const Submit = styled.button`
@@ -100,6 +142,7 @@ const Submit = styled.button`
 const InlineError = styled.p`
   margin: 0;
   color: rgba(180, 30, 30, 0.85);
+  font-size: 0.88rem;
 `;
 
 const Success = styled.div`
@@ -118,16 +161,15 @@ function encode(data) {
 
 function isValidEmail(v) {
   const s = String(v || "").trim();
-  if (!s) return true; // optional
+  if (!s) return true;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
 
-// optional: keep your Spain phone validation simple here
 function isValidPhone(raw) {
   const s = String(raw || "").trim();
-  if (!s) return true; // optional
+  if (!s) return true;
   const digits = s.replace(/\D/g, "");
-  return digits.length >= 9; // pragmatic
+  return digits.length >= 9;
 }
 
 export default function QuickEnquiryForm({
@@ -156,30 +198,37 @@ export default function QuickEnquiryForm({
     const telefono = String(fd.get("telefono") || "").trim();
     const email = String(fd.get("email") || "").trim();
     const mensaje = String(fd.get("mensaje") || "").trim();
+    const privacidadAceptada = fd.get("privacidad") === "aceptada";
 
     if (!nombre) return setError("Por favor, incluye tu nombre.");
-    if (!telefono && !email)
+    if (!telefono && !email) {
       return setError("Incluye un teléfono o un email para poder responderte.");
-    if (telefono && !isValidPhone(telefono))
+    }
+    if (telefono && !isValidPhone(telefono)) {
       return setError("Por favor, introduce un teléfono válido.");
-    if (email && !isValidEmail(email))
+    }
+    if (email && !isValidEmail(email)) {
       return setError("Por favor, introduce un email válido.");
+    }
     if (!mensaje) return setError("Por favor, escribe tu mensaje.");
+    if (!privacidadAceptada) {
+      return setError(
+        "Debes aceptar la Política de Privacidad para enviar la solicitud."
+      );
+    }
 
     setStatus("loading");
 
     try {
-      // ✅ POST to Netlify Forms endpoint
       const body = encode({
         "form-name": "quick-enquiry",
         "bot-field": fd.get("bot-field") || "",
-
         nombre,
         telefono,
         email,
         preferencia: String(fd.get("preferencia") || "WhatsApp"),
-
         mensaje,
+        privacidad: "aceptada",
         pack: packLabel || "Sin especificar",
         source,
         page,
@@ -192,6 +241,7 @@ export default function QuickEnquiryForm({
       });
 
       if (!res.ok) throw new Error("Netlify submit failed");
+
       trackFormSubmit("quick-enquiry", source || "cta");
       setStatus("success");
       form.reset();
@@ -224,6 +274,7 @@ export default function QuickEnquiryForm({
       data-netlify="true"
       data-netlify-honeypot="bot-field"
       onSubmit={handleSubmit}
+      noValidate
     >
       <input type="hidden" name="form-name" value="quick-enquiry" />
 
@@ -292,7 +343,41 @@ export default function QuickEnquiryForm({
         />
       </Field>
 
-      {error && <InlineError>{error}</InlineError>}
+      <PrivacyNotice>
+        Responsable: Traver Decoración Textil. Finalidad: gestionar tu solicitud
+        de asesoramiento y poder responderte. Derechos: puedes solicitar acceso,
+        rectificación o supresión de tus datos. Más información en nuestra{" "}
+        <a href="politica-privacidad" target="_blank" rel="noopener noreferrer">
+          Política de Privacidad
+        </a>
+        .
+      </PrivacyNotice>
+
+      <CheckboxRow>
+        <Checkbox
+          type="checkbox"
+          name="privacidad"
+          value="aceptada"
+          disabled={status === "loading"}
+        />
+        <span>
+          He leído y acepto la{" "}
+          <a
+            href="politica-privacidad"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Política de Privacidad
+          </a>
+          .
+        </span>
+      </CheckboxRow>
+
+      {error && (
+        <InlineError role="alert" aria-live="polite">
+          {error}
+        </InlineError>
+      )}
 
       <Submit type="submit" disabled={status === "loading"}>
         {status === "loading" ? "Enviando..." : "Enviar solicitud"}
