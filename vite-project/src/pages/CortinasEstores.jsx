@@ -301,7 +301,7 @@ const FabricsInner = styled.div`
 `;
 
 const FabricsHeader = styled.div`
-  max-width: 720px;
+  max-width: 920px;
   margin: 0 auto 4rem;
   text-align: center;
 `;
@@ -378,59 +378,32 @@ const FabricDescription = styled.p`
   color: #555;
 `;
 
+const HandmadeDividerWrap = styled.div`
+  margin-top: 2.4rem;
+`;
+
 const HandmadeNote = styled.div`
   max-width: 820px;
-  margin: 3.5rem auto 0;
+  margin: 1.25rem auto 0;
   font-size: 1.05rem;
   line-height: 1.7;
   color: #444;
   text-align: center;
+
   strong {
     font-weight: 600;
     color: #222;
   }
 `;
-const SoftDivider = styled.div`
-  width: min(720px, 100%);
-  height: 1px;
-  margin: 2.25rem auto 0;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(17, 17, 17, 0.12),
-    transparent
-  );
-`;
-const BlockSpacer = styled.div`
-  margin-top: 3.25rem;
-
-  @media (max-width: 768px) {
-    margin-top: 2.4rem;
-  }
-`;
-
-const IntroHeader = styled.div`
-  max-width: 720px;
-  margin: 0 auto 2.4rem;
-  text-align: center;
-
-  @media (max-width: 768px) {
-    margin-bottom: 2rem;
-  }
-`;
-
-const IntroText = styled.p`
-  margin: 0;
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: rgba(17, 17, 17, 0.62);
+const AutomationDividerWrap = styled.div`
+  margin-top: -2.1rem;
 `;
 
 const InlineSeoNote = styled.p`
-  max-width: 720px;
-  margin: 0 auto;
+  max-width: 760px;
+  margin: 1.25rem auto 0;
   font-size: 1rem;
-  line-height: 1.7;
+  line-height: 1.72;
   color: rgba(17, 17, 17, 0.68);
   text-align: center;
 
@@ -443,6 +416,22 @@ const InlineSeoNote = styled.p`
   a:hover {
     text-decoration: underline;
   }
+`;
+
+const SoftDivider = styled.div`
+  width: min(680px, 100%);
+  height: 1px;
+  margin: 0 auto;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(17, 17, 17, 0.12),
+    transparent
+  );
+`;
+const SliderDividerWrap = styled.div`
+  margin-top: 1.4rem;
+  margin-bottom: 1.4rem;
 `;
 /* =========================
    FAQ
@@ -765,7 +754,7 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             </FeatureIcon>
             <FeatureTitle>Cortinas a Medida</FeatureTitle>
             <FeatureText>
-              Diseños personalizados y tejidos de calidad
+              Control más cómodo con motor, mando o automatización
             </FeatureText>
           </Feature>
 
@@ -782,7 +771,9 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
               />
             </FeatureIcon>
             <FeatureTitle>Estores Motorizados</FeatureTitle>
-            <FeatureText>Estores eléctricos y automatizados</FeatureText>
+            <FeatureText>
+              Control más cómodo con motor, mando o automatización
+            </FeatureText>
           </Feature>
 
           <Feature>
@@ -812,9 +803,8 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             </FabricsTitle>
             <FabricsIntro>
               Diseñamos e instalamos cortinas y estores a medida en Castellón
-              para viviendas, dormitorios, salones y negocios. Seleccionamos
-              tejidos, confección y sistemas según la entrada de luz, la
-              privacidad y el estilo de cada espacio.
+              para viviendas y negocios, seleccionando tejidos, confección y
+              sistemas según la luz, la privacidad y el estilo de cada espacio.
             </FabricsIntro>
           </FabricsHeader>
 
@@ -939,7 +929,11 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
               </FabricDescription>
             </FabricItem>
           </FabricsGrid>
-          <SoftDivider />
+
+          <HandmadeDividerWrap>
+            <SoftDivider />
+          </HandmadeDividerWrap>
+
           <HandmadeNote>
             <strong>
               Cada cortina se confecciona a medida por personas, no por
@@ -948,32 +942,32 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             Por eso el ajuste, la caída y el acabado final marcan la diferencia
             frente a soluciones estándar.
           </HandmadeNote>
-          <SoftDivider />
-          <BlockSpacer>
-            <IntroHeader>
-              <FabricsTitle>
-                Instalación de <span>cortinas y estores a medida</span>
-              </FabricsTitle>
-              <IntroText>
-                Realizamos medición, asesoramiento e instalación profesional
-                para que cada cortina o estor encaje perfectamente en la ventana
-                y en la estética del espacio, con soluciones decorativas y
-                funcionales para viviendas y negocios.
-              </IntroText>
-            </IntroHeader>
-          </BlockSpacer>
+
+          <SliderDividerWrap>
+            <SoftDivider />
+          </SliderDividerWrap>
+
+          <EnfoqueSlider onOpenAsesoramiento={onOpenAsesoramiento} />
+
+          <AutomationDividerWrap>
+            <SoftDivider />
+          </AutomationDividerWrap>
+
           <InlineSeoNote>
-            Si buscas una solución más avanzada, también puedes ver nuestras{" "}
-            <Link to="/automatizacion">opciones de automatización</Link> para
-            cortinas y estores.
+            También trabajamos{" "}
+            <Link to="/automatizacion">
+              automatización para cortinas y estores
+            </Link>
+            , con opciones de motor, mando y control inteligente.
           </InlineSeoNote>
         </FabricsInner>
       </FabricsSection>
+
       <ContactCTA
         onOpenAsesoramiento={onOpenAsesoramiento}
         pack="Cortinas"
         source="cortinas_estores_cta"
-        buttonText="Solicitar información"
+        buttonText="Solicitar asesoramiento"
         ctaName="solicitar_informacion"
       />
 
@@ -985,9 +979,8 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
             Otros productos <span>para tu ventana</span>
           </>
         }
-        lead="Complementos que combinan con cortinas y estores para resolver luz, privacidad y confort."
+        lead="Complementos que acompañan cortinas y estores para mejorar la luz, la privacidad y el confort de cada ventana."
       />
-      <EnfoqueSlider onOpenAsesoramiento={onOpenAsesoramiento} />
 
       {/* CAROUSEL */}
       <CarouselSection>
