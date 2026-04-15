@@ -4,10 +4,10 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled, { css, keyframes } from "styled-components";
+import AutomationScaleSection from "../../components/automatizacion/AutomationScaleSection";
 import { CONTACT } from "../../config/contact";
 import { trackEvent } from "../../lib/analytics";
 import StickyCtaButton from "../../mobile/StickyCtaButton";
-
 // IMAGES
 import persianas1200 from "../../assets/Automatizacion/benefit1-1200.webp";
 import persianas400 from "../../assets/Automatizacion/benefit1-400.webp";
@@ -927,6 +927,9 @@ export default function AutomatizacionIndividual({
           </Wrap>
         </PacksSection>
 
+        <Wrap>
+          <AutomationScaleSection />
+        </Wrap>
         <AutomationFaq
           items={faqs}
           kicker="Dudas rápidas"
