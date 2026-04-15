@@ -8,6 +8,7 @@ import { trackEvent } from "../../lib/analytics";
 import StickyCtaButton from "../../mobile/StickyCtaButton";
 import AutomationCta from "./AutomationCta";
 import AutomationFaq from "./AutomationFaq";
+
 /* =========================
    ASSETS
 ========================= */
@@ -21,6 +22,7 @@ import packBackground1200 from "../../assets/Automatizacion/heroB-1200.webp";
 import packBackground400 from "../../assets/Automatizacion/heroB-400.webp";
 import packBackground600 from "../../assets/Automatizacion/heroB-600.webp";
 import packBackground800 from "../../assets/Automatizacion/heroB-800.webp";
+import AutomationSimpleSection from "./AutomationSimpleSection";
 
 const responsiveImages = {
   welcome: {
@@ -597,6 +599,9 @@ export default function Auto({ onOpenAsesoramiento }) {
           waPhone={WA_PHONE}
           onOpenAsesoramiento={onOpenAsesoramiento}
         />
+        <Wrap>
+          <AutomationSimpleSection />
+        </Wrap>
         {/* FAQ */}
 
         <AutomationFaq
@@ -1004,7 +1009,10 @@ const ValueIconWrap = styled.div`
     color: rgba(17, 17, 17, 0.92);
   }
 `;
-
+const Wrap = styled.div`
+  width: min(1120px, calc(100% - 2.4rem));
+  margin: 0 auto;
+`;
 const ValueTitle = styled.h3`
   margin: 0.85rem 0 0.45rem;
   font-size: 1.08rem;

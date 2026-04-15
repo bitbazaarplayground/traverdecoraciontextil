@@ -5,11 +5,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AutomationFaq from "../components/automatizacion/AutomationFaq";
 import { CONTACT } from "../config/contact";
-import {
-  trackCtaClick,
-  trackOpenQuickEnquiry,
-  trackWhatsAppClick,
-} from "../lib/analytics";
+import { trackCtaClick, trackOpenQuickEnquiry } from "../lib/analytics";
 /* =========================
    ASSETS
 ========================= */
@@ -39,6 +35,7 @@ import img3600 from "../assets/Home/HeroImg/img3-600.webp";
 import img3800 from "../assets/Home/HeroImg/img3-800.webp";
 // Video hero
 import heroVideo from "../assets/video1-web-safari-v2.mp4";
+import AutomationCta from "../components/automatizacion/AutomationCta";
 
 /* =========================
    IMAGE HELPERS
@@ -765,7 +762,8 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
             </ScenesGrid>
           </Section>
           {/* FINAL CTA */}
-          <Section data-reveal="out">
+          <AutomationCta />
+          {/* <Section data-reveal="out">
             <CTA>
               <div>
                 <CTATitle>¿Lo vemos en tu casa?</CTATitle>
@@ -809,7 +807,7 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
                 </CTAButtonSecondary>
               </CTAButtons>
             </CTA>
-          </Section>
+          </Section> */}
 
           {/* SECTION: PROCESS */}
           <Section data-reveal="out">
