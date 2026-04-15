@@ -7,7 +7,7 @@ import { trackCtaClick, trackOpenQuickEnquiry } from "../lib/analytics";
 const Section = styled.section`
   width: 100%;
   position: relative;
-  padding: 6rem 2rem;
+  padding: 4.5rem 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,7 +20,7 @@ const Section = styled.section`
   background-repeat: no-repeat;
 
   @media (max-width: 768px) {
-    padding: 4rem 1.5rem;
+    padding: 3.4rem 1.5rem; /* reduce more on mobile */
     text-align: center;
   }
 
@@ -28,7 +28,7 @@ const Section = styled.section`
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(0, 0, 0, 0.58); /* slightly stronger for contrast */
     z-index: 1;
   }
 `;
@@ -116,7 +116,7 @@ export default function ContactCTA({
   source = "cortinas_estores_cta",
   buttonText = "Reserva Ahora",
   ctaName = "solicitar_informacion",
-  eyebrow = "EQUIPO DE DISEÑO Y ATENCIÓN AL CLIENTE DE PRIMERA",
+  eyebrow = "EQUIPO DE DISEÑO Y ATENCIÓN AL CLIENTE",
   title = "Nos encargamos de todo:\ndiseño, medición e instalación.",
 }) {
   const reduceMotion = useReducedMotion();

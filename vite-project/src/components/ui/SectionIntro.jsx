@@ -12,7 +12,7 @@ import styled from "styled-components";
  * - title: ReactNode
  * - lead?: ReactNode
  * - align?: "left" | "center"
- * - maxWidth?: string (e.g. "820px")
+ * - maxWidth?: string (e.g. "920px")
  * - className?: string
  * - children?: ReactNode (for extras like BenefitsStrip)
  */
@@ -21,7 +21,7 @@ export default function SectionIntro({
   title,
   lead,
   align = "left",
-  maxWidth = "820px",
+  maxWidth = "920px",
   className,
   children,
 }) {
@@ -44,6 +44,10 @@ const Wrap = styled.div`
   max-width: ${({ $maxWidth }) => $maxWidth};
   margin: ${({ $align }) => ($align === "center" ? "0 auto 3rem" : "0 0 3rem")};
   text-align: ${({ $align }) => $align};
+
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+  }
 `;
 
 const Kicker = styled.p`
@@ -85,15 +89,21 @@ const Title = styled.h2`
 `;
 
 const Lead = styled.p`
-  margin: 0.75rem 0 0;
-  max-width: 70ch;
-  font-size: 1.08rem;
-  line-height: 1.75;
-  color: rgba(17, 17, 17, 0.65);
+  margin: 0.8rem 0 0;
+  max-width: min(860px, 92%);
+  font-size: 1.06rem;
+  line-height: 1.8;
+  color: rgba(17, 17, 17, 0.68);
+  text-wrap: pretty;
 
-  /* Important: when align="center", we also center the lead block */
   ${Wrap}[data-align="center"] & {
     margin-left: auto;
     margin-right: auto;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    font-size: 1rem;
+    line-height: 1.72;
   }
 `;
