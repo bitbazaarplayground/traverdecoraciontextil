@@ -4,10 +4,11 @@ import { Helmet } from "react-helmet-async";
 import styled from "styled-components";
 import FaqAccordion from "../components/faq/FaqAccordion";
 import ServiceHero from "../components/heroes/ServiceHero";
+
+import ProposalGuidanceSectionAlt from "../components/propuestas/ProposalGuidanceSectionAlt";
 import { CONTACT } from "../config/contact";
 import { trackCtaClick, trackOpenQuickEnquiry } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
-
 /* =========================
    RESPONSIVE ASSETS
 ========================= */
@@ -106,7 +107,7 @@ const Page = styled.main`
 const LightSection = styled.section`
   background: #ffffff;
   color: #111;
-  padding: 5.5rem 2rem;
+  padding: 2.2rem 2rem;
 
   @media (max-width: 768px) {
     padding: 4rem 1.5rem;
@@ -978,6 +979,14 @@ export default function Propuestas({ onOpenAsesoramiento }) {
           </TrustStrip>
         </DarkInner>
       </DarkSection>
+
+      <LightSection>
+        <LightInner>
+          <ProposalGuidanceSectionAlt
+            onOpenAsesoramiento={onOpenAsesoramiento}
+          />
+        </LightInner>
+      </LightSection>
 
       <LightSection>
         <LightInner>

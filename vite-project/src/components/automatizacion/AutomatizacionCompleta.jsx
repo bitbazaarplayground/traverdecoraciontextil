@@ -622,10 +622,22 @@ export default function Auto({ onOpenAsesoramiento }) {
   );
 }
 
-const Page = styled.main`
-  width: 100%;
-  background: #ffffff;
-  color: #111;
+/* =========================
+   MOTION (subtle, premium)
+========================= */
+
+const Page = styled.div`
+  background: radial-gradient(
+      1200px 520px at 50% -2%,
+      rgba(229, 0, 126, 0.1),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 520px at 10% 18%,
+      rgba(0, 0, 0, 0.06),
+      transparent 55%
+    ),
+    #f5f4f2;
 `;
 const Container = styled.div`
   width: min(${({ theme }) => theme.layout.maxWidth}, 100%);
