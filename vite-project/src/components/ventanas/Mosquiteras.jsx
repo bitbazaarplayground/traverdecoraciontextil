@@ -931,7 +931,7 @@ const WhatsAppCta = styled.a`
 export default function Mosquiteras({ onOpenAsesoramiento }) {
   const location = useLocation();
 
-  const baseUrl = getBaseUrl();
+  const baseUrl = "https://www.traverdecoraciontextil.es";
   const canonical = getCanonical(baseUrl, location.pathname);
 
   const siteName = CONTACT.siteName;
