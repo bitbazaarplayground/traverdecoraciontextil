@@ -472,7 +472,7 @@ export default function ServicesSection() {
               : {})}
           >
             <MediaLink
-              to="/toldos-proteccionsolar"
+              to="/toldos-proteccion-solar"
               aria-label="Ir a Toldos y Protección Solar"
             >
               <Media>

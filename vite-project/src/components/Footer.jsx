@@ -96,7 +96,7 @@ export default function Footer({ onOpenAsesoramiento }) {
             <Col>
               <ColTitle>Servicios</ColTitle>
               <ColLink to="/cortinas-estores">Cortinas & estores</ColLink>
-              <ColLink to="/toldos-proteccionsolar">Toldos</ColLink>
+              <ColLink to="/toldos-proteccion-solar">Toldos</ColLink>
               <ColLink to="/automatizacion">Automatización</ColLink>
               <ColLink to="/mosquiteras">Mosquiteras</ColLink>
               <ColLink to="/panel-japones">Panel japonés</ColLink>
@@ -191,7 +191,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                 <MobileLink to="/cortinas-estores">
                   Cortinas & estores
                 </MobileLink>
-                <MobileLink to="/toldos-proteccionsolar">Toldos</MobileLink>
+                <MobileLink to="/toldos-proteccion-solar">Toldos</MobileLink>
                 <MobileLink to="/automatizacion">Automatización</MobileLink>
                 <MobileLink to="/mosquiteras">Mosquiteras</MobileLink>
                 <MobileLink to="/panel-japones">Panel japonés</MobileLink>
