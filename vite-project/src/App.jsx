@@ -7,7 +7,6 @@ import AutomatizacionIndividual from "./components/automatizacion/Automatizacion
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
-import Mosquiteras from "./components/ventanas/Mosquiteras";
 import Venecianas from "./components/ventanas/Venecianas";
 import Automatizacion from "./pages/Automatizacion";
 import HomePage from "./pages/HomePage";
@@ -38,6 +37,7 @@ const AdminResetPassword = lazy(() =>
 );
 
 const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
+const Mosquiteras = lazy(() => import("./components/ventanas/Mosquiteras"));
 
 export default function App() {
   const [enquiryOpen, setEnquiryOpen] = useState(false);
@@ -150,6 +150,7 @@ export default function App() {
             path="/mosquiteras"
             element={<Mosquiteras onOpenAsesoramiento={onOpenAsesoramiento} />}
           />
+
           <Route
             path="/services"
             element={<Servicios onOpenAsesoramiento={onOpenAsesoramiento} />}
