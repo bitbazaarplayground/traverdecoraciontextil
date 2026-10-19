@@ -7,6 +7,7 @@
     "dev": "vite",
     "prebuild": "node scripts/generate-seo-files.mjs",
     "build": "vite build",
+    "validate:seo-routes": "node scripts/validate-seo-routes.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
