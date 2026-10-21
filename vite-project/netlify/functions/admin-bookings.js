@@ -1,3 +1,9 @@
+import {
+  getAdminAccessConfig,
+  getBearerToken,
+  isAllowedAdminEmail,
+} from "../lib/adminAccess.js";
+
 function json(statusCode, body) {
   return {
     statusCode,
@@ -7,14 +13,6 @@ function json(statusCode, body) {
     },
     body: JSON.stringify(body),
   };
-}
-
-function getAllowedEmails() {
-  const raw = process.env.VITE_ADMIN_EMAILS || "";
-  return raw
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
 }
 
 // Verify the Supabase JWT and return the user (email)
@@ -72,22 +70,22 @@ function getCustomerKey(bk) {
 
 export async function handler(event) {
   try {
+    const adminAccess = getAdminAccessConfig();
+    if (!adminAccess) {
+      return json(403, { error: "Administrative access is disabled" });
+    }
+
+    const jwt = getBearerToken(event);
+    if (!jwt) return json(401, { error: "Missing Authorization token" });
+
     const SUPABASE_URL = process.env.SUPABASE_URL;
     const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!SUPABASE_URL || !SERVICE_KEY) {
-      return json(500, {
-        error: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
+      return json(503, {
+        error: "Administrative service unavailable",
       });
     }
-
-    const authHeader =
-      event.headers.authorization || event.headers.Authorization || "";
-    const jwt = authHeader.startsWith("Bearer ")
-      ? authHeader.slice("Bearer ".length)
-      : null;
-
-    if (!jwt) return json(401, { error: "Missing Authorization token" });
 
     // Validate user via Supabase Auth API
     const { user, error } = await getUserFromJwt({
@@ -98,10 +96,7 @@ export async function handler(event) {
 
     if (error || !user?.email) return json(401, { error: "Invalid session" });
 
-    // Allow-list
-    const allow = getAllowedEmails();
-    const email = user.email.toLowerCase();
-    if (allow.length && !allow.includes(email)) {
+    if (!isAllowedAdminEmail(adminAccess, user.email)) {
       return json(403, { error: "Not authorized" });
     }
 

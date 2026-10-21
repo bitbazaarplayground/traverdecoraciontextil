@@ -10,6 +10,7 @@
     "dev:framework-poc": "react-router dev --config vite.framework-poc.config.js",
     "build:framework-poc": "npm run prebuild && react-router build --config vite.framework-poc.config.js",
     "validate:seo-routes": "node scripts/validate-seo-routes.mjs",
+    "test:admin-security": "node --test scripts/admin-security.test.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
