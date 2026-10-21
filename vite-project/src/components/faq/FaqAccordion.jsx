@@ -9,6 +9,9 @@ import {
 import { Helmet } from "react-helmet-async";
 import styled from "styled-components";
 
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
+
 /**
  * items: [{ q: string, a: ReactNode, aText?: string }]
  */
@@ -43,7 +46,7 @@ export default function FaqAccordion({
     setOpenIndex(-1);
   }, [defaultOpenIndex, items?.length]);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (openIndex === -1 || !openPanelInnerRef.current) {
       setOpenHeight(0);
       return;

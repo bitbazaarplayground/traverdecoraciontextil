@@ -7,6 +7,8 @@
     "dev": "vite",
     "prebuild": "node scripts/generate-seo-files.mjs",
     "build": "vite build",
+    "dev:framework-poc": "react-router dev --config vite.framework-poc.config.js",
+    "build:framework-poc": "npm run prebuild && react-router build --config vite.framework-poc.config.js",
     "validate:seo-routes": "node scripts/validate-seo-routes.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -18,7 +20,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-helmet-async": "^2.0.5",
-    "react-router-dom": "^7.10.1",
+    "react-router": "^7.18.4",
+    "react-router-dom": "^7.18.4",
     "react-slick": "^0.31.0",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.8",
@@ -26,6 +29,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@react-router/dev": "^7.18.4",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",

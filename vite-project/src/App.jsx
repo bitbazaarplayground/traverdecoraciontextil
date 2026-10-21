@@ -39,7 +39,10 @@ const AdminResetPassword = lazy(() =>
 const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
 const Mosquiteras = lazy(() => import("./components/ventanas/Mosquiteras"));
 
-export default function App() {
+export default function App({
+  suppressToldosHelmet = false,
+  disableLegacyScrollToTop = false,
+}) {
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const [enquiryPack, setEnquiryPack] = useState("General");
   const [enquirySource, setEnquirySource] = useState("cta");
@@ -76,7 +79,7 @@ export default function App() {
 
   return (
     <>
-      <ScrollToTop />
+      {!disableLegacyScrollToTop && <ScrollToTop />}
       {!isAdminRoute && <Navbar />}
 
       <Suspense fallback={null}>
@@ -142,6 +145,7 @@ export default function App() {
             element={
               <ToldosProteccionSolar
                 onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={!suppressToldosHelmet}
               />
             }
           />
