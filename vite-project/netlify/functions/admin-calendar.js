@@ -4,6 +4,11 @@
 // DELETE /.netlify/functions/admin-calendar { id }
 
 import { createClient } from "@supabase/supabase-js";
+import {
+  getAdminAccessConfig,
+  getBearerToken,
+  isAllowedAdminEmail,
+} from "../lib/adminAccess.js";
 
 function json(statusCode, body) {
   return {
@@ -20,32 +25,28 @@ function json(statusCode, body) {
   };
 }
 
-function getBearerToken(event) {
-  const h = event.headers?.authorization || event.headers?.Authorization || "";
-  const m = String(h).match(/^Bearer\s+(.+)$/i);
-  return m ? m[1] : null;
-}
-
 export async function handler(event) {
   try {
-    if (event.httpMethod === "OPTIONS") return json(200, { ok: true });
+    const adminAccess = getAdminAccessConfig();
+    if (!adminAccess) {
+      return json(403, { error: "Administrative access is disabled" });
+    }
+
+    const token = getBearerToken(event);
+    if (!token) return json(401, { error: "Missing Authorization token" });
 
     const SUPABASE_URL = process.env.SUPABASE_URL;
     const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!SUPABASE_URL || !SERVICE_KEY) {
-      return json(500, {
-        error: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
+      return json(503, {
+        error: "Administrative service unavailable",
       });
     }
 
     const supabase = createClient(SUPABASE_URL, SERVICE_KEY, {
       auth: { persistSession: false },
     });
-
-    // ✅ Auth: verify user from the JWT sent by your frontend
-    const token = getBearerToken(event);
-    if (!token) return json(401, { error: "Missing Bearer token" });
 
     const { data: userData, error: userErr } = await supabase.auth.getUser(
       token
@@ -54,8 +55,13 @@ export async function handler(event) {
       return json(401, { error: "Invalid session" });
 
     const user = userData.user;
+    if (!isAllowedAdminEmail(adminAccess, user.email)) {
+      return json(403, { error: "Not authorized" });
+    }
 
-    // ✅ Admin gate: must exist in admin_users table
+    if (event.httpMethod === "OPTIONS") return json(200, { ok: true });
+
+    // A listed account must also exist in the admin_users table.
     const { data: adminRow, error: adminErr } = await supabase
       .from("admin_users")
       .select("user_id")

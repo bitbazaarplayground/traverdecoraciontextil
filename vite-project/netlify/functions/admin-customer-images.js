@@ -1,7 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
-
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+import {
+  getAdminAccessConfig,
+  getBearerToken,
+  isAllowedAdminEmail,
+} from "../lib/adminAccess.js";
 
 function json(statusCode, body) {
   return {
@@ -17,12 +19,6 @@ function json(statusCode, body) {
   };
 }
 
-function getBearerToken(event) {
-  const h = event.headers?.authorization || event.headers?.Authorization || "";
-  const match = h.match(/^Bearer\s+(.+)$/i);
-  return match ? match[1] : null;
-}
-
 function safeFilename(name) {
   return String(name || "image")
     .trim()
@@ -31,21 +27,23 @@ function safeFilename(name) {
 
 export async function handler(event) {
   try {
-    if (event.httpMethod === "OPTIONS") {
-      return json(200, { ok: true });
+    const adminAccess = getAdminAccessConfig();
+    if (!adminAccess) {
+      return json(403, { error: "Administrative access is disabled" });
     }
 
+    const token = getBearerToken(event);
+    if (!token) return json(401, { error: "Missing Authorization token" });
+
+    const SUPABASE_URL = process.env.SUPABASE_URL;
+    const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
     if (!SUPABASE_URL || !SERVICE_KEY) {
-      return json(500, {
-        error: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
+      return json(503, {
+        error: "Administrative service unavailable",
       });
     }
 
     const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
-
-    // 1) Verify admin JWT from client
-    const token = getBearerToken(event);
-    if (!token) return json(401, { error: "Missing Authorization token" });
 
     const { data: userData, error: userErr } = await supabase.auth.getUser(
       token
@@ -53,16 +51,12 @@ export async function handler(event) {
     if (userErr || !userData?.user)
       return json(401, { error: "Invalid token" });
 
-    // 2) Enforce allowlist using env VITE_ADMIN_EMAILS
-    const allowRaw = process.env.VITE_ADMIN_EMAILS || "";
-    const allow = allowRaw
-      .split(",")
-      .map((s) => s.trim().toLowerCase())
-      .filter(Boolean);
-
-    const email = (userData.user.email || "").toLowerCase();
-    if (allow.length && (!email || !allow.includes(email))) {
+    if (!isAllowedAdminEmail(adminAccess, userData.user.email)) {
       return json(403, { error: "Not authorized" });
+    }
+
+    if (event.httpMethod === "OPTIONS") {
+      return json(200, { ok: true });
     }
 
     const bucket = "customer-images";

@@ -32,11 +32,6 @@ const AvisoLegal = lazy(() => import("./pages/AvisoLegal"));
 const PoliticaPrivacidad = lazy(() => import("./pages/PoliticaPrivacidad"));
 const PoliticaCookies = lazy(() => import("./pages/PoliticaCookies"));
 
-const AuthCallback = lazy(() => import("./pages/AuthCallback"));
-const AdminResetPassword = lazy(() =>
-  import("./pages/Admin/AdminResetPassword")
-);
-
 const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
 
 export default function App() {
@@ -163,11 +158,6 @@ export default function App() {
           <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
           <Route path="/politica-cookies" element={<PoliticaCookies />} />
 
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route
-            path="/admin/reset-password"
-            element={<AdminResetPassword />}
-          />
         </Routes>
       </Suspense>
 
