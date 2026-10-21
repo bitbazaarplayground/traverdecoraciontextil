@@ -7,6 +7,7 @@
     "dev": "vite",
     "prebuild": "node scripts/generate-seo-files.mjs",
     "build": "vite build",
+    "test:admin-security": "node --test scripts/admin-security.test.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
