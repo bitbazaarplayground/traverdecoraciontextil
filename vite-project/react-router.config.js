@@ -1,13 +1,17 @@
 import { PUBLIC_ROUTES } from "./src/config/publicRoutes.js";
 
-const PRERENDER_PROOF_PATH = "/toldos-proteccion-solar";
-const prerenderProofRoute = PUBLIC_ROUTES.find(
-  ({ path }) => path === PRERENDER_PROOF_PATH
+const PRERENDER_PROOF_PATHS = ["/", "/toldos-proteccion-solar"];
+const prerenderProofRoutes = PRERENDER_PROOF_PATHS.map((path) =>
+  PUBLIC_ROUTES.find((route) => route.path === path)
 );
 
-if (!prerenderProofRoute?.prerender) {
+const disabledPrerenderPath = prerenderProofRoutes.find(
+  (route) => !route?.prerender
+);
+
+if (disabledPrerenderPath) {
   throw new Error(
-    `The React Router prerender proof route must be enabled in PUBLIC_ROUTES: ${PRERENDER_PROOF_PATH}`
+    `The React Router prerender proof route must be enabled in PUBLIC_ROUTES: ${disabledPrerenderPath?.path || "missing route"}`
   );
 }
 
@@ -22,5 +26,5 @@ export default {
   appDirectory: "src",
   buildDirectory: "build-framework-poc",
   ssr: false,
-  prerender: [prerenderProofRoute.path],
+  prerender: prerenderProofRoutes.map(({ path }) => path),
 };

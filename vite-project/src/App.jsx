@@ -35,6 +35,7 @@ const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
 const Mosquiteras = lazy(() => import("./components/ventanas/Mosquiteras"));
 
 export default function App({
+  suppressHomeHelmet = false,
   suppressToldosHelmet = false,
   disableLegacyScrollToTop = false,
 }) {
@@ -81,7 +82,12 @@ export default function App({
         <Routes>
           <Route
             path="/"
-            element={<HomePage onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <HomePage
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={!suppressHomeHelmet}
+              />
+            }
           />
 
           <Route
