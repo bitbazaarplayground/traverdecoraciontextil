@@ -1,5 +1,9 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import App from "../App.jsx";
+import {
+  CORTINAS_SEO,
+  getCortinasMetaDescriptors,
+} from "../config/cortinasSeo.js";
 import {
   getHomeMetaDescriptors,
   HOME_SEO,
@@ -39,6 +43,8 @@ function FrameworkRouteTitleBoundary({ title }) {
 // eslint-disable-next-line react-refresh/only-export-components
 export function meta({ location }) {
   if (location.pathname === HOME_SEO.path) return getHomeMetaDescriptors();
+  if (location.pathname === CORTINAS_SEO.path)
+    return getCortinasMetaDescriptors();
   if (location.pathname === TOLDOS_SEO.path)
     return getToldosMetaDescriptors();
   return [];
@@ -46,10 +52,36 @@ export function meta({ location }) {
 
 export default function LegacyAppRoute() {
   const { pathname } = useLocation();
+  const isFrameworkCortinasRoute = pathname === CORTINAS_SEO.path;
   const isFrameworkHomeRoute = pathname === HOME_SEO.path;
   const isFrameworkToldosRoute = pathname === TOLDOS_SEO.path;
+  const isFrameworkManagedRoute =
+    isFrameworkCortinasRoute ||
+    isFrameworkHomeRoute ||
+    isFrameworkToldosRoute;
+  const wasFrameworkManagedRoute = useRef(isFrameworkManagedRoute);
+  const [legacyHelmetRefreshKey, setLegacyHelmetRefreshKey] = useState(0);
+
+  useEffect(() => {
+    const leftFrameworkManagedRoute =
+      wasFrameworkManagedRoute.current && !isFrameworkManagedRoute;
+    wasFrameworkManagedRoute.current = isFrameworkManagedRoute;
+
+    if (!leftFrameworkManagedRoute) return undefined;
+
+    // React Router removes its route title after the legacy page's Helmet has
+    // committed. Remount only the nested legacy route on the next frame, once
+    // Framework metadata is settled, so Helmet can establish its own title.
+    const frame = window.requestAnimationFrame(() => {
+      setLegacyHelmetRefreshKey((key) => key + 1);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [isFrameworkManagedRoute]);
   const frameworkTitle = isFrameworkHomeRoute
     ? HOME_SEO.title
+    : isFrameworkCortinasRoute
+    ? CORTINAS_SEO.title
     : isFrameworkToldosRoute
     ? TOLDOS_SEO.title
     : null;
@@ -58,9 +90,11 @@ export default function LegacyAppRoute() {
     <>
       <FrameworkRouteTitleBoundary title={frameworkTitle} />
       <App
+        suppressCortinasHelmet={isFrameworkCortinasRoute}
         suppressHomeHelmet={isFrameworkHomeRoute}
         suppressToldosHelmet={isFrameworkToldosRoute}
         disableLegacyScrollToTop
+        legacyHelmetRefreshKey={legacyHelmetRefreshKey}
       />
     </>
   );

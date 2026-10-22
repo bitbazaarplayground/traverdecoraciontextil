@@ -1,6 +1,10 @@
 import { PUBLIC_ROUTES } from "./src/config/publicRoutes.js";
 
-const PRERENDER_PROOF_PATHS = ["/", "/toldos-proteccion-solar"];
+const PRERENDER_PROOF_PATHS = [
+  "/",
+  "/cortinas-estores",
+  "/toldos-proteccion-solar",
+];
 const prerenderProofRoutes = PRERENDER_PROOF_PATHS.map((path) =>
   PUBLIC_ROUTES.find((route) => route.path === path)
 );

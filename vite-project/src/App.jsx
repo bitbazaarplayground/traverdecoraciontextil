@@ -35,9 +35,11 @@ const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
 const Mosquiteras = lazy(() => import("./components/ventanas/Mosquiteras"));
 
 export default function App({
+  suppressCortinasHelmet = false,
   suppressHomeHelmet = false,
   suppressToldosHelmet = false,
   disableLegacyScrollToTop = false,
+  legacyHelmetRefreshKey = 0,
 }) {
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const [enquiryPack, setEnquiryPack] = useState("General");
@@ -79,7 +81,7 @@ export default function App({
       {!isAdminRoute && <Navbar />}
 
       <Suspense fallback={null}>
-        <Routes>
+        <Routes key={legacyHelmetRefreshKey}>
           <Route
             path="/"
             element={
@@ -138,7 +140,10 @@ export default function App({
           <Route
             path="/cortinas-estores"
             element={
-              <CortinasEstores onOpenAsesoramiento={onOpenAsesoramiento} />
+              <CortinasEstores
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={!suppressCortinasHelmet}
+              />
             }
           />
           <Route
