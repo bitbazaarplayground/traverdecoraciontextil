@@ -1,17 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import App from "../App.jsx";
 import {
-  CORTINAS_SEO,
-  getCortinasMetaDescriptors,
-} from "../config/cortinasSeo.js";
-import {
-  getHomeMetaDescriptors,
-  HOME_SEO,
-} from "../config/homeSeo.js";
-import {
-  getToldosMetaDescriptors,
-  TOLDOS_SEO,
-} from "../config/toldosSeo.js";
+  getFrameworkMetaDescriptors,
+  getFrameworkSeoRoute,
+} from "../config/frameworkSeo.js";
 import { useLocation } from "react-router-dom";
 
 const useIsomorphicLayoutEffect =
@@ -42,23 +34,13 @@ function FrameworkRouteTitleBoundary({ title }) {
 // React Router route modules require this non-component export.
 // eslint-disable-next-line react-refresh/only-export-components
 export function meta({ location }) {
-  if (location.pathname === HOME_SEO.path) return getHomeMetaDescriptors();
-  if (location.pathname === CORTINAS_SEO.path)
-    return getCortinasMetaDescriptors();
-  if (location.pathname === TOLDOS_SEO.path)
-    return getToldosMetaDescriptors();
-  return [];
+  return getFrameworkMetaDescriptors(location.pathname);
 }
 
 export default function LegacyAppRoute() {
   const { pathname } = useLocation();
-  const isFrameworkCortinasRoute = pathname === CORTINAS_SEO.path;
-  const isFrameworkHomeRoute = pathname === HOME_SEO.path;
-  const isFrameworkToldosRoute = pathname === TOLDOS_SEO.path;
-  const isFrameworkManagedRoute =
-    isFrameworkCortinasRoute ||
-    isFrameworkHomeRoute ||
-    isFrameworkToldosRoute;
+  const frameworkSeoRoute = getFrameworkSeoRoute(pathname);
+  const isFrameworkManagedRoute = Boolean(frameworkSeoRoute);
   const wasFrameworkManagedRoute = useRef(isFrameworkManagedRoute);
   const [legacyHelmetRefreshKey, setLegacyHelmetRefreshKey] = useState(0);
 
@@ -78,21 +60,11 @@ export default function LegacyAppRoute() {
 
     return () => window.cancelAnimationFrame(frame);
   }, [isFrameworkManagedRoute]);
-  const frameworkTitle = isFrameworkHomeRoute
-    ? HOME_SEO.title
-    : isFrameworkCortinasRoute
-    ? CORTINAS_SEO.title
-    : isFrameworkToldosRoute
-    ? TOLDOS_SEO.title
-    : null;
-
   return (
     <>
-      <FrameworkRouteTitleBoundary title={frameworkTitle} />
+      <FrameworkRouteTitleBoundary title={frameworkSeoRoute?.seo.title} />
       <App
-        suppressCortinasHelmet={isFrameworkCortinasRoute}
-        suppressHomeHelmet={isFrameworkHomeRoute}
-        suppressToldosHelmet={isFrameworkToldosRoute}
+        frameworkMetadataEnabled={isFrameworkManagedRoute}
         disableLegacyScrollToTop
         legacyHelmetRefreshKey={legacyHelmetRefreshKey}
       />

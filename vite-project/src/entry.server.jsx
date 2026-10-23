@@ -3,10 +3,18 @@ import { PassThrough, Transform } from "node:stream";
 import { ServerRouter } from "react-router";
 import { renderToPipeableStream } from "react-dom/server";
 import { ServerStyleSheet, StyleSheetManager } from "styled-components";
+import { FRAMEWORK_STYLES_ELEMENT_ID } from "./config/frameworkStyles.js";
 
 export const streamTimeout = 10_000;
 
-function injectStylesIntoHead(styles) {
+function getStyleContents(styles) {
+  const start = styles.indexOf(">");
+  const end = styles.lastIndexOf("</style>");
+
+  return start === -1 || end === -1 ? "" : styles.slice(start + 1, end);
+}
+
+function injectStylesIntoFrameworkPlaceholder(styles) {
   let buffered = "";
   let didInject = false;
 
@@ -18,9 +26,20 @@ function injectStylesIntoHead(styles) {
       }
 
       buffered += chunk.toString();
-      const headEnd = buffered.indexOf("</head>");
+      const markerIndex = buffered.indexOf(
+        `id="${FRAMEWORK_STYLES_ELEMENT_ID}"`
+      );
 
-      if (headEnd === -1) {
+      if (markerIndex === -1) {
+        callback();
+        return;
+      }
+
+      const styleStart = buffered.lastIndexOf("<style", markerIndex);
+      const contentStart = buffered.indexOf(">", markerIndex) + 1;
+      const styleEnd = buffered.indexOf("</style>", contentStart);
+
+      if (styleStart === -1 || contentStart === 0 || styleEnd === -1) {
         callback();
         return;
       }
@@ -28,7 +47,7 @@ function injectStylesIntoHead(styles) {
       didInject = true;
       callback(
         null,
-        `${buffered.slice(0, headEnd)}${styles}${buffered.slice(headEnd)}`
+        `${buffered.slice(0, contentStart)}${getStyleContents(styles)}${buffered.slice(styleEnd)}`
       );
     },
     flush(callback) {
@@ -80,10 +99,12 @@ export default function handleRequest(
         onAllReady() {
           shellRendered = true;
           const body = new PassThrough();
-          // onAllReady guarantees every legacy lazy route has rendered, so the
-          // complete style collection can be placed in the document head
-          // before the response stream starts flowing to the browser.
-          const styledBody = injectStylesIntoHead(sheet.getStyleTags());
+          // The Framework document includes a matching empty style element.
+          // Filling that element after all lazy routes resolve keeps the
+          // server CSS in React's tree, so the client can hydrate it intact.
+          const styledBody = injectStylesIntoFrameworkPlaceholder(
+            sheet.getStyleTags()
+          );
           sealSheet();
           body.pipe(styledBody);
 

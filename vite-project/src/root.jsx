@@ -2,9 +2,25 @@ import { HelmetProvider } from "react-helmet-async";
 import { Links, Meta, Outlet, Scripts } from "react-router";
 import { ThemeProvider } from "styled-components";
 import NetlifyFormsRegistry from "./components/contact/NetlifyFormsRegistry.jsx";
+import {
+  FRAMEWORK_STYLES_ELEMENT_ID,
+  getFrameworkStylesHydrationText,
+} from "./config/frameworkStyles.js";
 import GlobalStyles from "./styles/GlobalStyles.js";
 import { theme } from "./styles/theme.js";
 import ScrollRestoration from "./utils/ScrollRestoration.jsx";
+
+function FrameworkStyledComponentsStyles() {
+  const css = getFrameworkStylesHydrationText();
+
+  return (
+    <style
+      id={FRAMEWORK_STYLES_ELEMENT_ID}
+      data-framework-styled-components="server"
+      dangerouslySetInnerHTML={{ __html: css }}
+    />
+  );
+}
 
 export function Layout({ children }) {
   return (
@@ -49,6 +65,7 @@ export function Layout({ children }) {
         />
         <Meta />
         <Links />
+        <FrameworkStyledComponentsStyles />
       </head>
       <body>
         {children}

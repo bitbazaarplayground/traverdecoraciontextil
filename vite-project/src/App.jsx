@@ -35,9 +35,7 @@ const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
 const Mosquiteras = lazy(() => import("./components/ventanas/Mosquiteras"));
 
 export default function App({
-  suppressCortinasHelmet = false,
-  suppressHomeHelmet = false,
-  suppressToldosHelmet = false,
+  frameworkMetadataEnabled = false,
   disableLegacyScrollToTop = false,
   legacyHelmetRefreshKey = 0,
 }) {
@@ -50,6 +48,7 @@ export default function App({
     () => pathname === "/admin" || pathname.startsWith("/admin/"),
     [pathname]
   );
+  const includeLegacyHelmet = !frameworkMetadataEnabled;
 
   useEffect(() => {
     initAnalyticsIfAllowed();
@@ -87,7 +86,7 @@ export default function App({
             element={
               <HomePage
                 onOpenAsesoramiento={onOpenAsesoramiento}
-                includeHelmet={!suppressHomeHelmet}
+                includeHelmet={includeLegacyHelmet}
               />
             }
           />
@@ -142,7 +141,7 @@ export default function App({
             element={
               <CortinasEstores
                 onOpenAsesoramiento={onOpenAsesoramiento}
-                includeHelmet={!suppressCortinasHelmet}
+                includeHelmet={includeLegacyHelmet}
               />
             }
           />
@@ -151,7 +150,7 @@ export default function App({
             element={
               <ToldosProteccionSolar
                 onOpenAsesoramiento={onOpenAsesoramiento}
-                includeHelmet={!suppressToldosHelmet}
+                includeHelmet={includeLegacyHelmet}
               />
             }
           />
@@ -163,7 +162,12 @@ export default function App({
 
           <Route
             path="/services"
-            element={<Servicios onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Servicios
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
           <Route
             path="/limpieza"
