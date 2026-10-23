@@ -130,11 +130,21 @@ export default function App({
 
           <Route
             path="/panel-japones"
-            element={<PanelJapones onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <PanelJapones
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
           <Route
             path="/venecianas"
-            element={<Venecianas onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Venecianas
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
           <Route
             path="/cortinas-estores"
@@ -171,7 +181,12 @@ export default function App({
           />
           <Route
             path="/limpieza"
-            element={<Limpieza onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Limpieza
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
 
           <Route path="/aviso-legal" element={<AvisoLegal />} />

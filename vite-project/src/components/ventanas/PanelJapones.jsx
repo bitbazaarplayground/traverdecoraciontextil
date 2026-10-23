@@ -3,7 +3,11 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import styled from "styled-components";
 import ServiceHero from "../../components/heroes/ServiceHero";
-import { CONTACT } from "../../config/contact";
+import {
+  PANEL_JAPONES_FAQ_ITEMS,
+  PANEL_JAPONES_PAGE_JSON_LD,
+  PANEL_JAPONES_SEO,
+} from "../../config/panelJaponesSeo.js";
 import { trackEvent } from "../../lib/analytics";
 
 import ContactCTA from "../../components/ContactCTA";
@@ -347,134 +351,24 @@ const FAQInner = styled.div`
 `;
 
 /* =========================
-   DATA
-========================= */
-
-const FAQ_ITEMS = [
-  {
-    q: "¿Cuándo es mejor elegir panel japonés?",
-    a: "Es ideal para ventanales grandes, puertas correderas y estancias de estética moderna. Funciona muy bien cuando quieres líneas rectas, orden visual y control de luz por zonas.",
-    aText:
-      "Es ideal para ventanales grandes, puertas correderas y estancias de estética moderna. Funciona muy bien cuando quieres líneas rectas, orden visual y control de luz por zonas.",
-  },
-  {
-    q: "¿Se puede combinar con visillo o tejidos traslúcidos?",
-    a: "Sí. Podemos plantear paneles traslúcidos para tamizar luz o combinaciones (panel traslúcido + tejido más opaco) para conseguir privacidad y ambiente según el momento del día.",
-    aText:
-      "Sí. Podemos plantear paneles traslúcidos para tamizar luz o combinaciones (panel traslúcido + tejido más opaco) para conseguir privacidad y ambiente según el momento del día.",
-  },
-  {
-    q: "¿Cómo se define el número de paneles y el solape?",
-    a: "Depende del ancho, del tipo de apertura y del efecto visual. Te proponemos una distribución equilibrada (paneles + solapes) para que el movimiento sea limpio y la caída quede perfecta.",
-    aText:
-      "Depende del ancho, del tipo de apertura y del efecto visual. Te proponemos una distribución equilibrada (paneles + solapes) para que el movimiento sea limpio y la caída quede perfecta.",
-  },
-  {
-    q: "¿Hacéis medición e instalación en Castellón y Valencia?",
-    a: "Sí. Realizamos visita, medición y montaje profesional para que el panel deslice suave y el remate quede alineado.",
-    aText:
-      "Sí. Realizamos visita, medición y montaje profesional para que el panel deslice suave y el remate quede alineado.",
-  },
-  {
-    q: "¿Qué mantenimiento requiere?",
-    a: "Según el tejido, puede ser limpieza puntual o lavado siguiendo la recomendación del fabricante. Te aconsejamos el material más adecuado si hay cocina, mascotas o mucho uso diario.",
-    aText:
-      "Según el tejido, puede ser limpieza puntual o lavado siguiendo la recomendación del fabricante. Te aconsejamos el material más adecuado si hay cocina, mascotas o mucho uso diario.",
-  },
-];
-
-/* =========================
    COMPONENT
 ========================= */
 
-export default function PanelJapones({ onOpenAsesoramiento }) {
-  const baseUrl = (
-    import.meta.env.VITE_SITE_URL || window.location.origin
-  ).replace(/\/$/, "");
-
-  const canonical = `${baseUrl}/panel-japones`;
-  const siteName = CONTACT.siteName;
-
-  const title =
-    "Panel japonés a medida | Traver Decoración Textil (Castellón y Valencia)";
-  const description =
-    "Panel japonés a medida en Castellón y Valencia: perfecto para ventanales y puertas correderas. Tejidos seleccionados, medición e instalación profesional en Almassora.";
-
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt = "Panel japonés a medida — Traver Decoración Textil";
-
-  const breadcrumbJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Inicio",
-          item: `${baseUrl}/`,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Servicios",
-          item: `${baseUrl}/services`,
-        },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: "Panel japonés",
-          item: canonical,
-        },
-      ],
-    }),
-    [baseUrl, canonical]
-  );
-
-  const webPageJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "@id": `${canonical}#webpage`,
-      url: canonical,
-      name: title,
-      description,
-      inLanguage: "es-ES",
-      isPartOf: { "@id": `${baseUrl}/#website` },
-    }),
-    [baseUrl, canonical, title, description]
-  );
-
-  const serviceJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "@id": `${canonical}#service`,
-      name: "Panel japonés a medida",
-      description,
-      areaServed: [
-        { "@type": "AdministrativeArea", name: "Castellón" },
-        { "@type": "AdministrativeArea", name: "Valencia" },
-      ],
-      provider: {
-        "@type": "LocalBusiness",
-        name: siteName,
-        url: `${baseUrl}/`,
-        telephone: CONTACT.phoneLandline,
-        email: CONTACT.email,
-        address: {
-          "@type": "PostalAddress",
-          ...CONTACT.address,
-        },
-      },
-    }),
-    [baseUrl, canonical, siteName, description]
-  );
-
-  const jsonLd = useMemo(
-    () => [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd],
-    [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd]
-  );
+export default function PanelJapones({
+  onOpenAsesoramiento,
+  includeHelmet = true,
+}) {
+  const {
+    canonical,
+    description,
+    ogImage,
+    ogImageAlt,
+    ogLocale,
+    ogType,
+    siteName,
+    title,
+    twitterCard,
+  } = PANEL_JAPONES_SEO;
 
   const sliderSettings = useMemo(
     () => ({
@@ -526,7 +420,8 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
 
   return (
     <Page>
-      <Helmet>
+      {includeHelmet && (
+        <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="robots" content="index,follow" />
@@ -534,8 +429,8 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
 
         {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
+        <meta property="og:type" content={ogType} />
+        <meta property="og:locale" content={ogLocale} />
         <meta property="og:url" content={canonical} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
@@ -543,15 +438,18 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
         <meta property="og:image:alt" content={ogImageAlt} />
 
         {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:card" content={twitterCard} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:image:alt" content={ogImageAlt} />
 
         {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(PANEL_JAPONES_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       {/* HERO */}
       <ServiceHero
@@ -723,8 +621,8 @@ export default function PanelJapones({ onOpenAsesoramiento }) {
           </SectionTop>
 
           <FaqAccordion
-            items={FAQ_ITEMS}
-            withSchema={true}
+            items={PANEL_JAPONES_FAQ_ITEMS}
+            withSchema={includeHelmet}
             canonicalUrl={canonical}
             defaultOpenIndex={-1}
             ariaLabel="Preguntas frecuentes sobre panel japonés a medida"
