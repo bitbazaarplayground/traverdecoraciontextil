@@ -9,6 +9,9 @@ const PRERENDER_PROOF_PATHS = [
   "/venecianas",
   "/limpieza",
   "/mosquiteras",
+  "/automatizacion",
+  "/automatizacion/completa",
+  "/automatizacion/individual",
 ];
 const prerenderProofRoutes = PRERENDER_PROOF_PATHS.map((path) =>
   PUBLIC_ROUTES.find((route) => route.path === path)

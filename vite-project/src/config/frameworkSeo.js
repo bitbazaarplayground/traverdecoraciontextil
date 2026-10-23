@@ -1,4 +1,12 @@
 import {
+  AUTOMATIZACION_COMPLETA_SEO,
+  AUTOMATIZACION_INDIVIDUAL_SEO,
+  AUTOMATIZACION_SEO,
+  getAutomatizacionCompletaMetaDescriptors,
+  getAutomatizacionIndividualMetaDescriptors,
+  getAutomatizacionMetaDescriptors,
+} from "./automatizacionSeo.js";
+import {
   getCortinasMetaDescriptors,
   CORTINAS_SEO,
 } from "./cortinasSeo.js";
@@ -31,6 +39,21 @@ import {
  * so its existing react-helmet-async behavior remains unchanged.
  */
 const FRAMEWORK_SEO_ROUTES = [
+  {
+    path: AUTOMATIZACION_SEO.path,
+    seo: AUTOMATIZACION_SEO,
+    getMetaDescriptors: getAutomatizacionMetaDescriptors,
+  },
+  {
+    path: AUTOMATIZACION_COMPLETA_SEO.path,
+    seo: AUTOMATIZACION_COMPLETA_SEO,
+    getMetaDescriptors: getAutomatizacionCompletaMetaDescriptors,
+  },
+  {
+    path: AUTOMATIZACION_INDIVIDUAL_SEO.path,
+    seo: AUTOMATIZACION_INDIVIDUAL_SEO,
+    getMetaDescriptors: getAutomatizacionIndividualMetaDescriptors,
+  },
   {
     path: HOME_SEO.path,
     seo: HOME_SEO,

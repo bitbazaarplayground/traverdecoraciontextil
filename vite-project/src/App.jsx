@@ -99,7 +99,10 @@ export default function App({
           <Route
             path="/automatizacion"
             element={
-              <Automatizacion onOpenAsesoramiento={onOpenAsesoramiento} />
+              <Automatizacion
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
             }
           />
           <Route
@@ -107,6 +110,7 @@ export default function App({
             element={
               <AutomatizacionCompleta
                 onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
               />
             }
           />
@@ -115,6 +119,7 @@ export default function App({
             element={
               <AutomatizacionIndividual
                 onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
               />
             }
           />

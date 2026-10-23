@@ -5,7 +5,12 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled, { css, keyframes } from "styled-components";
 import AutomationScaleSection from "../../components/automatizacion/AutomationScaleSection";
-import { CONTACT } from "../../config/contact";
+import {
+  AUTOMATIZACION_INDIVIDUAL_FAQ_ITEMS,
+  AUTOMATIZACION_INDIVIDUAL_HERO_PRELOAD,
+  AUTOMATIZACION_INDIVIDUAL_LEGACY_PAGE_JSON_LD,
+  AUTOMATIZACION_INDIVIDUAL_SEO,
+} from "../../config/automatizacionSeo.js";
 import { trackEvent } from "../../lib/analytics";
 import StickyCtaButton from "../../mobile/StickyCtaButton";
 // IMAGES
@@ -586,18 +591,20 @@ const PackFine = styled.p`
 export default function AutomatizacionIndividual({
   contactTo = "/contact",
   onOpenAsesoramiento,
+  includeHelmet = true,
 }) {
-  const baseUrl = "https://www.traverdecoraciontextil.es";
-  const canonical = `${baseUrl}/automatizacion/individual`;
-  const siteName = CONTACT.siteName;
-
-  const title =
-    "Automatización individual | Cortinas, screens y toldos motorizados en Castellón y Valencia";
-  const description =
-    "Automatiza por zonas: cortinas y estores motorizados, screens y persianas, o toldos con WiFi y app. Instalación profesional, configuración guiada y soporte en Castellón y Valencia.";
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt =
-    "Automatización toldos y cortinas — Traver Decoración Textil";
+  const {
+    canonical,
+    description,
+    ogImage,
+    ogImageAlt,
+    ogLocale,
+    ogType,
+    robots,
+    siteName,
+    title,
+    twitterCard,
+  } = AUTOMATIZACION_INDIVIDUAL_SEO;
 
   const sections = useMemo(
     () => [
@@ -665,67 +672,6 @@ export default function AutomatizacionIndividual({
     []
   );
 
-  const faqs = useMemo(
-    () => [
-      {
-        q: "¿Puedo empezar solo con una estancia y ampliar después?",
-        a: "Sí. Puedes motorizar una cortina, un screen o un toldo en una sola estancia y ampliar más adelante. Diseñamos la base para que futuras automatizaciones queden integradas y fáciles de usar.",
-        aText:
-          "Sí. Puedes motorizar una cortina, un screen o un toldo en una sola estancia y ampliar más adelante. Diseñamos la base para que futuras automatizaciones queden integradas y fáciles de usar.",
-      },
-      {
-        q: "¿Necesito hacer obra para motorizar cortinas o persianas?",
-        a: "En la mayoría de casos no es necesaria obra. Buscamos una instalación limpia y discreta, cuidando cableado, remates y ajustes para que solo se note el resultado.",
-        aText:
-          "En la mayoría de casos no es necesaria obra. Buscamos una instalación limpia y discreta, cuidando cableado, remates y ajustes para que solo se note el resultado.",
-      },
-      {
-        q: "¿Se controla con mando, con móvil o con ambos?",
-        a: "Depende del sistema elegido. Podemos configurar control por mando, por app móvil o ambas opciones. En la visita te recomendamos la solución adecuada según uso y presupuesto.",
-        aText:
-          "Depende del sistema elegido. Podemos configurar control por mando, por app móvil o ambas opciones. En la visita te recomendamos la solución adecuada según uso y presupuesto.",
-      },
-      {
-        q: "¿Cuánto tarda la instalación?",
-        a: "En la mayoría de proyectos de automatización por estancia, la instalación se realiza en una sola visita. El tiempo final depende de las medidas y del número de elementos a motorizar.",
-        aText:
-          "En la mayoría de proyectos de automatización por estancia, la instalación se realiza en una sola visita. El tiempo final depende de las medidas y del número de elementos a motorizar.",
-      },
-    ],
-    []
-  );
-
-  const webPageJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": `${canonical}#webpage`,
-    url: canonical,
-    name: title,
-    description,
-    inLanguage: "es-ES",
-    isPartOf: {
-      "@type": "WebSite",
-      "@id": `${baseUrl}/#website`,
-      url: `${baseUrl}/`,
-      name: siteName,
-    },
-    about: {
-      "@type": "Service",
-      name: "Automatización individual",
-      areaServed: CONTACT.areaServed?.map((name) => ({
-        "@type": "AdministrativeArea",
-        name,
-      })),
-      provider: {
-        "@type": "Organization",
-        name: siteName,
-        telephone: CONTACT.phoneLandline,
-        email: CONTACT.email,
-        url: `${baseUrl}/`,
-      },
-    },
-  };
-
   const handleOpenPack = (e, packLabel, source) => {
     trackEvent("open_quick_enquiry", {
       source,
@@ -740,40 +686,42 @@ export default function AutomatizacionIndividual({
 
   return (
     <Page>
-      <Helmet>
+      {includeHelmet && (
+        <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonical} />
-        <meta name="robots" content="index,follow" />
+          <meta name="robots" content={robots} />
 
         <link
           rel="preload"
           as="image"
-          href={heroImages[800]}
-          imageSrcSet={getSrcSet(heroImages)}
-          imageSizes={HERO_SIZES}
+          href={AUTOMATIZACION_INDIVIDUAL_HERO_PRELOAD.href}
+          imageSrcSet={AUTOMATIZACION_INDIVIDUAL_HERO_PRELOAD.imageSrcSet}
+          imageSizes={AUTOMATIZACION_INDIVIDUAL_HERO_PRELOAD.imageSizes}
           fetchpriority="high"
         />
 
         <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
+          <meta property="og:type" content={ogType} />
+          <meta property="og:locale" content={ogLocale} />
         <meta property="og:url" content={canonical} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:image:alt" content={ogImageAlt} />
 
-        <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:card" content={twitterCard} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:image:alt" content={ogImageAlt} />
 
-        <script type="application/ld+json">
-          {JSON.stringify(webPageJsonLd)}
-        </script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(AUTOMATIZACION_INDIVIDUAL_LEGACY_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       <Hero>
         <HeroBg aria-hidden="true">
@@ -931,7 +879,7 @@ export default function AutomatizacionIndividual({
           <AutomationScaleSection />
         </Wrap>
         <AutomationFaq
-          items={faqs}
+          items={AUTOMATIZACION_INDIVIDUAL_FAQ_ITEMS}
           kicker="Dudas rápidas"
           title={
             <>
@@ -939,7 +887,7 @@ export default function AutomatizacionIndividual({
             </>
           }
           lead="Resolvemos lo importante antes de la visita."
-          withSchema
+          withSchema={includeHelmet}
           canonicalUrl={canonical}
         />
       </Main>
