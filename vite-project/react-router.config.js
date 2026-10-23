@@ -8,6 +8,7 @@ const PRERENDER_PROOF_PATHS = [
   "/panel-japones",
   "/venecianas",
   "/limpieza",
+  "/mosquiteras",
 ];
 const prerenderProofRoutes = PRERENDER_PROOF_PATHS.map((path) =>
   PUBLIC_ROUTES.find((route) => route.path === path)

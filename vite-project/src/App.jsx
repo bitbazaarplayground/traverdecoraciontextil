@@ -167,7 +167,12 @@ export default function App({
 
           <Route
             path="/mosquiteras"
-            element={<Mosquiteras onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Mosquiteras
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
 
           <Route

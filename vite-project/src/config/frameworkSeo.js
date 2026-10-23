@@ -8,6 +8,10 @@ import {
   LIMPIEZA_SEO,
 } from "./limpiezaSeo.js";
 import {
+  getMosquiterasMetaDescriptors,
+  MOSQUITERAS_SEO,
+} from "./mosquiterasSeo.js";
+import {
   getPanelJaponesMetaDescriptors,
   PANEL_JAPONES_SEO,
 } from "./panelJaponesSeo.js";
@@ -61,6 +65,11 @@ const FRAMEWORK_SEO_ROUTES = [
     path: LIMPIEZA_SEO.path,
     seo: LIMPIEZA_SEO,
     getMetaDescriptors: getLimpiezaMetaDescriptors,
+  },
+  {
+    path: MOSQUITERAS_SEO.path,
+    seo: MOSQUITERAS_SEO,
+    getMetaDescriptors: getMosquiterasMetaDescriptors,
   },
 ];
 

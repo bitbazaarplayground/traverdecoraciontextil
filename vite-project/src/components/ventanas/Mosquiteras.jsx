@@ -6,6 +6,12 @@ import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import { CONTACT } from "../../config/contact";
+import {
+  MOSQUITERAS_FAQ_ITEMS,
+  MOSQUITERAS_HERO_PRELOAD,
+  MOSQUITERAS_PAGE_JSON_LD,
+  MOSQUITERAS_SEO,
+} from "../../config/mosquiterasSeo.js";
 import { trackEvent } from "../../lib/analytics";
 
 import FaqAccordion from "../../components/faq/FaqAccordion";
@@ -182,10 +188,6 @@ function readHashTabId(hash) {
     .replace("#", "")
     .trim();
   return clean || null;
-}
-
-function getCanonical(baseUrl, pathname) {
-  return `${baseUrl}${pathname}`;
 }
 
 /* =========================
@@ -1180,21 +1182,26 @@ const GhostCta = styled.a`
    Component
 ========================= */
 
-export default function Mosquiteras({ onOpenAsesoramiento }) {
+export default function Mosquiteras({
+  onOpenAsesoramiento,
+  includeHelmet = true,
+}) {
   const location = useLocation();
 
-  const baseUrl = "https://www.traverdecoraciontextil.es";
-  const canonical = getCanonical(baseUrl, location.pathname);
-
-  const siteName = CONTACT.siteName;
-
-  const title = `Mosquiteras a medida en Castellón | ${siteName}`;
-  const description =
-    "Mosquiteras a medida en Castellón y provincia para ventanas, balconeras y puertas. Instalación profesional; también atendemos proyectos en Valencia.";
-
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt =
-    "Mosquiteras a medida en Castellón — Traver Decoración Textil";
+  const {
+    canonical,
+    description,
+    ogImage,
+    ogImageAlt,
+    ogImageHeight,
+    ogImageWidth,
+    ogLocale,
+    ogType,
+    robots,
+    siteName,
+    title,
+    twitterCard,
+  } = MOSQUITERAS_SEO;
 
   const tabs = useMemo(
     () => [
@@ -1260,7 +1267,7 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
     []
   );
 
-  const initialFromHash = readHashTabId(location.hash);
+  const initialFromHash = includeHelmet ? readHashTabId(location.hash) : null;
 
   const [active, setActive] = useState(() => {
     const match =
@@ -1305,60 +1312,6 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
 
     return () => window.cancelAnimationFrame(frame);
   }, [location.hash, tabs]);
-
-  const businessId = `${baseUrl}/#business`;
-
-  const jsonLd = useMemo(
-    () => [
-      {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "@id": `${canonical}#webpage`,
-        url: canonical,
-        name: title,
-        description,
-        inLanguage: "es-ES",
-        isPartOf: { "@id": `${baseUrl}/#website` },
-        about: { "@id": businessId },
-        primaryImageOfPage: { "@type": "ImageObject", url: ogImage },
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "Service",
-        "@id": `${canonical}#service`,
-        name: "Mosquiteras a medida en Castellón",
-        serviceType: "Instalación de mosquiteras",
-        provider: { "@id": businessId },
-        areaServed: [
-          { "@type": "City", name: "Castellón de la Plana" },
-          { "@type": "AdministrativeArea", name: "Provincia de Castellón" },
-          { "@type": "AdministrativeArea", name: "Valencia" },
-        ],
-        url: canonical,
-        description,
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "@id": `${canonical}#breadcrumbs`,
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: "Inicio",
-            item: `${baseUrl}/`,
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            name: "Mosquiteras",
-            item: canonical,
-          },
-        ],
-      },
-    ],
-    [baseUrl, businessId, canonical, description, ogImage, title]
-  );
 
   const complementosItems = useMemo(
     () => [
@@ -1435,79 +1388,47 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
     trackEvent("contact_click", { source, method, pack: PACK_LABEL });
   };
 
-  const FAQ_ITEMS = useMemo(
-    () => [
-      {
-        q: "¿Qué tipo de mosquitera es mejor para mi ventana o puerta?",
-        a: "Depende del tipo de apertura, del espacio disponible y de la frecuencia de uso. Las enrollables suelen funcionar muy bien en ventanas de uso diario; las correderas, en balconeras y ventanales; las plisadas, en accesos al exterior; y las fijas, en huecos donde no necesitas apertura de la mosquitera.",
-        aText:
-          "Depende del tipo de apertura, del espacio disponible y de la frecuencia de uso. Las enrollables suelen funcionar muy bien en ventanas de uso diario; las correderas, en balconeras y ventanales; las plisadas, en accesos al exterior; y las fijas, en huecos donde no necesitas apertura de la mosquitera.",
-      },
-      {
-        q: "¿Se pueden instalar sin hacer obra?",
-        a: "Sí. En la mayoría de los casos la instalación es limpia, rápida y sin obra, adaptando el sistema al hueco y al tipo de carpintería existente.",
-        aText:
-          "Sí. En la mayoría de los casos la instalación es limpia, rápida y sin obra, adaptando el sistema al hueco y al tipo de carpintería existente.",
-      },
-      {
-        q: "¿Son compatibles con persianas y ventanas oscilobatientes?",
-        a: "En muchos casos sí, pero depende del espacio disponible y del sistema existente. Por eso recomendamos revisar cada hueco antes de decidir la solución final.",
-        aText:
-          "En muchos casos sí, pero depende del espacio disponible y del sistema existente. Por eso recomendamos revisar cada hueco antes de decidir la solución final.",
-      },
-      {
-        q: "¿Qué mantenimiento necesitan?",
-        a: "Muy poco. Normalmente basta con una limpieza suave periódica para retirar polvo y mantener la malla en buen estado. Te indicamos también el sistema más adecuado si hay mascotas o uso intensivo.",
-        aText:
-          "Muy poco. Normalmente basta con una limpieza suave periódica para retirar polvo y mantener la malla en buen estado. Te indicamos también el sistema más adecuado si hay mascotas o uso intensivo.",
-      },
-      {
-        q: "¿Instaláis mosquiteras en Castellón y provincia?",
-        a: "Sí. Nuestra zona principal de trabajo es Castellón y provincia. Realizamos medición e instalación profesional para asegurar un ajuste preciso, un funcionamiento cómodo y unos remates limpios. También podemos valorar proyectos en Valencia.",
-        aText:
-          "Sí. Nuestra zona principal de trabajo es Castellón y provincia. Realizamos medición e instalación profesional para asegurar un ajuste preciso, un funcionamiento cómodo y unos remates limpios. También podemos valorar proyectos en Valencia.",
-      },
-    ],
-    []
-  );
-
   return (
     <Page>
-      <Helmet>
+      {includeHelmet && (
+        <Helmet>
         <title>{title}</title>
 
         <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
+          <meta name="robots" content={robots} />
         <link rel="canonical" href={canonical} />
 
         <link
           rel="preload"
           as="image"
-          href={hero_1280}
-          imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-          imageSizes={HERO_SIZES}
+          href={MOSQUITERAS_HERO_PRELOAD.href}
+          imageSrcSet={MOSQUITERAS_HERO_PRELOAD.imageSrcSet}
+          imageSizes={MOSQUITERAS_HERO_PRELOAD.imageSizes}
           fetchPriority="high"
         />
 
         <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
+          <meta property="og:type" content={ogType} />
+          <meta property="og:locale" content={ogLocale} />
         <meta property="og:url" content={canonical} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:image:alt" content={ogImageAlt} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
+          <meta property="og:image:width" content={ogImageWidth} />
+          <meta property="og:image:height" content={ogImageHeight} />
 
-        <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:card" content={twitterCard} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:image:alt" content={ogImageAlt} />
 
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(MOSQUITERAS_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       <Hero>
         <HeroMedia aria-hidden="true">
@@ -1821,8 +1742,8 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
           </SectionTop>
 
           <FaqAccordion
-            items={FAQ_ITEMS}
-            withSchema={true}
+            items={MOSQUITERAS_FAQ_ITEMS}
+            withSchema={includeHelmet}
             canonicalUrl={canonical}
             defaultOpenIndex={-1}
             ariaLabel="Preguntas frecuentes sobre mosquiteras a medida"
