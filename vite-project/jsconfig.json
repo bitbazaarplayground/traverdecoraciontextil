@@ -6,9 +6,10 @@
     "moduleResolution": "Bundler",
     "target": "ES2020",
     "baseUrl": ".",
+    "rootDirs": [".", ".react-router/types"],
     "paths": {
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "vite.config.*"]
+  "include": ["src", "vite.config.*", ".react-router/types/**/*"]
 }

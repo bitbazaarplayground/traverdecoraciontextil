@@ -7,6 +7,10 @@ import styled from "styled-components";
 
 import { CONTACT } from "../config/contact";
 import {
+  CONTACT_PAGE_JSON_LD,
+  CONTACT_SEO,
+} from "../config/remainingPublicSeo";
+import {
   trackCtaClick,
   trackMapClick,
   trackOpenQuickEnquiry,
@@ -277,95 +281,12 @@ const StaticItem = styled.div`
   border: 1px solid rgba(17, 17, 17, 0.06);
 `;
 
-export default function ContactPage({ onOpenAsesoramiento }) {
+export default function ContactPage({
+  onOpenAsesoramiento,
+  includeHelmet = true,
+}) {
   const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
-
-  // SEO base
-  const baseUrl = "https://www.traverdecoraciontextil.es";
-  const canonical = `${baseUrl}/contact`;
-
-  const siteName = CONTACT.siteName;
-
-  // SEO
-  const title = "Contacto | Cortinas, toldos y automatización en Castellón";
-  const description =
-    "Contacta con Traver Decoración Textil para cortinas, toldos y automatización en Castellón. Asesoramiento, medición e instalación profesional sin compromiso.";
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt = `Contacto ${CONTACT.siteName} en ${CONTACT.address.addressLocality} (${CONTACT.address.addressRegion})`;
-
-  const telephone = CONTACT.phoneLandline;
-  const whatsappNumber = CONTACT.whatsappNumber;
-  const whatsappUrl = CONTACT.whatsappUrl;
-
-  const address = {
-    "@type": "PostalAddress",
-    ...CONTACT.address,
-  };
-
-  const jsonLd = useMemo(() => {
-    const contactPageJsonLd = {
-      "@context": "https://schema.org",
-      "@type": "ContactPage",
-      "@id": `${canonical}#contactpage`,
-      url: canonical,
-      name: title,
-      description,
-      inLanguage: "es-ES",
-      isPartOf: {
-        "@id": `${baseUrl}/#website`,
-      },
-      about: {
-        "@id": `${baseUrl}/#business`,
-      },
-    };
-
-    const localBusinessJsonLd = {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "@id": `${baseUrl}/#business`,
-      name: siteName,
-      url: `${baseUrl}/`,
-      telephone,
-      address,
-      contactPoint: [
-        {
-          "@type": "ContactPoint",
-          telephone,
-          contactType: "customer support",
-          availableLanguage: ["es"],
-        },
-        {
-          "@type": "ContactPoint",
-          telephone: `+${whatsappNumber.slice(0, 2)} ${whatsappNumber.slice(
-            2,
-            5
-          )} ${whatsappNumber.slice(5, 8)} ${whatsappNumber.slice(8)}`,
-          contactType: "customer support",
-          availableLanguage: ["es"],
-          url: whatsappUrl,
-        },
-      ],
-      sameAs: [CONTACT.facebookUrl],
-      areaServed: [
-        { "@type": "City", name: "Almassora" },
-        { "@type": "City", name: "Castellón de la Plana" },
-        { "@type": "AdministrativeArea", name: "Castellón" },
-      ],
-    };
-
-    return [contactPageJsonLd, localBusinessJsonLd];
-  }, [
-    canonical,
-    title,
-    description,
-    baseUrl,
-    siteName,
-    telephone,
-    address,
-    whatsappNumber,
-    whatsappUrl,
-  ]);
 
   // Map pack query param to friendly label (kept)
   const packLabel = useMemo(() => {
@@ -410,35 +331,36 @@ export default function ContactPage({ onOpenAsesoramiento }) {
 
   return (
     <Page>
-      <Helmet>
-        <title>{title}</title>
+      {includeHelmet && (
+        <Helmet>
+          <title>{CONTACT_SEO.title}</title>
 
-        <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={canonical} />
+          <meta name="description" content={CONTACT_SEO.description} />
+          <meta name="robots" content={CONTACT_SEO.robots} />
+          <link rel="canonical" href={CONTACT_SEO.canonical} />
 
-        {/* Open Graph */}
-        <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:alt" content={ogImageAlt} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
+          <meta property="og:site_name" content={CONTACT_SEO.siteName} />
+          <meta property="og:type" content={CONTACT_SEO.ogType} />
+          <meta property="og:locale" content={CONTACT_SEO.ogLocale} />
+          <meta property="og:url" content={CONTACT_SEO.canonical} />
+          <meta property="og:title" content={CONTACT_SEO.title} />
+          <meta property="og:description" content={CONTACT_SEO.description} />
+          <meta property="og:image" content={CONTACT_SEO.ogImage} />
+          <meta property="og:image:alt" content={CONTACT_SEO.ogImageAlt} />
+          <meta property="og:image:width" content={CONTACT_SEO.ogImageWidth} />
+          <meta property="og:image:height" content={CONTACT_SEO.ogImageHeight} />
 
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta name="twitter:image:alt" content={ogImageAlt} />
+          <meta name="twitter:card" content={CONTACT_SEO.twitterCard} />
+          <meta name="twitter:title" content={CONTACT_SEO.title} />
+          <meta name="twitter:description" content={CONTACT_SEO.description} />
+          <meta name="twitter:image" content={CONTACT_SEO.ogImage} />
+          <meta name="twitter:image:alt" content={CONTACT_SEO.ogImageAlt} />
 
-        {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(CONTACT_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       <Wrap>
         <Header>

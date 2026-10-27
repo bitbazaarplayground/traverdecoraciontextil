@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../config/contact";
+import { AVISO_LEGAL_SEO } from "../config/remainingPublicSeo";
 
 /* =========================
    Helpers
@@ -10,7 +11,11 @@ import { CONTACT } from "../config/contact";
 
 function useCanonicalUrl() {
   const { pathname, search } = useLocation();
-  const base = import.meta?.env?.VITE_SITE_URL || window.location.origin;
+  const base =
+    import.meta?.env?.VITE_SITE_URL ||
+    (typeof window !== "undefined"
+      ? window.location.origin
+      : "https://www.traverdecoraciontextil.es");
   return `${base}${pathname}${search}`;
 }
 
@@ -18,13 +23,12 @@ function useCanonicalUrl() {
    Page
 ========================= */
 
-export default function AvisoLegal() {
+export default function AvisoLegal({ includeHelmet = true }) {
   const canonical = useCanonicalUrl();
   const siteName = CONTACT.siteName;
 
-  const metaTitle = `Aviso legal | ${siteName}`;
-  const metaDescription =
-    "Aviso legal del sitio web de Traver Decoración Textil. Información del titular, condiciones de uso y datos de contacto.";
+  const metaTitle = AVISO_LEGAL_SEO.title;
+  const metaDescription = AVISO_LEGAL_SEO.description;
 
   // Datos del titular (autónomo)
   const titular = "TRAVER TOLDOS Y ENROLLABLES SL";
@@ -32,35 +36,36 @@ export default function AvisoLegal() {
 
   return (
     <Page>
-      <Helmet>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={canonical} />
+      {includeHelmet && (
+        <Helmet>
+          <title>{metaTitle}</title>
+          <meta name="description" content={metaDescription} />
+          <link rel="canonical" href={canonical} />
 
-        <meta property="og:title" content={metaTitle} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={canonical} />
+          <meta property="og:title" content={metaTitle} />
+          <meta property="og:description" content={metaDescription} />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content={canonical} />
 
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={metaTitle} />
-        <meta name="twitter:description" content={metaDescription} />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:title" content={metaTitle} />
+          <meta name="twitter:description" content={metaDescription} />
 
-        {/* JSON-LD: WebPage */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: metaTitle,
-            url: canonical,
-            isPartOf: {
-              "@type": "WebSite",
-              name: siteName,
-              url: import.meta?.env?.VITE_SITE_URL || window.location.origin,
-            },
-          })}
-        </script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebPage",
+              name: metaTitle,
+              url: canonical,
+              isPartOf: {
+                "@type": "WebSite",
+                name: siteName,
+                url: import.meta?.env?.VITE_SITE_URL || window.location.origin,
+              },
+            })}
+          </script>
+        </Helmet>
+      )}
 
       <Hero>
         <HeroInner>

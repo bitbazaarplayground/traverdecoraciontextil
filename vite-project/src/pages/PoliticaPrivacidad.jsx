@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../config/contact";
+import { POLITICA_PRIVACIDAD_SEO } from "../config/remainingPublicSeo";
 
 function useCanonicalUrl() {
   const { pathname, search } = useLocation();
@@ -13,13 +14,12 @@ function useCanonicalUrl() {
   return `${base}${pathname}${search}`;
 }
 
-export default function PoliticaPrivacidad() {
+export default function PoliticaPrivacidad({ includeHelmet = true }) {
   const canonical = useCanonicalUrl();
   const siteName = CONTACT.siteName;
 
-  const metaTitle = `Política de privacidad | ${siteName}`;
-  const metaDescription =
-    "Información sobre el tratamiento de datos personales, finalidades, base legal, conservación, destinatarios y derechos del usuario.";
+  const metaTitle = POLITICA_PRIVACIDAD_SEO.title;
+  const metaDescription = POLITICA_PRIVACIDAD_SEO.description;
 
   const legal = {
     holder: "TRAVER TOLDOS Y ENROLLABLES SL",
@@ -32,38 +32,42 @@ export default function PoliticaPrivacidad() {
     phone: CONTACT.phoneLandline,
   };
 
-  const webPageJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: metaTitle,
-    url: canonical,
-    isPartOf: {
-      "@type": "WebSite",
-      name: siteName,
-      url: import.meta?.env?.VITE_SITE_URL || window.location.origin,
-    },
-  };
+  const webPageJsonLd = includeHelmet
+    ? {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        name: metaTitle,
+        url: canonical,
+        isPartOf: {
+          "@type": "WebSite",
+          name: siteName,
+          url: import.meta?.env?.VITE_SITE_URL || window.location.origin,
+        },
+      }
+    : null;
   const LAST_UPDATED = "13/04/2026";
   return (
     <Page>
-      <Helmet>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={canonical} />
+      {includeHelmet && (
+        <Helmet>
+          <title>{metaTitle}</title>
+          <meta name="description" content={metaDescription} />
+          <link rel="canonical" href={canonical} />
 
-        <meta property="og:title" content={metaTitle} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={canonical} />
+          <meta property="og:title" content={metaTitle} />
+          <meta property="og:description" content={metaDescription} />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content={canonical} />
 
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={metaTitle} />
-        <meta name="twitter:description" content={metaDescription} />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:title" content={metaTitle} />
+          <meta name="twitter:description" content={metaDescription} />
 
-        <script type="application/ld+json">
-          {JSON.stringify(webPageJsonLd)}
-        </script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(webPageJsonLd)}
+          </script>
+        </Helmet>
+      )}
 
       <Hero>
         <Container>

@@ -12,6 +12,12 @@ const PRERENDER_PROOF_PATHS = [
   "/automatizacion",
   "/automatizacion/completa",
   "/automatizacion/individual",
+  "/propuestas",
+  "/nosotros",
+  "/contact",
+  "/aviso-legal",
+  "/politica-privacidad",
+  "/politica-cookies",
 ];
 const prerenderProofRoutes = PRERENDER_PROOF_PATHS.map((path) =>
   PUBLIC_ROUTES.find((route) => route.path === path)

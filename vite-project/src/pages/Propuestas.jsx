@@ -1,12 +1,15 @@
 // src/pages/Propuestas.jsx
-import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import styled from "styled-components";
 import FaqAccordion from "../components/faq/FaqAccordion";
 import ServiceHero from "../components/heroes/ServiceHero";
 
 import ProposalGuidanceSectionAlt from "../components/propuestas/ProposalGuidanceSectionAlt";
-import { CONTACT } from "../config/contact";
+import {
+  PROPUESTAS_FAQ_ITEMS,
+  PROPUESTAS_PAGE_JSON_LD,
+  PROPUESTAS_SEO,
+} from "../config/remainingPublicSeo";
 import { trackCtaClick, trackOpenQuickEnquiry } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
 /* =========================
@@ -534,39 +537,6 @@ const TrustCTA = styled.button`
    FAQ
 ========================= */
 
-const FAQ_ITEMS = [
-  {
-    q: "¿Qué incluye exactamente una visita técnica?",
-    a: "Revisamos el espacio, tomamos medidas, valoramos luz, privacidad, uso diario y estilo, y te orientamos sobre tejidos, sistemas y acabados para proponerte una solución realista.",
-    aText:
-      "Revisamos el espacio, tomamos medidas, valoramos luz, privacidad, uso diario y estilo, y te orientamos sobre tejidos, sistemas y acabados para proponerte una solución realista.",
-  },
-  {
-    q: "¿Puedo empezar por una sola estancia?",
-    a: "Sí, y es una forma excelente de comprobar el resultado. Mucha gente empieza por salón o dormitorio y luego unifica el resto con la misma línea estética.",
-    aText:
-      "Sí, y es una forma excelente de comprobar el resultado. Mucha gente empieza por salón o dormitorio y luego unifica el resto con la misma línea estética.",
-  },
-  {
-    q: "¿La automatización es solo “domótica”?",
-    a: "No. Es confort y protección: controlar luz, sombra y privacidad sin esfuerzo. Si quieres, lo dejamos automático; si prefieres, lo controlas tú desde mando, app o escenas.",
-    aText:
-      "No. Es confort y protección: controlar luz, sombra y privacidad sin esfuerzo. Si quieres, lo dejamos automático; si prefieres, lo controlas tú desde mando, app o escenas.",
-  },
-  {
-    q: "¿En qué zonas trabajáis?",
-    a: "Principalmente Castellón y alrededores, y proyectos seleccionados en Valencia según alcance. Cuéntanos tu ubicación y te diremos disponibilidad real.",
-    aText:
-      "Principalmente Castellón y alrededores, y proyectos seleccionados en Valencia según alcance. Cuéntanos tu ubicación y te diremos disponibilidad real.",
-  },
-  {
-    q: "¿Esto son precios cerrados?",
-    a: "No. Son propuestas orientativas para decidir el enfoque. Cada vivienda cambia por medidas, tejidos, sistemas y acabados. Te damos una propuesta ajustada tras la visita técnica.",
-    aText:
-      "No. Son propuestas orientativas para decidir el enfoque. Cada vivienda cambia por medidas, tejidos, sistemas y acabados. Te damos una propuesta ajustada tras la visita técnica.",
-  },
-];
-
 /* =========================
    DATA
 ========================= */
@@ -706,121 +676,42 @@ const TILES = [
    COMPONENT
 ========================= */
 
-export default function Propuestas({ onOpenAsesoramiento }) {
-  const baseUrl = "https://www.traverdecoraciontextil.es";
-  const canonical = `${baseUrl}/propuestas`;
-  const siteName = CONTACT.siteName || "Traver Decoración Textil";
-
-  const title =
-    "Propuestas a medida de cortinas, toldos y automatización en Castellón y Valencia";
-  const description =
-    "Explora propuestas a medida para dormitorio, salón/comedor y confort con automatización. Cortinas, toldos, tejidos y sistemas con asesoramiento, medición e instalación profesional en Castellón y Valencia.";
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt = "Propuestas a medida de Traver Decoración Textil";
-
-  const packItems = useMemo(
-    () => [
-      {
-        name: "Descanso bien resuelto (Dormitorio)",
-        url: `${canonical}#pack-dormitorio`,
-      },
-      {
-        name: "Espacio que se vive (Salón / Comedor)",
-        url: `${canonical}#pack-salon`,
-      },
-      {
-        name: "La casa funciona sola (Confort + Automatización)",
-        url: `${canonical}#pack-automatizacion`,
-      },
-    ],
-    [canonical]
-  );
-
-  const jsonLd = useMemo(() => {
-    const itemList = {
-      "@type": "ItemList",
-      itemListOrder: "https://schema.org/ItemListOrderAscending",
-      numberOfItems: packItems.length,
-      itemListElement: packItems.map((p, idx) => ({
-        "@type": "ListItem",
-        position: idx + 1,
-        name: p.name,
-        url: p.url,
-      })),
-    };
-
-    const collectionPageJsonLd = {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "@id": `${canonical}#collectionpage`,
-      url: canonical,
-      name: title,
-      description,
-      inLanguage: "es-ES",
-      isPartOf: {
-        "@type": "WebSite",
-        "@id": `${baseUrl}/#website`,
-        url: `${baseUrl}/`,
-        name: siteName,
-      },
-      about: { "@id": `${baseUrl}/#business` },
-      mainEntity: itemList,
-      primaryImageOfPage: {
-        "@type": "ImageObject",
-        url: ogImage,
-      },
-    };
-
-    const breadcrumbJsonLd = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "@id": `${canonical}#breadcrumb`,
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Inicio",
-          item: `${baseUrl}/`,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Propuestas",
-          item: canonical,
-        },
-      ],
-    };
-
-    return [collectionPageJsonLd, breadcrumbJsonLd];
-  }, [baseUrl, canonical, description, ogImage, packItems, siteName, title]);
+export default function Propuestas({
+  onOpenAsesoramiento,
+  includeHelmet = true,
+}) {
 
   return (
     <Page>
-      <Helmet>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={canonical} />
+      {includeHelmet && (
+        <Helmet>
+          <title>{PROPUESTAS_SEO.title}</title>
+          <meta name="description" content={PROPUESTAS_SEO.description} />
+          <meta name="robots" content={PROPUESTAS_SEO.robots} />
+          <link rel="canonical" href={PROPUESTAS_SEO.canonical} />
 
-        <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:alt" content={ogImageAlt} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
+          <meta property="og:site_name" content={PROPUESTAS_SEO.siteName} />
+          <meta property="og:type" content={PROPUESTAS_SEO.ogType} />
+          <meta property="og:locale" content={PROPUESTAS_SEO.ogLocale} />
+          <meta property="og:url" content={PROPUESTAS_SEO.canonical} />
+          <meta property="og:title" content={PROPUESTAS_SEO.title} />
+          <meta property="og:description" content={PROPUESTAS_SEO.description} />
+          <meta property="og:image" content={PROPUESTAS_SEO.ogImage} />
+          <meta property="og:image:alt" content={PROPUESTAS_SEO.ogImageAlt} />
+          <meta property="og:image:width" content={PROPUESTAS_SEO.ogImageWidth} />
+          <meta property="og:image:height" content={PROPUESTAS_SEO.ogImageHeight} />
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta name="twitter:image:alt" content={ogImageAlt} />
+          <meta name="twitter:card" content={PROPUESTAS_SEO.twitterCard} />
+          <meta name="twitter:title" content={PROPUESTAS_SEO.title} />
+          <meta name="twitter:description" content={PROPUESTAS_SEO.description} />
+          <meta name="twitter:image" content={PROPUESTAS_SEO.ogImage} />
+          <meta name="twitter:image:alt" content={PROPUESTAS_SEO.ogImageAlt} />
 
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(PROPUESTAS_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       <ServiceHero
         eyebrow="Soluciones · Traver Decoración Textil"
@@ -1002,9 +893,9 @@ export default function Propuestas({ onOpenAsesoramiento }) {
           </SectionTop>
 
           <FaqAccordion
-            items={FAQ_ITEMS}
-            withSchema={true}
-            canonicalUrl={canonical}
+            items={PROPUESTAS_FAQ_ITEMS}
+            withSchema={includeHelmet}
+            canonicalUrl={PROPUESTAS_SEO.canonical}
             defaultOpenIndex={-1}
             ariaLabel="Preguntas frecuentes sobre propuestas"
           />

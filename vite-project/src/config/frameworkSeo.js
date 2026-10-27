@@ -20,6 +20,20 @@ import {
   MOSQUITERAS_SEO,
 } from "./mosquiterasSeo.js";
 import {
+  AVISO_LEGAL_SEO,
+  CONTACT_SEO,
+  getAvisoLegalMetaDescriptors,
+  getContactMetaDescriptors,
+  getNosotrosMetaDescriptors,
+  getPoliticaCookiesMetaDescriptors,
+  getPoliticaPrivacidadMetaDescriptors,
+  getPropuestasMetaDescriptors,
+  NOSOTROS_SEO,
+  POLITICA_COOKIES_SEO,
+  POLITICA_PRIVACIDAD_SEO,
+  PROPUESTAS_SEO,
+} from "./remainingPublicSeo.js";
+import {
   getPanelJaponesMetaDescriptors,
   PANEL_JAPONES_SEO,
 } from "./panelJaponesSeo.js";
@@ -39,6 +53,36 @@ import {
  * so its existing react-helmet-async behavior remains unchanged.
  */
 const FRAMEWORK_SEO_ROUTES = [
+  {
+    path: PROPUESTAS_SEO.path,
+    seo: PROPUESTAS_SEO,
+    getMetaDescriptors: getPropuestasMetaDescriptors,
+  },
+  {
+    path: NOSOTROS_SEO.path,
+    seo: NOSOTROS_SEO,
+    getMetaDescriptors: getNosotrosMetaDescriptors,
+  },
+  {
+    path: CONTACT_SEO.path,
+    seo: CONTACT_SEO,
+    getMetaDescriptors: getContactMetaDescriptors,
+  },
+  {
+    path: AVISO_LEGAL_SEO.path,
+    seo: AVISO_LEGAL_SEO,
+    getMetaDescriptors: getAvisoLegalMetaDescriptors,
+  },
+  {
+    path: POLITICA_PRIVACIDAD_SEO.path,
+    seo: POLITICA_PRIVACIDAD_SEO,
+    getMetaDescriptors: getPoliticaPrivacidadMetaDescriptors,
+  },
+  {
+    path: POLITICA_COOKIES_SEO.path,
+    seo: POLITICA_COOKIES_SEO,
+    getMetaDescriptors: getPoliticaCookiesMetaDescriptors,
+  },
   {
     path: AUTOMATIZACION_SEO.path,
     seo: AUTOMATIZACION_SEO,

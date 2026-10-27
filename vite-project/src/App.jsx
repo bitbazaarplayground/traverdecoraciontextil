@@ -93,7 +93,12 @@ export default function App({
 
           <Route
             path="/propuestas"
-            element={<Propuestas onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Propuestas
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
 
           <Route
@@ -126,11 +131,21 @@ export default function App({
 
           <Route
             path="/contact"
-            element={<ContactPage onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <ContactPage
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
           <Route
             path="/nosotros"
-            element={<Nosotros onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Nosotros
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
 
           <Route
@@ -199,9 +214,18 @@ export default function App({
             }
           />
 
-          <Route path="/aviso-legal" element={<AvisoLegal />} />
-          <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
-          <Route path="/politica-cookies" element={<PoliticaCookies />} />
+          <Route
+            path="/aviso-legal"
+            element={<AvisoLegal includeHelmet={includeLegacyHelmet} />}
+          />
+          <Route
+            path="/politica-privacidad"
+            element={<PoliticaPrivacidad includeHelmet={includeLegacyHelmet} />}
+          />
+          <Route
+            path="/politica-cookies"
+            element={<PoliticaCookies includeHelmet={includeLegacyHelmet} />}
+          />
 
         </Routes>
       </Suspense>
