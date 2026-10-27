@@ -1,3 +1,5 @@
 https://traverdecoraciontextil.netlify.app/* https://www.traverdecoraciontextil.es/:splat 301!
 /toldos-proteccionsolar /toldos-proteccion-solar 301!
-/* /index.html 200
+
+# Every public route is emitted as a static HTML file by the Framework build.
+# Do not add an SPA catch-all here: unknown paths must receive Netlify's 404.
