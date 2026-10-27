@@ -55,6 +55,16 @@ import livingRoomMosquitera400 from "../../assets/servicios/mosquiteras/livingRo
 import livingRoomMosquitera600 from "../../assets/servicios/mosquiteras/livingRoomMosquitera-600.webp";
 import livingRoomMosquitera800 from "../../assets/servicios/mosquiteras/livingRoomMosquitera-800.webp";
 
+import bedroomCarousel1200 from "../../assets/servicios/mosquiteras/carousel/habitacionM-1200.webp";
+import bedroomCarousel400 from "../../assets/servicios/mosquiteras/carousel/habitacionM-400.webp";
+import bedroomCarousel600 from "../../assets/servicios/mosquiteras/carousel/habitacionM-600.webp";
+import bedroomCarousel800 from "../../assets/servicios/mosquiteras/carousel/habitacionM-800.webp";
+
+import livingRoomCarousel1200 from "../../assets/servicios/mosquiteras/carousel/salonM-1200.webp";
+import livingRoomCarousel400 from "../../assets/servicios/mosquiteras/carousel/salonM-400.webp";
+import livingRoomCarousel600 from "../../assets/servicios/mosquiteras/carousel/salonM-600.webp";
+import livingRoomCarousel800 from "../../assets/servicios/mosquiteras/carousel/salonM-800.webp";
+
 // Hero
 
 const hero_768 = "/mosquiteras/terraceMosquitonet-600.webp";
@@ -104,6 +114,18 @@ const responsiveImages = {
     800: livingRoomMosquitera800,
     1200: livingRoomMosquitera1200,
   },
+  bedroomCarousel: {
+    400: bedroomCarousel400,
+    600: bedroomCarousel600,
+    800: bedroomCarousel800,
+    1200: bedroomCarousel1200,
+  },
+  livingRoomCarousel: {
+    400: livingRoomCarousel400,
+    600: livingRoomCarousel600,
+    800: livingRoomCarousel800,
+    1200: livingRoomCarousel1200,
+  },
 };
 
 const getSrcSet = (images) =>
@@ -147,6 +169,25 @@ const GALLERY_IMAGES = [
     }),
     title: "Baños con luz natural",
     text: "Protección discreta para estancias pequeñas y húmedas.",
+  },
+  {
+    ...makeResponsiveImage({
+      images: responsiveImages.bedroomCarousel,
+      alt: "Dormitorio con puerta corredera y mosquitera integrada",
+      width: "1024",
+      height: "1536",
+    }),
+    fit: "contain",
+    title: "Dormitorios y exterior",
+    text: "Una imagen de inspiración para ventilar con comodidad.",
+  },
+  {
+    ...makeResponsiveImage({
+      images: responsiveImages.livingRoomCarousel,
+      alt: "Salón con grandes ventanales y mosquiteras integradas",
+    }),
+    title: "Salones abiertos",
+    text: "Una imagen de inspiración para conectar interior y terraza.",
   },
 ];
 
@@ -919,7 +960,7 @@ const InspirationImage = styled.img`
   height: 100%;
   box-sizing: border-box;
   display: block;
-  object-fit: cover;
+  object-fit: ${({ $fit }) => $fit || "cover"};
   object-position: center;
   transform: none;
   transition: padding 520ms cubic-bezier(0.2, 0.75, 0.22, 1), filter 520ms ease,
@@ -1697,6 +1738,7 @@ export default function Mosquiteras({
             {GALLERY_IMAGES.map((image) => (
               <InspirationCard key={image.alt} $image={image.src}>
                 <InspirationImage
+                  $fit={image.fit}
                   src={image.src}
                   srcSet={image.srcSet}
                   sizes="(max-width: 760px) 82vw, 39vw"
