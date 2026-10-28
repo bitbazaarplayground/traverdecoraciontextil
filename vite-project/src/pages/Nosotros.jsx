@@ -1,9 +1,13 @@
-import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import FaqAccordion from "../components/faq/FaqAccordion";
 import { CONTACT } from "../config/contact";
+import {
+  NOSOTROS_FAQ_ITEMS,
+  NOSOTROS_PAGE_JSON_LD,
+  NOSOTROS_SEO,
+} from "../config/remainingPublicSeo";
 // Images
 import welcome1200 from "../assets/Automatizacion/ctaAuto-1200.webp";
 import welcome400 from "../assets/Automatizacion/ctaAuto-400.webp";
@@ -22,170 +26,40 @@ const responsiveImages = {
 const getSrcSet = (images) =>
   `${images[400]} 400w, ${images[600]} 600w, ${images[800]} 800w, ${images[1200]} 1200w`;
 
-export default function Nosotros() {
-  const baseUrl = (
-    import.meta.env.VITE_SITE_URL || window.location.origin
-  ).replace(/\/$/, "");
-
-  const canonical = `${baseUrl}/nosotros`;
-  const siteName = CONTACT.siteName || "Traver Decoración Textil";
-
-  const title =
-    "Nosotros | Traver Decoración Textil, tradición y detalle desde 1989";
-  const description =
-    "Conoce Traver Decoración Textil, empresa fundada en 1989 especializada en toldos, cortinas, tapizados, papeles pintados y decoración textil en Castellón. Soluciones a medida para viviendas y espacios profesionales.";
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt =
-    "Traver Decoración Textil, tradición, detalle y diseño desde 1989";
-
-  const faqItems = [
-    {
-      q: "¿Qué tipo de proyectos realizamos?",
-      a: "Trabajamos tanto para clientes particulares como para espacios profesionales. Hemos participado en proyectos para viviendas, colegios, alojamientos turísticos, Airbnb, hoteles y otros entornos que buscan soluciones textiles, funcionalidad y una estética cuidada.",
-      aText:
-        "Trabajamos tanto para clientes particulares como para espacios profesionales. Hemos participado en proyectos para viviendas, colegios, alojamientos turísticos, Airbnb, hoteles y otros entornos que buscan soluciones textiles, funcionalidad y una estética cuidada.",
-    },
-    {
-      q: "¿En qué estamos especializados?",
-      a: "Estamos especializados en toldos, cortinas, tapizados, papeles pintados y soluciones de decoración textil e interiorismo, siempre adaptándonos a las necesidades de cada espacio. Buscamos equilibrio entre diseño, confort, durabilidad y una instalación profesional.",
-      aText:
-        "Estamos especializados en toldos, cortinas, tapizados, papeles pintados y soluciones de decoración textil e interiorismo, siempre adaptándonos a las necesidades de cada espacio. Buscamos equilibrio entre diseño, confort, durabilidad y una instalación profesional.",
-    },
-    {
-      q: "¿Trabajamos proyectos a medida?",
-      a: "Sí. Cada proyecto se estudia de forma personalizada para ofrecer una propuesta adaptada al estilo, al uso del espacio y a las necesidades reales del cliente.",
-      aText:
-        "Sí. Cada proyecto se estudia de forma personalizada para ofrecer una propuesta adaptada al estilo, al uso del espacio y a las necesidades reales del cliente.",
-    },
-    {
-      q: "¿Qué nos diferencia?",
-      a: "La experiencia de una empresa fundada en 1989, la atención cercana, el cuidado por el detalle y la combinación de funcionalidad con una estética elegante y duradera.",
-      aText:
-        "La experiencia de una empresa fundada en 1989, la atención cercana, el cuidado por el detalle y la combinación de funcionalidad con una estética elegante y duradera.",
-    },
-    {
-      q: "¿Dónde estamos y en qué zonas trabajamos?",
-      a: "Estamos en Almassora, Castellón, y trabajamos principalmente en Castellón y alrededores, además de proyectos seleccionados según alcance.",
-      aText:
-        "Estamos en Almassora, Castellón, y trabajamos principalmente en Castellón y alrededores, además de proyectos seleccionados según alcance.",
-    },
-  ];
-
-  const aboutPageJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "AboutPage",
-      "@id": `${canonical}#aboutpage`,
-      url: canonical,
-      name: title,
-      description,
-      inLanguage: "es-ES",
-      isPartOf: {
-        "@type": "WebSite",
-        "@id": `${baseUrl}/#website`,
-        url: `${baseUrl}/`,
-        name: siteName,
-      },
-      about: {
-        "@id": `${baseUrl}/#business`,
-      },
-      primaryImageOfPage: {
-        "@type": "ImageObject",
-        url: ogImage,
-      },
-    }),
-    [baseUrl, canonical, description, ogImage, siteName, title]
-  );
-
-  const organizationJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "HomeAndConstructionBusiness",
-      "@id": `${baseUrl}/#business`,
-      name: siteName,
-      url: `${baseUrl}/`,
-      logo: `${baseUrl}/favicon.png`,
-      image: ogImage,
-      foundingDate: "1989",
-      telephone: CONTACT.phoneLandline,
-      email: CONTACT.email,
-      address: {
-        "@type": "PostalAddress",
-        ...CONTACT.address,
-      },
-      description,
-      areaServed: {
-        "@type": "Place",
-        name: "Castellón",
-      },
-      knowsAbout: [
-        "Toldos",
-        "Cortinas",
-        "Tapizados",
-        "Papeles pintados",
-        "Decoración textil",
-        "Interiorismo",
-        "Instalación profesional",
-      ],
-    }),
-    [baseUrl, description, ogImage, siteName]
-  );
-
-  const breadcrumbJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Inicio",
-          item: `${baseUrl}/`,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Nosotros",
-          item: canonical,
-        },
-      ],
-    }),
-    [baseUrl, canonical]
-  );
-
-  const jsonLd = useMemo(
-    () => [aboutPageJsonLd, organizationJsonLd, breadcrumbJsonLd],
-    [aboutPageJsonLd, organizationJsonLd, breadcrumbJsonLd]
-  );
+export default function Nosotros({ includeHelmet = true }) {
 
   return (
     <>
-      <Helmet>
-        <html lang="es" />
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={canonical} />
+      {includeHelmet && (
+        <Helmet>
+          <html lang="es" />
+          <title>{NOSOTROS_SEO.title}</title>
+          <meta name="description" content={NOSOTROS_SEO.description} />
+          <meta name="robots" content={NOSOTROS_SEO.robots} />
+          <link rel="canonical" href={NOSOTROS_SEO.canonical} />
 
-        <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:alt" content={ogImageAlt} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
+          <meta property="og:site_name" content={NOSOTROS_SEO.siteName} />
+          <meta property="og:type" content={NOSOTROS_SEO.ogType} />
+          <meta property="og:locale" content={NOSOTROS_SEO.ogLocale} />
+          <meta property="og:url" content={NOSOTROS_SEO.canonical} />
+          <meta property="og:title" content={NOSOTROS_SEO.title} />
+          <meta property="og:description" content={NOSOTROS_SEO.description} />
+          <meta property="og:image" content={NOSOTROS_SEO.ogImage} />
+          <meta property="og:image:alt" content={NOSOTROS_SEO.ogImageAlt} />
+          <meta property="og:image:width" content={NOSOTROS_SEO.ogImageWidth} />
+          <meta property="og:image:height" content={NOSOTROS_SEO.ogImageHeight} />
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta name="twitter:image:alt" content={ogImageAlt} />
+          <meta name="twitter:card" content={NOSOTROS_SEO.twitterCard} />
+          <meta name="twitter:title" content={NOSOTROS_SEO.title} />
+          <meta name="twitter:description" content={NOSOTROS_SEO.description} />
+          <meta name="twitter:image" content={NOSOTROS_SEO.ogImage} />
+          <meta name="twitter:image:alt" content={NOSOTROS_SEO.ogImageAlt} />
 
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(NOSOTROS_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       <Page>
         <HeroSection>
@@ -381,9 +255,9 @@ export default function Nosotros() {
             <SectionLabel>Preguntas frecuentes</SectionLabel>
             <SectionTitle>Lo que suelen preguntarnos</SectionTitle>
             <FaqAccordion
-              items={faqItems}
-              withSchema={true}
-              canonicalUrl={canonical}
+              items={NOSOTROS_FAQ_ITEMS}
+              withSchema={includeHelmet}
+              canonicalUrl={NOSOTROS_SEO.canonical}
               ariaLabel="Preguntas frecuentes sobre nosotros"
             />
           </Section>

@@ -11,7 +11,12 @@ import EnfoqueSlider from "../components/EnfoqueSlider";
 import SlickCarouselLazy from "../components/SlickCarouselLazy";
 import FaqAccordion from "../components/faq/FaqAccordion";
 import ComplementosVentana from "../components/ventanas/ComplementosVentana";
-import { CONTACT } from "../config/contact";
+import {
+  CORTINAS_FAQ_ITEMS,
+  CORTINAS_HERO_PRELOAD,
+  CORTINAS_PAGE_JSON_LD,
+  CORTINAS_SEO,
+} from "../config/cortinasSeo.js";
 import { getComplementosItems } from "../data/complementosVentana";
 import StickyCtaButton from "../mobile/StickyCtaButton";
 /* =========================
@@ -504,130 +509,13 @@ const SectionLead = styled.p`
 `;
 
 /* =========================
-   STATIC DATA
-========================= */
-
-const FAQ_ITEMS = [
-  {
-    q: "¿Qué diferencia hay entre cortinas y estores?",
-    a: "Las cortinas aportan más presencia textil y caída decorativa; los estores son más minimalistas y prácticos para controlar luz en ventanas con poco espacio. Te recomendamos según uso, estilo y orientación.",
-    aText:
-      "Las cortinas aportan más presencia textil y caída decorativa; los estores son más minimalistas y prácticos para controlar luz en ventanas con poco espacio. Te recomendamos según uso, estilo y orientación.",
-  },
-  {
-    q: "¿Hacéis visita y medición en casa?",
-    a: "Sí. La medición precisa es clave para que el resultado quede perfecto. Te asesoramos sobre tejido, confección y sistema antes de fabricar.",
-    aText:
-      "Sí. La medición precisa es clave para que el resultado quede perfecto. Te asesoramos sobre tejido, confección y sistema antes de fabricar.",
-  },
-  {
-    q: "¿Tenéis opciones térmicas o blackout?",
-    a: "Sí. Hay tejidos térmicos y blackout para reducir entrada de luz y mejorar confort. En dormitorios solemos proponer combinaciones (visillo + blackout) para flexibilidad.",
-    aText:
-      "Sí. Hay tejidos térmicos y blackout para reducir entrada de luz y mejorar confort. En dormitorios solemos proponer combinaciones (visillo + blackout) para flexibilidad.",
-  },
-  {
-    q: "¿Cuánto tarda el proceso?",
-    a: "Depende del tejido y la confección. Tras la visita y la elección, te confirmamos plazos reales de fabricación e instalación.",
-    aText:
-      "Depende del tejido y la confección. Tras la visita y la elección, te confirmamos plazos reales de fabricación e instalación.",
-  },
-  {
-    q: "¿Instaláis también rieles y sistemas?",
-    a: "Sí. Instalamos rieles, barras y sistemas de estor con una puesta a punto final para que el movimiento sea suave y limpio.",
-    aText:
-      "Sí. Instalamos rieles, barras y sistemas de estor con una puesta a punto final para que el movimiento sea suave y limpio.",
-  },
-];
-
-/* =========================
    COMPONENT
 ========================= */
 
-export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
-  const baseUrl = "https://www.traverdecoraciontextil.es";
-
-  const canonical = `${baseUrl}/cortinas-estores`;
-  const siteName = CONTACT.siteName;
-
-  const title =
-    "Cortinas y estores a medida en Castellón | Medición e instalación";
-  const description =
-    "Cortinas y estores a medida en Castellón: tejidos seleccionados, control de luz y privacidad, medición e instalación profesional para viviendas y negocios.";
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt = "Cortinas y estores a medida — Traver Decoración Textil";
-
-  const breadcrumbJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Inicio",
-          item: `${baseUrl}/`,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Servicios",
-          item: `${baseUrl}/services`,
-        },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: "Cortinas y Estores",
-          item: canonical,
-        },
-      ],
-    }),
-    [baseUrl, canonical]
-  );
-
-  const webPageJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "@id": `${canonical}#webpage`,
-      url: canonical,
-      name: title,
-      description,
-      inLanguage: "es-ES",
-      isPartOf: { "@id": `${baseUrl}/#website` },
-    }),
-    [baseUrl, canonical, title, description]
-  );
-
-  const serviceJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "@id": `${canonical}#service`,
-      name: "Cortinas y estores a medida",
-      description,
-      areaServed: [
-        { "@type": "City", name: "Almassora" },
-        { "@type": "City", name: "Castellón de la Plana" },
-        { "@type": "AdministrativeArea", name: "Castellón" },
-      ],
-      provider: {
-        "@type": "LocalBusiness",
-        name: siteName,
-        url: `${baseUrl}/`,
-        telephone: CONTACT.phoneLandline,
-        email: CONTACT.email,
-        address: { "@type": "PostalAddress", ...CONTACT.address },
-      },
-    }),
-    [baseUrl, canonical, siteName, description]
-  );
-
-  const jsonLd = useMemo(
-    () => [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd],
-    [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd]
-  );
-
+export default function CortinasEstoresPremium({
+  onOpenAsesoramiento,
+  includeHelmet = true,
+}) {
   const sliderSettings = useMemo(
     () => ({
       dots: true,
@@ -673,40 +561,44 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
 
   return (
     <Page>
-      <Helmet>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={canonical} />
+      {includeHelmet && (
+        <Helmet>
+          <title>{CORTINAS_SEO.title}</title>
+          <meta name="description" content={CORTINAS_SEO.description} />
+          <meta name="robots" content={CORTINAS_SEO.robots} />
+          <link rel="canonical" href={CORTINAS_SEO.canonical} />
 
-        {/* ✅ Preload hero responsively (prevents mobile preloading a huge file) */}
-        <link
-          rel="preload"
-          as="image"
-          href={hero_1280}
-          imagesrcset={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-          imagesizes="100vw"
-        />
+          {/* ✅ Preload hero responsively (prevents mobile preloading a huge file) */}
+          <link
+            rel="preload"
+            as="image"
+            href={CORTINAS_HERO_PRELOAD.href}
+            imagesrcset={CORTINAS_HERO_PRELOAD.imagesrcset}
+            imagesizes={CORTINAS_HERO_PRELOAD.imagesizes}
+          />
 
-        {/* Open Graph */}
-        <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:alt" content={ogImageAlt} />
+          {/* Open Graph */}
+          <meta property="og:site_name" content={CORTINAS_SEO.siteName} />
+          <meta property="og:type" content={CORTINAS_SEO.ogType} />
+          <meta property="og:locale" content={CORTINAS_SEO.ogLocale} />
+          <meta property="og:url" content={CORTINAS_SEO.canonical} />
+          <meta property="og:title" content={CORTINAS_SEO.title} />
+          <meta property="og:description" content={CORTINAS_SEO.description} />
+          <meta property="og:image" content={CORTINAS_SEO.ogImage} />
+          <meta property="og:image:alt" content={CORTINAS_SEO.ogImageAlt} />
 
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta name="twitter:image:alt" content={ogImageAlt} />
+          {/* Twitter */}
+          <meta name="twitter:card" content={CORTINAS_SEO.twitterCard} />
+          <meta name="twitter:title" content={CORTINAS_SEO.title} />
+          <meta name="twitter:description" content={CORTINAS_SEO.description} />
+          <meta name="twitter:image" content={CORTINAS_SEO.ogImage} />
+          <meta name="twitter:image:alt" content={CORTINAS_SEO.ogImageAlt} />
 
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(CORTINAS_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       {/* HERO */}
       <Hero>
@@ -1002,9 +894,9 @@ export default function CortinasEstoresPremium({ onOpenAsesoramiento }) {
           </SectionTop>
 
           <FaqAccordion
-            items={FAQ_ITEMS}
-            withSchema={true}
-            canonicalUrl={canonical}
+            items={CORTINAS_FAQ_ITEMS}
+            withSchema={includeHelmet}
+            canonicalUrl={CORTINAS_SEO.canonical}
             defaultOpenIndex={-1}
             ariaLabel="Preguntas frecuentes sobre cortinas y estores"
           />

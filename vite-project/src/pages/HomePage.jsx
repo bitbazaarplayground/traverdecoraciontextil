@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet-async";
 import Hero from "../components/Hero";
 import LazyOnVisible from "../components/LazyOnVisible";
 
-import { CONTACT } from "../config/contact";
+import { HOME_PAGE_JSON_LD, HOME_SEO } from "../config/homeSeo.js";
 
 // Lazy sections (below the hero)
 const ServicesSection = lazy(() => import("../components/ServicesSection"));
@@ -16,91 +16,10 @@ const GalleryCarousel = lazy(() => import("../components/GalleryCarousel"));
 const BrandLogos = lazy(() => import("../components/BrandLogos"));
 const HomeFAQ = lazy(() => import("../components/HomeFAQ"));
 
-export default function HomePage({ onOpenAsesoramiento }) {
-  const baseUrl = "https://www.traverdecoraciontextil.es";
-  const canonical = `${baseUrl}/`;
-
-  // Prefer centralized contact + brand data
-  const siteName = CONTACT.siteName || "Traver Decoración Textil";
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt = "Traver Decoración Textil — cortinas y toldos a medida";
-  const logo = `${baseUrl}/logo.png`;
-
-  const title =
-    "Cortinas, toldos y automatización en Castellón | Traver Decoración Textil";
-  const description =
-    "Cortinas, estores, toldos y automatización a medida en Castellón. Decoración textil y protección solar con medición, asesoramiento e instalación profesional.";
-  const localBusinessJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "HomeAndConstructionBusiness",
-    "@id": `${canonical}#business`,
-    name: siteName,
-    url: canonical,
-    description,
-    image: ogImage,
-    logo,
-    email: CONTACT.email,
-    telephone: CONTACT.phoneLandline, // display format
-    address: {
-      "@type": "PostalAddress",
-      ...CONTACT.address,
-    },
-    areaServed: [
-      { "@type": "City", name: "Almassora" },
-      { "@type": "City", name: "Castellón de la Plana" },
-      { "@type": "AdministrativeArea", name: "Castellón" },
-    ],
-    contactPoint: [
-      {
-        "@type": "ContactPoint",
-        telephone: `+${CONTACT.whatsappNumber}`,
-        contactType: "customer support",
-        availableLanguage: ["es"],
-        url: CONTACT.whatsappUrl,
-      },
-      {
-        "@type": "ContactPoint",
-        telephone: CONTACT.phoneLandline,
-        contactType: "customer support",
-        availableLanguage: ["es"],
-      },
-    ],
-    sameAs: [CONTACT.facebookUrl],
-  };
-
-  const webSiteJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "@id": `${baseUrl}/#website`,
-    url: `${baseUrl}/`,
-    name: siteName,
-    inLanguage: "es-ES",
-    publisher: { "@id": `${canonical}#business` },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${baseUrl}/?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
-  };
-
-  const webPageJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": `${canonical}#webpage`,
-    url: canonical,
-    name: title,
-    description,
-    inLanguage: "es-ES",
-    isPartOf: { "@id": `${baseUrl}/#website` },
-    primaryImageOfPage: {
-      "@type": "ImageObject",
-      url: ogImage,
-    },
-    about: { "@id": `${canonical}#business` },
-  };
-
-  const jsonLd = [localBusinessJsonLd, webSiteJsonLd, webPageJsonLd];
-
+export default function HomePage({
+  onOpenAsesoramiento,
+  includeHelmet = true,
+}) {
   // Warm up the first below-the-fold chunks after initial paint (idle if possible)
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) return;
@@ -126,35 +45,39 @@ export default function HomePage({ onOpenAsesoramiento }) {
 
   return (
     <>
-      <Helmet>
-        <title>{title}</title>
+      {includeHelmet && (
+        <Helmet>
+          <title>{HOME_SEO.title}</title>
 
-        <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={canonical} />
+          <meta name="description" content={HOME_SEO.description} />
+          <meta name="robots" content={HOME_SEO.robots} />
+          <link rel="canonical" href={HOME_SEO.canonical} />
 
-        {/* Open Graph */}
-        <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:alt" content={ogImageAlt} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
+          {/* Open Graph */}
+          <meta property="og:site_name" content={HOME_SEO.siteName} />
+          <meta property="og:type" content={HOME_SEO.ogType} />
+          <meta property="og:locale" content={HOME_SEO.ogLocale} />
+          <meta property="og:url" content={HOME_SEO.canonical} />
+          <meta property="og:title" content={HOME_SEO.title} />
+          <meta property="og:description" content={HOME_SEO.description} />
+          <meta property="og:image" content={HOME_SEO.ogImage} />
+          <meta property="og:image:alt" content={HOME_SEO.ogImageAlt} />
+          <meta property="og:image:width" content={HOME_SEO.ogImageWidth} />
+          <meta property="og:image:height" content={HOME_SEO.ogImageHeight} />
 
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta name="twitter:image:alt" content={ogImageAlt} />
+          {/* Twitter */}
+          <meta name="twitter:card" content={HOME_SEO.twitterCard} />
+          <meta name="twitter:title" content={HOME_SEO.title} />
+          <meta name="twitter:description" content={HOME_SEO.description} />
+          <meta name="twitter:image" content={HOME_SEO.ogImage} />
+          <meta name="twitter:image:alt" content={HOME_SEO.ogImageAlt} />
 
-        {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          {/* JSON-LD */}
+          <script type="application/ld+json">
+            {JSON.stringify(HOME_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       <Hero onOpenAsesoramiento={onOpenAsesoramiento} />
 

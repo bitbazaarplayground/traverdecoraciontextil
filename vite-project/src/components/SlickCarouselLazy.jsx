@@ -7,7 +7,7 @@ const Host = styled.div`
 
 const CarouselImage = styled.div`
   height: 420px;
-  border-radius: 20px;
+  border-radius: 8px;
   overflow: hidden;
 
   img {
@@ -74,6 +74,11 @@ export default function SlickCarouselLazy({ images = [], settings }) {
             const isObj = img && typeof img === "object";
             const src = isObj ? img.src : img;
             const srcSet = isObj ? img.srcSet : undefined;
+            const alt = isObj
+              ? img.alt || `Cortinas y estores instalados, ejemplo ${i + 1}`
+              : `Cortinas y estores instalados, ejemplo ${i + 1}`;
+            const width = isObj ? img.width || "1100" : "1100";
+            const height = isObj ? img.height || "733" : "733";
 
             return (
               <CarouselImage key={`${i}-${src}`}>
@@ -81,12 +86,12 @@ export default function SlickCarouselLazy({ images = [], settings }) {
                   src={src}
                   srcSet={srcSet}
                   sizes={srcSet ? slideSizes : undefined}
-                  width="1100"
-                  height="733"
-                  alt={`Cortinas y estores instalados — ejemplo ${i + 1}`}
+                  width={width}
+                  height={height}
+                  alt={alt}
                   loading="lazy"
                   decoding="async"
-                  fetchpriority="low"
+                  fetchPriority="low"
                 />
               </CarouselImage>
             );

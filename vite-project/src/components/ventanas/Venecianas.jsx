@@ -4,7 +4,11 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import ServiceHero from "../../components/heroes/ServiceHero";
-import { CONTACT } from "../../config/contact";
+import {
+  VENECIANAS_FAQ_ITEMS,
+  VENECIANAS_PAGE_JSON_LD,
+  VENECIANAS_SEO,
+} from "../../config/venecianasSeo.js";
 import { trackEvent } from "../../lib/analytics";
 
 import SlickCarouselLazy from "../../components/SlickCarouselLazy";
@@ -497,129 +501,24 @@ const FAQInner = styled.div`
 `;
 
 /* =========================
-   DATA
-========================= */
-
-const FAQ_ITEMS = [
-  {
-    q: "¿Qué veneciana elegir: aluminio o madera?",
-    a: "Aluminio es ideal para baños, cocinas o uso intensivo por su resistencia y mantenimiento. La madera aporta calidez y un acabado más decorativo en salones o despachos.",
-    aText:
-      "Aluminio es ideal para baños, cocinas o uso intensivo por su resistencia y mantenimiento. La madera aporta calidez y un acabado más decorativo en salones o despachos.",
-  },
-  {
-    q: "¿Se puede regular la privacidad sin perder luz?",
-    a: "Sí. La gran ventaja es orientar las lamas: filtras la entrada de luz y controlas las vistas, manteniendo claridad en el interior.",
-    aText:
-      "Sí. La gran ventaja es orientar las lamas: filtras la entrada de luz y controlas las vistas, manteniendo claridad en el interior.",
-  },
-  {
-    q: "¿Qué ancho de lama recomendáis?",
-    a: "Depende del tamaño de la ventana y del estilo. Lamas más anchas se ven más “arquitectónicas” y limpias; lamas más estrechas son discretas y técnicas.",
-    aText:
-      "Depende del tamaño de la ventana y del estilo. Lamas más anchas se ven más “arquitectónicas” y limpias; lamas más estrechas son discretas y técnicas.",
-  },
-  {
-    q: "¿Hacéis medición e instalación?",
-    a: "Sí. Medimos, aconsejamos color y accionamiento, y realizamos una instalación limpia para que el resultado quede alineado y cómodo en el día a día.",
-    aText:
-      "Sí. Medimos, aconsejamos color y accionamiento, y realizamos una instalación limpia para que el resultado quede alineado y cómodo en el día a día.",
-  },
-  {
-    q: "¿Son una buena opción para oficina?",
-    a: "Mucho. Ayudan a evitar reflejos en pantallas, controlan el deslumbramiento y permiten un ajuste fino según la hora del día.",
-    aText:
-      "Mucho. Ayudan a evitar reflejos en pantallas, controlan el deslumbramiento y permiten un ajuste fino según la hora del día.",
-  },
-];
-
-/* =========================
    COMPONENT
 ========================= */
 
-export default function Venecianas({ onOpenAsesoramiento }) {
-  const baseUrl = "https://www.traverdecoraciontextil.es";
-
-  const canonical = `${baseUrl}/venecianas`;
-  const siteName = CONTACT.siteName;
-
-  const title =
-    "Venecianas a medida | Traver Decoración Textil (Castellón y Valencia)";
-  const description =
-    "Venecianas a medida en Almassora: controla la luz con precisión y gana privacidad sin perder claridad. Opciones en aluminio y madera, medición e instalación profesional en Castellón y Valencia.";
-
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt = "Venecianas a medida — Traver Decoración Textil";
-
-  const breadcrumbJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Inicio",
-          item: `${baseUrl}/`,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Servicios",
-          item: `${baseUrl}/services`,
-        },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: "Venecianas",
-          item: canonical,
-        },
-      ],
-    }),
-    [baseUrl, canonical]
-  );
-
-  const webPageJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "@id": `${canonical}#webpage`,
-      url: canonical,
-      name: title,
-      description,
-      inLanguage: "es-ES",
-      isPartOf: { "@id": `${baseUrl}/#website` },
-    }),
-    [baseUrl, canonical, title, description]
-  );
-
-  const serviceJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "@id": `${canonical}#service`,
-      name: "Venecianas a medida",
-      description,
-      areaServed: [
-        { "@type": "AdministrativeArea", name: "Castellón" },
-        { "@type": "AdministrativeArea", name: "Valencia" },
-      ],
-      provider: {
-        "@type": "LocalBusiness",
-        name: siteName,
-        url: `${baseUrl}/`,
-        telephone: CONTACT.phoneLandline,
-        email: CONTACT.email,
-        address: { "@type": "PostalAddress", ...CONTACT.address },
-      },
-    }),
-    [baseUrl, canonical, siteName, description]
-  );
-
-  const jsonLd = useMemo(
-    () => [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd],
-    [webPageJsonLd, breadcrumbJsonLd, serviceJsonLd]
-  );
+export default function Venecianas({
+  onOpenAsesoramiento,
+  includeHelmet = true,
+}) {
+  const {
+    canonical,
+    description,
+    ogImage,
+    ogImageAlt,
+    ogLocale,
+    ogType,
+    siteName,
+    title,
+    twitterCard,
+  } = VENECIANAS_SEO;
 
   const sliderSettings = useMemo(
     () => ({
@@ -666,7 +565,8 @@ export default function Venecianas({ onOpenAsesoramiento }) {
 
   return (
     <Page>
-      <Helmet>
+      {includeHelmet && (
+        <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="robots" content="index,follow" />
@@ -674,8 +574,8 @@ export default function Venecianas({ onOpenAsesoramiento }) {
 
         {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
+        <meta property="og:type" content={ogType} />
+        <meta property="og:locale" content={ogLocale} />
         <meta property="og:url" content={canonical} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
@@ -683,15 +583,18 @@ export default function Venecianas({ onOpenAsesoramiento }) {
         <meta property="og:image:alt" content={ogImageAlt} />
 
         {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:card" content={twitterCard} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:image:alt" content={ogImageAlt} />
 
         {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(VENECIANAS_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       {/* HERO */}
       <ServiceHero
@@ -863,8 +766,8 @@ export default function Venecianas({ onOpenAsesoramiento }) {
           </SectionTop>
 
           <FaqAccordion
-            items={FAQ_ITEMS}
-            withSchema={true}
+            items={VENECIANAS_FAQ_ITEMS}
+            withSchema={includeHelmet}
             canonicalUrl={canonical}
             defaultOpenIndex={-1}
             ariaLabel="Preguntas frecuentes sobre venecianas a medida"

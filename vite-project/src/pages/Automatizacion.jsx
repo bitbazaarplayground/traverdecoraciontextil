@@ -1,10 +1,15 @@
 import { ArrowRight, Moon, Smartphone, Sun, Wind } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AutomationFaq from "../components/automatizacion/AutomationFaq";
 import { CONTACT } from "../config/contact";
+import {
+  AUTOMATIZACION_FAQ_ITEMS,
+  AUTOMATIZACION_PAGE_JSON_LD,
+  AUTOMATIZACION_SEO,
+} from "../config/automatizacionSeo.js";
 import { trackCtaClick, trackOpenQuickEnquiry } from "../lib/analytics";
 /* =========================
    ASSETS
@@ -82,10 +87,27 @@ const getSrcSet = (images) =>
 /* =========================
    PAGE
 ========================= */
-export default function Automatizacion({ onOpenAsesoramiento }) {
-  const baseUrl = "https://www.traverdecoraciontextil.es";
+export default function Automatizacion({
+  onOpenAsesoramiento,
+  includeHelmet = true,
+}) {
   const videoRef = useRef(null);
   const [videoFailed, setVideoFailed] = useState(false);
+
+  const {
+    canonical,
+    description,
+    ogImage,
+    ogImageAlt,
+    ogImageHeight,
+    ogImageWidth,
+    ogLocale,
+    ogType,
+    robots,
+    siteName,
+    title,
+    twitterCard,
+  } = AUTOMATIZACION_SEO;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -102,87 +124,6 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
       video.removeEventListener("stalled", handleStalled);
     };
   }, []);
-  const canonical = `${baseUrl}/automatizacion`;
-  const siteName = CONTACT.siteName || "Traver Decoración Textil";
-
-  const title =
-    "Automatización Somfy en Castellón | Cortinas, estores, persianas y toldos motorizados";
-  const description =
-    "Automatización Somfy en Castellón para cortinas, estores, persianas y toldos motorizados. Sensores, escenas y control por app con instalación profesional y asesoramiento a medida.";
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt = "Automatización Somfy para cortinas y toldos a medida";
-
-  const jsonLd = useMemo(
-    () => [
-      {
-        "@context": "https://schema.org",
-        "@type": "Service",
-        "@id": `${canonical}#service`,
-        name: "Automatización Somfy",
-        serviceType: "Automatización de cortinas, estores, persianas y toldos",
-        image: ogImage,
-        brand: {
-          "@type": "Brand",
-          name: "Somfy",
-        },
-        provider: {
-          "@type": "HomeAndConstructionBusiness",
-          "@id": `${baseUrl}/#business`,
-          name: siteName,
-          url: `${baseUrl}/`,
-          telephone: CONTACT.phoneLandline,
-        },
-        areaServed: [
-          { "@type": "City", name: "Almassora" },
-          { "@type": "City", name: "Castellón de la Plana" },
-          { "@type": "AdministrativeArea", name: "Castellón" },
-        ],
-        url: canonical,
-        description,
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "@id": `${canonical}#webpage`,
-        url: canonical,
-        name: title,
-        description,
-        inLanguage: "es-ES",
-        isPartOf: { "@id": `${baseUrl}/#website` },
-        about: { "@id": `${canonical}#service` },
-        primaryImageOfPage: {
-          "@type": "ImageObject",
-          url: ogImage,
-        },
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "@id": `${canonical}#breadcrumb`,
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: "Inicio",
-            item: `${baseUrl}/`,
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            name: "Servicios",
-            item: `${baseUrl}/services`,
-          },
-          {
-            "@type": "ListItem",
-            position: 3,
-            name: "Automatización",
-            item: canonical,
-          },
-        ],
-      },
-    ],
-    [baseUrl, canonical, description, ogImage, siteName, title]
-  );
   // Video autoplay workaround for Safari (muted + playsInline + try/catch)
   useEffect(() => {
     const video = videoRef.current;
@@ -243,80 +184,41 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
     return () => io.disconnect();
   }, []);
 
-  // Premium: FAQ accordion (editorial + clean)
-  const faqs = useMemo(
-    () => [
-      {
-        q: "¿Se puede empezar por una zona y ampliar después?",
-        a: "Sí. Diseñamos una base sólida (motores + control) para que puedas añadir estancias o productos sin rehacerlo todo.",
-        aText:
-          "Sí. Diseñamos una base sólida (motores + control) para que puedas añadir estancias o productos sin rehacerlo todo.",
-      },
-      {
-        q: "¿La instalación se nota? (cajas, cableado, estética)",
-        a: "Nuestro enfoque es “estética primero”: solución discreta, remates limpios y configuración final para que solo se vea el resultado.",
-        aText:
-          "Nuestro enfoque es “estética primero”: solución discreta, remates limpios y configuración final para que solo se vea el resultado.",
-      },
-      {
-        q: "¿Necesito domótica completa para usar Somfy?",
-        a: "No. Puedes empezar con app, mando o escenas simples. Si quieres integrar más adelante, lo dejamos preparado.",
-        aText:
-          "No. Puedes empezar con app, mando o escenas simples. Si quieres integrar más adelante, lo dejamos preparado.",
-      },
-      {
-        q: "¿Se puede automatizar una instalación que ya tengo en casa?",
-        a: "En muchos casos, sí. Estudiamos el tipo de cortina, estor, persiana o toldo existente y te proponemos la opción más adecuada para motorizarlo o renovarlo con una solución más completa.",
-        aText:
-          "En muchos casos, sí. Estudiamos el tipo de cortina, estor, persiana o toldo existente y te proponemos la opción más adecuada para motorizarlo o renovarlo con una solución más completa.",
-      },
-      {
-        q: "¿Hace falta obra para automatizar cortinas, estores o toldos?",
-        a: "No siempre. Depende del producto y de la instalación existente. En muchos casos podemos plantear una solución limpia y discreta, minimizando la intervención y respetando la estética del espacio.",
-        aText:
-          "No siempre. Depende del producto y de la instalación existente. En muchos casos podemos plantear una solución limpia y discreta, minimizando la intervención y respetando la estética del espacio.",
-      },
-      {
-        q: "¿Qué productos se pueden automatizar?",
-        a: "Trabajamos soluciones de automatización para cortinas, estores, persianas y toldos, adaptando motores, controles y escenas al uso real de cada espacio.",
-        aText:
-          "Trabajamos soluciones de automatización para cortinas, estores, persianas y toldos, adaptando motores, controles y escenas al uso real de cada espacio.",
-      },
-    ],
-    []
-  );
-
   return (
     <Page>
-      <Helmet>
+      {includeHelmet && (
+        <Helmet>
         <title>{title}</title>
 
         <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
+          <meta name="robots" content={robots} />
         <link rel="canonical" href={canonical} />
 
         {/* Open Graph */}
         <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
+          <meta property="og:type" content={ogType} />
+          <meta property="og:locale" content={ogLocale} />
         <meta property="og:url" content={canonical} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:image:alt" content={ogImageAlt} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
+          <meta property="og:image:width" content={ogImageWidth} />
+          <meta property="og:image:height" content={ogImageHeight} />
 
         {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:card" content={twitterCard} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:image:alt" content={ogImageAlt} />
 
         {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(AUTOMATIZACION_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       {/* HERO (DO NOT CHANGE) */}
       <Hero>
@@ -854,7 +756,7 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
 
           {/* SECTION: FAQ */}
           <AutomationFaq
-            items={faqs}
+            items={AUTOMATIZACION_FAQ_ITEMS}
             kicker="FAQ"
             title={
               <>
@@ -862,7 +764,7 @@ export default function Automatizacion({ onOpenAsesoramiento }) {
               </>
             }
             lead="Si lo estás considerando, esto es lo que más nos preguntan."
-            withSchema
+            withSchema={includeHelmet}
             canonicalUrl={canonical}
           />
         </SurfaceInner>

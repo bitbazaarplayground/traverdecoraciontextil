@@ -13,6 +13,7 @@ import panelJaponesImg from "../assets/servicios/panelJapones.webp";
 import toldosProteccionSolar from "../assets/servicios/toldoServicios.webp";
 import venecianasImg from "../assets/servicios/venecianas.webp";
 import { CONTACT } from "../config/contact";
+import { SERVICES_PAGE_JSON_LD, SERVICES_SEO } from "../config/servicesSeo.js";
 import {
   trackCtaClick,
   trackOpenQuickEnquiry,
@@ -516,21 +517,7 @@ const MediaText = styled.p`
    COMPONENT
 ========================= */
 
-export default function Servicios({ onOpenAsesoramiento }) {
-  // SEO base
-  const baseUrl = (
-    import.meta.env.VITE_SITE_URL || window.location.origin
-  ).replace(/\/$/, "");
-  const canonical = `${baseUrl}/services`;
-  const siteName = CONTACT.siteName || "Traver Decoración Textil";
-
-  const title =
-    "Servicios de cortinas, toldos, automatización y decoración textil en Castellón y Valencia";
-  const description =
-    "Explora nuestros servicios de cortinas y estores, toldos, automatización, venecianas, panel japonés, mosquiteras y limpieza. Soluciones a medida con asesoramiento, medición e instalación profesional en Castellón y Valencia.";
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt =
-    "Servicios de Traver Decoración Textil en Castellón y Valencia";
+export default function Servicios({ onOpenAsesoramiento, includeHelmet = true }) {
 
   const services = useMemo(
     () => [
@@ -619,96 +606,53 @@ export default function Servicios({ onOpenAsesoramiento }) {
     []
   );
 
-  // JSON-LD: CollectionPage + ItemList
-  const jsonLd = useMemo(() => {
-    const itemList = {
-      "@type": "ItemList",
-      itemListOrder: "https://schema.org/ItemListOrderAscending",
-      numberOfItems: services.length,
-      itemListElement: services.map((s, idx) => ({
-        "@type": "ListItem",
-        position: idx + 1,
-        name: s.title,
-        url: `${baseUrl}${s.primaryTo}`,
-      })),
-    };
-
-    const collectionPageJsonLd = {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "@id": `${canonical}#collectionpage`,
-      url: canonical,
-      name: title,
-      description,
-      inLanguage: "es-ES",
-      isPartOf: {
-        "@type": "WebSite",
-        "@id": `${baseUrl}/#website`,
-        url: `${baseUrl}/`,
-        name: siteName,
-      },
-      about: { "@id": `${baseUrl}/#business` },
-      mainEntity: itemList,
-      primaryImageOfPage: {
-        "@type": "ImageObject",
-        url: ogImage,
-      },
-    };
-
-    const breadcrumbJsonLd = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "@id": `${canonical}#breadcrumb`,
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Inicio",
-          item: `${baseUrl}/`,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Servicios",
-          item: canonical,
-        },
-      ],
-    };
-
-    return [collectionPageJsonLd, breadcrumbJsonLd];
-  }, [baseUrl, canonical, description, ogImage, services, siteName, title]);
-
   return (
     <Page>
-      <Helmet>
-        <title>{title}</title>
+      {includeHelmet && (
+        <Helmet>
+          <title>{SERVICES_SEO.title}</title>
 
-        <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={canonical} />
+          <meta name="description" content={SERVICES_SEO.description} />
+          <meta name="robots" content={SERVICES_SEO.robots} />
+          <link rel="canonical" href={SERVICES_SEO.canonical} />
 
-        {/* Open Graph */}
-        <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:alt" content={ogImageAlt} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
+          {/* Open Graph */}
+          <meta property="og:site_name" content={SERVICES_SEO.siteName} />
+          <meta property="og:type" content={SERVICES_SEO.ogType} />
+          <meta property="og:locale" content={SERVICES_SEO.ogLocale} />
+          <meta property="og:url" content={SERVICES_SEO.canonical} />
+          <meta property="og:title" content={SERVICES_SEO.title} />
+          <meta
+            property="og:description"
+            content={SERVICES_SEO.description}
+          />
+          <meta property="og:image" content={SERVICES_SEO.ogImage} />
+          <meta property="og:image:alt" content={SERVICES_SEO.ogImageAlt} />
+          <meta
+            property="og:image:width"
+            content={SERVICES_SEO.ogImageWidth}
+          />
+          <meta
+            property="og:image:height"
+            content={SERVICES_SEO.ogImageHeight}
+          />
 
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta name="twitter:image:alt" content={ogImageAlt} />
+          {/* Twitter */}
+          <meta name="twitter:card" content={SERVICES_SEO.twitterCard} />
+          <meta name="twitter:title" content={SERVICES_SEO.title} />
+          <meta
+            name="twitter:description"
+            content={SERVICES_SEO.description}
+          />
+          <meta name="twitter:image" content={SERVICES_SEO.ogImage} />
+          <meta name="twitter:image:alt" content={SERVICES_SEO.ogImageAlt} />
 
-        {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          {/* JSON-LD */}
+          <script type="application/ld+json">
+            {JSON.stringify(SERVICES_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       {/* HERO */}
       <Hero>

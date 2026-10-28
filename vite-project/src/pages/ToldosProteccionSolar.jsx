@@ -13,7 +13,11 @@ import FaqAccordion from "../components/faq/FaqAccordion";
 import AwningAccessories from "../components/toldos/AwningAccessories";
 import SectionIntro from "../components/ui/SectionIntro";
 
-import { CONTACT } from "../config/contact";
+import {
+  TOLDOS_FAQ_ITEMS,
+  TOLDOS_PAGE_JSON_LD,
+  TOLDOS_SEO,
+} from "../config/toldosSeo.js";
 
 /* =========================
    IMAGES
@@ -527,45 +531,6 @@ const AutomationSecondary = styled(Link)`
    DATA
 ========================= */
 
-const FAQ_ITEMS = [
-  {
-    q: "¿Qué tipo de toldo necesito: extensible o cofre?",
-    a: "Depende de la exposición, del uso diario y del nivel de protección que busques. El toldo cofre protege el tejido y el mecanismo cuando está recogido, mientras que el extensible ofrece una solución ligera y muy versátil para terrazas y balcones.",
-    aText:
-      "Depende de la exposición, del uso diario y del nivel de protección que busques. El toldo cofre protege el tejido y el mecanismo cuando está recogido, mientras que el extensible ofrece una solución ligera y muy versátil para terrazas y balcones.",
-  },
-  {
-    q: "¿Instaláis toldos en viviendas y negocios?",
-    a: "Sí. Instalamos toldos a medida tanto en viviendas como en locales, restaurantes, cafeterías, terrazas comerciales y otros espacios exteriores que necesiten protección solar.",
-    aText:
-      "Sí. Instalamos toldos a medida tanto en viviendas como en locales, restaurantes, cafeterías, terrazas comerciales y otros espacios exteriores que necesiten protección solar.",
-  },
-  {
-    q: "¿Se puede motorizar un toldo?",
-    a: "Sí. Podemos instalar toldos motorizados con mando, app, sensores de viento o sol y opciones de automatización. También te asesoramos si quieres integrar el sistema con otros productos del hogar o del negocio.",
-    aText:
-      "Sí. Podemos instalar toldos motorizados con mando, app, sensores de viento o sol y opciones de automatización. También te asesoramos si quieres integrar el sistema con otros productos del hogar o del negocio.",
-  },
-  {
-    q: "¿Incluís visita, medición e instalación?",
-    a: "Sí. Realizamos visita, medición, propuesta y una instalación profesional adaptada al tipo de fachada, estructura o espacio exterior.",
-    aText:
-      "Sí. Realizamos visita, medición, propuesta y una instalación profesional adaptada al tipo de fachada, estructura o espacio exterior.",
-  },
-  {
-    q: "¿Qué pasa si hace viento?",
-    a: "Podemos incorporar sensores de viento para que el toldo se recoja automáticamente cuando detecta rachas, reduciendo riesgos y mejorando la protección del sistema.",
-    aText:
-      "Podemos incorporar sensores de viento para que el toldo se recoja automáticamente cuando detecta rachas, reduciendo riesgos y mejorando la protección del sistema.",
-  },
-  {
-    q: "¿Trabajáis en Castellón y alrededores?",
-    a: "Sí. Realizamos instalaciones de toldos en Castellón y zonas cercanas, estudiando cada caso para recomendar la solución más adecuada según orientación, uso y medidas.",
-    aText:
-      "Sí. Realizamos instalaciones de toldos en Castellón y zonas cercanas, estudiando cada caso para recomendar la solución más adecuada según orientación, uso y medidas.",
-  },
-];
-
 const CARD_ITEMS = [
   {
     badge: "Terrazas y balcones",
@@ -630,78 +595,11 @@ const SECONDARY_ITEMS = [
    PAGE
 ========================= */
 
-export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
-  const baseUrl = "https://www.traverdecoraciontextil.es";
-  const canonical = `${baseUrl}/toldos-proteccion-solar`;
-  const siteName = CONTACT.siteName;
-
-  const title =
-    "Toldos en Castellón | Toldos a medida e instalación profesional";
-  const description =
-    "Instalamos toldos en Castellón y alrededores: toldos extensibles, cofre, verticales, pérgolas y soluciones de protección solar a medida para terrazas, balcones, jardines y negocios.";
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt =
-    "Toldos a medida y protección solar en Castellón — Traver Decoración Textil";
-
-  const businessId = `${baseUrl}/#business`;
-
-  const jsonLd = [
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "@id": `${canonical}#webpage`,
-      url: canonical,
-      name: title,
-      description,
-      inLanguage: "es-ES",
-      isPartOf: { "@id": `${baseUrl}/#website` },
-      about: { "@id": businessId },
-      primaryImageOfPage: {
-        "@type": "ImageObject",
-        url: ogImage,
-      },
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "@id": `${canonical}#breadcrumbs`,
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Inicio",
-          item: `${baseUrl}/`,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Toldos y protección solar",
-          item: canonical,
-        },
-      ],
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "@id": `${canonical}#service`,
-      name: "Instalación de toldos en Castellón",
-      serviceType:
-        "Toldos a medida, instalación de toldos y protección solar exterior",
-      provider: { "@id": businessId },
-      areaServed: [
-        { "@type": "City", name: "Almassora" },
-        { "@type": "City", name: "Castellón de la Plana" },
-        { "@type": "AdministrativeArea", name: "Castellón" },
-      ],
-      offers: {
-        "@type": "Offer",
-        availability: "https://schema.org/InStock",
-        url: canonical,
-      },
-    },
-  ];
-
-  const faqItems = useMemo(() => FAQ_ITEMS, []);
+export default function ToldosProteccionSolar({
+  onOpenAsesoramiento,
+  includeHelmet = true,
+}) {
+  const faqItems = useMemo(() => TOLDOS_FAQ_ITEMS, []);
 
   function openAdvice(pack = "Toldos", source = "toldos_proteccion_solar") {
     trackCtaClick(source, "pedir_asesoramiento");
@@ -711,31 +609,35 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
 
   return (
     <Page>
-      <Helmet>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={canonical} />
+      {includeHelmet && (
+        <Helmet>
+          <title>{TOLDOS_SEO.title}</title>
+          <meta name="description" content={TOLDOS_SEO.description} />
+          <meta name="robots" content={TOLDOS_SEO.robots} />
+          <link rel="canonical" href={TOLDOS_SEO.canonical} />
 
-        <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:alt" content={ogImageAlt} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
+          <meta property="og:site_name" content={TOLDOS_SEO.siteName} />
+          <meta property="og:type" content={TOLDOS_SEO.ogType} />
+          <meta property="og:locale" content={TOLDOS_SEO.ogLocale} />
+          <meta property="og:url" content={TOLDOS_SEO.canonical} />
+          <meta property="og:title" content={TOLDOS_SEO.title} />
+          <meta property="og:description" content={TOLDOS_SEO.description} />
+          <meta property="og:image" content={TOLDOS_SEO.ogImage} />
+          <meta property="og:image:alt" content={TOLDOS_SEO.ogImageAlt} />
+          <meta property="og:image:width" content={TOLDOS_SEO.ogImageWidth} />
+          <meta property="og:image:height" content={TOLDOS_SEO.ogImageHeight} />
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta name="twitter:image:alt" content={ogImageAlt} />
+          <meta name="twitter:card" content={TOLDOS_SEO.twitterCard} />
+          <meta name="twitter:title" content={TOLDOS_SEO.title} />
+          <meta name="twitter:description" content={TOLDOS_SEO.description} />
+          <meta name="twitter:image" content={TOLDOS_SEO.ogImage} />
+          <meta name="twitter:image:alt" content={TOLDOS_SEO.ogImageAlt} />
 
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(TOLDOS_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       <ServiceHero
         eyebrow="Toldos · Protección solar · exterior"
@@ -997,8 +899,8 @@ export default function ToldosProteccionSolar({ onOpenAsesoramiento }) {
 
           <FaqAccordion
             items={faqItems}
-            withSchema
-            canonicalUrl={canonical}
+            withSchema={includeHelmet}
+            canonicalUrl={TOLDOS_SEO.canonical}
             defaultOpenIndex={-1}
             ariaLabel="Preguntas frecuentes sobre toldos en Castellón y protección solar"
           />

@@ -3,8 +3,14 @@ import { useLocation, useNavigationType } from "react-router-dom";
 
 const STORAGE_KEY = "scroll-positions:v5";
 const getKey = (loc) => `${loc.pathname}${loc.search}${loc.hash}`;
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 function readStore() {
+  if (typeof window === "undefined") {
+    return {};
+  }
+
   try {
     return JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "{}");
   } catch {
@@ -30,14 +36,14 @@ export default function ScrollRestoration() {
     }
   }, []);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     return () => {
       storeRef.current[key] = window.scrollY;
       writeStore(storeRef.current);
     };
   }, [key]);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     storeRef.current = readStore();
 
     if (navType === "POP") {

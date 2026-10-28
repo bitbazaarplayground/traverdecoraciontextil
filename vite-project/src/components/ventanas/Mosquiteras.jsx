@@ -6,9 +6,14 @@ import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import { CONTACT } from "../../config/contact";
+import {
+  MOSQUITERAS_FAQ_ITEMS,
+  MOSQUITERAS_HERO_PRELOAD,
+  MOSQUITERAS_PAGE_JSON_LD,
+  MOSQUITERAS_SEO,
+} from "../../config/mosquiterasSeo.js";
 import { trackEvent } from "../../lib/analytics";
 
-import SlickCarouselLazy from "../../components/SlickCarouselLazy";
 import FaqAccordion from "../../components/faq/FaqAccordion";
 import ComplementosVentana from "../../components/ventanas/ComplementosVentana";
 import StickyCtaButton from "../../mobile/StickyCtaButton";
@@ -35,40 +40,26 @@ import mFija600 from "../../assets/servicios/mosquiteras/fija-600.webp";
 import mFija800 from "../../assets/servicios/mosquiteras/fija-800.webp";
 
 /* images */
-import cocinaM1200 from "../../assets/servicios/mosquiteras/carousel/cocinaM-1200.webp";
-import cocinaM400 from "../../assets/servicios/mosquiteras/carousel/cocinaM-400.webp";
-import cocinaM600 from "../../assets/servicios/mosquiteras/carousel/cocinaM-600.webp";
-import cocinaM800 from "../../assets/servicios/mosquiteras/carousel/cocinaM-800.webp";
+import bathroomMosquitera1200 from "../../assets/servicios/mosquiteras/bathroomMosquitera-1200.webp";
+import bathroomMosquitera400 from "../../assets/servicios/mosquiteras/bathroomMosquitera-400.webp";
+import bathroomMosquitera600 from "../../assets/servicios/mosquiteras/bathroomMosquitera-600.webp";
+import bathroomMosquitera800 from "../../assets/servicios/mosquiteras/bathroomMosquitera-800.webp";
 
-import habitacionM1200 from "../../assets/servicios/mosquiteras/carousel/habitacionM-1200.webp";
-import habitacionM400 from "../../assets/servicios/mosquiteras/carousel/habitacionM-400.webp";
-import habitacionM600 from "../../assets/servicios/mosquiteras/carousel/habitacionM-600.webp";
-import habitacionM800 from "../../assets/servicios/mosquiteras/carousel/habitacionM-800.webp";
+import bedroomMosquitera1200 from "../../assets/servicios/mosquiteras/habitacionMosquitera-1200.webp";
+import bedroomMosquitera400 from "../../assets/servicios/mosquiteras/habitacionMosquitera-400.webp";
+import bedroomMosquitera600 from "../../assets/servicios/mosquiteras/habitacionMosquitera-600.webp";
+import bedroomMosquitera800 from "../../assets/servicios/mosquiteras/habitacionMosquitera-800.webp";
 
-import habitacionMo1200 from "../../assets/servicios/mosquiteras/carousel/habitacionMo-1200.webp";
-import habitacionMo400 from "../../assets/servicios/mosquiteras/carousel/habitacionMo-400.webp";
-import habitacionMo600 from "../../assets/servicios/mosquiteras/carousel/habitacionMo-600.webp";
-import habitacionMo800 from "../../assets/servicios/mosquiteras/carousel/habitacionMo-800.webp";
-
-import mosquiteraPatio1200 from "../../assets/servicios/mosquiteras/carousel/mosquiteraPatio-1200.webp";
-import mosquiteraPatio400 from "../../assets/servicios/mosquiteras/carousel/mosquiteraPatio-400.webp";
-import mosquiteraPatio600 from "../../assets/servicios/mosquiteras/carousel/mosquiteraPatio-600.webp";
-import mosquiteraPatio800 from "../../assets/servicios/mosquiteras/carousel/mosquiteraPatio-800.webp";
-
-import salonM1200 from "../../assets/servicios/mosquiteras/carousel/salonM-1200.webp";
-import salonM400 from "../../assets/servicios/mosquiteras/carousel/salonM-400.webp";
-import salonM600 from "../../assets/servicios/mosquiteras/carousel/salonM-600.webp";
-import salonM800 from "../../assets/servicios/mosquiteras/carousel/salonM-800.webp";
-
-import salonMo1200 from "../../assets/servicios/mosquiteras/carousel/salonMo-1200.webp";
-import salonMo400 from "../../assets/servicios/mosquiteras/carousel/salonMo-400.webp";
-import salonMo600 from "../../assets/servicios/mosquiteras/carousel/salonMo-600.webp";
-import salonMo800 from "../../assets/servicios/mosquiteras/carousel/salonMo-800.webp";
+import livingRoomMosquitera1200 from "../../assets/servicios/mosquiteras/livingRoomMosquitera-1200.webp";
+import livingRoomMosquitera400 from "../../assets/servicios/mosquiteras/livingRoomMosquitera-400.webp";
+import livingRoomMosquitera600 from "../../assets/servicios/mosquiteras/livingRoomMosquitera-600.webp";
+import livingRoomMosquitera800 from "../../assets/servicios/mosquiteras/livingRoomMosquitera-800.webp";
 
 // Hero
-const hero_768 = "/mosquiteras/mosquiteraPatio-768.webp";
-const hero_1280 = "/mosquiteras/mosquiteraPatio-1280.webp";
-const hero_1920 = "/mosquiteras/mosquiteraPatio-1920.webp";
+
+const hero_768 = "/mosquiteras/terraceMosquitonet-600.webp";
+const hero_1280 = "/mosquiteras/terraceMosquitonet-800.webp";
+const hero_1920 = "/mosquiteras/terraceMosquitonet-1200.webp";
 
 const responsiveImages = {
   mPuerta: {
@@ -95,46 +86,69 @@ const responsiveImages = {
     800: mFija800,
     1200: mFija1200,
   },
-  cocinaM: {
-    400: cocinaM400,
-    600: cocinaM600,
-    800: cocinaM800,
-    1200: cocinaM1200,
+  bathroomMosquitera: {
+    400: bathroomMosquitera400,
+    600: bathroomMosquitera600,
+    800: bathroomMosquitera800,
+    1200: bathroomMosquitera1200,
   },
-  habitacionM: {
-    400: habitacionM400,
-    600: habitacionM600,
-    800: habitacionM800,
-    1200: habitacionM1200,
+  bedroomMosquitera: {
+    400: bedroomMosquitera400,
+    600: bedroomMosquitera600,
+    800: bedroomMosquitera800,
+    1200: bedroomMosquitera1200,
   },
-  habitacionMo: {
-    400: habitacionMo400,
-    600: habitacionMo600,
-    800: habitacionMo800,
-    1200: habitacionMo1200,
-  },
-  mosquiteraPatio: {
-    400: mosquiteraPatio400,
-    600: mosquiteraPatio600,
-    800: mosquiteraPatio800,
-    1200: mosquiteraPatio1200,
-  },
-  salonM: {
-    400: salonM400,
-    600: salonM600,
-    800: salonM800,
-    1200: salonM1200,
-  },
-  salonMo: {
-    400: salonMo400,
-    600: salonMo600,
-    800: salonMo800,
-    1200: salonMo1200,
+  livingRoomMosquitera: {
+    400: livingRoomMosquitera400,
+    600: livingRoomMosquitera600,
+    800: livingRoomMosquitera800,
+    1200: livingRoomMosquitera1200,
   },
 };
 
 const getSrcSet = (images) =>
   `${images[400]} 400w, ${images[600]} 600w, ${images[800]} 800w, ${images[1200]} 1200w`;
+
+const makeResponsiveImage = ({
+  images,
+  alt,
+  width = "1200",
+  height = "800",
+  fallback = 800,
+}) => ({
+  src: images[fallback],
+  srcSet: getSrcSet(images),
+  alt,
+  width,
+  height,
+});
+
+const GALLERY_IMAGES = [
+  {
+    ...makeResponsiveImage({
+      images: responsiveImages.bedroomMosquitera,
+      alt: "Dormitorio con mosquitera a medida y ventana abierta",
+    }),
+    title: "Dormitorios en calma",
+    text: "Ventilar por la noche sin renunciar al descanso.",
+  },
+  {
+    ...makeResponsiveImage({
+      images: responsiveImages.livingRoomMosquitera,
+      alt: "Salón con mosquitera a medida en ventanal",
+    }),
+    title: "Salones más abiertos",
+    text: "La terraza se disfruta sin que el sistema robe protagonismo.",
+  },
+  {
+    ...makeResponsiveImage({
+      images: responsiveImages.bathroomMosquitera,
+      alt: "Baño luminoso con mosquitera a medida integrada",
+    }),
+    title: "Baños con luz natural",
+    text: "Protección discreta para estancias pequeñas y húmedas.",
+  },
+];
 
 const HERO_SIZES = "100vw";
 const PANEL_IMAGE_SIZES = "(max-width: 979px) 100vw, 50vw";
@@ -176,12 +190,6 @@ function readHashTabId(hash) {
   return clean || null;
 }
 
-const baseUrl = "https://www.traverdecoraciontextil.es";
-
-function getCanonical(baseUrl, pathname) {
-  return `${baseUrl}${pathname}`;
-}
-
 /* =========================
    Styles
 ========================= */
@@ -206,17 +214,22 @@ const Container = styled.div`
 const Hero = styled.section`
   position: relative;
   margin-top: 3.5rem;
-  height: clamp(360px, 46vh, 590px);
-  display: grid;
-  place-items: center;
-  padding: 0 2rem;
-  text-align: center;
+  min-height: 680px;
+  display: flex;
+  align-items: center;
+  padding: 5.5rem 0;
+  text-align: left;
   color: #fff;
   overflow: hidden;
 
+  @media (max-width: 980px) {
+    min-height: 620px;
+    padding: 5rem 0;
+  }
+
   @media (max-width: 768px) {
-    height: clamp(320px, 50vh, 520px);
-    padding: 0 1.5rem;
+    min-height: 560px;
+    padding: 4.5rem 0;
   }
 `;
 
@@ -232,27 +245,33 @@ const HeroImg = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 65%;
-  transform: translateZ(0) scale(1.05);
+  object-position: center 58%;
+  transform: translateZ(0);
   backface-visibility: hidden;
-  will-change: transform;
 `;
 
 const HeroOverlay = styled.div`
   position: absolute;
   inset: 0;
   background: linear-gradient(
-      135deg,
-      rgba(15, 23, 42, 0.54),
-      rgba(15, 23, 42, 0.34)
+      90deg,
+      rgba(0, 0, 0, 0.86),
+      rgba(0, 0, 0, 0.56) 48%,
+      rgba(0, 0, 0, 0.22)
     ),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.38));
+    linear-gradient(to top, rgba(0, 0, 0, 0.58), transparent 58%);
 `;
 
 const HeroInner = styled.div`
   position: relative;
   z-index: 1;
-  max-width: 940px;
+  width: min(1180px, calc(100% - 2.4rem));
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    width: min(1180px, calc(100% - 2rem));
+  }
 `;
 
 const Eyebrow = styled.p`
@@ -264,6 +283,7 @@ const Eyebrow = styled.p`
 `;
 
 const Title = styled.h1`
+  max-width: 760px;
   margin: 0;
   font-size: 3.35rem;
   font-weight: 600;
@@ -274,17 +294,25 @@ const Title = styled.h1`
     color: ${({ theme }) => theme.colors.primary};
   }
 
+  @media (max-width: 980px) {
+    font-size: 2.75rem;
+  }
+
   @media (max-width: 768px) {
     font-size: 2.25rem;
   }
 `;
 
 const Sub = styled.p`
-  max-width: 72ch;
-  margin: 1.1rem auto 0;
-  font-size: 1.15rem;
+  max-width: 48ch;
+  margin: 1.15rem 0 0;
+  font-size: 1.08rem;
   line-height: 1.7;
-  opacity: 0.94;
+  color: rgba(255, 255, 255, 0.8);
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 /* ===== Feature strip ===== */
@@ -742,33 +770,15 @@ const HelpButton = styled.a`
   }
 `;
 
-/* ===== Carousel section (inspiración) ===== */
-const CarouselSection = styled.section`
+/* ===== Inspiration section ===== */
+const InspirationSection = styled.section`
   padding: 4rem 0;
   background: #fafafa;
   border-top: 1px solid rgba(15, 23, 42, 0.08);
   border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-
-  .slick-dots {
-    position: relative;
-    margin-top: 1.25rem;
-  }
-  .slick-dots li {
-    margin: 0 4px;
-  }
-  .slick-dots li button:before {
-    font-size: 8px;
-    opacity: 0.35;
-    color: rgba(17, 17, 17, 0.55);
-  }
-  .slick-dots li.slick-active button:before {
-    opacity: 0.95;
-    transform: scale(1.15);
-    color: ${({ theme }) => theme.colors.primary};
-  }
 `;
 
-const CarouselInner = styled.div`
+const InspirationInner = styled.div`
   width: min(1120px, calc(100% - 2.4rem));
   margin: 0 auto;
 
@@ -844,83 +854,327 @@ const FAQInner = styled.div`
   }
 `;
 
-/* ===== Final CTA ===== */
-const FinalCtaSection = styled.section`
-  padding: 3.8rem 0 4.2rem;
-  background: #fff;
-`;
-
-const FinalCtaCard = styled.div`
-  border-radius: 28px;
-  padding: clamp(1.8rem, 4vw, 3rem);
-  background: linear-gradient(
-    135deg,
-    rgba(15, 23, 42, 0.96),
-    rgba(15, 23, 42, 0.88)
-  );
-  box-shadow: 0 26px 90px rgba(15, 23, 42, 0.14);
-  text-align: center;
-`;
-
-const FinalCtaEyebrow = styled.p`
-  margin: 0 0 0.55rem;
-  color: rgba(243, 210, 162, 0.92);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-size: 0.76rem;
-  font-weight: 800;
-`;
-
-const FinalCtaTitle = styled.h2`
+const InspirationCard = styled.figure`
+  position: relative;
+  min-width: 0;
+  min-height: clamp(420px, 38vw, 560px);
   margin: 0;
-  color: #fffdf9;
-  font-size: clamp(1.9rem, 3vw, 2.7rem);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 8px;
+  background: #f3f4f1;
+  box-shadow: 0 20px 58px rgba(15, 23, 42, 0.12);
+  transition: opacity 320ms ease, filter 320ms ease, box-shadow 420ms ease;
 
-  span {
-    color: ${({ theme }) => theme.colors.primary};
+  &:before {
+    content: "";
+    position: absolute;
+    inset: -24px;
+    z-index: 0;
+    opacity: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        rgba(243, 244, 241, 0.16),
+        rgba(243, 244, 241, 0.16)
+      ),
+      url(${({ $image }) => $image});
+    background-size: cover;
+    background-position: center;
+    filter: blur(18px) saturate(0.86) brightness(0.9);
+    transform: scale(1.08);
+    transition: opacity 520ms ease;
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.58),
+      rgba(0, 0, 0, 0.2) 44%,
+      rgba(0, 0, 0, 0.04)
+    );
+  }
+
+  @media (max-width: 760px) {
+    min-height: min(62vh, 420px);
+    aspect-ratio: 4 / 5;
+    scroll-snap-align: center;
+    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.16);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 `;
 
-const FinalCtaText = styled.p`
-  max-width: 720px;
-  margin: 1rem auto 0;
-  color: rgba(255, 248, 240, 0.82);
-  line-height: 1.8;
-  font-size: 1rem;
+const InspirationImage = styled.img`
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  transform: none;
+  transition: padding 520ms cubic-bezier(0.2, 0.75, 0.22, 1), filter 520ms ease,
+    object-fit 0ms linear;
+
+  @media (max-width: 760px) {
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    transform: none;
+  }
 `;
 
-const FinalCtaActions = styled.div`
-  margin-top: 1.5rem;
+const InspirationCaption = styled.figcaption`
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 3;
+  padding: clamp(1rem, 2vw, 1.45rem);
+  color: #fff;
+  text-shadow: 0 1px 22px rgba(0, 0, 0, 0.55);
+  transition: transform 420ms ease, opacity 420ms ease;
+
+  span {
+    display: block;
+    font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+    font-size: clamp(1.08rem, 1.4vw, 1.45rem);
+    line-height: 1.08;
+    letter-spacing: 0;
+  }
+
+  p {
+    max-width: 29ch;
+    margin: 0.45rem 0 0;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.76);
+  }
+
+  @media (max-width: 760px) {
+    padding: 1rem;
+
+    p {
+      font-size: 0.88rem;
+    }
+  }
+`;
+
+const InspirationGallery = styled.div`
+  --gallery-gap: clamp(0.65rem, 1.1vw, 1rem);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gallery-gap);
+  min-height: clamp(420px, 38vw, 560px);
+  margin-top: clamp(1.45rem, 3vw, 2.25rem);
+  overflow: hidden;
+  border-radius: 8px;
+  background: transparent;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover ${InspirationCard}:not(:hover) {
+      opacity: 0.22;
+      filter: saturate(0.7);
+    }
+
+    ${InspirationCard}:hover {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      opacity: 1;
+      filter: none;
+      transform: none;
+      box-shadow: 0 28px 78px rgba(15, 23, 42, 0.22);
+    }
+
+    ${InspirationCard}:hover:before {
+      opacity: 1;
+    }
+
+    ${InspirationCard}:hover:after {
+      background: linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 0.42),
+          rgba(0, 0, 0, 0.08) 46%,
+          rgba(0, 0, 0, 0.2)
+        ),
+        linear-gradient(to top, rgba(0, 0, 0, 0.42), transparent 44%);
+    }
+
+    ${InspirationCard}:hover ${InspirationImage} {
+      object-fit: contain;
+      padding: clamp(0.7rem, 1.2vw, 1rem);
+      filter: drop-shadow(0 26px 34px rgba(0, 0, 0, 0.2));
+      transform: none;
+    }
+
+    ${InspirationCard}:hover ${InspirationCaption} {
+      transform: translateY(-0.25rem);
+    }
+  }
+
+  @media (max-width: 760px) {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(82vw, 380px);
+    grid-template-columns: none;
+    gap: 0.85rem;
+    width: calc(100% + 2rem);
+    min-height: 0;
+    margin-left: -1rem;
+    padding: 0 1rem 0.65rem;
+    overflow-x: auto;
+    border-radius: 0;
+    background: transparent;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+`;
+
+const FinalSection = styled.section`
+  position: relative;
+  min-height: 620px;
   display: flex;
-  justify-content: center;
-  gap: 0.8rem;
-  flex-wrap: wrap;
+  align-items: center;
+  color: #fff;
+  background: #111;
 `;
 
-const WhatsAppCta = styled.a`
+const FinalImage = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const FinalOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.42)),
+    linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
+`;
+
+const FinalContent = styled.div`
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+
+  ${Kicker} {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  ${Kicker}:after {
+    background: rgba(196, 151, 98, 0.78);
+  }
+`;
+
+const FinalTitle = styled.h2`
+  max-width: 760px;
+  margin: 0.7rem 0 0;
+  font-size: 3.2rem;
+  line-height: 1.06;
+  letter-spacing: 0;
+
+  @media (max-width: 760px) {
+    font-size: 2.15rem;
+  }
+`;
+
+const FinalText = styled.p`
+  max-width: 620px;
+  margin: 1rem 0 0;
+  font-size: 1.03rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.78);
+`;
+
+const FinalActions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.55rem;
+
+  @media (max-width: 540px) {
+    display: grid;
+
+    a {
+      width: 100%;
+    }
+  }
+`;
+
+const PrimaryCta = styled(Link)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 0.9rem 1rem;
-  border-radius: 999px;
-
-  background: rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-
-  font-weight: 850;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 0.76rem;
+  min-height: 52px;
+  padding: 0.9rem 1.15rem;
+  border-radius: 8px;
+  background: ${({ theme }) => theme.colors.primary};
+  color: #fff;
   text-decoration: none;
-  transition: transform 240ms ease, background 240ms ease;
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  transition: transform 220ms ease, filter 220ms ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    filter: brightness(0.96);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, 0.52);
+    outline-offset: 3px;
+  }
+`;
+
+const GhostCta = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0.9rem 1.15rem;
+  border-radius: 8px;
+  border: 1px solid currentColor;
+  color: currentColor;
+  background: transparent;
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  transition: transform 220ms ease, background 220ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
   }
 `;
 
@@ -928,20 +1182,26 @@ const WhatsAppCta = styled.a`
    Component
 ========================= */
 
-export default function Mosquiteras({ onOpenAsesoramiento }) {
+export default function Mosquiteras({
+  onOpenAsesoramiento,
+  includeHelmet = true,
+}) {
   const location = useLocation();
 
-  const baseUrl = "https://www.traverdecoraciontextil.es";
-  const canonical = getCanonical(baseUrl, location.pathname);
-
-  const siteName = CONTACT.siteName;
-
-  const title = `Mosquiteras a medida en Castellón y Valencia | ${siteName}`;
-  const description =
-    "Mosquiteras a medida para ventanas y puertas: enrollables, correderas, plisadas y fijas. Servicio en Castellón y Valencia. Asesoramiento e instalación profesional.";
-
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt = "Mosquiteras a medida — Traver Decoración Textil";
+  const {
+    canonical,
+    description,
+    ogImage,
+    ogImageAlt,
+    ogImageHeight,
+    ogImageWidth,
+    ogLocale,
+    ogType,
+    robots,
+    siteName,
+    title,
+    twitterCard,
+  } = MOSQUITERAS_SEO;
 
   const tabs = useMemo(
     () => [
@@ -1007,7 +1267,7 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
     []
   );
 
-  const initialFromHash = readHashTabId(location.hash);
+  const initialFromHash = includeHelmet ? readHashTabId(location.hash) : null;
 
   const [active, setActive] = useState(() => {
     const match =
@@ -1044,85 +1304,14 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
     const hash = readHashTabId(location.hash);
     if (!hash) return;
     const match = tabs.find((t) => toSlug(t.id) === toSlug(hash));
-    if (match) setActive(match.id);
+    if (!match) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      setActive((prev) => (prev === match.id ? prev : match.id));
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, [location.hash, tabs]);
-
-  const businessId = `${baseUrl}/#business`;
-
-  const jsonLd = useMemo(
-    () => [
-      {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "@id": `${canonical}#webpage`,
-        url: canonical,
-        name: title,
-        description,
-        inLanguage: "es-ES",
-        isPartOf: { "@id": `${baseUrl}/#website` },
-        about: { "@id": businessId },
-        primaryImageOfPage: { "@type": "ImageObject", url: ogImage },
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "Service",
-        "@id": `${canonical}#service`,
-        name: "Mosquiteras a medida",
-        serviceType: "Instalación de mosquiteras",
-        provider: { "@id": businessId },
-        areaServed: [
-          { "@type": "AdministrativeArea", name: "Castellón" },
-          { "@type": "AdministrativeArea", name: "Valencia" },
-        ],
-        url: canonical,
-        description,
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "@id": `${canonical}#breadcrumbs`,
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: "Inicio",
-            item: `${baseUrl}/`,
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            name: "Mosquiteras",
-            item: canonical,
-          },
-        ],
-      },
-    ],
-    [baseUrl, businessId, canonical, description, ogImage, title]
-  );
-
-  const sliderSettings = useMemo(
-    () => ({
-      dots: true,
-      arrows: false,
-      infinite: true,
-      speed: 650,
-      autoplay: true,
-      autoplaySpeed: 3600,
-    }),
-    []
-  );
-
-  const carouselImages = useMemo(
-    () => [
-      responsiveImages.mosquiteraPatio[1200],
-      responsiveImages.salonM[1200],
-      responsiveImages.habitacionM[1200],
-      responsiveImages.cocinaM[1200],
-      responsiveImages.salonMo[1200],
-      responsiveImages.habitacionMo[1200],
-    ],
-    []
-  );
 
   const complementosItems = useMemo(
     () => [
@@ -1182,88 +1371,64 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
   const PACK_QUERY = "mosquiteras";
   const CTA_SOURCE = "mosquiteras_cta";
 
-  const handleOpenCta = (e) => {
-    trackEvent("open_quick_enquiry", { source: CTA_SOURCE, pack: PACK_LABEL });
+  const openAdvisor = (event, source = CTA_SOURCE) => {
+    trackEvent("open_quick_enquiry", { source, pack: PACK_LABEL });
 
     if (typeof onOpenAsesoramiento === "function") {
-      e.preventDefault();
-      onOpenAsesoramiento(PACK_LABEL, CTA_SOURCE);
+      event.preventDefault();
+      onOpenAsesoramiento(PACK_LABEL, source);
     }
   };
 
-  const FAQ_ITEMS = useMemo(
-    () => [
-      {
-        q: "¿Qué tipo de mosquitera es mejor para mi ventana o puerta?",
-        a: "Depende del tipo de apertura, del espacio disponible y de la frecuencia de uso. Las enrollables suelen funcionar muy bien en ventanas de uso diario; las correderas, en balconeras y ventanales; las plisadas, en accesos al exterior; y las fijas, en huecos donde no necesitas apertura de la mosquitera.",
-        aText:
-          "Depende del tipo de apertura, del espacio disponible y de la frecuencia de uso. Las enrollables suelen funcionar muy bien en ventanas de uso diario; las correderas, en balconeras y ventanales; las plisadas, en accesos al exterior; y las fijas, en huecos donde no necesitas apertura de la mosquitera.",
-      },
-      {
-        q: "¿Se pueden instalar sin hacer obra?",
-        a: "Sí. En la mayoría de los casos la instalación es limpia, rápida y sin obra, adaptando el sistema al hueco y al tipo de carpintería existente.",
-        aText:
-          "Sí. En la mayoría de los casos la instalación es limpia, rápida y sin obra, adaptando el sistema al hueco y al tipo de carpintería existente.",
-      },
-      {
-        q: "¿Son compatibles con persianas y ventanas oscilobatientes?",
-        a: "En muchos casos sí, pero depende del espacio disponible y del sistema existente. Por eso recomendamos revisar cada hueco antes de decidir la solución final.",
-        aText:
-          "En muchos casos sí, pero depende del espacio disponible y del sistema existente. Por eso recomendamos revisar cada hueco antes de decidir la solución final.",
-      },
-      {
-        q: "¿Qué mantenimiento necesitan?",
-        a: "Muy poco. Normalmente basta con una limpieza suave periódica para retirar polvo y mantener la malla en buen estado. Te indicamos también el sistema más adecuado si hay mascotas o uso intensivo.",
-        aText:
-          "Muy poco. Normalmente basta con una limpieza suave periódica para retirar polvo y mantener la malla en buen estado. Te indicamos también el sistema más adecuado si hay mascotas o uso intensivo.",
-      },
-      {
-        q: "¿Hacéis medición e instalación en Castellón y Valencia?",
-        a: "Sí. Realizamos medición e instalación profesional para asegurar un ajuste preciso, un funcionamiento cómodo y unos remates limpios.",
-        aText:
-          "Sí. Realizamos medición e instalación profesional para asegurar un ajuste preciso, un funcionamiento cómodo y unos remates limpios.",
-      },
-    ],
-    []
-  );
+  const handleOpenCta = (event) => {
+    openAdvisor(event, CTA_SOURCE);
+  };
+
+  const trackContact = (method, source) => {
+    trackEvent("contact_click", { source, method, pack: PACK_LABEL });
+  };
 
   return (
     <Page>
-      <Helmet>
+      {includeHelmet && (
+        <Helmet>
         <title>{title}</title>
 
         <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
+          <meta name="robots" content={robots} />
         <link rel="canonical" href={canonical} />
 
         <link
           rel="preload"
           as="image"
-          href={hero_1280}
-          imageSrcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
-          imageSizes={HERO_SIZES}
+          href={MOSQUITERAS_HERO_PRELOAD.href}
+          imageSrcSet={MOSQUITERAS_HERO_PRELOAD.imageSrcSet}
+          imageSizes={MOSQUITERAS_HERO_PRELOAD.imageSizes}
           fetchPriority="high"
         />
 
         <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
+          <meta property="og:type" content={ogType} />
+          <meta property="og:locale" content={ogLocale} />
         <meta property="og:url" content={canonical} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:image:alt" content={ogImageAlt} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
+          <meta property="og:image:width" content={ogImageWidth} />
+          <meta property="og:image:height" content={ogImageHeight} />
 
-        <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:card" content={twitterCard} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:image:alt" content={ogImageAlt} />
 
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(MOSQUITERAS_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       <Hero>
         <HeroMedia aria-hidden="true">
@@ -1282,14 +1447,13 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         </HeroMedia>
 
         <HeroInner>
-          <Eyebrow>Mosquiteras a medida · confort diario</Eyebrow>
+          <Eyebrow>Mosquiteras a medida en Castellón</Eyebrow>
           <Title>
             Ventila con libertad, <span>sin renunciar</span> al confort
           </Title>
           <Sub>
-            Mosquiteras a medida para ventanas, balconeras y puertas: soluciones
-            discretas, cómodas y bien acabadas para vivir con más ventilación,
-            más tranquilidad y un uso diario sin complicaciones.
+            Soluciones discretas para ventanas, balconeras y puertas. Medición
+            e instalación en Castellón y provincia.
           </Sub>
         </HeroInner>
       </Hero>
@@ -1311,10 +1475,10 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
             </FeatureText>
           </Feature>
           <Feature>
-            <FeatureTitle>Instalación profesional</FeatureTitle>
+            <FeatureTitle>Castellón y provincia</FeatureTitle>
             <FeatureText>
-              Medición precisa, montaje limpio y remates cuidados para un
-              resultado duradero.
+              Medición precisa, montaje limpio y atención cercana también para
+              proyectos seleccionados en Valencia.
             </FeatureText>
           </Feature>
         </FeaturesGrid>
@@ -1516,26 +1680,42 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         </Container>
       </Section>
 
-      <CarouselSection>
-        <CarouselInner>
+      <InspirationSection>
+        <InspirationInner>
           <SectionTop>
             <Kicker>Inspiración</Kicker>
             <SectionTitle>
-              Soluciones bien resueltas que <span>mejoran el día a día</span>
+              Mosquiteras integradas en <span>espacios reales</span>
             </SectionTitle>
             <SectionLead>
-              Una buena mosquitera no solo protege: también debe integrarse
-              bien, funcionar con suavidad y mantener una estética limpia en la
-              ventana o la puerta.
+              Ideas para ver cómo una mosquitera a medida puede proteger la
+              vivienda sin romper la estética de dormitorios, salones y baños.
             </SectionLead>
           </SectionTop>
 
-          <SlickCarouselLazy
-            images={carouselImages}
-            settings={sliderSettings}
-          />
-        </CarouselInner>
-      </CarouselSection>
+          <InspirationGallery aria-label="Ambientes con mosquiteras a medida">
+            {GALLERY_IMAGES.map((image) => (
+              <InspirationCard key={image.alt} $image={image.src}>
+                <InspirationImage
+                  src={image.src}
+                  srcSet={image.srcSet}
+                  sizes="(max-width: 760px) 82vw, 39vw"
+                  alt={image.alt}
+                  width={image.width}
+                  height={image.height}
+                  loading="lazy"
+                  decoding="async"
+                  fetchPriority="low"
+                />
+                <InspirationCaption>
+                  <span>{image.title}</span>
+                  <p>{image.text}</p>
+                </InspirationCaption>
+              </InspirationCard>
+            ))}
+          </InspirationGallery>
+        </InspirationInner>
+      </InspirationSection>
 
       <ComplementosVentana
         id="sistemas"
@@ -1562,8 +1742,8 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
           </SectionTop>
 
           <FaqAccordion
-            items={FAQ_ITEMS}
-            withSchema={true}
+            items={MOSQUITERAS_FAQ_ITEMS}
+            withSchema={includeHelmet}
             canonicalUrl={canonical}
             defaultOpenIndex={-1}
             ariaLabel="Preguntas frecuentes sobre mosquiteras a medida"
@@ -1571,30 +1751,47 @@ export default function Mosquiteras({ onOpenAsesoramiento }) {
         </FAQInner>
       </FAQSection>
 
-      <FinalCtaSection>
-        <Container>
-          <FinalCtaCard>
-            <FinalCtaEyebrow>Estamos aquí para ayudarte</FinalCtaEyebrow>
-            <FinalCtaTitle>
-              Te ayudamos a elegir la mosquitera <span>adecuada</span>
-            </FinalCtaTitle>
-            <FinalCtaText>
-              Si nos envías una foto del hueco y unas medidas aproximadas, te
-              orientamos con honestidad y te preparamos una propuesta ajustada a
-              tu espacio y a tu forma de uso.
-            </FinalCtaText>
-
-            <FinalCtaActions>
-              <Secondary
-                to={`/contact?pack=${PACK_QUERY}`}
-                onClick={handleOpenCta}
-              >
-                Solicitar asesoramiento
-              </Secondary>
-            </FinalCtaActions>
-          </FinalCtaCard>
-        </Container>
-      </FinalCtaSection>
+      <FinalSection>
+        <FinalImage
+          src={hero_1280}
+          srcSet={`${hero_768} 768w, ${hero_1280} 1280w, ${hero_1920} 1920w`}
+          sizes="100vw"
+          alt="Interior conectado con terraza mediante mosquitera a medida"
+          loading="lazy"
+          decoding="async"
+        />
+        <FinalOverlay />
+        <FinalContent>
+          <Kicker>Empezamos con una foto</Kicker>
+          <FinalTitle>
+            Envíanos el hueco. Te decimos qué solución encaja.
+          </FinalTitle>
+          <FinalText>
+            Una imagen de la ventana o puerta y unas medidas aproximadas bastan
+            para orientarte antes de preparar una propuesta a medida.
+          </FinalText>
+          <FinalActions>
+            <PrimaryCta
+              to={`/contact?pack=${PACK_QUERY}`}
+              onClick={(event) =>
+                openAdvisor(event, "mosquiteras_luxury_final")
+              }
+            >
+              Solicitar asesoramiento
+            </PrimaryCta>
+            <GhostCta
+              href={CONTACT.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() =>
+                trackContact("whatsapp", "mosquiteras_luxury_final")
+              }
+            >
+              WhatsApp
+            </GhostCta>
+          </FinalActions>
+        </FinalContent>
+      </FinalSection>
 
       <StickyCtaButton message="Hola, me gustaría información sobre mosquiteras a medida. Gracias." />
     </Page>

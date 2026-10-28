@@ -3,6 +3,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import styled, { keyframes } from "styled-components";
 import { CONTACT } from "../../config/contact";
+import {
+  AUTOMATIZACION_COMPLETA_HERO_PRELOAD,
+  AUTOMATIZACION_COMPLETA_LEGACY_PAGE_JSON_LD,
+  AUTOMATIZACION_COMPLETA_SEO,
+} from "../../config/automatizacionSeo.js";
 import useRevealOnScroll from "../../hooks/useReveal";
 import { trackEvent } from "../../lib/analytics";
 import StickyCtaButton from "../../mobile/StickyCtaButton";
@@ -81,56 +86,21 @@ const Badge = ({ tone = "primary", children }) => {
    COMPONENT
 ========================= */
 
-export default function Auto({ onOpenAsesoramiento }) {
-  const baseUrl = "https://www.traverdecoraciontextil.es";
-
-  const canonical = `${baseUrl}/automatizacion/completa`;
-  const siteName = CONTACT.siteName || "Traver Decoración Textil";
-
-  const title =
-    "Automatización integral Somfy | Casa inteligente con cortinas y toldos en Castellón y Valencia";
-  const description =
-    "Automatización integral Somfy para vivienda: cortinas, estores, persianas y toldos con sensores, escenas y control por app. Instalación profesional en Castellón y Valencia. Presupuesto orientativo y asesoramiento.";
-
-  const ogImage = `${baseUrl}/og.png`;
-  const ogImageAlt =
-    "Automatización integral Somfy para cortinas, estores, persianas y toldos";
-
-  const jsonLd = [
-    {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "@id": `${canonical}#service`,
-      name: "Automatización integral Somfy",
-      serviceType:
-        "Automatización integral de cortinas, estores, persianas y toldos",
-      provider: {
-        "@type": "HomeAndConstructionBusiness",
-        "@id": `${baseUrl}/#business`,
-        name: siteName,
-        url: `${baseUrl}/`,
-        telephone: CONTACT.phoneLandline,
-      },
-      areaServed: [
-        { "@type": "AdministrativeArea", name: "Castellón" },
-        { "@type": "AdministrativeArea", name: "Valencia" },
-      ],
-      url: canonical,
-      description,
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "@id": `${canonical}#webpage`,
-      url: canonical,
-      name: title,
-      description,
-      inLanguage: "es-ES",
-      isPartOf: { "@id": `${baseUrl}/#website` },
-      about: { "@id": `${canonical}#service` },
-      primaryImageOfPage: { "@type": "ImageObject", url: ogImage },
-    },
-  ];
+export default function Auto({ onOpenAsesoramiento, includeHelmet = true }) {
+  const {
+    canonical,
+    description,
+    ogImage,
+    ogImageAlt,
+    ogImageHeight,
+    ogImageWidth,
+    ogLocale,
+    ogType,
+    robots,
+    siteName,
+    title,
+    twitterCard,
+  } = AUTOMATIZACION_COMPLETA_SEO;
   const WA_PHONE = CONTACT.whatsappNumber;
 
   const packs = useMemo(
@@ -280,39 +250,43 @@ export default function Auto({ onOpenAsesoramiento }) {
   return (
     <Page>
       <RevealStyles>
-        <Helmet>
+        {includeHelmet && (
+          <Helmet>
           <title>{title}</title>
 
           <meta name="description" content={description} />
-          <meta name="robots" content="index,follow" />
+            <meta name="robots" content={robots} />
           <link rel="canonical" href={canonical} />
           <link
             rel="preload"
             as="image"
-            href={heroImages[800]}
-            imageSrcSet={getSrcSet(heroImages)}
-            imageSizes={HERO_SIZES}
+            href={AUTOMATIZACION_COMPLETA_HERO_PRELOAD.href}
+            imageSrcSet={AUTOMATIZACION_COMPLETA_HERO_PRELOAD.imageSrcSet}
+            imageSizes={AUTOMATIZACION_COMPLETA_HERO_PRELOAD.imageSizes}
             fetchPriority="high"
           />
           <meta property="og:site_name" content={siteName} />
-          <meta property="og:type" content="website" />
-          <meta property="og:locale" content="es_ES" />
+            <meta property="og:type" content={ogType} />
+            <meta property="og:locale" content={ogLocale} />
           <meta property="og:url" content={canonical} />
           <meta property="og:title" content={title} />
           <meta property="og:description" content={description} />
           <meta property="og:image" content={ogImage} />
           <meta property="og:image:alt" content={ogImageAlt} />
-          <meta property="og:image:width" content="1200" />
-          <meta property="og:image:height" content="630" />
+            <meta property="og:image:width" content={ogImageWidth} />
+            <meta property="og:image:height" content={ogImageHeight} />
 
-          <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:card" content={twitterCard} />
           <meta name="twitter:title" content={title} />
           <meta name="twitter:description" content={description} />
           <meta name="twitter:image" content={ogImage} />
           <meta name="twitter:image:alt" content={ogImageAlt} />
 
-          <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-        </Helmet>
+            <script type="application/ld+json">
+              {JSON.stringify(AUTOMATIZACION_COMPLETA_LEGACY_PAGE_JSON_LD)}
+            </script>
+          </Helmet>
+        )}
 
         {/* HERO*/}
         <Hero>
@@ -613,7 +587,7 @@ export default function Auto({ onOpenAsesoramiento }) {
             </>
           }
           lead="Lo típico antes de decidir."
-          withSchema
+          withSchema={includeHelmet}
           canonicalUrl={canonical}
         />
       </RevealStyles>

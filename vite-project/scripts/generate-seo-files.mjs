@@ -1,38 +1,33 @@
 import fs from "node:fs";
 import path from "node:path";
+import { argv } from "node:process";
+import { fileURLToPath } from "node:url";
+import { PUBLIC_ROUTES } from "../src/config/publicRoutes.js";
 
-const siteUrl = "https://www.traverdecoraciontextil.es";
+export const SITE_URL = "https://www.traverdecoraciontextil.es";
 
-const routes = [
-  "/",
-  "/propuestas",
-  "/automatizacion",
-  "/automatizacion/completa",
-  "/automatizacion/individual",
-  "/contact",
-  "/panel-japones",
-  "/venecianas",
-  "/cortinas-estores",
-  "/toldos-proteccion-solar",
-  "/mosquiteras",
-  "/services",
-  "/limpieza",
-  "/nosotros",
-];
+export function getSitemapPaths(routes = PUBLIC_ROUTES) {
+  return routes
+    .filter((route) => route.includeInSitemap)
+    .map((route) => route.path);
+}
 
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+export function createSitemapXml(routes = getSitemapPaths()) {
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${routes
   .map(
     (r) => `  <url>
-    <loc>${siteUrl}${r}</loc>
+    <loc>${SITE_URL}${r}</loc>
   </url>`
   )
   .join("\n")}
 </urlset>
 `;
+}
 
-const robots = `User-agent: *
+export function createRobotsTxt() {
+  return `User-agent: *
 Allow: /
 
 Disallow: /admin
@@ -40,12 +35,22 @@ Disallow: /admin/
 Disallow: /auth
 Disallow: /auth/
 
-Sitemap: ${siteUrl}/sitemap.xml
+Sitemap: ${SITE_URL}/sitemap.xml
 `;
+}
 
-const publicDir = path.resolve("public");
+export function writeSeoFiles(publicDir = path.resolve("public")) {
+  fs.writeFileSync(
+    path.join(publicDir, "sitemap.xml"),
+    createSitemapXml()
+  );
+  fs.writeFileSync(path.join(publicDir, "robots.txt"), createRobotsTxt());
+}
 
-fs.writeFileSync(path.join(publicDir, "sitemap.xml"), sitemap);
-fs.writeFileSync(path.join(publicDir, "robots.txt"), robots);
+const isDirectExecution =
+  argv[1] && path.resolve(argv[1]) === fileURLToPath(import.meta.url);
 
-console.log("✅ Generated robots.txt and sitemap.xml for:", siteUrl);
+if (isDirectExecution) {
+  writeSeoFiles();
+  console.log("✅ Generated robots.txt and sitemap.xml for:", SITE_URL);
+}

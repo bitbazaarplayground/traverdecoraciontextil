@@ -2,55 +2,63 @@ import { Helmet } from "react-helmet-async";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../config/contact";
+import { POLITICA_COOKIES_SEO } from "../config/remainingPublicSeo";
 import { openCookiePreferences } from "../utils/cookieConsent";
 
 function useCanonicalUrl() {
   const { pathname, search } = useLocation();
-  const base = import.meta?.env?.VITE_SITE_URL || window.location.origin;
+  const base =
+    import.meta?.env?.VITE_SITE_URL ||
+    (typeof window !== "undefined"
+      ? window.location.origin
+      : "https://www.traverdecoraciontextil.es");
   return `${base}${pathname}${search}`;
 }
 
-export default function PoliticaCookies() {
+export default function PoliticaCookies({ includeHelmet = true }) {
   const canonical = useCanonicalUrl();
   const siteName = CONTACT.siteName;
 
-  const metaTitle = `Política de cookies | ${siteName}`;
-  const metaDescription =
-    "Información sobre las cookies y tecnologías similares utilizadas en esta web, su finalidad, gestión del consentimiento y forma de configuración.";
+  const metaTitle = POLITICA_COOKIES_SEO.title;
+  const metaDescription = POLITICA_COOKIES_SEO.description;
 
-  const webPageJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: metaTitle,
-    url: canonical,
-    description: metaDescription,
-    isPartOf: {
-      "@type": "WebSite",
-      name: siteName,
-      url: import.meta?.env?.VITE_SITE_URL || window.location.origin,
-    },
-  };
+  const webPageJsonLd = includeHelmet
+    ? {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        name: metaTitle,
+        url: canonical,
+        description: metaDescription,
+        isPartOf: {
+          "@type": "WebSite",
+          name: siteName,
+          url: import.meta?.env?.VITE_SITE_URL || window.location.origin,
+        },
+      }
+    : null;
 
   return (
     <Page>
-      <Helmet>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={canonical} />
+      {includeHelmet && (
+        <Helmet>
+          <title>{metaTitle}</title>
+          <meta name="description" content={metaDescription} />
+          <link rel="canonical" href={canonical} />
 
-        <meta property="og:title" content={metaTitle} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={canonical} />
+          <meta property="og:title" content={metaTitle} />
+          <meta property="og:description" content={metaDescription} />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content={canonical} />
 
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={metaTitle} />
-        <meta name="twitter:description" content={metaDescription} />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:title" content={metaTitle} />
+          <meta name="twitter:description" content={metaDescription} />
 
-        <script type="application/ld+json">
-          {JSON.stringify(webPageJsonLd)}
-        </script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(webPageJsonLd)}
+          </script>
+        </Helmet>
+      )}
 
       <Hero>
         <Container>

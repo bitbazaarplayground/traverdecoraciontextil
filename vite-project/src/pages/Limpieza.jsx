@@ -3,7 +3,11 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import FaqAccordion from "../components/faq/FaqAccordion";
 import ServiceHero from "../components/heroes/ServiceHero";
-import { CONTACT } from "../config/contact";
+import {
+  LIMPIEZA_FAQ_ITEMS,
+  LIMPIEZA_PAGE_JSON_LD,
+  LIMPIEZA_SEO,
+} from "../config/limpiezaSeo.js";
 import { trackEvent } from "../lib/analytics";
 import StickyCtaButton from "../mobile/StickyCtaButton";
 
@@ -731,164 +735,57 @@ const FaqWrap = styled.div`
   }
 `;
 
-const faqItems = [
-  {
-    q: "¿Qué tipo de cortinas y textiles podéis limpiar?",
-    a: "Trabajamos con cortinas, visillos y otros textiles decorativos, siempre valorando previamente el tipo de tejido, la confección y el sistema de instalación para aplicar el cuidado más adecuado.",
-    aText:
-      "Trabajamos con cortinas, visillos y otros textiles decorativos, siempre valorando previamente el tipo de tejido, la confección y el sistema de instalación para aplicar el cuidado más adecuado.",
-  },
-  {
-    q: "¿Incluye desmontaje y montaje?",
-    a: "Sí. Puedes elegir una opción básica de limpieza o el servicio completo a domicilio, que incluye desplazamiento, descolgado, limpieza y colocación de nuevo.",
-    aText:
-      "Sí. Puedes elegir una opción básica de limpieza o el servicio completo a domicilio, que incluye desplazamiento, descolgado, limpieza y colocación de nuevo.",
-  },
-  {
-    q: "¿Los precios son fijos?",
-    a: "Los importes mostrados son precios base desde los que partir. Algunas piezas especiales, medidas grandes o tejidos delicados pueden requerir una valoración previa.",
-    aText:
-      "Los importes mostrados son precios base desde los que partir. Algunas piezas especiales, medidas grandes o tejidos delicados pueden requerir valoración previa.",
-  },
-  {
-    q: "¿Puedo solicitar solo la limpieza sin visita a domicilio?",
-    a: "Sí. Si no necesitas desmontaje ni montaje, puedes contratar únicamente la limpieza de la pieza.",
-    aText:
-      "Sí. Si no necesitas desmontaje ni montaje, puedes contratar únicamente la limpieza de la pieza.",
-  },
-  {
-    q: "¿Este servicio es útil como mantenimiento periódico?",
-    a: "Sí. Es una muy buena opción para viviendas habituales, segundas residencias o espacios donde se quiere conservar la presencia del textil en perfecto estado durante más tiempo.",
-    aText:
-      "Sí. Es una muy buena opción para viviendas habituales, segundas residencias o espacios donde se quiere conservar la presencia del textil en perfecto estado durante más tiempo.",
-  },
-];
-
-export default function Limpieza({ onOpenAsesoramiento }) {
-  const baseUrl = (
-    import.meta.env.VITE_SITE_URL || window.location.origin
-  ).replace(/\/$/, "");
-
-  const canonical = `${baseUrl}/limpieza`;
-  const siteName = CONTACT.siteName || "Traver Decoración Textil";
-
-  const title =
-    "Limpieza de cortinas y textiles decorativos | Traver Decoración Textil";
-  const description =
-    "Servicio profesional de limpieza y mantenimiento para cortinas, visillos y textiles decorativos, con opción de desmontaje, limpieza y montaje a domicilio.";
-
-  const ogImage = `${baseUrl}/limpieza/limpieza-1280.webp`;
-  const ogImageAlt =
-    "Servicio de limpieza y mantenimiento de cortinas y textiles decorativos";
-
-  const jsonLd = [
-    {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "@id": `${canonical}#service`,
-      name: "Limpieza y mantenimiento de textiles decorativos",
-      serviceType: "Limpieza de cortinas y textiles decorativos",
-      description,
-      url: canonical,
-      image: ogImage,
-      areaServed: [
-        {
-          "@type": "AdministrativeArea",
-          name: "Castellón",
-        },
-        {
-          "@type": "AdministrativeArea",
-          name: "Valencia",
-        },
-      ],
-      provider: {
-        "@type": "LocalBusiness",
-        name: siteName,
-        url: baseUrl,
-      },
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "@id": `${canonical}#webpage`,
-      url: canonical,
-      name: title,
-      description,
-      inLanguage: "es-ES",
-      isPartOf: {
-        "@type": "WebSite",
-        "@id": `${baseUrl}/#website`,
-        url: `${baseUrl}/`,
-        name: siteName,
-      },
-      about: {
-        "@id": `${canonical}#service`,
-      },
-      primaryImageOfPage: {
-        "@type": "ImageObject",
-        url: ogImage,
-      },
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faqItems.map((item) => ({
-        "@type": "Question",
-        name: item.q,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: item.aText,
-        },
-      })),
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Inicio",
-          item: `${baseUrl}/`,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Limpieza",
-          item: canonical,
-        },
-      ],
-    },
-  ];
+export default function Limpieza({
+  onOpenAsesoramiento,
+  includeHelmet = true,
+}) {
+  const {
+    canonical,
+    description,
+    ogImage,
+    ogImageAlt,
+    ogImageHeight,
+    ogImageWidth,
+    ogLocale,
+    ogType,
+    robots,
+    siteName,
+    title,
+    twitterCard,
+  } = LIMPIEZA_SEO;
 
   return (
     <Page>
-      <Helmet prioritizeSeoTags>
+      {includeHelmet && (
+        <Helmet prioritizeSeoTags>
         <html lang="es" />
         <title>{title}</title>
         <meta name="description" content={description} />
-        <meta name="robots" content="index,follow,max-image-preview:large" />
+          <meta name="robots" content={robots} />
         <link rel="canonical" href={canonical} />
 
         <meta property="og:site_name" content={siteName} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
+          <meta property="og:type" content={ogType} />
+          <meta property="og:locale" content={ogLocale} />
         <meta property="og:url" content={canonical} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:image:alt" content={ogImageAlt} />
-        <meta property="og:image:width" content="1280" />
-        <meta property="og:image:height" content="720" />
+          <meta property="og:image:width" content={ogImageWidth} />
+          <meta property="og:image:height" content={ogImageHeight} />
 
-        <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:card" content={twitterCard} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:image:alt" content={ogImageAlt} />
 
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(LIMPIEZA_PAGE_JSON_LD)}
+          </script>
+        </Helmet>
+      )}
 
       <ServiceHero
         eyebrow="Servicios · Traver Decoración Textil"
@@ -1185,7 +1082,7 @@ export default function Limpieza({ onOpenAsesoramiento }) {
 
         <FaqWrap>
           <FaqAccordion
-            items={faqItems}
+            items={LIMPIEZA_FAQ_ITEMS}
             withSchema={false}
             canonicalUrl={canonical}
             defaultOpenIndex={-1}

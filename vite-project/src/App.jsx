@@ -7,7 +7,6 @@ import AutomatizacionIndividual from "./components/automatizacion/Automatizacion
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop";
-import Mosquiteras from "./components/ventanas/Mosquiteras";
 import Venecianas from "./components/ventanas/Venecianas";
 import Automatizacion from "./pages/Automatizacion";
 import HomePage from "./pages/HomePage";
@@ -33,8 +32,13 @@ const PoliticaPrivacidad = lazy(() => import("./pages/PoliticaPrivacidad"));
 const PoliticaCookies = lazy(() => import("./pages/PoliticaCookies"));
 
 const PanelJapones = lazy(() => import("./components/ventanas/PanelJapones"));
+const Mosquiteras = lazy(() => import("./components/ventanas/Mosquiteras"));
 
-export default function App() {
+export default function App({
+  frameworkMetadataEnabled = false,
+  disableLegacyScrollToTop = false,
+  legacyHelmetRefreshKey = 0,
+}) {
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const [enquiryPack, setEnquiryPack] = useState("General");
   const [enquirySource, setEnquirySource] = useState("cta");
@@ -44,6 +48,7 @@ export default function App() {
     () => pathname === "/admin" || pathname.startsWith("/admin/"),
     [pathname]
   );
+  const includeLegacyHelmet = !frameworkMetadataEnabled;
 
   useEffect(() => {
     initAnalyticsIfAllowed();
@@ -71,25 +76,38 @@ export default function App() {
 
   return (
     <>
-      <ScrollToTop />
+      {!disableLegacyScrollToTop && <ScrollToTop />}
       {!isAdminRoute && <Navbar />}
 
       <Suspense fallback={null}>
-        <Routes>
+        <Routes key={legacyHelmetRefreshKey}>
           <Route
             path="/"
-            element={<HomePage onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <HomePage
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
 
           <Route
             path="/propuestas"
-            element={<Propuestas onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Propuestas
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
 
           <Route
             path="/automatizacion"
             element={
-              <Automatizacion onOpenAsesoramiento={onOpenAsesoramiento} />
+              <Automatizacion
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
             }
           />
           <Route
@@ -97,6 +115,7 @@ export default function App() {
             element={
               <AutomatizacionCompleta
                 onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
               />
             }
           />
@@ -105,31 +124,55 @@ export default function App() {
             element={
               <AutomatizacionIndividual
                 onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
               />
             }
           />
 
           <Route
             path="/contact"
-            element={<ContactPage onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <ContactPage
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
           <Route
             path="/nosotros"
-            element={<Nosotros onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Nosotros
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
 
           <Route
             path="/panel-japones"
-            element={<PanelJapones onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <PanelJapones
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
           <Route
             path="/venecianas"
-            element={<Venecianas onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Venecianas
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
           <Route
             path="/cortinas-estores"
             element={
-              <CortinasEstores onOpenAsesoramiento={onOpenAsesoramiento} />
+              <CortinasEstores
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
             }
           />
           <Route
@@ -137,26 +180,52 @@ export default function App() {
             element={
               <ToldosProteccionSolar
                 onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
               />
             }
           />
 
           <Route
             path="/mosquiteras"
-            element={<Mosquiteras onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Mosquiteras
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
+
           <Route
             path="/services"
-            element={<Servicios onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Servicios
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
           <Route
             path="/limpieza"
-            element={<Limpieza onOpenAsesoramiento={onOpenAsesoramiento} />}
+            element={
+              <Limpieza
+                onOpenAsesoramiento={onOpenAsesoramiento}
+                includeHelmet={includeLegacyHelmet}
+              />
+            }
           />
 
-          <Route path="/aviso-legal" element={<AvisoLegal />} />
-          <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
-          <Route path="/politica-cookies" element={<PoliticaCookies />} />
+          <Route
+            path="/aviso-legal"
+            element={<AvisoLegal includeHelmet={includeLegacyHelmet} />}
+          />
+          <Route
+            path="/politica-privacidad"
+            element={<PoliticaPrivacidad includeHelmet={includeLegacyHelmet} />}
+          />
+          <Route
+            path="/politica-cookies"
+            element={<PoliticaCookies includeHelmet={includeLegacyHelmet} />}
+          />
 
         </Routes>
       </Suspense>

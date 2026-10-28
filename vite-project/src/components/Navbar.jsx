@@ -223,7 +223,7 @@ export default function Navbar({ hidden }) {
                 aria-label="Volver a inicio"
               >
                 <img
-                  src="/logo-640.webp"
+                  src="/logo640.webp"
                   srcSet="/logo160.webp 160w, /logo320.webp 320w, /logo640.webp 640w"
                   sizes="(max-width: 768px) 160px, 220px"
                   alt="Traver logo"
