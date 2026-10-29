@@ -1,5 +1,4 @@
-import { createReadableStreamFromReadable } from "@react-router/node";
-import { PassThrough, Transform } from "node:stream";
+import { PassThrough } from "node:stream";
 import { ServerRouter } from "react-router";
 import { renderToPipeableStream } from "react-dom/server";
 import { ServerStyleSheet, StyleSheetManager } from "styled-components";
@@ -14,49 +13,28 @@ function getStyleContents(styles) {
   return start === -1 || end === -1 ? "" : styles.slice(start + 1, end);
 }
 
-function injectStylesIntoFrameworkPlaceholder(styles) {
-  let buffered = "";
-  let didInject = false;
+function injectStylesIntoFrameworkPlaceholder(document, styles) {
+  const markerIndex = document.indexOf(
+    `id="${FRAMEWORK_STYLES_ELEMENT_ID}"`
+  );
+  const styleStart = document.lastIndexOf("<style", markerIndex);
+  const contentStart = document.indexOf(">", markerIndex) + 1;
+  const styleEnd = document.indexOf("</style>", contentStart);
 
-  return new Transform({
-    transform(chunk, _encoding, callback) {
-      if (didInject) {
-        callback(null, chunk);
-        return;
-      }
+  if (markerIndex === -1 || styleStart === -1 || contentStart === 0 || styleEnd === -1) {
+    throw new Error("Framework document did not render a styled-components placeholder");
+  }
 
-      buffered += chunk.toString();
-      const markerIndex = buffered.indexOf(
-        `id="${FRAMEWORK_STYLES_ELEMENT_ID}"`
-      );
+  return `${document.slice(0, contentStart)}${getStyleContents(styles)}${document.slice(styleEnd)}`;
+}
 
-      if (markerIndex === -1) {
-        callback();
-        return;
-      }
+function readDocument(stream) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
 
-      const styleStart = buffered.lastIndexOf("<style", markerIndex);
-      const contentStart = buffered.indexOf(">", markerIndex) + 1;
-      const styleEnd = buffered.indexOf("</style>", contentStart);
-
-      if (styleStart === -1 || contentStart === 0 || styleEnd === -1) {
-        callback();
-        return;
-      }
-
-      didInject = true;
-      callback(
-        null,
-        `${buffered.slice(0, contentStart)}${getStyleContents(styles)}${buffered.slice(styleEnd)}`
-      );
-    },
-    flush(callback) {
-      callback(
-        didInject
-          ? undefined
-          : new Error("Framework document did not render a <head> element")
-      );
-    },
+    stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+    stream.once("error", reject);
+    stream.once("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
   });
 }
 
@@ -83,6 +61,7 @@ export default function handleRequest(
     let didError = false;
     let shellRendered = false;
     let didSeal = false;
+    let abortTimeout;
 
     const sealSheet = () => {
       if (!didSeal) {
@@ -98,27 +77,36 @@ export default function handleRequest(
       {
         onAllReady() {
           shellRendered = true;
+          clearTimeout(abortTimeout);
           const body = new PassThrough();
-          // The Framework document includes a matching empty style element.
-          // Filling that element after all lazy routes resolve keeps the
-          // server CSS in React's tree, so the client can hydrate it intact.
-          const styledBody = injectStylesIntoFrameworkPlaceholder(
-            sheet.getStyleTags()
-          );
+          const styles = sheet.getStyleTags();
           sealSheet();
-          body.pipe(styledBody);
-
-          responseHeaders.set("Content-Type", "text/html");
-          resolve(
-            new Response(createReadableStreamFromReadable(styledBody), {
-              headers: responseHeaders,
-              status: didError ? 500 : responseStatusCode,
-            })
-          );
-
           pipe(body);
+
+          readDocument(body)
+            .then((document) => {
+              responseHeaders.set("Content-Type", "text/html");
+              resolve(
+                new Response(
+                  injectStylesIntoFrameworkPlaceholder(
+                    // React Router's static writer can preserve NUL bytes in
+                    // text split across streamed chunks. Browsers discard
+                    // them before the client render, so remove them from the
+                    // emitted document to keep hydration text identical.
+                    document.replace(/\0/g, ""),
+                    styles
+                  ),
+                  {
+                    headers: responseHeaders,
+                    status: didError ? 500 : responseStatusCode,
+                  }
+                )
+              );
+            })
+            .catch(reject);
         },
         onShellError(error) {
+          clearTimeout(abortTimeout);
           sealSheet();
           reject(error);
         },
@@ -132,6 +120,6 @@ export default function handleRequest(
       }
     );
 
-    setTimeout(abort, streamTimeout + 1_000);
+    abortTimeout = setTimeout(abort, streamTimeout + 1_000);
   });
 }

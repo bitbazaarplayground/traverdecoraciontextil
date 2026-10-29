@@ -1,5 +1,5 @@
 import { CONTACT } from "./contact.js";
-import { PUBLIC_ROUTES } from "./publicRoutes.js";
+import { getCanonicalPath, PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
 
@@ -18,7 +18,7 @@ function createSeo(path, metadata) {
 
   return {
     path: route.path,
-    canonical: `${SITE_URL}${route.path}`,
+    canonical: `${SITE_URL}${route.canonicalPath}`,
     robots: "index,follow",
     siteName: CONTACT.siteName || "Traver Decoración Textil",
     ogType: "website",
@@ -156,7 +156,7 @@ export const AUTOMATIZACION_PAGE_JSON_LD = [
         "@type": "ListItem",
         position: 2,
         name: "Servicios",
-        item: `${SITE_URL}/services`,
+        item: `${SITE_URL}${getCanonicalPath("/services")}`,
       },
       {
         "@type": "ListItem",
@@ -280,7 +280,7 @@ export const AUTOMATIZACION_COMPLETA_PAGE_JSON_LD = [
         "@type": "ListItem",
         position: 2,
         name: "Servicios",
-        item: `${SITE_URL}/services`,
+        item: `${SITE_URL}${getCanonicalPath("/services")}`,
       },
       {
         "@type": "ListItem",
@@ -396,7 +396,7 @@ export const AUTOMATIZACION_INDIVIDUAL_PAGE_JSON_LD = [
         "@type": "ListItem",
         position: 2,
         name: "Servicios",
-        item: `${SITE_URL}/services`,
+        item: `${SITE_URL}${getCanonicalPath("/services")}`,
       },
       {
         "@type": "ListItem",

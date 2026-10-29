@@ -90,11 +90,11 @@ export default function CookieBanner() {
               si lo aceptas, cookies analíticas para medir el uso del sitio.
             </Text>
             <InlineLinks>
-              <StyledLink to="/politica-cookies">
+              <StyledLink to="/politica-cookies/">
                 Política de cookies
               </StyledLink>
               <Dot>·</Dot>
-              <StyledLink to="/politica-privacidad">
+              <StyledLink to="/politica-privacidad/">
                 Política de privacidad
               </StyledLink>
             </InlineLinks>

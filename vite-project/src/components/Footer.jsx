@@ -95,27 +95,27 @@ export default function Footer({ onOpenAsesoramiento }) {
           <Cols aria-label="Enlaces del sitio">
             <Col>
               <ColTitle>Servicios</ColTitle>
-              <ColLink to="/cortinas-estores">Cortinas & estores</ColLink>
-              <ColLink to="/toldos-proteccion-solar">Toldos</ColLink>
-              <ColLink to="/automatizacion">Automatización</ColLink>
-              <ColLink to="/mosquiteras">Mosquiteras</ColLink>
-              <ColLink to="/panel-japones">Panel japonés</ColLink>
-              <ColLink to="/venecianas">Venecianas</ColLink>
+              <ColLink to="/cortinas-estores/">Cortinas & estores</ColLink>
+              <ColLink to="/toldos-proteccion-solar/">Toldos</ColLink>
+              <ColLink to="/automatizacion/">Automatización</ColLink>
+              <ColLink to="/mosquiteras/">Mosquiteras</ColLink>
+              <ColLink to="/panel-japones/">Panel japonés</ColLink>
+              <ColLink to="/venecianas/">Venecianas</ColLink>
             </Col>
 
             <Col>
               <ColTitle>Empresa</ColTitle>
-              <ColLink to="/propuestas">Propuestas</ColLink>
-              <ColLink to="/services">Servicios</ColLink>
-              <ColLink to="/contact">Contacto</ColLink>
+              <ColLink to="/propuestas/">Propuestas</ColLink>
+              <ColLink to="/services/">Servicios</ColLink>
+              <ColLink to="/contact/">Contacto</ColLink>
 
               <Divider />
 
-              <ColLink to="/aviso-legal">Aviso legal</ColLink>
-              <ColLink to="/politica-privacidad">
+              <ColLink to="/aviso-legal/">Aviso legal</ColLink>
+              <ColLink to="/politica-privacidad/">
                 Política de privacidad
               </ColLink>
-              <ColLink to="/politica-cookies">Política de cookies</ColLink>
+              <ColLink to="/politica-cookies/">Política de cookies</ColLink>
               <ColButton type="button" onClick={openCookiePreferences}>
                 Configurar cookies
               </ColButton>
@@ -188,31 +188,31 @@ export default function Footer({ onOpenAsesoramiento }) {
             <Acc>
               <AccSummary>Servicios</AccSummary>
               <AccBody>
-                <MobileLink to="/cortinas-estores">
+                <MobileLink to="/cortinas-estores/">
                   Cortinas & estores
                 </MobileLink>
-                <MobileLink to="/toldos-proteccion-solar">Toldos</MobileLink>
-                <MobileLink to="/automatizacion">Automatización</MobileLink>
-                <MobileLink to="/mosquiteras">Mosquiteras</MobileLink>
-                <MobileLink to="/panel-japones">Panel japonés</MobileLink>
-                <MobileLink to="/venecianas">Venecianas</MobileLink>
+                <MobileLink to="/toldos-proteccion-solar/">Toldos</MobileLink>
+                <MobileLink to="/automatizacion/">Automatización</MobileLink>
+                <MobileLink to="/mosquiteras/">Mosquiteras</MobileLink>
+                <MobileLink to="/panel-japones/">Panel japonés</MobileLink>
+                <MobileLink to="/venecianas/">Venecianas</MobileLink>
               </AccBody>
             </Acc>
 
             <Acc>
               <AccSummary>Empresa</AccSummary>
               <AccBody>
-                <MobileLink to="/propuestas">Propuestas</MobileLink>
-                <MobileLink to="/services">Servicios</MobileLink>
-                <MobileLink to="/contact">Contacto</MobileLink>
+                <MobileLink to="/propuestas/">Propuestas</MobileLink>
+                <MobileLink to="/services/">Servicios</MobileLink>
+                <MobileLink to="/contact/">Contacto</MobileLink>
 
                 <Divider />
 
-                <MobileLink to="/aviso-legal">Aviso legal</MobileLink>
-                <MobileLink to="/politica-privacidad">
+                <MobileLink to="/aviso-legal/">Aviso legal</MobileLink>
+                <MobileLink to="/politica-privacidad/">
                   Política de privacidad
                 </MobileLink>
-                <MobileLink to="/politica-cookies">
+                <MobileLink to="/politica-cookies/">
                   Política de cookies
                 </MobileLink>
                 <MobileButton type="button" onClick={openCookiePreferences}>
@@ -305,9 +305,9 @@ export default function Footer({ onOpenAsesoramiento }) {
             © {year} {CONTACT.siteName}. Todos los derechos reservados.
           </Copy>
           <MiniLinks>
-            <MiniLink to="/contact">Pedir asesoramiento</MiniLink>
+            <MiniLink to="/contact/">Pedir asesoramiento</MiniLink>
             <Dot>·</Dot>
-            <MiniLink to="/propuestas">Ver propuestas</MiniLink>
+            <MiniLink to="/propuestas/">Ver propuestas</MiniLink>
           </MiniLinks>
         </Bottom>
       </Inner>

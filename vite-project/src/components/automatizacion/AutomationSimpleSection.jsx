@@ -59,7 +59,7 @@ export default function AutomationSimpleSection() {
 
         <Right>
           <BridgeCardLink
-            to="/automatizacion/individual"
+            to="/automatizacion/individual/"
             aria-label="Ver automatización individual"
           >
             <BridgeMedia>

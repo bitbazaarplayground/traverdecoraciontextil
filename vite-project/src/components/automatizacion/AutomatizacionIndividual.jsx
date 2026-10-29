@@ -589,7 +589,7 @@ const PackFine = styled.p`
 ========================= */
 
 export default function AutomatizacionIndividual({
-  contactTo = "/contact",
+  contactTo = "/contact/",
   onOpenAsesoramiento,
   includeHelmet = true,
 }) {

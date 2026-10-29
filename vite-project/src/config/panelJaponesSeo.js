@@ -1,5 +1,5 @@
 import { CONTACT } from "./contact.js";
-import { PUBLIC_ROUTES } from "./publicRoutes.js";
+import { getCanonicalPath, PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
 const PANEL_JAPONES_PATH = "/panel-japones";
@@ -13,7 +13,7 @@ if (!panelJaponesRoute) {
 
 export const PANEL_JAPONES_SEO = {
   path: panelJaponesRoute.path,
-  canonical: `${SITE_URL}${panelJaponesRoute.path}`,
+  canonical: `${SITE_URL}${panelJaponesRoute.canonicalPath}`,
   title:
     "Panel japonés a medida | Traver Decoración Textil (Castellón y Valencia)",
   description:
@@ -80,7 +80,7 @@ export const PANEL_JAPONES_PAGE_JSON_LD = [
         "@type": "ListItem",
         position: 2,
         name: "Servicios",
-        item: `${SITE_URL}/services`,
+        item: `${SITE_URL}${getCanonicalPath("/services")}`,
       },
       {
         "@type": "ListItem",

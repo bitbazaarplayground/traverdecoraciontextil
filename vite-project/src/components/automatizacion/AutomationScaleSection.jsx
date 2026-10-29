@@ -62,7 +62,7 @@ export default function AutomationScaleSection() {
 
         <Right>
           <BridgeCardLink
-            to="/automatizacion/completa"
+            to="/automatizacion/completa/"
             aria-label="Ver automatización completa"
           >
             <BridgeMedia>

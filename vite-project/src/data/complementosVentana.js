@@ -23,7 +23,7 @@ export const PRODUCTOS_VENTANA = [
     key: "cortinas-estores",
     title: "Cortinas y estores",
     desc: "Textiles a medida para controlar luz y privacidad.",
-    to: "/cortinas-estores",
+    to: "/cortinas-estores/",
     img: {
       src: cortinas640,
       srcSet: `${cortinas320} 320w, ${cortinas640} 640w, ${cortinas960} 960w`,
@@ -36,7 +36,7 @@ export const PRODUCTOS_VENTANA = [
     key: "panel-japones",
     title: "Panel japonés",
     desc: "Ideal para puertas correderas y grandes ventanales.",
-    to: "/panel-japones",
+    to: "/panel-japones/",
     img: {
       src: panel640,
       srcSet: `${panel320} 320w, ${panel640} 640w, ${panel960} 960w`,
@@ -49,7 +49,7 @@ export const PRODUCTOS_VENTANA = [
     key: "venecianas",
     title: "Venecianas",
     desc: "Control solar preciso con privacidad regulable.",
-    to: "/venecianas",
+    to: "/venecianas/",
     img: {
       src: venecianas640,
       srcSet: `${venecianas320} 320w, ${venecianas640} 640w, ${venecianas960} 960w`,
@@ -62,7 +62,7 @@ export const PRODUCTOS_VENTANA = [
     key: "automatizacion",
     title: "Automatización",
     desc: "Sistemas motorizados y control inteligente del hogar.",
-    to: "/automatizacion",
+    to: "/automatizacion/",
     img: {
       src: domotica640,
       srcSet: `${domotica320} 320w, ${domotica640} 640w, ${domotica960} 960w`,
@@ -75,7 +75,7 @@ export const PRODUCTOS_VENTANA = [
     key: "toldos-proteccion-solar",
     title: "Toldos",
     desc: "Protección solar exterior para ganar sombra y confort.",
-    to: "/toldos-proteccion-solar",
+    to: "/toldos-proteccion-solar/",
     img: {
       src: toldoCofre640,
       srcSet: `${toldoCofre320} 320w, ${toldoCofre640} 640w, ${toldoCofre960} 960w`,

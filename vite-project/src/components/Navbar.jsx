@@ -238,20 +238,20 @@ export default function Navbar({ hidden }) {
 
           <RightWrapper>
             <DesktopLinks>
-              <StyledLink to="/services" $scrolled={scrolled} $isHome={isHome}>
+              <StyledLink to="/services/" $scrolled={scrolled} $isHome={isHome}>
                 Servicios
               </StyledLink>
               <StyledLink
-                to="/propuestas"
+                to="/propuestas/"
                 $scrolled={scrolled}
                 $isHome={isHome}
               >
                 Propuestas
               </StyledLink>
-              <StyledLink to="/nosotros" $scrolled={scrolled} $isHome={isHome}>
+              <StyledLink to="/nosotros/" $scrolled={scrolled} $isHome={isHome}>
                 Nosotros
               </StyledLink>
-              <StyledLink to="/contact" $scrolled={scrolled} $isHome={isHome}>
+              <StyledLink to="/contact/" $scrolled={scrolled} $isHome={isHome}>
                 Contacto
               </StyledLink>
             </DesktopLinks>
@@ -307,10 +307,10 @@ export default function Navbar({ hidden }) {
                   boxShadow: "-4px 0 12px rgba(0, 0, 0, 0.1)",
                 }}
               >
-                <MobileLink to="/services">Servicios</MobileLink>
-                <MobileLink to="/propuestas">Propuestas</MobileLink>
-                <MobileLink to="/nosotros">Nosotros</MobileLink>
-                <MobileLink to="/contact">Contacto</MobileLink>
+                <MobileLink to="/services/">Servicios</MobileLink>
+                <MobileLink to="/propuestas/">Propuestas</MobileLink>
+                <MobileLink to="/nosotros/">Nosotros</MobileLink>
+                <MobileLink to="/contact/">Contacto</MobileLink>
               </Motion.motion.aside>
             </>
           )}
@@ -322,10 +322,10 @@ export default function Navbar({ hidden }) {
             onClick={() => setMenuOpen(false)}
           />
           <MobileMenuBase data-open={menuOpen ? "true" : "false"}>
-            <MobileLink to="/services">Servicios</MobileLink>
-            <MobileLink to="/propuestas">Propuestas</MobileLink>
-            <MobileLink to="/nosotros">Nosotros</MobileLink>
-            <MobileLink to="/contact">Contacto</MobileLink>
+            <MobileLink to="/services/">Servicios</MobileLink>
+            <MobileLink to="/propuestas/">Propuestas</MobileLink>
+            <MobileLink to="/nosotros/">Nosotros</MobileLink>
+            <MobileLink to="/contact/">Contacto</MobileLink>
           </MobileMenuBase>
         </>
       )}

@@ -801,7 +801,7 @@ export default function Limpieza({
         hero1920={hero_1920}
         objectPosition="center"
         primaryLabel="Solicitar información"
-        primaryTo="/contact"
+        primaryTo="/contact/"
         primaryTrackSource="limpieza_primary"
         primaryPack="Limpieza"
         secondaryLabel="Ver precios"
@@ -1051,7 +1051,7 @@ export default function Limpieza({
           </TrustText>
 
           <TrustCTA
-            to="/contact"
+            to="/contact/"
             onClick={(e) => {
               e.preventDefault();
 

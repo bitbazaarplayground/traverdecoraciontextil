@@ -1,5 +1,5 @@
 import { CONTACT } from "./contact.js";
-import { PUBLIC_ROUTES } from "./publicRoutes.js";
+import { getCanonicalPath, PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
 const CORTINAS_PATH = "/cortinas-estores";
@@ -18,7 +18,7 @@ if (!cortinasRoute) {
  */
 export const CORTINAS_SEO = {
   path: cortinasRoute.path,
-  canonical: `${SITE_URL}${cortinasRoute.path}`,
+  canonical: `${SITE_URL}${cortinasRoute.canonicalPath}`,
   title: "Cortinas y estores a medida en Castellón | Medición e instalación",
   description:
     "Cortinas y estores a medida en Castellón: tejidos seleccionados, control de luz y privacidad, medición e instalación profesional para viviendas y negocios.",
@@ -63,7 +63,7 @@ export const CORTINAS_PAGE_JSON_LD = [
         "@type": "ListItem",
         position: 2,
         name: "Servicios",
-        item: `${SITE_URL}/services`,
+        item: `${SITE_URL}${getCanonicalPath("/services")}`,
       },
       {
         "@type": "ListItem",

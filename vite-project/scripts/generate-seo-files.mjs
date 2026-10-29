@@ -9,7 +9,7 @@ export const SITE_URL = "https://www.traverdecoraciontextil.es";
 export function getSitemapPaths(routes = PUBLIC_ROUTES) {
   return routes
     .filter((route) => route.includeInSitemap)
-    .map((route) => route.path);
+    .map((route) => route.canonicalPath ?? route.path);
 }
 
 export function createSitemapXml(routes = getSitemapPaths()) {

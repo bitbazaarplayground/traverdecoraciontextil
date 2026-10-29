@@ -847,7 +847,7 @@ export default function CortinasEstoresPremium({
 
           <InlineSeoNote>
             También trabajamos{" "}
-            <Link to="/automatizacion">
+            <Link to="/automatizacion/">
               automatización para cortinas y estores
             </Link>
             , con opciones de motor, mando y control inteligente.

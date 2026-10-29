@@ -528,7 +528,7 @@ export default function Servicios({ onOpenAsesoramiento, includeHelmet = true })
         text: "Cortinas y estores a medida para definir la atmósfera de cada estancia, con tejidos, confección y sistemas seleccionados con criterio.",
         img: cortinasServicios,
         alt: "Cortinas y estores a medida en interior",
-        primaryTo: "/cortinas-estores",
+        primaryTo: "/cortinas-estores/",
         primaryLabel: "Ver detalles",
       },
       {
@@ -538,7 +538,7 @@ export default function Servicios({ onOpenAsesoramiento, includeHelmet = true })
         text: "Toldos y soluciones de protección solar a medida para terrazas, jardines y fachadas: confort térmico, durabilidad y una estética cuidada.",
         img: toldosProteccionSolar,
         alt: "Toldos y protección solar a medida",
-        primaryTo: "/toldos-proteccion-solar",
+        primaryTo: "/toldos-proteccion-solar/",
         primaryLabel: "Ver detalles",
       },
       {
@@ -548,7 +548,7 @@ export default function Servicios({ onOpenAsesoramiento, includeHelmet = true })
         text: "Motores, sensores y control inteligente para cortinas, estores y toldos. Integración cuidadosa y escenas que encajan con tu rutina.",
         img: somfyApp,
         alt: "Automatización para cortinas, estores y toldos",
-        primaryTo: "/automatizacion",
+        primaryTo: "/automatizacion/",
         primaryLabel: "Ver detalles",
       },
       {
@@ -558,7 +558,7 @@ export default function Servicios({ onOpenAsesoramiento, includeHelmet = true })
         text: "Asesoramiento, medición, confección e instalación para proyectos de decoración textil y protección solar a medida, con una propuesta coherente para cada espacio.",
         img: proyecto,
         alt: "Proyectos a medida: asesoramiento, medición e instalación",
-        primaryTo: "/propuestas",
+        primaryTo: "/propuestas/",
         primaryLabel: "Ver propuestas",
       },
       {
@@ -568,7 +568,7 @@ export default function Servicios({ onOpenAsesoramiento, includeHelmet = true })
         text: "Soluciones ideales para ventanales amplios y espacios contemporáneos. Te ayudamos a elegir tejido, apertura y caída para un resultado impecable.",
         img: panelJaponesImg,
         alt: "Panel japonés y cortinas verticales para ventanales",
-        primaryTo: "/panel-japones",
+        primaryTo: "/panel-japones/",
         primaryLabel: "Ver detalles",
       },
       {
@@ -578,7 +578,7 @@ export default function Servicios({ onOpenAsesoramiento, includeHelmet = true })
         text: "Aluminio o madera (según colección) con regulación milimétrica de la entrada de luz. Instalación limpia y acabados premium.",
         img: venecianasImg,
         alt: "Venecianas instaladas en ventana con control de luz",
-        primaryTo: "/venecianas",
+        primaryTo: "/venecianas/",
         primaryLabel: "Ver detalles",
       },
       {
@@ -588,7 +588,7 @@ export default function Servicios({ onOpenAsesoramiento, includeHelmet = true })
         text: "Soluciones a medida para ventanas y puertas: discretas, resistentes y fáciles de usar.",
         img: mosquiterasImg,
         alt: "Mosquiteras a medida para ventanas y puertas",
-        primaryTo: "/mosquiteras",
+        primaryTo: "/mosquiteras/",
         primaryLabel: "Ver detalles",
       },
       {
@@ -599,7 +599,7 @@ export default function Servicios({ onOpenAsesoramiento, includeHelmet = true })
         text: "Servicio de limpieza para cortinas, estores y textiles decorativos, con opciones de recogida, desmontaje y montaje según cada necesidad.",
         img: limpiezaImg,
         alt: "Servicio profesional de limpieza para cortinas y textiles decorativos",
-        primaryTo: "/limpieza",
+        primaryTo: "/limpieza/",
         primaryLabel: "Ver detalles",
       },
     ],

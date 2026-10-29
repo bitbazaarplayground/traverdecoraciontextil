@@ -1,30 +1,16 @@
 // src/pages/AvisoLegal.jsx
 import { Helmet } from "react-helmet-async";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../config/contact";
 import { AVISO_LEGAL_SEO } from "../config/remainingPublicSeo";
-
-/* =========================
-   Helpers
-========================= */
-
-function useCanonicalUrl() {
-  const { pathname, search } = useLocation();
-  const base =
-    import.meta?.env?.VITE_SITE_URL ||
-    (typeof window !== "undefined"
-      ? window.location.origin
-      : "https://www.traverdecoraciontextil.es");
-  return `${base}${pathname}${search}`;
-}
 
 /* =========================
    Page
 ========================= */
 
 export default function AvisoLegal({ includeHelmet = true }) {
-  const canonical = useCanonicalUrl();
+  const canonical = AVISO_LEGAL_SEO.canonical;
   const siteName = CONTACT.siteName;
 
   const metaTitle = AVISO_LEGAL_SEO.title;
@@ -198,11 +184,11 @@ export default function AvisoLegal({ includeHelmet = true }) {
             <H2>7. Protección de datos y cookies</H2>
             <P>
               El tratamiento de datos personales se regula en la{" "}
-              <InlineLink to="/politica-privacidad">
+              <InlineLink to="/politica-privacidad/">
                 Política de privacidad
               </InlineLink>
               . El uso de cookies se regula en la{" "}
-              <InlineLink to="/politica-cookies">
+              <InlineLink to="/politica-cookies/">
                 Política de cookies
               </InlineLink>
               .

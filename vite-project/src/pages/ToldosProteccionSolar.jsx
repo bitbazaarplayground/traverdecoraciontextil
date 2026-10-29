@@ -794,7 +794,7 @@ export default function ToldosProteccionSolar({
           <AutomationRight>
             <AutomationButtons>
               <AutomationPrimary
-                to="/contact"
+                to="/contact/"
                 onClick={(e) => {
                   e.preventDefault();
                   openAdvice("Toldos motorizados", "toldos_automatizacion_cta");
@@ -803,7 +803,7 @@ export default function ToldosProteccionSolar({
                 Pedir asesoramiento
               </AutomationPrimary>
 
-              <AutomationSecondary to="/automatizacion">
+              <AutomationSecondary to="/automatizacion/">
                 Ver automatización <span aria-hidden="true">→</span>
               </AutomationSecondary>
             </AutomationButtons>

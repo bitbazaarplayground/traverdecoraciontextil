@@ -1,7 +1,6 @@
 import { HelmetProvider } from "react-helmet-async";
 import { Links, Meta, Outlet, Scripts } from "react-router";
 import { ThemeProvider } from "styled-components";
-import NetlifyFormsRegistry from "./components/contact/NetlifyFormsRegistry.jsx";
 import {
   FRAMEWORK_STYLES_ELEMENT_ID,
   getFrameworkStylesHydrationText,
@@ -69,7 +68,6 @@ export function Layout({ children }) {
       </head>
       <body>
         {children}
-        <NetlifyFormsRegistry />
         <Scripts />
       </body>
     </html>

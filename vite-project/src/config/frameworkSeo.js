@@ -141,7 +141,9 @@ const FRAMEWORK_SEO_ROUTES = [
 ];
 
 export function getFrameworkSeoRoute(pathname) {
-  return FRAMEWORK_SEO_ROUTES.find(({ path }) => path === pathname) ?? null;
+  const normalizedPath = pathname === "/" ? "/" : pathname.replace(/\/+$/, "");
+
+  return FRAMEWORK_SEO_ROUTES.find(({ path }) => path === normalizedPath) ?? null;
 }
 
 export function getFrameworkMetaDescriptors(pathname) {

@@ -1,21 +1,13 @@
 // pages/PoliticaPrivacidad.jsx
 
 import { Helmet } from "react-helmet-async";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../config/contact";
 import { POLITICA_PRIVACIDAD_SEO } from "../config/remainingPublicSeo";
 
-function useCanonicalUrl() {
-  const { pathname, search } = useLocation();
-  const base =
-    import.meta?.env?.VITE_SITE_URL ||
-    (typeof window !== "undefined" ? window.location.origin : "");
-  return `${base}${pathname}${search}`;
-}
-
 export default function PoliticaPrivacidad({ includeHelmet = true }) {
-  const canonical = useCanonicalUrl();
+  const canonical = POLITICA_PRIVACIDAD_SEO.canonical;
   const siteName = CONTACT.siteName;
 
   const metaTitle = POLITICA_PRIVACIDAD_SEO.title;
@@ -82,7 +74,7 @@ export default function PoliticaPrivacidad({ includeHelmet = true }) {
           </Sub>
 
           <BackRow>
-            <BackLink to="/contact">¿Tienes dudas? Contactar</BackLink>
+            <BackLink to="/contact/">¿Tienes dudas? Contactar</BackLink>
           </BackRow>
         </Container>
       </Hero>
@@ -258,7 +250,7 @@ export default function PoliticaPrivacidad({ includeHelmet = true }) {
 
               <P>
                 Puedes consultar más información en nuestra{" "}
-                <StyledRouterLink to="/politica-cookies">
+                <StyledRouterLink to="/politica-cookies/">
                   Política de cookies
                 </StyledRouterLink>
                 .
@@ -280,9 +272,9 @@ export default function PoliticaPrivacidad({ includeHelmet = true }) {
                 </SmallText>
 
                 <MiniNav>
-                  <MiniLink to="/aviso-legal">Aviso legal</MiniLink>
+                  <MiniLink to="/aviso-legal/">Aviso legal</MiniLink>
                   <Dot>·</Dot>
-                  <MiniLink to="/politica-cookies">
+                  <MiniLink to="/politica-cookies/">
                     Política de cookies
                   </MiniLink>
                 </MiniNav>

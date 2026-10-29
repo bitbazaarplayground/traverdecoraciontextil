@@ -429,7 +429,7 @@ export default function ServicesSection() {
               : {})}
           >
             <MediaLink
-              to="/cortinas-estores"
+              to="/cortinas-estores/"
               aria-label="Ver Cortinas y Estores"
             >
               <Media>
@@ -472,7 +472,7 @@ export default function ServicesSection() {
               : {})}
           >
             <MediaLink
-              to="/toldos-proteccion-solar"
+              to="/toldos-proteccion-solar/"
               aria-label="Ir a Toldos y Protección Solar"
             >
               <Media>
@@ -515,7 +515,7 @@ export default function ServicesSection() {
               : {})}
           >
             <MediaLink
-              to="/automatizacion"
+              to="/automatizacion/"
               aria-label="Ir a Automatización del Hogar"
             >
               <Media>
@@ -554,7 +554,7 @@ export default function ServicesSection() {
 
           <AllServicesLinkBase
             ref={magnetRef}
-            to="/services"
+            to="/services/"
             aria-label="Ver todos los servicios"
             onMouseMove={setMagnet}
             onMouseLeave={resetMagnet}

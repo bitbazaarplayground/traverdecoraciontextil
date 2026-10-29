@@ -491,7 +491,7 @@ export default function ProcesoToldosSlider({
 
         <Bottom>
           <CTA
-            to="/contact"
+            to="/contact/"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.99 }}
             onClick={(e) => {

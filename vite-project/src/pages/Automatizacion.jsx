@@ -254,7 +254,7 @@ export default function Automatizacion({
 
           <HeroActions>
             <PrimaryButton
-              href="/contact"
+              href="/contact/"
               onClick={(e) => {
                 e.preventDefault();
 
@@ -343,7 +343,7 @@ export default function Automatizacion({
 
                 <CardActions>
                   <MiniPrimary
-                    to="/contact"
+                    to="/contact/"
                     onClick={(e) => {
                       e.preventDefault();
 
@@ -421,7 +421,7 @@ export default function Automatizacion({
 
             <PathGrid>
               <PathCard
-                to="/automatizacion/completa"
+                to="/automatizacion/completa/"
                 aria-label="Automatización integral del hogar"
               >
                 <PathMedia>
@@ -454,7 +454,7 @@ export default function Automatizacion({
               </PathCard>
 
               <PathCard
-                to="/automatizacion/individual"
+                to="/automatizacion/individual/"
                 aria-label="Automatización por zonas"
               >
                 <PathMedia>
@@ -678,7 +678,7 @@ export default function Automatizacion({
 
               <CTAButtons>
                 <CTAButtonPrimary
-                  href="/contact"
+                  href="/contact/"
                   onClick={(e) => {
                     e.preventDefault();
 

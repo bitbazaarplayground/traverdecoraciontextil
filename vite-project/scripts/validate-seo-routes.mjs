@@ -31,28 +31,34 @@ const EXPECTED_PUBLIC_PATHS = [
 
 const EXPECTED_SITEMAP_PATHS = [
   "/",
-  "/propuestas",
-  "/automatizacion",
-  "/automatizacion/completa",
-  "/automatizacion/individual",
-  "/contact",
-  "/panel-japones",
-  "/venecianas",
-  "/cortinas-estores",
-  "/toldos-proteccion-solar",
-  "/mosquiteras",
-  "/services",
-  "/limpieza",
-  "/nosotros",
+  "/propuestas/",
+  "/automatizacion/",
+  "/automatizacion/completa/",
+  "/automatizacion/individual/",
+  "/contact/",
+  "/panel-japones/",
+  "/venecianas/",
+  "/cortinas-estores/",
+  "/toldos-proteccion-solar/",
+  "/mosquiteras/",
+  "/services/",
+  "/limpieza/",
+  "/nosotros/",
 ];
 
 const manifestPaths = PUBLIC_ROUTES.map((route) => route.path);
+const manifestCanonicalPaths = PUBLIC_ROUTES.map((route) => route.canonicalPath);
 const sitemapPaths = getSitemapPaths();
 
 assert.equal(
   new Set(manifestPaths).size,
   manifestPaths.length,
   "Public route paths must be unique"
+);
+assert.equal(
+  new Set(manifestCanonicalPaths).size,
+  manifestCanonicalPaths.length,
+  "Public route canonical paths must be unique"
 );
 assert.deepEqual(
   [...manifestPaths].sort(),
@@ -67,13 +73,19 @@ assert.deepEqual(
 assert.deepEqual(
   sitemapPaths,
   PUBLIC_ROUTES.filter((route) => route.includeInSitemap).map(
-    (route) => route.path
+    (route) => route.canonicalPath
   ),
   "Sitemap paths must be derived from the shared public-route manifest"
 );
 assert.deepEqual(
-  getSitemapPaths([{ path: "/manifest-check", includeInSitemap: true }]),
-  ["/manifest-check"],
+  getSitemapPaths([
+    {
+      path: "/manifest-check",
+      canonicalPath: "/manifest-check/",
+      includeInSitemap: true,
+    },
+  ]),
+  ["/manifest-check/"],
   "The sitemap generator must derive paths from its supplied manifest"
 );
 
