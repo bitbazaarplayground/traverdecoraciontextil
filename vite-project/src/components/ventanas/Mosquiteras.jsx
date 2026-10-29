@@ -1325,7 +1325,7 @@ export default function Mosquiteras({
           height: 733,
           alt: "Cortinas y estores a medida",
         },
-        to: "/cortinas-estores",
+        to: "/cortinas-estores/",
       },
       {
         title: "Panel japonés",
@@ -1337,7 +1337,7 @@ export default function Mosquiteras({
           height: 185,
           alt: "Panel japonés en dormitorio",
         },
-        to: "/panel-japones",
+        to: "/panel-japones/",
       },
       {
         title: "Venecianas",
@@ -1349,7 +1349,7 @@ export default function Mosquiteras({
           height: 178,
           alt: "Venecianas en oficina",
         },
-        to: "/venecianas",
+        to: "/venecianas/",
       },
       {
         title: "Automatización",
@@ -1361,7 +1361,7 @@ export default function Mosquiteras({
           height: 178,
           alt: "Automatización del hogar",
         },
-        to: "/automatizacion",
+        to: "/automatizacion/",
       },
     ],
     []
@@ -1554,13 +1554,13 @@ export default function Mosquiteras({
 
                   <Actions>
                     <Primary
-                      to={`/contact?pack=${PACK_QUERY}`}
+                      to={`/contact/?pack=${PACK_QUERY}`}
                       onClick={handleOpenCta}
                     >
                       Solicitar asesoramiento
                     </Primary>
                     <Secondary
-                      to={`/contact?pack=${PACK_QUERY}`}
+                      to={`/contact/?pack=${PACK_QUERY}`}
                       onClick={handleOpenCta}
                     >
                       Pedir presupuesto
@@ -1638,7 +1638,7 @@ export default function Mosquiteras({
 
                           <Actions>
                             <Secondary
-                              to={`/contact?pack=${PACK_QUERY}`}
+                              to={`/contact/?pack=${PACK_QUERY}`}
                               onClick={handleOpenCta}
                             >
                               Solicitar asesoramiento
@@ -1772,7 +1772,7 @@ export default function Mosquiteras({
           </FinalText>
           <FinalActions>
             <PrimaryCta
-              to={`/contact?pack=${PACK_QUERY}`}
+              to={`/contact/?pack=${PACK_QUERY}`}
               onClick={(event) =>
                 openAdvisor(event, "mosquiteras_luxury_final")
               }

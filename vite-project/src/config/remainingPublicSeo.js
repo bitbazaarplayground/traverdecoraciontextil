@@ -18,7 +18,7 @@ function createSeo(path, metadata) {
 
   return {
     path: route.path,
-    canonical: `${SITE_URL}${route.path}`,
+    canonical: `${SITE_URL}${route.canonicalPath}`,
     siteName: CONTACT.siteName || "Traver Decoración Textil",
     ...metadata,
   };

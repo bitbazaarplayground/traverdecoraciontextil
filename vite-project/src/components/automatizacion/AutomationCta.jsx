@@ -72,7 +72,7 @@ export default function AutomationCta({ onOpenAsesoramiento, waPhone }) {
         <AfterCTARight>
           <AfterButtons>
             <AfterPrimary
-              href="/contact"
+              href="/contact/"
               onClick={(e) => {
                 e.preventDefault();
 

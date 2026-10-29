@@ -1,5 +1,5 @@
 import { CONTACT } from "./contact.js";
-import { PUBLIC_ROUTES } from "./publicRoutes.js";
+import { getCanonicalPath, PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
 const VENECIANAS_PATH = "/venecianas";
@@ -11,7 +11,7 @@ if (!venecianasRoute) {
 
 export const VENECIANAS_SEO = {
   path: venecianasRoute.path,
-  canonical: `${SITE_URL}${venecianasRoute.path}`,
+  canonical: `${SITE_URL}${venecianasRoute.canonicalPath}`,
   title:
     "Venecianas a medida | Traver Decoración Textil (Castellón y Valencia)",
   description:
@@ -78,7 +78,7 @@ export const VENECIANAS_PAGE_JSON_LD = [
         "@type": "ListItem",
         position: 2,
         name: "Servicios",
-        item: `${SITE_URL}/services`,
+        item: `${SITE_URL}${getCanonicalPath("/services")}`,
       },
       {
         "@type": "ListItem",

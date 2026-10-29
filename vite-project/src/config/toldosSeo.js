@@ -16,7 +16,7 @@ if (!toldosRoute) {
  */
 export const TOLDOS_SEO = {
   path: toldosRoute.path,
-  canonical: `${SITE_URL}${toldosRoute.path}`,
+  canonical: `${SITE_URL}${toldosRoute.canonicalPath}`,
   title: "Toldos en Castellón | Toldos a medida e instalación profesional",
   description:
     "Instalamos toldos en Castellón y alrededores: toldos extensibles, cofre, verticales, pérgolas y soluciones de protección solar a medida para terrazas, balcones, jardines y negocios.",

@@ -482,7 +482,7 @@ export default function Auto({ onOpenAsesoramiento }) {
 
                     <PackCtas>
                       <BtnPrimary
-                        href="/contact"
+                        href="/contact/"
                         onClick={(e) => {
                           e.preventDefault();
                           trackEvent("open_quick_enquiry", {
@@ -585,7 +585,7 @@ export default function Auto({ onOpenAsesoramiento }) {
             <AfterCTARight>
               <AfterButtons>
                 <AfterPrimary
-                  href="/contact"
+                  href="/contact/"
                   onClick={(e) => {
                     e.preventDefault();
 

@@ -1,8 +1,18 @@
-// src/components/contact/NetlifyFormsRegistry.jsx
-export default function NetlifyFormsRegistry() {
-  return (
-    <div style={{ display: "none" }} aria-hidden="true">
-      {/* These declarations are included in the Framework static build. */}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Netlify Forms registry</title>
+  </head>
+  <body>
+    <!--
+      Netlify scans static HTML at deploy time to register forms. This document
+      intentionally sits outside the React Router hydration tree: Netlify
+      removes its detection attributes in deployed HTML, which must not change
+      DOM owned by React during client hydration.
+    -->
+    <div hidden aria-hidden="true">
       <form
         name="asesoramiento"
         method="POST"
@@ -19,7 +29,7 @@ export default function NetlifyFormsRegistry() {
         <input name="telefono" />
         <input name="email" />
         <input name="preferencia" />
-        <textarea name="mensaje" />
+        <textarea name="mensaje"></textarea>
         <input name="meeting_mode" />
         <input name="pack" />
         <input name="kind" />
@@ -43,7 +53,6 @@ export default function NetlifyFormsRegistry() {
             Don’t fill this out: <input name="bot-field" />
           </label>
         </p>
-
         <input name="nombre" />
         <input name="telefono" />
         <input name="email" />
@@ -51,9 +60,9 @@ export default function NetlifyFormsRegistry() {
         <input name="pack" />
         <input name="source" />
         <input name="page" />
-        <textarea name="mensaje" />
+        <textarea name="mensaje"></textarea>
         <input name="privacidad" />
       </form>
     </div>
-  );
-}
+  </body>
+</html>

@@ -13,7 +13,7 @@ if (!mosquiterasRoute) {
 
 export const MOSQUITERAS_SEO = {
   path: mosquiterasRoute.path,
-  canonical: `${SITE_URL}${mosquiterasRoute.path}`,
+  canonical: `${SITE_URL}${mosquiterasRoute.canonicalPath}`,
   title: `Mosquiteras a medida en Castellón | ${CONTACT.siteName}`,
   description:
     "Mosquiteras a medida en Castellón y provincia para ventanas, balconeras y puertas. Instalación profesional; también atendemos proyectos en Valencia.",

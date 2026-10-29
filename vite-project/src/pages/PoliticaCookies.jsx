@@ -1,22 +1,12 @@
 import { Helmet } from "react-helmet-async";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CONTACT } from "../config/contact";
 import { POLITICA_COOKIES_SEO } from "../config/remainingPublicSeo";
 import { openCookiePreferences } from "../utils/cookieConsent";
 
-function useCanonicalUrl() {
-  const { pathname, search } = useLocation();
-  const base =
-    import.meta?.env?.VITE_SITE_URL ||
-    (typeof window !== "undefined"
-      ? window.location.origin
-      : "https://www.traverdecoraciontextil.es");
-  return `${base}${pathname}${search}`;
-}
-
 export default function PoliticaCookies({ includeHelmet = true }) {
-  const canonical = useCanonicalUrl();
+  const canonical = POLITICA_COOKIES_SEO.canonical;
   const siteName = CONTACT.siteName;
 
   const metaTitle = POLITICA_COOKIES_SEO.title;
@@ -74,7 +64,7 @@ export default function PoliticaCookies({ includeHelmet = true }) {
           </Sub>
 
           <HeroActions>
-            <SecondaryLink to="/contact">
+            <SecondaryLink to="/contact/">
               ¿Necesitas ayuda? Contactar
             </SecondaryLink>
             <GhostButton type="button" onClick={openCookiePreferences}>
@@ -334,9 +324,9 @@ export default function PoliticaCookies({ includeHelmet = true }) {
                   </SmallText>
 
                   <MiniNav>
-                    <MiniLink to="/aviso-legal">Aviso legal</MiniLink>
+                    <MiniLink to="/aviso-legal/">Aviso legal</MiniLink>
                     <Dot>·</Dot>
-                    <MiniLink to="/politica-privacidad">
+                    <MiniLink to="/politica-privacidad/">
                       Política de privacidad
                     </MiniLink>
                     <Dot>·</Dot>
@@ -358,7 +348,7 @@ export default function PoliticaCookies({ includeHelmet = true }) {
                   <AsideButton type="button" onClick={openCookiePreferences}>
                     Abrir preferencias
                   </AsideButton>
-                  <AsideLink to="/politica-privacidad">
+                  <AsideLink to="/politica-privacidad/">
                     Ver política de privacidad
                   </AsideLink>
                 </AsideActions>

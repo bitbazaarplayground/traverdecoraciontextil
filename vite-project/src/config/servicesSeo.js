@@ -1,5 +1,5 @@
 import { CONTACT } from "./contact.js";
-import { PUBLIC_ROUTES } from "./publicRoutes.js";
+import { getCanonicalPath, PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
 const SERVICES_PATH = "/services";
@@ -18,7 +18,7 @@ if (!servicesRoute) {
  */
 export const SERVICES_SEO = {
   path: servicesRoute.path,
-  canonical: `${SITE_URL}${servicesRoute.path}`,
+  canonical: `${SITE_URL}${servicesRoute.canonicalPath}`,
   title:
     "Servicios de cortinas, toldos, automatización y decoración textil en Castellón y Valencia",
   description:
@@ -69,7 +69,7 @@ export const SERVICES_PAGE_JSON_LD = [
         "@type": "ListItem",
         position: index + 1,
         name,
-        url: `${SITE_URL}${path}`,
+        url: `${SITE_URL}${getCanonicalPath(path)}`,
       })),
     },
     primaryImageOfPage: {

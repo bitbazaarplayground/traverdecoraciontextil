@@ -11,7 +11,7 @@ if (!limpiezaRoute) {
 
 export const LIMPIEZA_SEO = {
   path: limpiezaRoute.path,
-  canonical: `${SITE_URL}${limpiezaRoute.path}`,
+  canonical: `${SITE_URL}${limpiezaRoute.canonicalPath}`,
   title:
     "Limpieza de cortinas y textiles decorativos | Traver Decoración Textil",
   description:

@@ -288,8 +288,8 @@ export default function Nosotros({ includeHelmet = true }) {
               </CtaText>
 
               <CtaActions>
-                <PrimaryCta to="/contact">Contactar</PrimaryCta>
-                <SecondaryCta to="/services">Ver servicios</SecondaryCta>
+                <PrimaryCta to="/contact/">Contactar</PrimaryCta>
+                <SecondaryCta to="/services/">Ver servicios</SecondaryCta>
               </CtaActions>
             </CtaInner>
           </CtaSection>

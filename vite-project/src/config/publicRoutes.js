@@ -5,38 +5,52 @@
  * remain public and eligible for future prerendering, but are intentionally
  * excluded from the sitemap until that policy changes.
  */
+function canonicalPath(path) {
+  return path === "/" ? path : `${path.replace(/\/+$/, "")}/`;
+}
+
+function publicRoute(path, options) {
+  return { path, canonicalPath: canonicalPath(path), ...options };
+}
+
 export const PUBLIC_ROUTES = [
-  { path: "/", includeInSitemap: true, prerender: true },
-  { path: "/propuestas", includeInSitemap: true, prerender: true },
-  { path: "/automatizacion", includeInSitemap: true, prerender: true },
-  {
-    path: "/automatizacion/completa",
+  publicRoute("/", { includeInSitemap: true, prerender: true }),
+  publicRoute("/propuestas", { includeInSitemap: true, prerender: true }),
+  publicRoute("/automatizacion", { includeInSitemap: true, prerender: true }),
+  publicRoute("/automatizacion/completa", {
     includeInSitemap: true,
     prerender: true,
-  },
-  {
-    path: "/automatizacion/individual",
+  }),
+  publicRoute("/automatizacion/individual", {
     includeInSitemap: true,
     prerender: true,
-  },
-  { path: "/contact", includeInSitemap: true, prerender: true },
-  { path: "/panel-japones", includeInSitemap: true, prerender: true },
-  { path: "/venecianas", includeInSitemap: true, prerender: true },
-  { path: "/cortinas-estores", includeInSitemap: true, prerender: true },
-  {
-    path: "/toldos-proteccion-solar",
+  }),
+  publicRoute("/contact", { includeInSitemap: true, prerender: true }),
+  publicRoute("/panel-japones", { includeInSitemap: true, prerender: true }),
+  publicRoute("/venecianas", { includeInSitemap: true, prerender: true }),
+  publicRoute("/cortinas-estores", { includeInSitemap: true, prerender: true }),
+  publicRoute("/toldos-proteccion-solar", {
     includeInSitemap: true,
     prerender: true,
-  },
-  { path: "/mosquiteras", includeInSitemap: true, prerender: true },
-  { path: "/services", includeInSitemap: true, prerender: true },
-  { path: "/limpieza", includeInSitemap: true, prerender: true },
-  { path: "/nosotros", includeInSitemap: true, prerender: true },
-  { path: "/aviso-legal", includeInSitemap: false, prerender: true },
-  {
-    path: "/politica-privacidad",
+  }),
+  publicRoute("/mosquiteras", { includeInSitemap: true, prerender: true }),
+  publicRoute("/services", { includeInSitemap: true, prerender: true }),
+  publicRoute("/limpieza", { includeInSitemap: true, prerender: true }),
+  publicRoute("/nosotros", { includeInSitemap: true, prerender: true }),
+  publicRoute("/aviso-legal", { includeInSitemap: false, prerender: true }),
+  publicRoute("/politica-privacidad", {
     includeInSitemap: false,
     prerender: true,
-  },
-  { path: "/politica-cookies", includeInSitemap: false, prerender: true },
+  }),
+  publicRoute("/politica-cookies", {
+    includeInSitemap: false,
+    prerender: true,
+  }),
 ];
+
+export function getCanonicalPath(pathname) {
+  const normalizedPath = canonicalPath(pathname).replace(/\/$/, "") || "/";
+  const route = PUBLIC_ROUTES.find(({ path }) => path === normalizedPath);
+
+  return route?.canonicalPath ?? canonicalPath(normalizedPath);
+}

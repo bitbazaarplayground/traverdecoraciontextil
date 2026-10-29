@@ -168,7 +168,7 @@ export default function ServiceHero({
   hero1920,
   objectPosition = "center",
   primaryLabel,
-  primaryTo = "/contact",
+  primaryTo = "/contact/",
   primaryTrackSource,
   primaryPack,
   primaryCtaName = "solicitar_propuesta",

@@ -486,7 +486,7 @@ export default function Auto({ onOpenAsesoramiento, includeHelmet = true }) {
 
                     <PackCtas>
                       <BtnPrimary
-                        href="/contact"
+                        href="/contact/"
                         onClick={(e) => {
                           e.preventDefault();
                           trackEvent("open_quick_enquiry", {

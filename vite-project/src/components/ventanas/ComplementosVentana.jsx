@@ -58,7 +58,7 @@ const DEFAULT_ITEMS = [
       height: 185,
       alt: "Panel japonés en dormitorio",
     },
-    to: "/panel-japones",
+    to: "/panel-japones/",
   },
   {
     title: "Venecianas",
@@ -70,7 +70,7 @@ const DEFAULT_ITEMS = [
       height: 178,
       alt: "Venecianas en oficina",
     },
-    to: "/venecianas",
+    to: "/venecianas/",
   },
   {
     title: "Automatización",
@@ -82,7 +82,7 @@ const DEFAULT_ITEMS = [
       height: 178,
       alt: "Automatización del hogar",
     },
-    to: "/automatizacion",
+    to: "/automatizacion/",
   },
   {
     title: "Mosquiteras",
@@ -94,7 +94,7 @@ const DEFAULT_ITEMS = [
       height: 178,
       alt: "Mosquitera instalada en ventana",
     },
-    to: "/mosquiteras",
+    to: "/mosquiteras/",
   },
   {
     title: "Toldos",
@@ -106,7 +106,7 @@ const DEFAULT_ITEMS = [
       height: 178,
       alt: "Toldo cofre instalado en terraza o exterior",
     },
-    to: "/toldos-proteccion-solar",
+    to: "/toldos-proteccion-solar/",
   },
 ];
 
