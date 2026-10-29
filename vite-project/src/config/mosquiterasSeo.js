@@ -1,4 +1,4 @@
-import { CONTACT } from "./contact.js";
+import { CONTACT, PRIMARY_SERVICE_AREA_SERVED } from "./contact.js";
 import { PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
@@ -61,11 +61,7 @@ export const MOSQUITERAS_PAGE_JSON_LD = [
     name: "Mosquiteras a medida en Castellón",
     serviceType: "Instalación de mosquiteras",
     provider: { "@id": businessId },
-    areaServed: [
-      { "@type": "City", name: "Castellón de la Plana" },
-      { "@type": "AdministrativeArea", name: "Provincia de Castellón" },
-      { "@type": "AdministrativeArea", name: "Valencia" },
-    ],
+    areaServed: PRIMARY_SERVICE_AREA_SERVED,
     url: MOSQUITERAS_SEO.canonical,
     description: MOSQUITERAS_SEO.description,
   },

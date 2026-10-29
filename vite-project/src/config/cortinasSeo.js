@@ -1,4 +1,4 @@
-import { CONTACT } from "./contact.js";
+import { CONTACT, PRIMARY_SERVICE_AREA_SERVED } from "./contact.js";
 import { getCanonicalPath, PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
@@ -79,11 +79,7 @@ export const CORTINAS_PAGE_JSON_LD = [
     "@id": `${CORTINAS_SEO.canonical}#service`,
     name: "Cortinas y estores a medida",
     description: CORTINAS_SEO.description,
-    areaServed: [
-      { "@type": "City", name: "Almassora" },
-      { "@type": "City", name: "Castellón de la Plana" },
-      { "@type": "AdministrativeArea", name: "Castellón" },
-    ],
+    areaServed: PRIMARY_SERVICE_AREA_SERVED,
     provider: {
       "@type": "LocalBusiness",
       name: CORTINAS_SEO.siteName,

@@ -188,6 +188,23 @@ const ScriptLine = styled(motion.div)`
   }
 `;
 
+const LocalIntro = styled.p`
+  max-width: 52ch;
+  margin: 1rem auto 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    "Helvetica Neue", sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  text-shadow: 0 12px 36px rgba(0, 0, 0, 0.38);
+
+  @media (max-width: 768px) {
+    max-width: 34ch;
+    margin-top: 0.85rem;
+    font-size: 0.8rem;
+  }
+`;
+
 /* =========================
    CTA (QUIETER, LUXURY)
 ========================= */
@@ -395,6 +412,11 @@ export default function Hero({ onOpenAsesoramiento }) {
         <ScriptLine>
           que se <em>sienten</em>
         </ScriptLine>
+
+        <LocalIntro>
+          Desde Almassora (Almazora), Castellón: cortinas, estores, toldos y
+          mosquiteras a medida.
+        </LocalIntro>
 
         <Actions
           initial={{ opacity: 0, y: 14 }}

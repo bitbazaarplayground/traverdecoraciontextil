@@ -494,9 +494,11 @@ export default function ContactPage({
           </Panel>
         </Grid>
         <SeoIntro>
-          Trabajamos en Almassora y toda la provincia de Castellón, ofreciendo
-          soluciones de cortinas, toldos y decoración textil para viviendas y
-          negocios, con medición e instalación profesional.
+          Atendemos proyectos de cortinas, toldos y decoración textil en
+          Almassora (Almazora) y en toda la provincia de Castellón, incluidos
+          Castellón de la Plana, Benicàssim, Onda y Burriana. Los proyectos en
+          {` ${CONTACT.secondaryProjectArea}`} se valoran según disponibilidad y
+          requisitos.
         </SeoIntro>
       </Wrap>
     </Page>

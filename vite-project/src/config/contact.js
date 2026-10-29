@@ -1,3 +1,12 @@
+// Primary service coverage only. Valencia projects are assessed case by case,
+// so they are intentionally not represented as general structured-data coverage.
+export const PRIMARY_SERVICE_AREA_SERVED = [
+  { "@type": "City", name: "Almassora" },
+  { "@type": "AdministrativeArea", name: "Provincia de Castellón" },
+  { "@type": "City", name: "Castellón de la Plana" },
+  { "@type": "City", name: "Benicàssim" },
+];
+
 export const CONTACT = {
   siteName: "Traver Decoración Textil",
   phoneLandline: "+34 964 562 357",
@@ -12,7 +21,7 @@ export const CONTACT = {
     postalCode: "12550",
     addressCountry: "ES",
   },
-  areaServed: ["Castellón", "Valencia"],
+  secondaryProjectArea: "Valencia",
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",

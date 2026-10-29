@@ -1,4 +1,4 @@
-import { CONTACT } from "./contact.js";
+import { CONTACT, PRIMARY_SERVICE_AREA_SERVED } from "./contact.js";
 import { getCanonicalPath, PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
@@ -96,10 +96,7 @@ export const PANEL_JAPONES_PAGE_JSON_LD = [
     "@id": `${PANEL_JAPONES_SEO.canonical}#service`,
     name: "Panel japonés a medida",
     description: PANEL_JAPONES_SEO.description,
-    areaServed: [
-      { "@type": "AdministrativeArea", name: "Castellón" },
-      { "@type": "AdministrativeArea", name: "Valencia" },
-    ],
+    areaServed: PRIMARY_SERVICE_AREA_SERVED,
     provider: {
       "@type": "LocalBusiness",
       name: PANEL_JAPONES_SEO.siteName,

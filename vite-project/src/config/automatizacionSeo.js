@@ -1,4 +1,4 @@
-import { CONTACT } from "./contact.js";
+import { CONTACT, PRIMARY_SERVICE_AREA_SERVED } from "./contact.js";
 import { getCanonicalPath, PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
@@ -123,11 +123,7 @@ export const AUTOMATIZACION_PAGE_JSON_LD = [
       url: `${SITE_URL}/`,
       telephone: CONTACT.phoneLandline,
     },
-    areaServed: [
-      { "@type": "City", name: "Almassora" },
-      { "@type": "City", name: "Castellón de la Plana" },
-      { "@type": "AdministrativeArea", name: "Castellón" },
-    ],
+    areaServed: PRIMARY_SERVICE_AREA_SERVED,
     url: AUTOMATIZACION_SEO.canonical,
     description: AUTOMATIZACION_SEO.description,
   },
@@ -248,10 +244,7 @@ export const AUTOMATIZACION_COMPLETA_PAGE_JSON_LD = [
       url: `${SITE_URL}/`,
       telephone: CONTACT.phoneLandline,
     },
-    areaServed: [
-      { "@type": "AdministrativeArea", name: "Castellón" },
-      { "@type": "AdministrativeArea", name: "Valencia" },
-    ],
+    areaServed: PRIMARY_SERVICE_AREA_SERVED,
     url: AUTOMATIZACION_COMPLETA_SEO.canonical,
     description: AUTOMATIZACION_COMPLETA_SEO.description,
   },
@@ -353,10 +346,7 @@ const AUTOMATIZACION_INDIVIDUAL_SERVICE_JSON_LD = {
   "@type": "Service",
   "@id": `${AUTOMATIZACION_INDIVIDUAL_SEO.canonical}#service`,
   name: "Automatización individual",
-  areaServed: CONTACT.areaServed?.map((name) => ({
-    "@type": "AdministrativeArea",
-    name,
-  })),
+  areaServed: PRIMARY_SERVICE_AREA_SERVED,
   provider: {
     "@type": "Organization",
     name: AUTOMATIZACION_INDIVIDUAL_SEO.siteName,
@@ -427,10 +417,7 @@ export const AUTOMATIZACION_INDIVIDUAL_LEGACY_PAGE_JSON_LD = {
   about: {
     "@type": "Service",
     name: "Automatización individual",
-    areaServed: CONTACT.areaServed?.map((name) => ({
-      "@type": "AdministrativeArea",
-      name,
-    })),
+    areaServed: PRIMARY_SERVICE_AREA_SERVED,
     provider: {
       "@type": "Organization",
       name: AUTOMATIZACION_INDIVIDUAL_SEO.siteName,

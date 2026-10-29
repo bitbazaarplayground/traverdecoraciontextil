@@ -1,4 +1,4 @@
-import { CONTACT } from "./contact.js";
+import { CONTACT, PRIMARY_SERVICE_AREA_SERVED } from "./contact.js";
 import { PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
@@ -322,10 +322,8 @@ export const NOSOTROS_PAGE_JSON_LD = [
       ...CONTACT.address,
     },
     description: NOSOTROS_SEO.description,
-    areaServed: {
-      "@type": "Place",
-      name: "Castellón",
-    },
+    areaServed: PRIMARY_SERVICE_AREA_SERVED,
+    openingHoursSpecification: CONTACT.openingHoursSpecification,
     knowsAbout: [
       "Toldos",
       "Cortinas",
@@ -365,9 +363,9 @@ export function getNosotrosMetaDescriptors() {
 }
 
 export const CONTACT_SEO = createSeo("/contact", {
-  title: "Contacto | Cortinas, toldos y automatización en Castellón",
+  title: "Contacto en Almassora | Cortinas, toldos y automatización",
   description:
-    "Contacta con Traver Decoración Textil para cortinas, toldos y automatización en Castellón. Asesoramiento, medición e instalación profesional sin compromiso.",
+    "Contacta con Traver Decoración Textil en Almassora (Almazora), Castellón. Cortinas, toldos y asesoramiento para proyectos en la provincia de Castellón.",
   robots: "index,follow",
   ogType: "website",
   ogLocale: "es_ES",
@@ -402,6 +400,7 @@ export const CONTACT_PAGE_JSON_LD = [
       "@type": "PostalAddress",
       ...CONTACT.address,
     },
+    openingHoursSpecification: CONTACT.openingHoursSpecification,
     contactPoint: [
       {
         "@type": "ContactPoint",
@@ -418,11 +417,7 @@ export const CONTACT_PAGE_JSON_LD = [
       },
     ],
     sameAs: [CONTACT.facebookUrl],
-    areaServed: [
-      { "@type": "City", name: "Almassora" },
-      { "@type": "City", name: "Castellón de la Plana" },
-      { "@type": "AdministrativeArea", name: "Castellón" },
-    ],
+    areaServed: PRIMARY_SERVICE_AREA_SERVED,
   },
 ];
 

@@ -975,7 +975,7 @@ export default function Limpieza({
             sizes={bannerSizes}
             width="1920"
             height="1280"
-            alt="Profesional reinstalando una cortina en el domicilio del cliente"
+            alt="Ajuste de una cortina tras su limpieza"
             loading="lazy"
             decoding="async"
           />

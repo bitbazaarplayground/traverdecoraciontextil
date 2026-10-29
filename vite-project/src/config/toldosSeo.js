@@ -1,4 +1,4 @@
-import { CONTACT } from "./contact.js";
+import { CONTACT, PRIMARY_SERVICE_AREA_SERVED } from "./contact.js";
 import { PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
@@ -77,11 +77,7 @@ export const TOLDOS_PAGE_JSON_LD = [
     serviceType:
       "Toldos a medida, instalación de toldos y protección solar exterior",
     provider: { "@id": businessId },
-    areaServed: [
-      { "@type": "City", name: "Almassora" },
-      { "@type": "City", name: "Castellón de la Plana" },
-      { "@type": "AdministrativeArea", name: "Castellón" },
-    ],
+    areaServed: PRIMARY_SERVICE_AREA_SERVED,
     offers: {
       "@type": "Offer",
       availability: "https://schema.org/InStock",
