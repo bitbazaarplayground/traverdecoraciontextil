@@ -538,7 +538,7 @@ const CARD_ITEMS = [
     value: "Sombra regulable y uso cómodo en el día a día.",
     text: "Ideales para terrazas y balcones donde buscas una solución ligera, elegante y funcional. Permiten ajustar la proyección según la hora del día y el uso real del espacio.",
     images: responsiveImages.toldoExtensible,
-    alt: "Toldo extensible instalado en una terraza exterior en Castellón",
+    alt: "Toldo extensible para terraza exterior",
     enquiryPack: "Toldos extensibles",
   },
   {
@@ -547,7 +547,7 @@ const CARD_ITEMS = [
     value: "Mecanismo protegido y acabado más limpio.",
     text: "Una opción muy valorada cuando quieres cuidar el tejido y el sistema al máximo. Al quedar protegido cuando se recoge, el conjunto gana durabilidad y presencia estética.",
     images: responsiveImages.toldoCofre,
-    alt: "Toldo cofre instalado en una fachada de vivienda",
+    alt: "Toldo cofre para fachada de vivienda",
     enquiryPack: "Toldos cofre",
   },
   {
@@ -577,7 +577,7 @@ const SECONDARY_ITEMS = [
     value: "Espacios exteriores más habitables y con presencia.",
     text: "Cuando el proyecto requiere más estructura, las pérgolas permiten crear zonas exteriores confortables y bien resueltas durante más meses del año.",
     images: responsiveImages.pergola,
-    alt: "Pérgola exterior instalada en vivienda",
+    alt: "Pérgola exterior para vivienda",
     enquiryPack: "Pérgolas",
   },
   {

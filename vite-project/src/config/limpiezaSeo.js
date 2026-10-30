@@ -1,4 +1,4 @@
-import { CONTACT } from "./contact.js";
+import { CONTACT, PRIMARY_SERVICE_AREA_SERVED } from "./contact.js";
 import { PUBLIC_ROUTES } from "./publicRoutes.js";
 
 const SITE_URL = "https://www.traverdecoraciontextil.es";
@@ -71,10 +71,7 @@ export const LIMPIEZA_PAGE_JSON_LD = [
     description: LIMPIEZA_SEO.description,
     url: LIMPIEZA_SEO.canonical,
     image: LIMPIEZA_SEO.ogImage,
-    areaServed: [
-      { "@type": "AdministrativeArea", name: "Castellón" },
-      { "@type": "AdministrativeArea", name: "Valencia" },
-    ],
+    areaServed: PRIMARY_SERVICE_AREA_SERVED,
     provider: {
       "@type": "LocalBusiness",
       name: LIMPIEZA_SEO.siteName,
