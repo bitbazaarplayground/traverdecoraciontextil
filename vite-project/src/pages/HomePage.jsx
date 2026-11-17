@@ -4,11 +4,11 @@ import { Helmet } from "react-helmet-async";
 
 import Hero from "../components/Hero";
 import LazyOnVisible from "../components/LazyOnVisible";
+import ServicesSection from "../components/ServicesSection";
 
 import { HOME_PAGE_JSON_LD, HOME_SEO } from "../config/homeSeo.js";
 
-// Lazy sections (below the hero)
-const ServicesSection = lazy(() => import("../components/ServicesSection"));
+// Deferred sections below the services overview.
 const Process = lazy(() => import("../components/Process"));
 const ContactCTAHome = lazy(() => import("../components/ContactCTAHome"));
 
@@ -28,7 +28,6 @@ export default function HomePage({
     if (window.matchMedia("(max-width: 768px)").matches) return;
 
     const warm = () => {
-      import("../components/ServicesSection");
       import("../components/Process");
       import("../components/ContactCTAHome");
     };
@@ -81,16 +80,7 @@ export default function HomePage({
 
       <Hero onOpenAsesoramiento={onOpenAsesoramiento} />
 
-      <LazyOnVisible
-        rootMargin="0px 0px"
-        minHeight={600}
-        idle
-        idleTimeout={1200}
-      >
-        <Suspense fallback={null}>
-          <ServicesSection />
-        </Suspense>
-      </LazyOnVisible>
+      <ServicesSection />
 
       <LazyOnVisible rootMargin="0px 0px" minHeight={500} idle>
         <Suspense fallback={null}>
