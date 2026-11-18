@@ -106,7 +106,7 @@ export default function AvisoLegal({ includeHelmet = true }) {
               <li>
                 <strong>WhatsApp:</strong>{" "}
                 <a href={CONTACT.whatsappUrl} target="_blank" rel="noreferrer">
-                  +34 {CONTACT.whatsappNumber}
+                  {CONTACT.whatsappDisplay}
                 </a>
               </li>
             </List>

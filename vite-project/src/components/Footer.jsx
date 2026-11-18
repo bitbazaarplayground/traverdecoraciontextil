@@ -142,7 +142,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                   aria-label="Abrir WhatsApp"
                   onClick={() => trackWhatsAppClick("footer")}
                 >
-                  WhatsApp: +34 {CONTACT.whatsappNumber}
+                  WhatsApp: {CONTACT.whatsappDisplay}
                 </Action>
               </ActionRow>
 
@@ -239,7 +239,7 @@ export default function Footer({ onOpenAsesoramiento }) {
                     rel="noreferrer"
                     onClick={() => trackWhatsAppClick("footer_mobile")}
                   >
-                    WhatsApp: +34 {CONTACT.whatsappNumber}
+                    WhatsApp: {CONTACT.whatsappDisplay}
                   </MobileAction>
                 </ActionRow>
                 <ActionRow>
