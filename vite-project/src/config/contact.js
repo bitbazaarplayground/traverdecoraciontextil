@@ -12,6 +12,7 @@ export const CONTACT = {
   phoneLandline: "+34 964 562 357",
   phoneLandlineTel: "+34964562357",
   whatsappNumber: "34614952856",
+  whatsappDisplay: "+34 614 952 856",
   whatsappUrl: "https://wa.me/34614952856",
   email: "traveralmazora@gmail.com",
   address: {
